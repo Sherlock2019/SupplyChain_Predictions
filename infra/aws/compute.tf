@@ -153,8 +153,10 @@ resource "aws_eip" "app" {
 }
 
 locals {
-  base_domain   = "${replace(aws_eip.app.public_ip, ".", "-")}.sslip.io"
-  qwen_base_url = var.enable_gpu ? "http://${aws_instance.gpu[0].private_ip}:8000/v1" : ""
+  base_domain = "${replace(aws_eip.app.public_ip, ".", "-")}.sslip.io"
+  # GPU VM (vLLM) when enabled; otherwise Qwen on CPU via Ollama inside the app VM; otherwise no LLM.
+  qwen_base_url = var.enable_gpu ? "http://${aws_instance.gpu[0].private_ip}:8000/v1" : (var.cpu_llm_model != "" ? "http://ollama:11434/v1" : "")
+  qwen_model    = var.enable_gpu ? var.qwen_served_name : "${replace(var.cpu_llm_model, ":", "-")}-scm"
   app_image     = "${aws_ecr_repository.app.repository_url}:${var.release_version}"
 }
 
@@ -177,7 +179,9 @@ resource "aws_instance" "app" {
     base_domain          = local.base_domain
     acme_email           = var.acme_email
     qwen_base_url        = local.qwen_base_url
-    qwen_model           = var.qwen_served_name
+    qwen_model           = local.qwen_model
+    cpu_llm_model        = var.enable_gpu ? "" : var.cpu_llm_model
+    public_ip            = aws_eip.app.public_ip
     qwen_metrics_target  = var.enable_gpu ? "${aws_instance.gpu[0].private_ip}:8000" : ""
     enable_observability = var.enable_observability
   })

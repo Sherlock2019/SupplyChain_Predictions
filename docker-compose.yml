@@ -160,6 +160,18 @@ services:
     command: ["TCP-LISTEN:11435,fork,reuseaddr,bind=172.17.0.1", "TCP:127.0.0.1:11434"]
     restart: unless-stopped
 
+  ollama:
+    # Qwen on CPU for cloud VMs without a GPU (AWS/GCP when enable_gpu=false). OpenAI-compatible API on :11434/v1.
+    image: ollama/ollama:0.32.1
+    profiles: [cpu-llm]
+    environment:
+      OLLAMA_KEEP_ALIVE: "24h"
+      OLLAMA_NUM_PARALLEL: "2"
+    volumes:
+      - ollama-models:/root/.ollama
+      - ./deploy/ollama:/modelfiles:ro
+    restart: unless-stopped
+
   qwen:
     image: vllm/vllm-openai:v0.32.0
     profiles: [gpu]
@@ -331,6 +343,7 @@ services:
     environment:
       BASE_DOMAIN: ${BASE_DOMAIN:-localhost}
       ACME_EMAIL: ${ACME_EMAIL:-}
+      PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
     ports: ["80:80", "443:443"]
     volumes:
       - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -339,6 +352,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  ollama-models:
   postgres-data:
   flowise-data:
   langgraph-data:

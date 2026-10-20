@@ -15,6 +15,11 @@
 	}
 }
 
+# http://<public-ip> -> the HTTPS app (an IP address cannot get a public certificate; the sslip.io name can).
+http://{$PUBLIC_IP} {
+	redir https://app.{$BASE_DOMAIN}{uri} permanent
+}
+
 app.{$BASE_DOMAIN} {
 	import common
 	reverse_proxy api:8000

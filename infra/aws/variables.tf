@@ -46,6 +46,12 @@ variable "enable_gpu" {
   default     = true
 }
 
+variable "cpu_llm_model" {
+  description = "When enable_gpu is false: Ollama model served on CPU by the app VM (empty = deterministic mode, no LLM)."
+  type        = string
+  default     = "qwen2.5:3b"
+}
+
 variable "gpu_instance_type" {
   description = "NVIDIA L4 (g6.xlarge) or A10G (g5.xlarge)"
   type        = string

@@ -48,6 +48,8 @@ ACME_EMAIL=${acme_email}
 LLM_MODE=${qwen_base_url == "" ? "deterministic" : "qwen"}
 QWEN_BASE_URL=${qwen_base_url}
 QWEN_MODEL=${qwen_model}
+CPU_LLM_MODEL=${cpu_llm_model}
+PUBLIC_IP=${public_ip}
 QWEN_METRICS_TARGET=${qwen_metrics_target}
 ENABLE_OBSERVABILITY=${enable_observability}
 LANGFUSE_INTERNAL_URL=${enable_observability ? "http://langfuse:3000" : ""}

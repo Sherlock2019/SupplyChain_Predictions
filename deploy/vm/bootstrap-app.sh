@@ -29,6 +29,7 @@ fi
 
 PROFILES=(--profile core --profile edge)
 if [ "${ENABLE_OBSERVABILITY:-true}" = "true" ]; then PROFILES+=(--profile observability); fi
+if [ -n "${CPU_LLM_MODEL:-}" ]; then PROFILES+=(--profile cpu-llm); fi
 
 log "Pulling third-party images"
 docker compose "${PROFILES[@]}" pull --ignore-pull-failures --quiet || true
@@ -46,6 +47,15 @@ wait_http api http://127.0.0.1:8000/health 60
 wait_http flowise http://flowise:3000/api/v1/ping 60
 wait_http langgraph http://langgraph:8123/ok 60
 
+if [ -n "${CPU_LLM_MODEL:-}" ]; then
+  log "Preparing ${CPU_LLM_MODEL} on CPU (Ollama) as ${QWEN_MODEL} with a 16k context"
+  for i in $(seq 1 30); do docker compose exec -T ollama ollama list >/dev/null 2>&1 && break; sleep 5; done
+  docker compose exec -T ollama ollama pull "${CPU_LLM_MODEL}"
+  printf 'FROM %s\nPARAMETER num_ctx 16384\nPARAMETER temperature 0\n' "${CPU_LLM_MODEL}" > deploy/ollama/Modelfile.cpu
+  docker compose exec -T ollama ollama create "${QWEN_MODEL}" -f /modelfiles/Modelfile.cpu
+  docker compose exec -T ollama ollama run "${QWEN_MODEL}" "ready" >/dev/null 2>&1 || true  # load into memory
+fi
+
 if [ -n "${QWEN_BASE_URL:-}" ] && [ "${LLM_MODE:-qwen}" = "qwen" ]; then
   log "Waiting for Qwen (vLLM downloads the model on first boot)"
   for i in $(seq 1 90); do
@@ -60,4 +70,4 @@ python3 flowise/bootstrap.py --env-file .env --compose-dir "$APP_DIR"
 docker compose "${PROFILES[@]}" up -d --no-build api
 
 date -Is > BOOTSTRAP_COMPLETE
-log "Deployment complete: https://app.${BASE_DOMAIN}"
+log "Deployment complete: https://app.${BASE_DOMAIN} (http://${PUBLIC_IP:-<public-ip>} redirects there)"
