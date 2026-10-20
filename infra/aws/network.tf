@@ -80,7 +80,7 @@ resource "aws_vpc_security_group_ingress_rule" "app_https" {
 
 resource "aws_vpc_security_group_ingress_rule" "app_acme" {
   security_group_id = aws_security_group.app.id
-  description       = "Let's Encrypt HTTP-01 challenge (Caddy redirects everything else to HTTPS)"
+  description       = "ACME HTTP-01 challenge and redirect to HTTPS (Caddy)"
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 80
   to_port           = 80

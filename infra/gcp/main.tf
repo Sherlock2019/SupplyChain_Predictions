@@ -55,7 +55,7 @@ resource "google_compute_firewall" "https" {
 
 resource "google_compute_firewall" "acme" {
   name          = "${local.name}-acme"
-  description   = "Let's Encrypt HTTP-01; Caddy redirects everything else to HTTPS"
+  description   = "ACME HTTP-01 challenge and redirect to HTTPS (Caddy)"
   network       = google_compute_network.this.name
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["aurelia-app"]
