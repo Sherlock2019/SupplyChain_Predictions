@@ -56,7 +56,12 @@ python3 scripts/aws-cost-estimate.py --app r6i.2xlarge --gpu none
 ```
 
 Trade-off: AI agent answers are slower and less precise than Qwen2.5-7B on an L4; all dashboards, roles, the moat, approvals
-and the deterministic analytics are unaffected. Approved by the user on 2026-10-20 (65 resources).
+and the deterministic analytics are unaffected.
+
+Record: approved by the user on 2026-10-20 and applied (65 resources, after fixing a security-group description the EC2
+API rejected). Torn down the same day at the user's request with `terraform destroy` (65 destroyed; AWS shows no
+remaining EC2, RDS or Elastic IP) before the VM bootstrap and cloud smoke tests completed — so **no cloud verification
+was recorded**. The POC runs on a self-managed EC2 instance with `./start-aws.sh` instead (see README).
 
 ## GCP (alternative) — what `infra/gcp` creates (list prices, verify before approval)
 
