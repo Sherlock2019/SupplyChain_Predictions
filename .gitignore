@@ -24,3 +24,6 @@ flowise/data/
 node_modules/
 .localdemo-profiles
 .localdemo-build.log
+.localdemo-Modelfile
+.aws-launch.log
+.aws-launch.pid

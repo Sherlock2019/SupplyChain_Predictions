@@ -39,13 +39,17 @@ set -a; source .env; set +a
 
 PROFILES=(--profile core --profile localdb)
 if [ "$NOLLM" = 0 ] && command -v ollama >/dev/null && curl -fs http://127.0.0.1:11434/api/tags >/dev/null; then
-  if ! ollama list | grep -q '^qwen2.5-7b-scm'; then
-    ollama list | grep -q '^qwen2.5:7b' || { c_warn "pulling qwen2.5:7b (4.7 GB, first run only)"; ollama pull qwen2.5:7b; }
-    ollama create qwen2.5-7b-scm -f deploy/ollama/Modelfile >/dev/null
+  # QWEN_MODEL in .env picks the size: qwen2.5-7b-scm (default) or qwen2.5-3b-scm (faster on CPU-only machines).
+  SCM_MODEL=${QWEN_MODEL:-qwen2.5-7b-scm}
+  BASE_MODEL=$(echo "$SCM_MODEL" | sed -E 's/^(qwen[0-9.]+)-([0-9.]+b)-scm$/\1:\2/')
+  if ! ollama list | grep -q "^${SCM_MODEL}"; then
+    ollama list | grep -q "^${BASE_MODEL}" || { c_warn "pulling ${BASE_MODEL} (first run only)"; ollama pull "$BASE_MODEL"; }
+    printf 'FROM %s\nPARAMETER num_ctx 16384\nPARAMETER temperature 0\n' "$BASE_MODEL" > .localdemo-Modelfile
+    ollama create "$SCM_MODEL" -f .localdemo-Modelfile >/dev/null
   fi
   PROFILES+=(--profile local-llm)
   export LLM_MODE=qwen
-  c_ok "Qwen2.5-7B via Ollama (qwen2.5-7b-scm, 16k context)"
+  c_ok "Qwen via Ollama (${SCM_MODEL}, 16k context)"
 else
   export LLM_MODE=deterministic
   c_warn "LLM disabled (deterministic mode) — no Ollama found or --no-llm given; Flowise flows need the LLM"

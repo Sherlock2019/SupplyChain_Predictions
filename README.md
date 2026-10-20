@@ -120,6 +120,19 @@ The launcher generates `.env` if needed, prepares the Qwen model, starts the con
 recommendations into the manager review queue and prints a status table. The local demo has no login pages (Flowise and
 Langfuse are signed in automatically; local password `Admin@admin1`). Walkthrough: [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md).
 
+**On an AWS EC2 instance (or any Linux VM with a public IP)** — runs in the background, survives SSH logout and reboots:
+
+```bash
+git clone https://github.com/Sherlock2019/SupplyChain_Predictions.git && cd SupplyChain_Predictions
+./start-aws.sh                  # login pages ON, public URLs http://<public-ip>:8000 …, returns immediately
+./start-aws.sh --small-llm      # Qwen2.5-3B: much faster on CPU-only instances (add --no-llm for no LLM at all)
+./start-aws.sh status           # progress, health and URLs with logins  ·  ./start-aws.sh logs  ·  ./start-aws.sh stop
+```
+
+Allow **your IP only** in the instance's security group on TCP 8000 (dashboard), 3000 (Flowise), 3002 (Grafana) and 3003
+(Langfuse). Prerequisites: Docker (`curl -fsSL https://get.docker.com | sh`), and Ollama for Qwen
+(`curl -fsSL https://ollama.com/install.sh | sh`). Suggested size: 4 vCPU / 16 GB with `--small-llm`, 8 vCPU / 32 GB for 7B.
+
 **Or step by step** — prerequisites: Docker, Python 3.12, an NVIDIA GPU with Ollama (or set `LLM_MODE=deterministic`).
 
 ```bash
