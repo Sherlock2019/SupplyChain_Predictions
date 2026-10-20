@@ -114,7 +114,10 @@ can be explained line by line because every number traces back to SAP data.
 ./start-localdemo.sh --no-llm   # no GPU/Ollama: deterministic fallback
 ./start-localdemo.sh --open     # also open the dashboard in the browser
 ./stop-localdemo.sh [--reset]   # stop (and optionally wipe demo data)
+./start-localdemo.sh status     # ready? URLs  ·  ./start-localdemo.sh logs  ·  --foreground = run attached to the terminal
 ```
+
+The start-up runs in the background: closing the terminal or pressing Ctrl-C only stops the progress view.
 
 The launcher generates `.env` if needed, prepares the Qwen model, starts the containers, provisions Flowise, seeds three
 recommendations into the manager review queue and prints a status table. The local demo has no login pages (Flowise and

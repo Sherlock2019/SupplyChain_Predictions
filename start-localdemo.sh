@@ -8,17 +8,42 @@
 #   ./start-localdemo.sh --open     open the dashboard in the browser at the end
 #   ./start-localdemo.sh --with-login  keep the normal login pages (default demo has no login anywhere)
 #   ./stop-localdemo.sh [--reset]   stop (and optionally wipe all demo data)
+#   Runs in the background: Ctrl-C or closing the terminal only stops the progress display, never the start-up.
+#   ./start-localdemo.sh status | logs     is it ready? (URLs) · follow the start-up log
+#   ./start-localdemo.sh --foreground      old behaviour: run attached to this terminal
 set -euo pipefail
 cd "$(dirname "$0")"
+BGLOG=.localdemo.log; BGPID=.localdemo.pid
+bg_running() { [ -f "$BGPID" ] && kill -0 "$(cat "$BGPID")" 2>/dev/null; }
 
-LITE=0; NOLLM=0; REBUILD=0; OPEN=0; NOLOGIN=1
+case "${1:-}" in
+  logs) [ -f "$BGLOG" ] || { echo "no start-up log yet"; exit 1; }; exec tail -n 60 -f "$BGLOG" ;;
+  status)
+    if bg_running; then echo "starting (pid $(cat "$BGPID")) — last lines:"; tail -n 5 "$BGLOG"
+    elif grep -q 'demo is running' "$BGLOG" 2>/dev/null; then sed -n '/demo is running/,$p' "$BGLOG"
+    else echo "not running — last lines of $BGLOG:"; tail -n 15 "$BGLOG" 2>/dev/null; fi
+    exit 0 ;;
+esac
+
+LITE=0; NOLLM=0; REBUILD=0; OPEN=0; NOLOGIN=1; FOREGROUND=0
 for arg in "$@"; do
   case "$arg" in
-    --lite) LITE=1 ;; --no-llm) NOLLM=1 ;; --rebuild) REBUILD=1 ;; --open) OPEN=1 ;; --with-login) NOLOGIN=0 ;;
-    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+    --lite) LITE=1 ;; --no-llm) NOLLM=1 ;; --rebuild) REBUILD=1 ;; --open) OPEN=1 ;; --with-login) NOLOGIN=0 ;; --foreground) FOREGROUND=1 ;;
+    -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown option $arg"; exit 2 ;;
   esac
 done
+
+if [ "$FOREGROUND" = 0 ]; then
+  if bg_running; then echo "already starting (pid $(cat "$BGPID")) — following its log (Ctrl-C stops following only)"; exec tail -n 30 -f --pid="$(cat "$BGPID")" "$BGLOG"; fi
+  # Detach the whole start-up from this terminal (own session, no stdin): SSH logout or Ctrl-C cannot interrupt it.
+  nohup setsid "$0" "$@" --foreground >"$BGLOG" 2>&1 </dev/null &
+  echo $! > "$BGPID"
+  printf '\033[1mSPARC start-up runs in the background\033[0m (pid %s) — log: %s\n' "$(cat "$BGPID")" "$BGLOG"
+  printf '  Ctrl-C only stops this progress view · later: ./start-localdemo.sh status · ./start-localdemo.sh logs · stop: ./stop-localdemo.sh\n'
+  tail -n +1 -f --pid="$(cat "$BGPID")" "$BGLOG" 2>/dev/null || true
+  exit 0
+fi
 
 c_ok() { printf '  \033[32m✔\033[0m %s\n' "$*"; }
 c_warn() { printf '  \033[33m!\033[0m %s\n' "$*"; }

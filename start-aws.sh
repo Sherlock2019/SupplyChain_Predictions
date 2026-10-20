@@ -131,7 +131,7 @@ if [ "$SMALL" = 1 ]; then set_env QWEN_MODEL qwen2.5-3b-scm; ok "Qwen2.5-3B (CPU
 ok "public URLs written to .env"
 
 # Run the full start-up detached from this terminal: closing SSH does not stop it.
-nohup setsid ./start-localdemo.sh "${PASS[@]}" >"$LOG" 2>&1 </dev/null &
+nohup setsid ./start-localdemo.sh --foreground "${PASS[@]}" >"$LOG" 2>&1 </dev/null &
 echo $! > "$PIDFILE"
 ok "starting in the background (pid $(cat "$PIDFILE")) — first start 10–20 min, later starts 2–3 min"
 cat <<EOF
