@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Opening Langfuse…</title>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;height:100vh;margin:0;color:#444}</style></head>
+<body><p id="msg">Opening Langfuse (local demo, no login)…</p>
+<script>
+// Local demo only: NextAuth credentials sign-in from Langfuse's own origin, then back to the requested page.
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const target = params.get('targetPath') || params.get('callbackUrl') || '/';
+  try {
+    const { csrfToken } = await (await fetch('/api/auth/csrf', { credentials: 'include' })).json();
+    const body = new URLSearchParams({ csrfToken, email: "{{env "LANGFUSE_ADMIN_EMAIL" | js}}", password: "{{env "LANGFUSE_ADMIN_PASSWORD" | js}}", json: 'true', callbackUrl: '/' });
+    const res = await fetch('/api/auth/callback/credentials', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body
+    });
+    const session = await (await fetch('/api/auth/session', { credentials: 'include' })).json();
+    if (!session || !session.user) throw new Error(`login failed (${res.status})`);
+    location.replace(target.startsWith('/') && !target.startsWith('/__autologin') ? target : '/');
+  } catch (e) {
+    document.getElementById('msg').innerHTML = 'Automatic sign-in failed: ' + e.message + ' — <a href="/auth/sign-in?manual=1">sign in manually</a>';
+  }
+})();
+</script></body></html>

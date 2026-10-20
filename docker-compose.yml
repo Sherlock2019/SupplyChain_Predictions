@@ -1,0 +1,352 @@
+# SPARC — Smart Supply Chain Performer Copilot (demo customer: Aurelia Cosmetics)
+#
+# Profiles
+#   core           FastAPI + dashboard, MCP server, LangGraph Server (Studio), Flowise
+#   localdb        PostgreSQL 17 + pgvector (cloud uses Amazon RDS / Cloud SQL instead)
+#   local-llm      relay to a host Ollama Qwen (workstations whose GPU vLLM does not support)
+#   gpu            vLLM Qwen on an NVIDIA GPU (cloud GPU VM uses deploy/gpu/docker-compose.yml)
+#   observability  Prometheus, Grafana, Langfuse v4 (ClickHouse, Redis, SeaweedFS S3)
+#   edge           Caddy HTTPS reverse proxy (cloud)
+#
+# All secrets come from .env (scripts/gen-env.py locally, Secrets Manager / Secret Manager in the cloud).
+name: aurelia-scm
+
+x-app-env: &app-env
+  APP_ENV: ${APP_ENV:-development}
+  CLOUD_PROVIDER: ${CLOUD_PROVIDER:-local}
+  DATABASE_URL: postgresql://${POSTGRES_USER:-supplychain}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/supplychain${POSTGRES_SSL_SUFFIX:-}
+  POSTGRES_URL: postgresql://${POSTGRES_USER:-supplychain}:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/supplychain${POSTGRES_SSL_SUFFIX:-}
+  RAG_BACKEND: pgvector
+  EMBEDDING_BACKEND: fastembed
+  ASSISTANT_API_KEYS: planner:${PLANNER_API_KEY:?},flowise:${FLOWISE_TOOL_KEY:?},langgraph:${LANGGRAPH_TOOL_KEY:?},mcp:${MCP_TOOL_KEY:?}
+  MANAGER_API_KEYS: manager:${MANAGER_API_KEY:?}
+  QWEN_BASE_URL: ${QWEN_BASE_URL:-http://host.docker.internal:11435/v1}
+  QWEN_MODEL: ${QWEN_MODEL:-qwen2.5-7b-scm}
+  QWEN_API_KEY: ${QWEN_API_KEY:-local-qwen}
+  LLM_MODE: ${LLM_MODE:-qwen}
+  LANGFUSE_HOST: ${LANGFUSE_INTERNAL_URL:-}
+  LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+  LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+  PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8000}
+  PUBLIC_FLOWISE_URL: ${PUBLIC_FLOWISE_URL:-http://localhost:3000}
+  PUBLIC_LANGGRAPH_URL: ${PUBLIC_LANGGRAPH_URL:-http://localhost:8123}
+  PUBLIC_MCP_URL: ${PUBLIC_MCP_URL:-http://localhost:8002}
+  PUBLIC_GRAFANA_URL: ${PUBLIC_GRAFANA_URL:-}
+  PUBLIC_LANGFUSE_URL: ${PUBLIC_LANGFUSE_URL:-}
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    profiles: [localdb]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-supplychain}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: supplychain
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./deploy/postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    ports: ["127.0.0.1:55432:5432"]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U ${POSTGRES_USER:-supplychain} -d supplychain"]
+      interval: 5s
+      timeout: 4s
+      retries: 30
+    restart: unless-stopped
+
+  api:
+    image: ${APP_IMAGE:-aurelia-scm-app:local}
+    build: .
+    profiles: [core]
+    environment:
+      <<: *app-env
+      LANGGRAPH_URL: http://langgraph:8123
+      FLOWISE_URL: http://flowise:3000
+      FLOWISE_API_KEY: ${FLOWISE_API_KEY:-}
+      FLOWISE_CHATFLOW_ID: ${FLOWISE_CHATFLOW_ID:-}
+      FLOWISE_ADMIN_EMAIL: ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local}
+      FLOWISE_AGENTFLOW_ID: ${FLOWISE_AGENTFLOW_ID:-}
+      MCP_URL: http://mcp:8000
+      DEMO_AUTO_LOGIN: ${DEMO_AUTO_LOGIN:-false}
+      GRAFANA_URL: ${GRAFANA_INTERNAL_URL:-}
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:8000:8000"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    restart: unless-stopped
+
+  mcp:
+    image: ${APP_IMAGE:-aurelia-scm-app:local}
+    profiles: [core]
+    command: ["python", "-m", "backend.app.mcp_server"]
+    environment:
+      <<: *app-env
+      COPILOT_API_URL: http://api:8000
+      COPILOT_API_KEY: ${MCP_TOOL_KEY}
+      MCP_API_KEYS: ${MCP_CLIENT_KEY:?}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:8002:8000"]
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:8000/health]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    depends_on: [api]
+    restart: unless-stopped
+
+  langgraph:
+    image: ${APP_IMAGE:-aurelia-scm-app:local}
+    profiles: [core]
+    command: ["langgraph", "dev", "--host", "0.0.0.0", "--port", "8123", "--no-browser", "--no-reload", "--allow-blocking"]
+    environment:
+      <<: *app-env
+      COPILOT_API_URL: http://api:8000
+      COPILOT_API_KEY: ${LANGGRAPH_TOOL_KEY}
+      LANGSMITH_TRACING: "false"
+      LANGGRAPH_CLI_NO_ANALYTICS: "1"
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:8123:8123"]
+    volumes: ["langgraph-data:/app/.langgraph_api"]
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:8123/ok]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    depends_on: [api]
+    restart: unless-stopped
+
+  flowise:
+    image: flowiseai/flowise:3.1.2
+    profiles: [core]
+    environment:
+      PORT: 3000
+      DATABASE_TYPE: postgres
+      DATABASE_HOST: ${POSTGRES_HOST:-postgres}
+      DATABASE_PORT: ${POSTGRES_PORT:-5432}
+      DATABASE_NAME: flowise
+      DATABASE_USER: ${POSTGRES_USER:-supplychain}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_SSL: ${FLOWISE_DATABASE_SSL:-false}
+      # Managed PostgreSQL CA (RDS regional bundle / Cloud SQL server CA); Node does not trust them by default.
+      DATABASE_SSL_KEY_BASE64: ${FLOWISE_DB_CA_B64:-}
+      DATABASE_REJECT_UNAUTHORIZED: ${FLOWISE_DB_REJECT_UNAUTHORIZED:-false}
+      SECRETKEY_STORAGE_TYPE: local
+      FLOWISE_SECRETKEY_OVERWRITE: ${FLOWISE_SECRETKEY:?}
+      JWT_AUTH_TOKEN_SECRET: ${FLOWISE_JWT_SECRET:?}
+      JWT_REFRESH_TOKEN_SECRET: ${FLOWISE_JWT_REFRESH_SECRET:?}
+      EXPRESS_SESSION_SECRET: ${FLOWISE_SESSION_SECRET:?}
+      TOKEN_HASH_SECRET: ${FLOWISE_TOKEN_HASH_SECRET:?}
+      APP_URL: ${PUBLIC_FLOWISE_URL:-http://localhost:3000}
+      SECURE_COOKIES: ${FLOWISE_SECURE_COOKIES:-false}
+      CORS_ORIGINS: "*"
+      LOG_LEVEL: info
+      DISABLE_FLOWISE_TELEMETRY: "true"
+      # SSRF policy: only the Docker bridge range (172.16/12: mcp, api) is reachable from Flowise tools/HTTP nodes.
+      # Loopback, link-local (cloud metadata), VPC 10/8 (RDS, GPU VM) and other private ranges stay denied.
+      HTTP_SECURITY_CHECK: "false"
+      HTTP_DENY_LIST: 0.0.0.0,10.0.0.0/8,127.0.0.0/8,169.254.0.0/16,192.168.0.0/16,224.0.0.0/4,240.0.0.0/4,255.255.255.255/32,::1,fc00::/7,fe80::/10,fd00:ec2::254,ff00::/8
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:${FLOWISE_HOST_PORT:-3000}:3000"]
+    volumes: ["flowise-data:/root/.flowise", "./flowise:/opt/flows:ro"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck:
+      test: [CMD-SHELL, "wget -qO- http://127.0.0.1:3000/api/v1/ping || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 15
+    restart: unless-stopped
+
+  ollama-relay:
+    # Containers cannot reach a host Ollama bound to 127.0.0.1; this host-network relay exposes it to the bridge only.
+    image: alpine/socat:1.8.0.3
+    profiles: [local-llm]
+    network_mode: host
+    command: ["TCP-LISTEN:11435,fork,reuseaddr,bind=172.17.0.1", "TCP:127.0.0.1:11434"]
+    restart: unless-stopped
+
+  qwen:
+    image: vllm/vllm-openai:v0.32.0
+    profiles: [gpu]
+    command:
+      - --model
+      - ${VLLM_MODEL:-Qwen/Qwen2.5-7B-Instruct-AWQ}
+      - --served-model-name
+      - ${QWEN_MODEL:-Qwen/Qwen2.5-7B-Instruct-AWQ}
+      - --enable-auto-tool-choice
+      - --tool-call-parser
+      - hermes
+      - --max-model-len
+      - "16384"
+      - --api-key
+      - ${QWEN_API_KEY:-local-qwen}
+    ports: ["8001:8000"]
+    volumes: ["huggingface-cache:/root/.cache/huggingface"]
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.13.4
+    profiles: [observability]
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/prometheus", "--storage.tsdb.retention.time=15d"]
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/targets:/etc/prometheus/targets:ro
+      - prometheus-data:/prometheus
+    ports: ["127.0.0.1:9090:9090"]
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:13.0.11
+    profiles: [observability]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?}
+      GF_SERVER_ROOT_URL: ${PUBLIC_GRAFANA_URL:-http://localhost:3002}
+      # Local demo (start-localdemo.sh) sets GRAFANA_ANONYMOUS=true: no login page, anonymous Admin. Cloud keeps login.
+      GF_AUTH_ANONYMOUS_ENABLED: ${GRAFANA_ANONYMOUS:-false}
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: ${GRAFANA_ANONYMOUS:-false}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:3002:3000"]
+    depends_on: [prometheus]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4
+    profiles: [observability]
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?}", "--maxmemory-policy", "noeviction"]
+    healthcheck: {test: [CMD-SHELL, "redis-cli -a $$REDIS_PASSWORD ping | grep PONG"], interval: 5s, timeout: 5s, retries: 10}
+    environment: {REDIS_PASSWORD: "${REDIS_PASSWORD}"}
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.9
+    profiles: [observability]
+    user: "101:101"
+    environment: {CLICKHOUSE_DB: default, CLICKHOUSE_USER: clickhouse, CLICKHOUSE_PASSWORD: "${CLICKHOUSE_PASSWORD:?}"}
+    volumes: ["clickhouse-data:/var/lib/clickhouse", "clickhouse-logs:/var/log/clickhouse-server"]
+    healthcheck: {test: [CMD-SHELL, "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"], interval: 5s, timeout: 5s, retries: 20}
+    restart: unless-stopped
+
+  objectstore:
+    # S3-compatible event/media store for Langfuse (SeaweedFS, Apache-2.0; MinIO no longer publishes images).
+    image: chrislusf/seaweedfs:3.99
+    profiles: [observability]
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        printf '{"identities":[{"name":"langfuse","credentials":[{"accessKey":"langfuse","secretKey":"%s"}],"actions":["Admin","Read","Write","List","Tagging"]}]}' "$$S3_SECRET" > /tmp/s3.json
+        weed server -dir=/data -ip.bind=0.0.0.0 -s3 -s3.port=9000 -s3.config=/tmp/s3.json -master.volumeSizeLimitMB=1024 -volume.max=0 &
+        until echo "s3.bucket.list" | weed shell -master=localhost:9333 >/dev/null 2>&1; do sleep 2; done
+        echo "s3.bucket.create -name langfuse" | weed shell -master=localhost:9333 || true
+        touch /tmp/ready
+        wait
+    environment: {S3_SECRET: "${MINIO_PASSWORD:?}"}
+    volumes: ["objectstore-data:/data"]
+    healthcheck: {test: [CMD-SHELL, "test -f /tmp/ready"], interval: 5s, timeout: 5s, retries: 30}
+    restart: unless-stopped
+
+  langfuse-worker:
+    image: langfuse/langfuse-worker:4.64.0
+    profiles: [observability]
+    environment: &langfuse-env
+      DATABASE_URL: postgresql://${POSTGRES_USER:-supplychain}:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/langfuse${POSTGRES_SSL_SUFFIX:-}
+      NEXTAUTH_URL: ${PUBLIC_LANGFUSE_URL:-http://localhost:3003}
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:?}
+      SALT: ${LANGFUSE_SALT:?}
+      ENCRYPTION_KEY: ${LANGFUSE_ENCRYPTION_KEY:?}
+      TELEMETRY_ENABLED: "false"
+      CLICKHOUSE_MIGRATION_URL: clickhouse://clickhouse:9000
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_CLUSTER_ENABLED: "false"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_AUTH: ${REDIS_PASSWORD}
+      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${MINIO_PASSWORD}
+      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://objectstore:9000
+      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: langfuse
+      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${MINIO_PASSWORD}
+      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://objectstore:9000
+      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+      LANGFUSE_INIT_ORG_ID: aurelia
+      LANGFUSE_INIT_ORG_NAME: Aurelia Cosmetics
+      LANGFUSE_INIT_PROJECT_ID: supply-chain-copilot
+      LANGFUSE_INIT_PROJECT_NAME: Supply Chain Copilot
+      LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:?}
+      LANGFUSE_INIT_PROJECT_SECRET_KEY: ${LANGFUSE_SECRET_KEY:?}
+      LANGFUSE_INIT_USER_EMAIL: ${LANGFUSE_ADMIN_EMAIL:-admin@aurelia.local}
+      LANGFUSE_INIT_USER_NAME: admin
+      LANGFUSE_INIT_USER_PASSWORD: ${LANGFUSE_ADMIN_PASSWORD:?}
+    depends_on:
+      clickhouse: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      objectstore: {condition: service_healthy}
+    restart: unless-stopped
+
+  langfuse:
+    image: langfuse/langfuse:4.64.0
+    profiles: [observability]
+    environment: *langfuse-env
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:${LANGFUSE_HOST_PORT:-3003}:3000"]
+    depends_on:
+      clickhouse: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      objectstore: {condition: service_healthy}
+    restart: unless-stopped
+
+  demo-edge:
+    # LOCAL DEMO ONLY: no-login front door for Flowise (:3000) and Langfuse (:3003). See deploy/demo-edge/Caddyfile.
+    image: caddy:2.11.7
+    profiles: [demo-nologin]
+    environment:
+      FLOWISE_ADMIN_EMAIL: ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local}
+      FLOWISE_ADMIN_PASSWORD: ${FLOWISE_ADMIN_PASSWORD}
+      LANGFUSE_ADMIN_EMAIL: ${LANGFUSE_ADMIN_EMAIL:-admin@aurelia.local}
+      LANGFUSE_ADMIN_PASSWORD: ${LANGFUSE_ADMIN_PASSWORD}
+    ports: ["127.0.0.1:3000:3000", "127.0.0.1:3003:3003"]
+    volumes:
+      - ./deploy/demo-edge/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./deploy/demo-edge:/srv:ro
+    depends_on: [flowise]
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.11.7
+    profiles: [edge]
+    environment:
+      BASE_DOMAIN: ${BASE_DOMAIN:-localhost}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  flowise-data:
+  langgraph-data:
+  huggingface-cache:
+  prometheus-data:
+  grafana-data:
+  clickhouse-data:
+  clickhouse-logs:
+  objectstore-data:
+  caddy-data:
+  caddy-config:

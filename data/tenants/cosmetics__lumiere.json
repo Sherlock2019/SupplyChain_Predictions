@@ -1,0 +1,1501 @@
+{
+ "snapshot": {
+  "id": "SAP-LB-2026-10-20T040000Z",
+  "source_system": "S4HANA-COSMETICS-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "cosmetics",
+  "customer": "Lumière Beauty Group",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "FR30",
+   "name": "Orléans Haircare Factory",
+   "type": "factory",
+   "country": "FR",
+   "lat": 47.9,
+   "lon": 1.91,
+   "city": "Orléans",
+   "zone": "Europe",
+   "address": "Orléans, FR (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Marco Novak",
+     "email": "marco.novak@lumiere-demo.example",
+     "phone": "+33 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Chloé Costa",
+     "email": "chloe.costa@lumiere-demo.example",
+     "phone": "+33 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Chloé Kowalski",
+     "email": "chloe.kowalski@lumiere-demo.example",
+     "phone": "+33 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "PL10",
+   "name": "Kraków Colour Cosmetics Plant",
+   "type": "factory",
+   "country": "PL",
+   "lat": 50.06,
+   "lon": 19.94,
+   "city": "Kraków",
+   "zone": "Europe",
+   "address": "Kraków, PL (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Felix Silva",
+     "email": "felix.silva@lumiere-demo.example",
+     "phone": "+48 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Nadia Kowalski",
+     "email": "nadia.kowalski@lumiere-demo.example",
+     "phone": "+48 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Chloé Silva",
+     "email": "chloe.silva@lumiere-demo.example",
+     "phone": "+48 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DC31",
+   "name": "Frankfurt EU Hub",
+   "type": "warehouse",
+   "country": "DE",
+   "lat": 50.05,
+   "lon": 8.57,
+   "city": "Frankfurt",
+   "zone": "Europe",
+   "address": "Frankfurt, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Omar Andersen",
+     "email": "omar.andersen@lumiere-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Felix Novak",
+     "email": "felix.novak@lumiere-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Omar Silva",
+     "email": "omar.silva@lumiere-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DC32",
+   "name": "Newark US DC",
+   "type": "warehouse",
+   "country": "US",
+   "lat": 40.72,
+   "lon": -74.17,
+   "city": "Newark",
+   "zone": "North America",
+   "address": "Newark, US (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Omar Lambert",
+     "email": "omar.lambert@lumiere-demo.example",
+     "phone": "+1 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Yuki Costa",
+     "email": "yuki.costa@lumiere-demo.example",
+     "phone": "+1 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Ravi Andersen",
+     "email": "ravi.andersen@lumiere-demo.example",
+     "phone": "+1 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DC33",
+   "name": "Shanghai China DC",
+   "type": "warehouse",
+   "country": "CN",
+   "lat": 31.23,
+   "lon": 121.47,
+   "city": "Shanghai",
+   "zone": "Asia-Pacific",
+   "address": "Shanghai, CN (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Daniel Lambert",
+     "email": "daniel.lambert@lumiere-demo.example",
+     "phone": "+86 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Jonas Schmidt",
+     "email": "jonas.schmidt@lumiere-demo.example",
+     "phone": "+86 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Ravi Novak",
+     "email": "ravi.novak@lumiere-demo.example",
+     "phone": "+86 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-SHAMPOO-400",
+   "description": "Repair Shampoo 400 ml",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 3.9,
+   "safety_stock": 2500
+  },
+  {
+   "code": "FG-LIPSTICK-RUBY",
+   "description": "Velvet Lipstick Ruby",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 2.6,
+   "safety_stock": 1500
+  },
+  {
+   "code": "FG-MASCARA-VOL",
+   "description": "Volume Mascara",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 2.2,
+   "safety_stock": 1200
+  },
+  {
+   "code": "RM-SURFACTANT",
+   "description": "Mild surfactant blend",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 2.4,
+   "safety_stock": 2000
+  },
+  {
+   "code": "RM-KERATIN",
+   "description": "Hydrolysed keratin",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 62.0,
+   "safety_stock": 60
+  },
+  {
+   "code": "PK-HDPE-400",
+   "description": "400 ml HDPE bottle",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.21,
+   "safety_stock": 20000
+  },
+  {
+   "code": "PK-CAP-FLIP",
+   "description": "Flip-top cap",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.06,
+   "safety_stock": 20000
+  },
+  {
+   "code": "RM-PIGMENT-RED",
+   "description": "Red pigment dispersion",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 140.0,
+   "safety_stock": 15
+  },
+  {
+   "code": "RM-PIGMENT-BLACK",
+   "description": "Black iron oxide",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 38.0,
+   "safety_stock": 20
+  },
+  {
+   "code": "RM-WAX-CANDELILLA",
+   "description": "Candelilla wax",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 21.0,
+   "safety_stock": 120
+  },
+  {
+   "code": "PK-LIP-CASE",
+   "description": "Metal lipstick case",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.42,
+   "safety_stock": 8000
+  },
+  {
+   "code": "PK-MASCARA-TUBE",
+   "description": "Mascara tube + brush",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.35,
+   "safety_stock": 8000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-LB001",
+   "name": "Loire Tensioactifs",
+   "country": "FR",
+   "materials": [
+    "RM-SURFACTANT"
+   ],
+   "contract_lead_time_days": 10,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": "Rhein Surfactants",
+   "unit_price_eur": 2.4,
+   "freight_eur_per_order": 260,
+   "typical_order_qty": 8000,
+   "lat": 47.39,
+   "lon": 0.69,
+   "city": "Tours",
+   "manufacturing_country": "FR",
+   "manufacturing_site": "Surfactant sulfonation plant",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-LB002",
+   "name": "Andes Protein Labs",
+   "country": "CL",
+   "materials": [
+    "RM-KERATIN"
+   ],
+   "contract_lead_time_days": 38,
+   "otif_target_pct": 92,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 62.0,
+   "freight_eur_per_order": 900,
+   "typical_order_qty": 200,
+   "lat": -33.45,
+   "lon": -70.66,
+   "city": "Santiago",
+   "manufacturing_country": "CL",
+   "manufacturing_site": "Keratin hydrolysis plant",
+   "zone": "South America"
+  },
+  {
+   "code": "V-LB003",
+   "name": "BlowMould Polska",
+   "country": "PL",
+   "materials": [
+    "PK-HDPE-400",
+    "PK-CAP-FLIP"
+   ],
+   "contract_lead_time_days": 14,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": "Normandie Packaging",
+   "unit_price_eur": 0.21,
+   "freight_eur_per_order": 600,
+   "typical_order_qty": 60000,
+   "lat": 51.76,
+   "lon": 19.46,
+   "city": "Łódź",
+   "manufacturing_country": "PL",
+   "manufacturing_site": "Extrusion blow-moulding",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-LB004",
+   "name": "Colorantes del Norte",
+   "country": "MX",
+   "materials": [
+    "RM-PIGMENT-RED",
+    "RM-PIGMENT-BLACK"
+   ],
+   "contract_lead_time_days": 30,
+   "otif_target_pct": 93,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 140.0,
+   "freight_eur_per_order": 700,
+   "typical_order_qty": 120,
+   "lat": 25.68,
+   "lon": -100.31,
+   "city": "Monterrey",
+   "manufacturing_country": "MX",
+   "manufacturing_site": "Pigment dispersion plant",
+   "zone": "North America"
+  },
+  {
+   "code": "V-LB005",
+   "name": "Coahuila Wax Co.",
+   "country": "MX",
+   "materials": [
+    "RM-WAX-CANDELILLA"
+   ],
+   "contract_lead_time_days": 35,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 21.0,
+   "freight_eur_per_order": 650,
+   "typical_order_qty": 1500,
+   "lat": 25.42,
+   "lon": -101.0,
+   "city": "Saltillo",
+   "manufacturing_country": "MX",
+   "manufacturing_site": "Candelilla wax refinery",
+   "zone": "North America"
+  },
+  {
+   "code": "V-LB006",
+   "name": "Ningbo Metal Pack",
+   "country": "CN",
+   "materials": [
+    "PK-LIP-CASE",
+    "PK-MASCARA-TUBE"
+   ],
+   "contract_lead_time_days": 45,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": "Kraków Pack Systems",
+   "unit_price_eur": 0.42,
+   "freight_eur_per_order": 2600,
+   "typical_order_qty": 50000,
+   "lat": 29.87,
+   "lon": 121.55,
+   "city": "Ningbo",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "Aluminium anodising & assembly",
+   "zone": "Asia-Pacific"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "FR30",
+   "parent": "FG-SHAMPOO-400",
+   "component": "RM-SURFACTANT",
+   "quantity": 0.12,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "FR30",
+   "parent": "FG-SHAMPOO-400",
+   "component": "RM-KERATIN",
+   "quantity": 0.004,
+   "scrap_pct": 3
+  },
+  {
+   "plant": "FR30",
+   "parent": "FG-SHAMPOO-400",
+   "component": "PK-HDPE-400",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "FR30",
+   "parent": "FG-SHAMPOO-400",
+   "component": "PK-CAP-FLIP",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-LIPSTICK-RUBY",
+   "component": "RM-PIGMENT-RED",
+   "quantity": 0.0004,
+   "scrap_pct": 3
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-LIPSTICK-RUBY",
+   "component": "RM-WAX-CANDELILLA",
+   "quantity": 0.0015,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-LIPSTICK-RUBY",
+   "component": "PK-LIP-CASE",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-MASCARA-VOL",
+   "component": "RM-PIGMENT-BLACK",
+   "quantity": 0.0006,
+   "scrap_pct": 3
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-MASCARA-VOL",
+   "component": "RM-WAX-CANDELILLA",
+   "quantity": 0.002,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "PL10",
+   "parent": "FG-MASCARA-VOL",
+   "component": "PK-MASCARA-TUBE",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  }
+ ],
+ "stock": [
+  {
+   "plant": "DC31",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC31",
+   "quantity": 11700,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC32",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC32",
+   "quantity": 2080,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC33",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC33",
+   "quantity": 6600,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC31",
+   "material": "FG-LIPSTICK-RUBY",
+   "batch": "LIPSTI-DC31",
+   "quantity": 7500,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC32",
+   "material": "FG-LIPSTICK-RUBY",
+   "batch": "LIPSTI-DC32",
+   "quantity": 7800,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC33",
+   "material": "FG-LIPSTICK-RUBY",
+   "batch": "LIPSTI-DC33",
+   "quantity": 9840,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC31",
+   "material": "FG-MASCARA-VOL",
+   "batch": "MASCAR-DC31",
+   "quantity": 6720,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC32",
+   "material": "FG-MASCARA-VOL",
+   "batch": "MASCAR-DC32",
+   "quantity": 5760,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "DC33",
+   "material": "FG-MASCARA-VOL",
+   "batch": "MASCAR-DC33",
+   "quantity": 6650,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "RM-SURFACTANT",
+   "batch": "SURFAC-A",
+   "quantity": 3810.24,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "RM-KERATIN",
+   "batch": "KERATI-A",
+   "quantity": 98.784,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "PK-HDPE-400",
+   "batch": "HDPE-4-A",
+   "quantity": 31752,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "PK-CAP-FLIP",
+   "batch": "CAP-FL-A",
+   "quantity": 24696,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "RM-PIGMENT-RED",
+   "batch": "PIGMEN-A",
+   "quantity": 12.571,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "RM-WAX-CANDELILLA",
+   "batch": "WAX-CA-A",
+   "quantity": 36.666,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "PK-LIP-CASE",
+   "batch": "LIP-CA-A",
+   "quantity": 24444,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "RM-PIGMENT-BLACK",
+   "batch": "PIGMEN-A",
+   "quantity": 3.451,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "PK-MASCARA-TUBE",
+   "batch": "MASCAR-A",
+   "quantity": 5751,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "RM-KERATIN",
+   "batch": "KERATI-Q",
+   "quantity": 29.635,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "PL10",
+   "material": "RM-WAX-CANDELILLA",
+   "batch": "WAX-CA-Q",
+   "quantity": 11.0,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "FR30",
+   "material": "RM-SURFACTANT",
+   "batch": "SURFAC-QI",
+   "quantity": 571.536,
+   "status": "quality_inspection",
+   "expiry": null
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45LB00001",
+   "supplier": "Loire Tensioactifs",
+   "material": "RM-SURFACTANT",
+   "plant": "FR30",
+   "quantity": 1703.94,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00002",
+   "supplier": "Loire Tensioactifs",
+   "material": "RM-SURFACTANT",
+   "plant": "FR30",
+   "quantity": 1703.94,
+   "delivery_date": "2026-11-05",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00003",
+   "supplier": "Andes Protein Labs",
+   "material": "RM-KERATIN",
+   "plant": "FR30",
+   "quantity": 56.798,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00004",
+   "supplier": "Andes Protein Labs",
+   "material": "RM-KERATIN",
+   "plant": "FR30",
+   "quantity": 56.798,
+   "delivery_date": "2026-11-17",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45LB00005",
+   "supplier": "BlowMould Polska",
+   "material": "PK-HDPE-400",
+   "plant": "FR30",
+   "quantity": 14200,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00006",
+   "supplier": "BlowMould Polska",
+   "material": "PK-HDPE-400",
+   "plant": "FR30",
+   "quantity": 14200,
+   "delivery_date": "2026-11-14",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00007",
+   "supplier": "BlowMould Polska",
+   "material": "PK-CAP-FLIP",
+   "plant": "FR30",
+   "quantity": 14200,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00008",
+   "supplier": "BlowMould Polska",
+   "material": "PK-CAP-FLIP",
+   "plant": "FR30",
+   "quantity": 14200,
+   "delivery_date": "2026-11-13",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00009",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-RED",
+   "plant": "PL10",
+   "quantity": 9.737,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00010",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-RED",
+   "plant": "PL10",
+   "quantity": 9.737,
+   "delivery_date": "2026-11-16",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00011",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-BLACK",
+   "plant": "PL10",
+   "quantity": 14.605,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00012",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-BLACK",
+   "plant": "PL10",
+   "quantity": 14.605,
+   "delivery_date": "2026-11-06",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00013",
+   "supplier": "Coahuila Wax Co.",
+   "material": "RM-WAX-CANDELILLA",
+   "plant": "PL10",
+   "quantity": 36.514,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00014",
+   "supplier": "Coahuila Wax Co.",
+   "material": "RM-WAX-CANDELILLA",
+   "plant": "PL10",
+   "quantity": 36.514,
+   "delivery_date": "2026-11-16",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00015",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-LIP-CASE",
+   "plant": "PL10",
+   "quantity": 24342,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00016",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-LIP-CASE",
+   "plant": "PL10",
+   "quantity": 24342,
+   "delivery_date": "2026-11-07",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45LB00017",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-MASCARA-TUBE",
+   "plant": "PL10",
+   "quantity": 24342,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45LB00018",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-MASCARA-TUBE",
+   "plant": "PL10",
+   "quantity": 24342,
+   "delivery_date": "2026-11-08",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44LB00001",
+   "supplier": "Loire Tensioactifs",
+   "material": "RM-SURFACTANT",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 1703.94,
+   "quantity_received": 1703.94,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00002",
+   "supplier": "Loire Tensioactifs",
+   "material": "RM-SURFACTANT",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 1703.94,
+   "quantity_received": 1703.94,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00003",
+   "supplier": "Loire Tensioactifs",
+   "material": "RM-SURFACTANT",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 1703.94,
+   "quantity_received": 1703.94,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00004",
+   "supplier": "Andes Protein Labs",
+   "material": "RM-KERATIN",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 56.798,
+   "quantity_received": 56.798,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00005",
+   "supplier": "Andes Protein Labs",
+   "material": "RM-KERATIN",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 56.798,
+   "quantity_received": 56.798,
+   "quality_rejected": 4.544
+  },
+  {
+   "po": "44LB00006",
+   "supplier": "Andes Protein Labs",
+   "material": "RM-KERATIN",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 56.798,
+   "quantity_received": 56.798,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00007",
+   "supplier": "BlowMould Polska",
+   "material": "PK-HDPE-400",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00008",
+   "supplier": "BlowMould Polska",
+   "material": "PK-HDPE-400",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00009",
+   "supplier": "BlowMould Polska",
+   "material": "PK-HDPE-400",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00010",
+   "supplier": "BlowMould Polska",
+   "material": "PK-CAP-FLIP",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00011",
+   "supplier": "BlowMould Polska",
+   "material": "PK-CAP-FLIP",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00012",
+   "supplier": "BlowMould Polska",
+   "material": "PK-CAP-FLIP",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 14200,
+   "quantity_received": 14200,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00013",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-RED",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 9.737,
+   "quantity_received": 9.737,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00014",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-RED",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 9.737,
+   "quantity_received": 9.737,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00015",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-RED",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 9.737,
+   "quantity_received": 9.737,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00016",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-BLACK",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14.605,
+   "quantity_received": 14.605,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00017",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-BLACK",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 14.605,
+   "quantity_received": 14.605,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00018",
+   "supplier": "Colorantes del Norte",
+   "material": "RM-PIGMENT-BLACK",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 14.605,
+   "quantity_received": 14.605,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00019",
+   "supplier": "Coahuila Wax Co.",
+   "material": "RM-WAX-CANDELILLA",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 36.514,
+   "quantity_received": 36.514,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00020",
+   "supplier": "Coahuila Wax Co.",
+   "material": "RM-WAX-CANDELILLA",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 36.514,
+   "quantity_received": 36.514,
+   "quality_rejected": 2.921
+  },
+  {
+   "po": "44LB00021",
+   "supplier": "Coahuila Wax Co.",
+   "material": "RM-WAX-CANDELILLA",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 36.514,
+   "quantity_received": 36.514,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44LB00022",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-LIP-CASE",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00023",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-LIP-CASE",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00024",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-LIP-CASE",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00025",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-MASCARA-TUBE",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00026",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-MASCARA-TUBE",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44LB00027",
+   "supplier": "Ningbo Metal Pack",
+   "material": "PK-MASCARA-TUBE",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 24342,
+   "quantity_received": 24342,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1LB0001",
+   "plant": "FR30",
+   "material": "FG-SHAMPOO-400",
+   "quantity": 17640,
+   "finish_date": "2026-10-28",
+   "status": "released"
+  },
+  {
+   "order": "1LB0002",
+   "plant": "FR30",
+   "material": "FG-SHAMPOO-400",
+   "quantity": 22930.0,
+   "finish_date": "2026-11-05",
+   "status": "planned"
+  },
+  {
+   "order": "1LB0101",
+   "plant": "PL10",
+   "material": "FG-LIPSTICK-RUBY",
+   "quantity": 17460,
+   "finish_date": "2026-11-01",
+   "status": "released"
+  },
+  {
+   "order": "1LB0102",
+   "plant": "PL10",
+   "material": "FG-LIPSTICK-RUBY",
+   "quantity": 22700.0,
+   "finish_date": "2026-11-06",
+   "status": "planned"
+  },
+  {
+   "order": "1LB0201",
+   "plant": "PL10",
+   "material": "FG-MASCARA-VOL",
+   "quantity": 12780,
+   "finish_date": "2026-10-27",
+   "status": "released"
+  },
+  {
+   "order": "1LB0202",
+   "plant": "PL10",
+   "material": "FG-MASCARA-VOL",
+   "quantity": 16610.0,
+   "finish_date": "2026-11-11",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-LB0001",
+   "plant": "FR30",
+   "material": "RM-KERATIN",
+   "batch": "KERATI-Q",
+   "quantity": 29.635,
+   "supplier": "Andes Protein Labs",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-LB0002",
+   "plant": "PL10",
+   "material": "RM-WAX-CANDELILLA",
+   "batch": "WAX-CA-Q",
+   "quantity": 11.0,
+   "supplier": "Coahuila Wax Co.",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-LB0003",
+   "plant": "FR30",
+   "material": "RM-SURFACTANT",
+   "batch": "SURFAC-QI",
+   "quantity": 571.536,
+   "supplier": "Loire Tensioactifs",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-LB7700",
+   "customer": "Douglas DE",
+   "warehouse": "DC31",
+   "material": "FG-SHAMPOO-400",
+   "quantity": 14620.0,
+   "requested_date": "2026-10-31",
+   "priority": "high"
+  },
+  {
+   "order": "SO-LB7701",
+   "customer": "Ulta US",
+   "warehouse": "DC32",
+   "material": "FG-LIPSTICK-RUBY",
+   "quantity": 2730.0,
+   "requested_date": "2026-10-26",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-LB7702",
+   "customer": "Tmall Global",
+   "warehouse": "DC33",
+   "material": "FG-MASCARA-VOL",
+   "quantity": 2330.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-LB7703",
+   "customer": "Boots UK",
+   "warehouse": "DC31",
+   "material": "FG-SHAMPOO-400",
+   "quantity": 4090.0,
+   "requested_date": "2026-10-26",
+   "priority": "high"
+  },
+  {
+   "order": "SO-LB7704",
+   "customer": "Sephora US",
+   "warehouse": "DC32",
+   "material": "FG-LIPSTICK-RUBY",
+   "quantity": 1170.0,
+   "requested_date": "2026-11-03",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-LB7705",
+   "customer": "JD Beauty",
+   "warehouse": "DC33",
+   "material": "FG-MASCARA-VOL",
+   "quantity": 1000.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-LB01",
+   "type": "stock_transfer",
+   "from": "DC31",
+   "to": "DC32",
+   "material": "FG-SHAMPOO-400",
+   "quantity": 1560,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-LB02",
+   "type": "stock_transfer",
+   "from": "DC31",
+   "to": "DC33",
+   "material": "FG-LIPSTICK-RUBY",
+   "quantity": 1640,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-LB03",
+   "type": "inbound",
+   "from": "V-LB001",
+   "to": "FR30",
+   "material": "RM-SURFACTANT",
+   "quantity": 1703.94,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-27",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-LB-01",
+   "count_date": "2026-10-19",
+   "plant": "DC31",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC31",
+   "book_quantity": 11700,
+   "counted_quantity": 11660,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-LB-02",
+   "count_date": "2026-10-19",
+   "plant": "DC32",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC32",
+   "book_quantity": 2080,
+   "counted_quantity": 2072,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-LB-03",
+   "count_date": "2026-10-19",
+   "plant": "DC33",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC33",
+   "book_quantity": 6600,
+   "counted_quantity": 6336,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-LB-04",
+   "count_date": "2026-10-19",
+   "plant": "DC31",
+   "material": "FG-LIPSTICK-RUBY",
+   "batch": "LIPSTI-DC31",
+   "book_quantity": 7500,
+   "counted_quantity": 7500,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49LB0001",
+   "type": "goods_issue",
+   "plant": "DC31",
+   "material": "FG-SHAMPOO-400",
+   "batch": "SHAMPO-DC31",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-SHAMPOO-400": {
+   "DC31": 650,
+   "DC32": 520,
+   "DC33": 300
+  },
+  "FG-LIPSTICK-RUBY": {
+   "DC31": 300,
+   "DC32": 260,
+   "DC33": 410
+  },
+  "FG-MASCARA-VOL": {
+   "DC31": 280,
+   "DC32": 240,
+   "DC33": 190
+  }
+ },
+ "lanes": [
+  {
+   "from": "DC31",
+   "to": "DC32",
+   "lead_days": 14,
+   "cost_per_unit": 1.72,
+   "carbon_kg_per_unit": 0.402
+  },
+  {
+   "from": "DC31",
+   "to": "DC33",
+   "lead_days": 14,
+   "cost_per_unit": 1.92,
+   "carbon_kg_per_unit": 0.5
+  },
+  {
+   "from": "DC32",
+   "to": "DC31",
+   "lead_days": 14,
+   "cost_per_unit": 1.64,
+   "carbon_kg_per_unit": 0.409
+  },
+  {
+   "from": "DC32",
+   "to": "DC33",
+   "lead_days": 21,
+   "cost_per_unit": 1.67,
+   "carbon_kg_per_unit": 0.442
+  },
+  {
+   "from": "DC33",
+   "to": "DC31",
+   "lead_days": 21,
+   "cost_per_unit": 1.65,
+   "carbon_kg_per_unit": 0.447
+  },
+  {
+   "from": "DC33",
+   "to": "DC32",
+   "lead_days": 21,
+   "cost_per_unit": 2.07,
+   "carbon_kg_per_unit": 0.527
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Rhein Surfactants",
+   "material": "RM-SURFACTANT",
+   "unit_price_eur": 2.6,
+   "freight_eur_per_order": 300,
+   "typical_order_qty": 8000,
+   "quoted_lead_time_days": 8,
+   "qualified": true,
+   "country": "DE",
+   "city": "Ludwigshafen",
+   "lat": 49.48,
+   "lon": 8.44,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  },
+  {
+   "supplier": "Normandie Packaging",
+   "material": "PK-HDPE-400",
+   "unit_price_eur": 0.24,
+   "freight_eur_per_order": 500,
+   "typical_order_qty": 60000,
+   "quoted_lead_time_days": 9,
+   "qualified": true,
+   "country": "FR",
+   "city": "Rouen",
+   "lat": 49.44,
+   "lon": 1.1,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  },
+  {
+   "supplier": "Kraków Pack Systems",
+   "material": "PK-LIP-CASE",
+   "unit_price_eur": 0.49,
+   "freight_eur_per_order": 300,
+   "typical_order_qty": 50000,
+   "quoted_lead_time_days": 12,
+   "qualified": true,
+   "country": "PL",
+   "city": "Kraków",
+   "lat": 50.03,
+   "lon": 19.9,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Candelilla shrub wax",
+   "origin": "Chihuahuan Desert, Mexico",
+   "country": "MX",
+   "lat": 27.0,
+   "lon": -102.4,
+   "feeds_supplier": "Coahuila Wax Co.",
+   "feeds_material": "RM-WAX-CANDELILLA",
+   "share_of_material_pct": 100,
+   "transit_days": 10,
+   "transit_variability_days": 6,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "wild-harvested; permit-limited volumes"
+  },
+  {
+   "ingredient": "Wool keratin",
+   "origin": "Patagonia",
+   "country": "CL",
+   "lat": -45.0,
+   "lon": -71.0,
+   "feeds_supplier": "Andes Protein Labs",
+   "feeds_material": "RM-KERATIN",
+   "share_of_material_pct": 70,
+   "transit_days": 12,
+   "transit_variability_days": 5,
+   "criticality": "medium",
+   "alternatives": "see sourcing plan",
+   "note": "by-product of wool processing"
+  }
+ ]
+}

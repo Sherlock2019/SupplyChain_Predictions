@@ -1,0 +1,73 @@
+#!/bin/bash
+# GCP application VM startup script (rendered by Terraform). Runs on every boot; the first boot deploys.
+set -euo pipefail
+exec > >(tee -a /var/log/aurelia-bootstrap.log) 2>&1
+if [ -f /opt/aurelia/BOOTSTRAP_COMPLETE ]; then
+  cd /opt/aurelia && docker compose --profile core --profile edge --profile observability up -d --no-build || true
+  exit 0
+fi
+echo "[$(date -Is)] GCP bootstrap start"
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y ca-certificates curl jq postgresql-client python3
+command -v docker >/dev/null || curl -fsSL https://get.docker.com | sh
+command -v gcloud >/dev/null || snap install google-cloud-cli --classic
+
+cat > /etc/docker/daemon.json <<'JSON'
+{"log-driver": "gcplogs", "log-opts": {"gcp-project": "${project_id}", "labels": "com.docker.compose.service", "gcp-log-cmd": "false"}}
+JSON
+systemctl restart docker
+
+install -d -m 0750 /opt/aurelia
+cd /opt/aurelia
+echo "Waiting for release bundle gs://${bucket}/releases/${release_version}.tar.gz"
+for i in $(seq 1 180); do
+  gcloud storage cp "gs://${bucket}/releases/${release_version}.tar.gz" /tmp/release.tar.gz --quiet && break
+  sleep 20
+done
+tar -xzf /tmp/release.tar.gz -C /opt/aurelia
+
+gcloud secrets versions access latest --secret "${secret_name}" --project "${project_id}" \
+  | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
+cat >> .env <<ENV
+APP_ENV=gcp-poc
+CLOUD_PROVIDER=gcp
+APP_IMAGE=${app_image}
+POSTGRES_HOST=${db_host}
+POSTGRES_PORT=5432
+POSTGRES_USER=supplychain
+POSTGRES_SSL_SUFFIX=?sslmode=require
+FLOWISE_DATABASE_SSL=true
+FLOWISE_SECURE_COOKIES=true
+BASE_DOMAIN=${base_domain}
+ACME_EMAIL=${acme_email}
+LLM_MODE=${qwen_base_url == "" ? "deterministic" : "qwen"}
+QWEN_BASE_URL=${qwen_base_url}
+QWEN_MODEL=${qwen_model}
+QWEN_METRICS_TARGET=${qwen_metrics_target}
+ENABLE_OBSERVABILITY=${enable_observability}
+LANGFUSE_INTERNAL_URL=${enable_observability ? "http://langfuse:3000" : ""}
+GRAFANA_INTERNAL_URL=${enable_observability ? "http://grafana:3000" : ""}
+FLOWISE_ADMIN_EMAIL=admin@aurelia.local
+LANGFUSE_ADMIN_EMAIL=admin@aurelia.local
+PUBLIC_BASE_URL=https://app.${base_domain}
+PUBLIC_FLOWISE_URL=https://flowise.${base_domain}
+PUBLIC_LANGGRAPH_URL=https://studio.${base_domain}
+PUBLIC_MCP_URL=https://mcp.${base_domain}
+PUBLIC_GRAFANA_URL=${enable_observability ? "https://grafana.${base_domain}" : ""}
+PUBLIC_LANGFUSE_URL=${enable_observability ? "https://langfuse.${base_domain}" : ""}
+BIND_ADDRESS=127.0.0.1
+FLOWISE_API_KEY=
+FLOWISE_DB_CA_B64=${db_ca_b64}
+FLOWISE_DB_REJECT_UNAUTHORIZED=false
+ENV
+chmod 600 .env
+
+gcloud auth configure-docker "${registry}" --quiet
+for i in $(seq 1 120); do
+  docker pull "${app_image}" && break
+  sleep 30
+done
+
+bash /opt/aurelia/deploy/vm/bootstrap-app.sh
+echo "[$(date -Is)] GCP bootstrap complete"

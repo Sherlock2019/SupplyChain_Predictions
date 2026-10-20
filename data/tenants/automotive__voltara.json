@@ -1,0 +1,1190 @@
+{
+ "snapshot": {
+  "id": "SAP-VM-2026-10-20T040000Z",
+  "source_system": "S4HANA-AUTOMOTIVE-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "automotive",
+  "customer": "Voltara Motors",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "AU10",
+   "name": "Zwickau EV Battery Plant",
+   "type": "factory",
+   "country": "DE",
+   "lat": 50.72,
+   "lon": 12.5,
+   "city": "Zwickau",
+   "zone": "Europe",
+   "address": "Zwickau, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Marco Chen",
+     "email": "marco.chen@voltara-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Lukas Rossi",
+     "email": "lukas.rossi@voltara-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Lukas Costa",
+     "email": "lukas.costa@voltara-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "AU20",
+   "name": "Puebla Drive-unit Plant",
+   "type": "factory",
+   "country": "MX",
+   "lat": 19.04,
+   "lon": -98.21,
+   "city": "Puebla",
+   "zone": "North America",
+   "address": "Puebla, MX (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Sofia Chen",
+     "email": "sofia.chen@voltara-demo.example",
+     "phone": "+52 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Elena Novak",
+     "email": "elena.novak@voltara-demo.example",
+     "phone": "+52 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Felix Novak",
+     "email": "felix.novak@voltara-demo.example",
+     "phone": "+52 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "AD01",
+   "name": "Leipzig Parts DC",
+   "type": "warehouse",
+   "country": "DE",
+   "lat": 51.34,
+   "lon": 12.37,
+   "city": "Leipzig",
+   "zone": "Europe",
+   "address": "Leipzig, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Carlos Schmidt",
+     "email": "carlos.schmidt@voltara-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Anna Andersen",
+     "email": "anna.andersen@voltara-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marco Andersen",
+     "email": "marco.andersen@voltara-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "AD02",
+   "name": "Laredo US Parts DC",
+   "type": "warehouse",
+   "country": "US",
+   "lat": 27.53,
+   "lon": -99.48,
+   "city": "Laredo",
+   "zone": "North America",
+   "address": "Laredo, US (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Elena Martens",
+     "email": "elena.martens@voltara-demo.example",
+     "phone": "+1 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Omar Novak",
+     "email": "omar.novak@voltara-demo.example",
+     "phone": "+1 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Tomas Andersen",
+     "email": "tomas.andersen@voltara-demo.example",
+     "phone": "+1 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "AD03",
+   "name": "Tianjin Parts DC",
+   "type": "warehouse",
+   "country": "CN",
+   "lat": 39.08,
+   "lon": 117.2,
+   "city": "Tianjin",
+   "zone": "Asia-Pacific",
+   "address": "Tianjin, CN (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Mei Lambert",
+     "email": "mei.lambert@voltara-demo.example",
+     "phone": "+86 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Jonas Tanaka",
+     "email": "jonas.tanaka@voltara-demo.example",
+     "phone": "+86 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Lukas Novak",
+     "email": "lukas.novak@voltara-demo.example",
+     "phone": "+86 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-BATT-MOD-48",
+   "description": "48 V battery module",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 410.0,
+   "safety_stock": 150
+  },
+  {
+   "code": "FG-INVERTER-SIC",
+   "description": "SiC traction inverter",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 520.0,
+   "safety_stock": 80
+  },
+  {
+   "code": "FG-CHARGER-11KW",
+   "description": "11 kW onboard charger",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 180.0,
+   "safety_stock": 120
+  },
+  {
+   "code": "CM-CELL-NMC",
+   "description": "NMC pouch cell 60 Ah",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 3.4,
+   "safety_stock": 20000
+  },
+  {
+   "code": "CM-BMS-PCB",
+   "description": "BMS control PCB",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 38.0,
+   "safety_stock": 800
+  },
+  {
+   "code": "CM-HOUSING-AL",
+   "description": "Die-cast aluminium housing",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 46.0,
+   "safety_stock": 600
+  },
+  {
+   "code": "CM-SIC-MOSFET",
+   "description": "SiC power MOSFET",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 9.5,
+   "safety_stock": 4000
+  },
+  {
+   "code": "CM-CHARGER-PCB",
+   "description": "Charger power board",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 52.0,
+   "safety_stock": 500
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-VM001",
+   "name": "Gyeonggi Cell Energy",
+   "country": "KR",
+   "materials": [
+    "CM-CELL-NMC"
+   ],
+   "contract_lead_time_days": 56,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": "Silesia Cell Plant",
+   "unit_price_eur": 3.4,
+   "freight_eur_per_order": 6000,
+   "typical_order_qty": 100000,
+   "lat": 36.64,
+   "lon": 127.49,
+   "city": "Cheongju",
+   "manufacturing_country": "KR",
+   "manufacturing_site": "Cell gigafactory",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-VM002",
+   "name": "Brno Electronics",
+   "country": "CZ",
+   "materials": [
+    "CM-BMS-PCB",
+    "CM-CHARGER-PCB"
+   ],
+   "contract_lead_time_days": 12,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 38.0,
+   "freight_eur_per_order": 400,
+   "typical_order_qty": 3000,
+   "lat": 49.2,
+   "lon": 16.61,
+   "city": "Brno",
+   "manufacturing_country": "CZ",
+   "manufacturing_site": "PCBA SMT lines",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VM003",
+   "name": "Saxony Castings",
+   "country": "DE",
+   "materials": [
+    "CM-HOUSING-AL"
+   ],
+   "contract_lead_time_days": 9,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": "Querétaro Castings",
+   "unit_price_eur": 46.0,
+   "freight_eur_per_order": 300,
+   "typical_order_qty": 2000,
+   "lat": 50.83,
+   "lon": 12.92,
+   "city": "Chemnitz",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "High-pressure die casting",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VM004",
+   "name": "Kyushu Power Semi",
+   "country": "JP",
+   "materials": [
+    "CM-SIC-MOSFET"
+   ],
+   "contract_lead_time_days": 84,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 9.5,
+   "freight_eur_per_order": 2500,
+   "typical_order_qty": 40000,
+   "lat": 32.8,
+   "lon": 130.74,
+   "city": "Kumamoto",
+   "manufacturing_country": "JP",
+   "manufacturing_site": "SiC wafer fab + backend",
+   "zone": "Asia-Pacific"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "AU10",
+   "parent": "FG-BATT-MOD-48",
+   "component": "CM-CELL-NMC",
+   "quantity": 96,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "AU10",
+   "parent": "FG-BATT-MOD-48",
+   "component": "CM-BMS-PCB",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU10",
+   "parent": "FG-BATT-MOD-48",
+   "component": "CM-HOUSING-AL",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-INVERTER-SIC",
+   "component": "CM-SIC-MOSFET",
+   "quantity": 24,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-INVERTER-SIC",
+   "component": "CM-BMS-PCB",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-INVERTER-SIC",
+   "component": "CM-HOUSING-AL",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-CHARGER-11KW",
+   "component": "CM-SIC-MOSFET",
+   "quantity": 8,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-CHARGER-11KW",
+   "component": "CM-CHARGER-PCB",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "AU20",
+   "parent": "FG-CHARGER-11KW",
+   "component": "CM-HOUSING-AL",
+   "quantity": 1,
+   "scrap_pct": 1
+  }
+ ],
+ "stock": [
+  {
+   "plant": "AD01",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD01",
+   "quantity": 720,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD02",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD02",
+   "quantity": 840,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD03",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD03",
+   "quantity": 135,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD01",
+   "material": "FG-INVERTER-SIC",
+   "batch": "INVERT-AD01",
+   "quantity": 960,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD02",
+   "material": "FG-INVERTER-SIC",
+   "batch": "INVERT-AD02",
+   "quantity": 1320,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD03",
+   "material": "FG-INVERTER-SIC",
+   "batch": "INVERT-AD03",
+   "quantity": 750,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD01",
+   "material": "FG-CHARGER-11KW",
+   "batch": "CHARGE-AD01",
+   "quantity": 1680,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD02",
+   "material": "FG-CHARGER-11KW",
+   "batch": "CHARGE-AD02",
+   "quantity": 1080,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AD03",
+   "material": "FG-CHARGER-11KW",
+   "batch": "CHARGE-AD03",
+   "quantity": 1200,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU10",
+   "material": "CM-CELL-NMC",
+   "batch": "CELL-N-A",
+   "quantity": 237600,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU10",
+   "material": "CM-BMS-PCB",
+   "batch": "BMS-PC-A",
+   "quantity": 3150,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU10",
+   "material": "CM-HOUSING-AL",
+   "batch": "HOUSIN-A",
+   "quantity": 1012,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU20",
+   "material": "CM-SIC-MOSFET",
+   "batch": "SIC-MO-A",
+   "quantity": 24192,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU20",
+   "material": "CM-BMS-PCB",
+   "batch": "BMS-PC-A",
+   "quantity": 1584,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU20",
+   "material": "CM-HOUSING-AL",
+   "batch": "HOUSIN-A",
+   "quantity": 2016,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU20",
+   "material": "CM-CHARGER-PCB",
+   "batch": "CHARGE-A",
+   "quantity": 1336,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "AU20",
+   "material": "CM-SIC-MOSFET",
+   "batch": "SIC-MO-Q",
+   "quantity": 7257.6,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "AU10",
+   "material": "CM-CELL-NMC",
+   "batch": "CELL-N-QI",
+   "quantity": 35640.0,
+   "status": "quality_inspection",
+   "expiry": null
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45VM00001",
+   "supplier": "Gyeonggi Cell Energy",
+   "material": "CM-CELL-NMC",
+   "plant": "AU10",
+   "quantity": 173712,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00002",
+   "supplier": "Gyeonggi Cell Energy",
+   "material": "CM-CELL-NMC",
+   "plant": "AU10",
+   "quantity": 173712,
+   "delivery_date": "2026-11-06",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45VM00003",
+   "supplier": "Brno Electronics",
+   "material": "CM-BMS-PCB",
+   "plant": "AU10",
+   "quantity": 1809,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00004",
+   "supplier": "Brno Electronics",
+   "material": "CM-BMS-PCB",
+   "plant": "AU10",
+   "quantity": 1809,
+   "delivery_date": "2026-11-17",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00005",
+   "supplier": "Brno Electronics",
+   "material": "CM-CHARGER-PCB",
+   "plant": "AU20",
+   "quantity": 3549,
+   "delivery_date": "2026-10-26",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00006",
+   "supplier": "Brno Electronics",
+   "material": "CM-CHARGER-PCB",
+   "plant": "AU20",
+   "quantity": 3549,
+   "delivery_date": "2026-11-19",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00007",
+   "supplier": "Saxony Castings",
+   "material": "CM-HOUSING-AL",
+   "plant": "AU10",
+   "quantity": 1809,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00008",
+   "supplier": "Saxony Castings",
+   "material": "CM-HOUSING-AL",
+   "plant": "AU10",
+   "quantity": 1809,
+   "delivery_date": "2026-11-17",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00009",
+   "supplier": "Kyushu Power Semi",
+   "material": "CM-SIC-MOSFET",
+   "plant": "AU20",
+   "quantity": 85176,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VM00010",
+   "supplier": "Kyushu Power Semi",
+   "material": "CM-SIC-MOSFET",
+   "plant": "AU20",
+   "quantity": 85176,
+   "delivery_date": "2026-11-11",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44VM00001",
+   "supplier": "Gyeonggi Cell Energy",
+   "material": "CM-CELL-NMC",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 173712,
+   "quantity_received": 173712,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00002",
+   "supplier": "Gyeonggi Cell Energy",
+   "material": "CM-CELL-NMC",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 173712,
+   "quantity_received": 173712,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00003",
+   "supplier": "Gyeonggi Cell Energy",
+   "material": "CM-CELL-NMC",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 173712,
+   "quantity_received": 173712,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00004",
+   "supplier": "Brno Electronics",
+   "material": "CM-BMS-PCB",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00005",
+   "supplier": "Brno Electronics",
+   "material": "CM-BMS-PCB",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00006",
+   "supplier": "Brno Electronics",
+   "material": "CM-BMS-PCB",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00007",
+   "supplier": "Brno Electronics",
+   "material": "CM-CHARGER-PCB",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 3549,
+   "quantity_received": 3549,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00008",
+   "supplier": "Brno Electronics",
+   "material": "CM-CHARGER-PCB",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 3549,
+   "quantity_received": 3549,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00009",
+   "supplier": "Brno Electronics",
+   "material": "CM-CHARGER-PCB",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 3549,
+   "quantity_received": 3549,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00010",
+   "supplier": "Saxony Castings",
+   "material": "CM-HOUSING-AL",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00011",
+   "supplier": "Saxony Castings",
+   "material": "CM-HOUSING-AL",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00012",
+   "supplier": "Saxony Castings",
+   "material": "CM-HOUSING-AL",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 1809,
+   "quantity_received": 1809,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00013",
+   "supplier": "Kyushu Power Semi",
+   "material": "CM-SIC-MOSFET",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 85176,
+   "quantity_received": 85176,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VM00014",
+   "supplier": "Kyushu Power Semi",
+   "material": "CM-SIC-MOSFET",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 85176,
+   "quantity_received": 85176,
+   "quality_rejected": 6814.08
+  },
+  {
+   "po": "44VM00015",
+   "supplier": "Kyushu Power Semi",
+   "material": "CM-SIC-MOSFET",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 85176,
+   "quantity_received": 85176,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1VM0001",
+   "plant": "AU10",
+   "material": "FG-BATT-MOD-48",
+   "quantity": 2250,
+   "finish_date": "2026-10-28",
+   "status": "released"
+  },
+  {
+   "order": "1VM0002",
+   "plant": "AU10",
+   "material": "FG-BATT-MOD-48",
+   "quantity": 2920.0,
+   "finish_date": "2026-11-06",
+   "status": "planned"
+  },
+  {
+   "order": "1VM0101",
+   "plant": "AU20",
+   "material": "FG-INVERTER-SIC",
+   "quantity": 1440,
+   "finish_date": "2026-11-01",
+   "status": "released"
+  },
+  {
+   "order": "1VM0102",
+   "plant": "AU20",
+   "material": "FG-INVERTER-SIC",
+   "quantity": 1870.0,
+   "finish_date": "2026-11-12",
+   "status": "planned"
+  },
+  {
+   "order": "1VM0201",
+   "plant": "AU20",
+   "material": "FG-CHARGER-11KW",
+   "quantity": 2970,
+   "finish_date": "2026-10-26",
+   "status": "released"
+  },
+  {
+   "order": "1VM0202",
+   "plant": "AU20",
+   "material": "FG-CHARGER-11KW",
+   "quantity": 3860.0,
+   "finish_date": "2026-11-11",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-VM0001",
+   "plant": "AU20",
+   "material": "CM-SIC-MOSFET",
+   "batch": "SIC-MO-Q",
+   "quantity": 7257.6,
+   "supplier": "Kyushu Power Semi",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-VM0002",
+   "plant": "AU10",
+   "material": "CM-CELL-NMC",
+   "batch": "CELL-N-QI",
+   "quantity": 35640.0,
+   "supplier": "Gyeonggi Cell Energy",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-VM7700",
+   "customer": "Line feed Zwickau assembly",
+   "warehouse": "AD01",
+   "material": "FG-BATT-MOD-48",
+   "quantity": 900.0,
+   "requested_date": "2026-10-26",
+   "priority": "high"
+  },
+  {
+   "order": "SO-VM7701",
+   "customer": "OEM customer Stuttgart",
+   "warehouse": "AD02",
+   "material": "FG-INVERTER-SIC",
+   "quantity": 460.0,
+   "requested_date": "2026-10-30",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VM7702",
+   "customer": "Fleet retrofit US",
+   "warehouse": "AD03",
+   "material": "FG-CHARGER-11KW",
+   "quantity": 300.0,
+   "requested_date": "2026-10-30",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VM7703",
+   "customer": "OEM customer Shanghai",
+   "warehouse": "AD01",
+   "material": "FG-BATT-MOD-48",
+   "quantity": 180.0,
+   "requested_date": "2026-11-03",
+   "priority": "high"
+  },
+  {
+   "order": "SO-VM7704",
+   "customer": "Service parts EU",
+   "warehouse": "AD02",
+   "material": "FG-INVERTER-SIC",
+   "quantity": 460.0,
+   "requested_date": "2026-11-01",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VM7705",
+   "customer": "OEM customer Detroit",
+   "warehouse": "AD03",
+   "material": "FG-CHARGER-11KW",
+   "quantity": 180.0,
+   "requested_date": "2026-10-25",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-VM01",
+   "type": "stock_transfer",
+   "from": "AD01",
+   "to": "AD02",
+   "material": "FG-BATT-MOD-48",
+   "quantity": 180,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-VM02",
+   "type": "stock_transfer",
+   "from": "AD01",
+   "to": "AD03",
+   "material": "FG-INVERTER-SIC",
+   "quantity": 100,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-VM03",
+   "type": "inbound",
+   "from": "V-VM001",
+   "to": "AU10",
+   "material": "CM-CELL-NMC",
+   "quantity": 173712,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-25",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-VM-01",
+   "count_date": "2026-10-19",
+   "plant": "AD01",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD01",
+   "book_quantity": 720,
+   "counted_quantity": 680,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-VM-02",
+   "count_date": "2026-10-19",
+   "plant": "AD02",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD02",
+   "book_quantity": 840,
+   "counted_quantity": 837,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-VM-03",
+   "count_date": "2026-10-19",
+   "plant": "AD03",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD03",
+   "book_quantity": 135,
+   "counted_quantity": 130,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-VM-04",
+   "count_date": "2026-10-19",
+   "plant": "AD01",
+   "material": "FG-INVERTER-SIC",
+   "batch": "INVERT-AD01",
+   "book_quantity": 960,
+   "counted_quantity": 960,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49VM0001",
+   "type": "goods_issue",
+   "plant": "AD01",
+   "material": "FG-BATT-MOD-48",
+   "batch": "BATT-M-AD01",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-BATT-MOD-48": {
+   "AD01": 120,
+   "AD02": 60,
+   "AD03": 45
+  },
+  "FG-INVERTER-SIC": {
+   "AD01": 40,
+   "AD02": 55,
+   "AD03": 25
+  },
+  "FG-CHARGER-11KW": {
+   "AD01": 70,
+   "AD02": 45,
+   "AD03": 50
+  }
+ },
+ "lanes": [
+  {
+   "from": "AD01",
+   "to": "AD02",
+   "lead_days": 21,
+   "cost_per_unit": 2.02,
+   "carbon_kg_per_unit": 0.466
+  },
+  {
+   "from": "AD01",
+   "to": "AD03",
+   "lead_days": 9,
+   "cost_per_unit": 1.73,
+   "carbon_kg_per_unit": 0.487
+  },
+  {
+   "from": "AD02",
+   "to": "AD01",
+   "lead_days": 21,
+   "cost_per_unit": 1.79,
+   "carbon_kg_per_unit": 0.517
+  },
+  {
+   "from": "AD02",
+   "to": "AD03",
+   "lead_days": 21,
+   "cost_per_unit": 1.69,
+   "carbon_kg_per_unit": 0.522
+  },
+  {
+   "from": "AD03",
+   "to": "AD01",
+   "lead_days": 14,
+   "cost_per_unit": 1.76,
+   "carbon_kg_per_unit": 0.525
+  },
+  {
+   "from": "AD03",
+   "to": "AD02",
+   "lead_days": 21,
+   "cost_per_unit": 1.84,
+   "carbon_kg_per_unit": 0.4
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Silesia Cell Plant",
+   "material": "CM-CELL-NMC",
+   "unit_price_eur": 3.7,
+   "freight_eur_per_order": 1500,
+   "typical_order_qty": 100000,
+   "quoted_lead_time_days": 21,
+   "qualified": true,
+   "country": "PL",
+   "city": "Wrocław",
+   "lat": 51.11,
+   "lon": 17.03,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  },
+  {
+   "supplier": "Querétaro Castings",
+   "material": "CM-HOUSING-AL",
+   "unit_price_eur": 43.0,
+   "freight_eur_per_order": 500,
+   "typical_order_qty": 2000,
+   "quoted_lead_time_days": 10,
+   "qualified": true,
+   "country": "MX",
+   "city": "Querétaro",
+   "lat": 20.59,
+   "lon": -100.39,
+   "zone": "North America",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Lithium hydroxide",
+   "origin": "Western Australia",
+   "country": "AU",
+   "lat": -32.0,
+   "lon": 116.0,
+   "feeds_supplier": "Gyeonggi Cell Energy",
+   "feeds_material": "CM-CELL-NMC",
+   "share_of_material_pct": 30,
+   "transit_days": 35,
+   "transit_variability_days": 8,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "price & offtake volatility"
+  },
+  {
+   "ingredient": "Nickel sulphate",
+   "origin": "Sulawesi, Indonesia",
+   "country": "ID",
+   "lat": -2.0,
+   "lon": 121.0,
+   "feeds_supplier": "Gyeonggi Cell Energy",
+   "feeds_material": "CM-CELL-NMC",
+   "share_of_material_pct": 25,
+   "transit_days": 20,
+   "transit_variability_days": 6,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "ESG scrutiny"
+  },
+  {
+   "ingredient": "SiC substrate wafers",
+   "origin": "North Carolina, USA",
+   "country": "US",
+   "lat": 35.9,
+   "lon": -78.9,
+   "feeds_supplier": "Kyushu Power Semi",
+   "feeds_material": "CM-SIC-MOSFET",
+   "share_of_material_pct": 60,
+   "transit_days": 18,
+   "transit_variability_days": 5,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "single-region substrate supply"
+  }
+ ]
+}

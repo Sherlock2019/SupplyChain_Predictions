@@ -1,0 +1,1249 @@
+{
+ "snapshot": {
+  "id": "SAP-VF-2026-10-20T040000Z",
+  "source_system": "S4HANA-FOOD-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "food",
+  "customer": "Verdant Foods",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "VF10",
+   "name": "Bremen Chocolate Plant",
+   "type": "factory",
+   "country": "DE",
+   "lat": 53.08,
+   "lon": 8.8,
+   "city": "Bremen",
+   "zone": "Europe",
+   "address": "Bremen, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Daniel Haddad",
+     "email": "daniel.haddad@verdant-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Priya Weber",
+     "email": "priya.weber@verdant-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Pierre Rossi",
+     "email": "pierre.rossi@verdant-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "VF21",
+   "name": "Duisburg Ambient DC",
+   "type": "warehouse",
+   "country": "DE",
+   "lat": 51.43,
+   "lon": 6.76,
+   "city": "Duisburg",
+   "zone": "Europe",
+   "address": "Duisburg, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Nadia Martens",
+     "email": "nadia.martens@verdant-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Tomas Lambert",
+     "email": "tomas.lambert@verdant-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marta Costa",
+     "email": "marta.costa@verdant-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "VF22",
+   "name": "Lyon Ambient DC",
+   "type": "warehouse",
+   "country": "FR",
+   "lat": 45.76,
+   "lon": 4.84,
+   "city": "Lyon",
+   "zone": "Europe",
+   "address": "Lyon, FR (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Priya Silva",
+     "email": "priya.silva@verdant-demo.example",
+     "phone": "+33 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Carlos Silva",
+     "email": "carlos.silva@verdant-demo.example",
+     "phone": "+33 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Nadia Chen",
+     "email": "nadia.chen@verdant-demo.example",
+     "phone": "+33 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "VF23",
+   "name": "Felixstowe UK DC",
+   "type": "warehouse",
+   "country": "GB",
+   "lat": 51.96,
+   "lon": 1.35,
+   "city": "Felixstowe",
+   "zone": "Europe",
+   "address": "Felixstowe, GB (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Felix Novak",
+     "email": "felix.novak@verdant-demo.example",
+     "phone": "+44 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Sofia Novak",
+     "email": "sofia.novak@verdant-demo.example",
+     "phone": "+44 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Anna Costa",
+     "email": "anna.costa@verdant-demo.example",
+     "phone": "+44 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-DARK-70",
+   "description": "Dark chocolate 70% 100 g",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 0.85,
+   "safety_stock": 20000
+  },
+  {
+   "code": "FG-HAZEL-SPREAD",
+   "description": "Hazelnut spread 400 g",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 1.6,
+   "safety_stock": 9000
+  },
+  {
+   "code": "FG-PROTEIN-BAR",
+   "description": "Protein bar 45 g",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 0.55,
+   "safety_stock": 15000
+  },
+  {
+   "code": "RM-COCOA-MASS",
+   "description": "Cocoa mass",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 7.8,
+   "safety_stock": 20000
+  },
+  {
+   "code": "RM-SUGAR",
+   "description": "Beet sugar",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 0.75,
+   "safety_stock": 60000
+  },
+  {
+   "code": "PK-FLOWWRAP",
+   "description": "Flow-wrap film",
+   "type": "PACK",
+   "uom": "KG",
+   "unit_cost": 4.2,
+   "safety_stock": 4000
+  },
+  {
+   "code": "RM-HAZELNUT",
+   "description": "Roasted hazelnut paste",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 9.4,
+   "safety_stock": 15000
+  },
+  {
+   "code": "PK-GLASS-JAR",
+   "description": "400 g glass jar + lid",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.19,
+   "safety_stock": 60000
+  },
+  {
+   "code": "RM-WHEY",
+   "description": "Whey protein isolate",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 11.5,
+   "safety_stock": 5000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-VF001",
+   "name": "Amsterdam Cocoa Processing",
+   "country": "NL",
+   "materials": [
+    "RM-COCOA-MASS"
+   ],
+   "contract_lead_time_days": 12,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": "Hamburg Cocoa",
+   "unit_price_eur": 7.8,
+   "freight_eur_per_order": 600,
+   "typical_order_qty": 20000,
+   "lat": 52.39,
+   "lon": 4.83,
+   "city": "Amsterdam",
+   "manufacturing_country": "NL",
+   "manufacturing_site": "Cocoa grinding",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VF002",
+   "name": "Niedersachsen Sugar",
+   "country": "DE",
+   "materials": [
+    "RM-SUGAR"
+   ],
+   "contract_lead_time_days": 5,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.75,
+   "freight_eur_per_order": 400,
+   "typical_order_qty": 60000,
+   "lat": 52.97,
+   "lon": 10.56,
+   "city": "Uelzen",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "Beet sugar factory",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VF003",
+   "name": "Flexpack Rhein",
+   "country": "DE",
+   "materials": [
+    "PK-FLOWWRAP"
+   ],
+   "contract_lead_time_days": 10,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 4.2,
+   "freight_eur_per_order": 300,
+   "typical_order_qty": 5000,
+   "lat": 50.94,
+   "lon": 6.96,
+   "city": "Cologne",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "Film printing & lamination",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VF004",
+   "name": "Black Sea Hazelnut",
+   "country": "TR",
+   "materials": [
+    "RM-HAZELNUT"
+   ],
+   "contract_lead_time_days": 28,
+   "otif_target_pct": 91,
+   "approved": true,
+   "secondary_source": "Piemonte Nocciole",
+   "unit_price_eur": 9.4,
+   "freight_eur_per_order": 2400,
+   "typical_order_qty": 20000,
+   "lat": 40.98,
+   "lon": 37.88,
+   "city": "Ordu",
+   "manufacturing_country": "TR",
+   "manufacturing_site": "Hazelnut roasting",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VF005",
+   "name": "Vidrios del Ebro",
+   "country": "ES",
+   "materials": [
+    "PK-GLASS-JAR"
+   ],
+   "contract_lead_time_days": 14,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.19,
+   "freight_eur_per_order": 900,
+   "typical_order_qty": 120000,
+   "lat": 41.65,
+   "lon": -0.89,
+   "city": "Zaragoza",
+   "manufacturing_country": "ES",
+   "manufacturing_site": "Glass container furnace",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-VF006",
+   "name": "Irish Dairy Proteins",
+   "country": "IE",
+   "materials": [
+    "RM-WHEY"
+   ],
+   "contract_lead_time_days": 18,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 11.5,
+   "freight_eur_per_order": 700,
+   "typical_order_qty": 8000,
+   "lat": 52.65,
+   "lon": -7.25,
+   "city": "Kilkenny",
+   "manufacturing_country": "IE",
+   "manufacturing_site": "Membrane filtration",
+   "zone": "Europe"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "VF10",
+   "parent": "FG-DARK-70",
+   "component": "RM-COCOA-MASS",
+   "quantity": 0.07,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-DARK-70",
+   "component": "RM-SUGAR",
+   "quantity": 0.03,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-DARK-70",
+   "component": "PK-FLOWWRAP",
+   "quantity": 0.0012,
+   "scrap_pct": 3
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-HAZEL-SPREAD",
+   "component": "RM-HAZELNUT",
+   "quantity": 0.13,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-HAZEL-SPREAD",
+   "component": "RM-SUGAR",
+   "quantity": 0.2,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-HAZEL-SPREAD",
+   "component": "RM-COCOA-MASS",
+   "quantity": 0.03,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-HAZEL-SPREAD",
+   "component": "PK-GLASS-JAR",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-PROTEIN-BAR",
+   "component": "RM-WHEY",
+   "quantity": 0.015,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-PROTEIN-BAR",
+   "component": "RM-COCOA-MASS",
+   "quantity": 0.006,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "VF10",
+   "parent": "FG-PROTEIN-BAR",
+   "component": "PK-FLOWWRAP",
+   "quantity": 0.0006,
+   "scrap_pct": 3
+  }
+ ],
+ "stock": [
+  {
+   "plant": "VF21",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF21",
+   "quantity": 55800,
+   "status": "unrestricted",
+   "expiry": "2027-06-06"
+  },
+  {
+   "plant": "VF22",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF22",
+   "quantity": 86100,
+   "status": "unrestricted",
+   "expiry": "2027-05-26"
+  },
+  {
+   "plant": "VF23",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF23",
+   "quantity": 15600,
+   "status": "unrestricted",
+   "expiry": "2027-02-26"
+  },
+  {
+   "plant": "VF21",
+   "material": "FG-HAZEL-SPREAD",
+   "batch": "HAZEL--VF21",
+   "quantity": 57600,
+   "status": "unrestricted",
+   "expiry": "2027-07-04"
+  },
+  {
+   "plant": "VF22",
+   "material": "FG-HAZEL-SPREAD",
+   "batch": "HAZEL--VF22",
+   "quantity": 69600,
+   "status": "unrestricted",
+   "expiry": "2027-02-18"
+  },
+  {
+   "plant": "VF23",
+   "material": "FG-HAZEL-SPREAD",
+   "batch": "HAZEL--VF23",
+   "quantity": 36000,
+   "status": "unrestricted",
+   "expiry": "2026-12-19"
+  },
+  {
+   "plant": "VF21",
+   "material": "FG-PROTEIN-BAR",
+   "batch": "PROTEI-VF21",
+   "quantity": 95000,
+   "status": "unrestricted",
+   "expiry": "2027-05-24"
+  },
+  {
+   "plant": "VF22",
+   "material": "FG-PROTEIN-BAR",
+   "batch": "PROTEI-VF22",
+   "quantity": 52800,
+   "status": "unrestricted",
+   "expiry": "2027-05-13"
+  },
+  {
+   "plant": "VF23",
+   "material": "FG-PROTEIN-BAR",
+   "batch": "PROTEI-VF23",
+   "quantity": 62400,
+   "status": "unrestricted",
+   "expiry": "2027-10-04"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-COCOA-MASS",
+   "batch": "COCOA--A",
+   "quantity": 4473.0,
+   "status": "unrestricted",
+   "expiry": "2026-12-27"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-SUGAR",
+   "batch": "SUGAR-A",
+   "quantity": 1917.0,
+   "status": "unrestricted",
+   "expiry": "2027-01-11"
+  },
+  {
+   "plant": "VF10",
+   "material": "PK-FLOWWRAP",
+   "batch": "FLOWWR-A",
+   "quantity": 187.44,
+   "status": "unrestricted",
+   "expiry": "2027-07-26"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-HAZELNUT",
+   "batch": "HAZELN-A",
+   "quantity": 5569.2,
+   "status": "unrestricted",
+   "expiry": "2027-02-01"
+  },
+  {
+   "plant": "VF10",
+   "material": "PK-GLASS-JAR",
+   "batch": "GLASS--A",
+   "quantity": 133280,
+   "status": "unrestricted",
+   "expiry": "2027-11-22"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-WHEY",
+   "batch": "WHEY-A",
+   "quantity": 1419.0,
+   "status": "unrestricted",
+   "expiry": "2027-06-05"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-HAZELNUT",
+   "batch": "HAZELN-Q",
+   "quantity": 1670.76,
+   "status": "blocked",
+   "expiry": "2027-11-06"
+  },
+  {
+   "plant": "VF10",
+   "material": "RM-COCOA-MASS",
+   "batch": "COCOA--QI",
+   "quantity": 670.95,
+   "status": "quality_inspection",
+   "expiry": "2027-06-25"
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45VF00001",
+   "supplier": "Amsterdam Cocoa Processing",
+   "material": "RM-COCOA-MASS",
+   "plant": "VF10",
+   "quantity": 18212.32,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00002",
+   "supplier": "Amsterdam Cocoa Processing",
+   "material": "RM-COCOA-MASS",
+   "plant": "VF10",
+   "quantity": 18212.32,
+   "delivery_date": "2026-11-05",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00003",
+   "supplier": "Niedersachsen Sugar",
+   "material": "RM-SUGAR",
+   "plant": "VF10",
+   "quantity": 7805.28,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00004",
+   "supplier": "Niedersachsen Sugar",
+   "material": "RM-SUGAR",
+   "plant": "VF10",
+   "quantity": 7805.28,
+   "delivery_date": "2026-11-05",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00005",
+   "supplier": "Flexpack Rhein",
+   "material": "PK-FLOWWRAP",
+   "plant": "VF10",
+   "quantity": 312.211,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00006",
+   "supplier": "Flexpack Rhein",
+   "material": "PK-FLOWWRAP",
+   "plant": "VF10",
+   "quantity": 312.211,
+   "delivery_date": "2026-11-09",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45VF00007",
+   "supplier": "Black Sea Hazelnut",
+   "material": "RM-HAZELNUT",
+   "plant": "VF10",
+   "quantity": 33822.88,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00008",
+   "supplier": "Black Sea Hazelnut",
+   "material": "RM-HAZELNUT",
+   "plant": "VF10",
+   "quantity": 33822.88,
+   "delivery_date": "2026-11-15",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45VF00009",
+   "supplier": "Vidrios del Ebro",
+   "material": "PK-GLASS-JAR",
+   "plant": "VF10",
+   "quantity": 260176,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00010",
+   "supplier": "Vidrios del Ebro",
+   "material": "PK-GLASS-JAR",
+   "plant": "VF10",
+   "quantity": 260176,
+   "delivery_date": "2026-11-16",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00011",
+   "supplier": "Irish Dairy Proteins",
+   "material": "RM-WHEY",
+   "plant": "VF10",
+   "quantity": 3902.64,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45VF00012",
+   "supplier": "Irish Dairy Proteins",
+   "material": "RM-WHEY",
+   "plant": "VF10",
+   "quantity": 3902.64,
+   "delivery_date": "2026-11-10",
+   "status": "unconfirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44VF00001",
+   "supplier": "Amsterdam Cocoa Processing",
+   "material": "RM-COCOA-MASS",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 18212.32,
+   "quantity_received": 18212.32,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00002",
+   "supplier": "Amsterdam Cocoa Processing",
+   "material": "RM-COCOA-MASS",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 18212.32,
+   "quantity_received": 18212.32,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00003",
+   "supplier": "Amsterdam Cocoa Processing",
+   "material": "RM-COCOA-MASS",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 18212.32,
+   "quantity_received": 18212.32,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00004",
+   "supplier": "Niedersachsen Sugar",
+   "material": "RM-SUGAR",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 7805.28,
+   "quantity_received": 7805.28,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00005",
+   "supplier": "Niedersachsen Sugar",
+   "material": "RM-SUGAR",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 7805.28,
+   "quantity_received": 7805.28,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00006",
+   "supplier": "Niedersachsen Sugar",
+   "material": "RM-SUGAR",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 7805.28,
+   "quantity_received": 7805.28,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00007",
+   "supplier": "Flexpack Rhein",
+   "material": "PK-FLOWWRAP",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 312.211,
+   "quantity_received": 312.211,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00008",
+   "supplier": "Flexpack Rhein",
+   "material": "PK-FLOWWRAP",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 312.211,
+   "quantity_received": 312.211,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00009",
+   "supplier": "Flexpack Rhein",
+   "material": "PK-FLOWWRAP",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 312.211,
+   "quantity_received": 312.211,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00010",
+   "supplier": "Black Sea Hazelnut",
+   "material": "RM-HAZELNUT",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 33822.88,
+   "quantity_received": 33822.88,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00011",
+   "supplier": "Black Sea Hazelnut",
+   "material": "RM-HAZELNUT",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 33822.88,
+   "quantity_received": 33822.88,
+   "quality_rejected": 2705.83
+  },
+  {
+   "po": "44VF00012",
+   "supplier": "Black Sea Hazelnut",
+   "material": "RM-HAZELNUT",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 33822.88,
+   "quantity_received": 33822.88,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00013",
+   "supplier": "Vidrios del Ebro",
+   "material": "PK-GLASS-JAR",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 260176,
+   "quantity_received": 260176,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VF00014",
+   "supplier": "Vidrios del Ebro",
+   "material": "PK-GLASS-JAR",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 260176,
+   "quantity_received": 260176,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VF00015",
+   "supplier": "Vidrios del Ebro",
+   "material": "PK-GLASS-JAR",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 260176,
+   "quantity_received": 260176,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44VF00016",
+   "supplier": "Irish Dairy Proteins",
+   "material": "RM-WHEY",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 3902.64,
+   "quantity_received": 3902.64,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00017",
+   "supplier": "Irish Dairy Proteins",
+   "material": "RM-WHEY",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 3902.64,
+   "quantity_received": 3902.64,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44VF00018",
+   "supplier": "Irish Dairy Proteins",
+   "material": "RM-WHEY",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 3902.64,
+   "quantity_received": 3902.64,
+   "quality_rejected": 0.0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1VF0001",
+   "plant": "VF10",
+   "material": "FG-DARK-70",
+   "quantity": 142000,
+   "finish_date": "2026-10-26",
+   "status": "released"
+  },
+  {
+   "order": "1VF0002",
+   "plant": "VF10",
+   "material": "FG-DARK-70",
+   "quantity": 184600.0,
+   "finish_date": "2026-11-12",
+   "status": "planned"
+  },
+  {
+   "order": "1VF0101",
+   "plant": "VF10",
+   "material": "FG-HAZEL-SPREAD",
+   "quantity": 95200,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1VF0102",
+   "plant": "VF10",
+   "material": "FG-HAZEL-SPREAD",
+   "quantity": 123760.0,
+   "finish_date": "2026-11-07",
+   "status": "planned"
+  },
+  {
+   "order": "1VF0201",
+   "plant": "VF10",
+   "material": "FG-PROTEIN-BAR",
+   "quantity": 86000,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1VF0202",
+   "plant": "VF10",
+   "material": "FG-PROTEIN-BAR",
+   "quantity": 111800.0,
+   "finish_date": "2026-11-09",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-VF0001",
+   "plant": "VF10",
+   "material": "RM-HAZELNUT",
+   "batch": "HAZELN-Q",
+   "quantity": 1670.76,
+   "supplier": "Black Sea Hazelnut",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-VF0002",
+   "plant": "VF10",
+   "material": "RM-COCOA-MASS",
+   "batch": "COCOA--QI",
+   "quantity": 670.95,
+   "supplier": "Amsterdam Cocoa Processing",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-VF7700",
+   "customer": "Rewe Group",
+   "warehouse": "VF21",
+   "material": "FG-DARK-70",
+   "quantity": 69750.0,
+   "requested_date": "2026-10-28",
+   "priority": "high"
+  },
+  {
+   "order": "SO-VF7701",
+   "customer": "Carrefour France",
+   "warehouse": "VF22",
+   "material": "FG-HAZEL-SPREAD",
+   "quantity": 10440.0,
+   "requested_date": "2026-10-30",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VF7702",
+   "customer": "Tesco UK",
+   "warehouse": "VF23",
+   "material": "FG-PROTEIN-BAR",
+   "quantity": 15600.0,
+   "requested_date": "2026-11-03",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VF7703",
+   "customer": "Edeka",
+   "warehouse": "VF21",
+   "material": "FG-DARK-70",
+   "quantity": 13950.0,
+   "requested_date": "2026-10-30",
+   "priority": "high"
+  },
+  {
+   "order": "SO-VF7704",
+   "customer": "Intermarché",
+   "warehouse": "VF22",
+   "material": "FG-HAZEL-SPREAD",
+   "quantity": 10440.0,
+   "requested_date": "2026-10-26",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-VF7705",
+   "customer": "Sainsbury's",
+   "warehouse": "VF23",
+   "material": "FG-PROTEIN-BAR",
+   "quantity": 15600.0,
+   "requested_date": "2026-10-26",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-VF01",
+   "type": "stock_transfer",
+   "from": "VF21",
+   "to": "VF22",
+   "material": "FG-DARK-70",
+   "quantity": 12300,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-VF02",
+   "type": "stock_transfer",
+   "from": "VF21",
+   "to": "VF23",
+   "material": "FG-HAZEL-SPREAD",
+   "quantity": 6000,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-VF03",
+   "type": "inbound",
+   "from": "V-VF001",
+   "to": "VF10",
+   "material": "RM-COCOA-MASS",
+   "quantity": 18212.32,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-VF-01",
+   "count_date": "2026-10-19",
+   "plant": "VF21",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF21",
+   "book_quantity": 55800,
+   "counted_quantity": 55760,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-VF-02",
+   "count_date": "2026-10-19",
+   "plant": "VF22",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF22",
+   "book_quantity": 86100,
+   "counted_quantity": 85756,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-VF-03",
+   "count_date": "2026-10-19",
+   "plant": "VF23",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF23",
+   "book_quantity": 15600,
+   "counted_quantity": 14976,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-VF-04",
+   "count_date": "2026-10-19",
+   "plant": "VF21",
+   "material": "FG-HAZEL-SPREAD",
+   "batch": "HAZEL--VF21",
+   "book_quantity": 57600,
+   "counted_quantity": 57600,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49VF0001",
+   "type": "goods_issue",
+   "plant": "VF21",
+   "material": "FG-DARK-70",
+   "batch": "DARK-7-VF21",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-DARK-70": {
+   "VF21": 6200,
+   "VF22": 4100,
+   "VF23": 3900
+  },
+  "FG-HAZEL-SPREAD": {
+   "VF21": 2400,
+   "VF22": 2900,
+   "VF23": 1500
+  },
+  "FG-PROTEIN-BAR": {
+   "VF21": 3800,
+   "VF22": 2200,
+   "VF23": 2600
+  }
+ },
+ "lanes": [
+  {
+   "from": "VF21",
+   "to": "VF22",
+   "lead_days": 2,
+   "cost_per_unit": 0.5,
+   "carbon_kg_per_unit": 0.06
+  },
+  {
+   "from": "VF21",
+   "to": "VF23",
+   "lead_days": 3,
+   "cost_per_unit": 0.53,
+   "carbon_kg_per_unit": 0.071
+  },
+  {
+   "from": "VF22",
+   "to": "VF21",
+   "lead_days": 2,
+   "cost_per_unit": 0.53,
+   "carbon_kg_per_unit": 0.062
+  },
+  {
+   "from": "VF22",
+   "to": "VF23",
+   "lead_days": 2,
+   "cost_per_unit": 0.5,
+   "carbon_kg_per_unit": 0.073
+  },
+  {
+   "from": "VF23",
+   "to": "VF21",
+   "lead_days": 3,
+   "cost_per_unit": 0.46,
+   "carbon_kg_per_unit": 0.076
+  },
+  {
+   "from": "VF23",
+   "to": "VF22",
+   "lead_days": 3,
+   "cost_per_unit": 0.41,
+   "carbon_kg_per_unit": 0.069
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Hamburg Cocoa",
+   "material": "RM-COCOA-MASS",
+   "unit_price_eur": 8.1,
+   "freight_eur_per_order": 400,
+   "typical_order_qty": 20000,
+   "quoted_lead_time_days": 7,
+   "qualified": true,
+   "country": "DE",
+   "city": "Hamburg",
+   "lat": 53.55,
+   "lon": 9.99,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  },
+  {
+   "supplier": "Piemonte Nocciole",
+   "material": "RM-HAZELNUT",
+   "unit_price_eur": 11.2,
+   "freight_eur_per_order": 600,
+   "typical_order_qty": 20000,
+   "quoted_lead_time_days": 9,
+   "qualified": true,
+   "country": "IT",
+   "city": "Alba",
+   "lat": 44.7,
+   "lon": 8.03,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Cocoa beans",
+   "origin": "Côte d'Ivoire",
+   "country": "CI",
+   "lat": 6.8,
+   "lon": -5.3,
+   "feeds_supplier": "Amsterdam Cocoa Processing",
+   "feeds_material": "RM-COCOA-MASS",
+   "share_of_material_pct": 60,
+   "transit_days": 21,
+   "transit_variability_days": 7,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "EUDR deforestation compliance; mid-crop variability"
+  },
+  {
+   "ingredient": "Cocoa beans",
+   "origin": "Ghana",
+   "country": "GH",
+   "lat": 6.7,
+   "lon": -1.6,
+   "feeds_supplier": "Amsterdam Cocoa Processing",
+   "feeds_material": "RM-COCOA-MASS",
+   "share_of_material_pct": 25,
+   "transit_days": 20,
+   "transit_variability_days": 6,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "EUDR compliance"
+  },
+  {
+   "ingredient": "Hazelnuts",
+   "origin": "Black Sea coast, Türkiye",
+   "country": "TR",
+   "lat": 41.0,
+   "lon": 38.0,
+   "feeds_supplier": "Black Sea Hazelnut",
+   "feeds_material": "RM-HAZELNUT",
+   "share_of_material_pct": 100,
+   "transit_days": 3,
+   "transit_variability_days": 2,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "frost risk in spring"
+  }
+ ]
+}

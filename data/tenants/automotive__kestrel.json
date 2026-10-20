@@ -1,0 +1,1156 @@
+{
+ "snapshot": {
+  "id": "SAP-KA-2026-10-20T040000Z",
+  "source_system": "S4HANA-AUTOMOTIVE-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "automotive",
+  "customer": "Kestrel Automotive",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "KA10",
+   "name": "Győr Brake Systems Plant",
+   "type": "factory",
+   "country": "HU",
+   "lat": 47.69,
+   "lon": 17.63,
+   "city": "Győr",
+   "zone": "Europe",
+   "address": "Győr, HU (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Sofia Novak",
+     "email": "sofia.novak@kestrel-demo.example",
+     "phone": "+36 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Mei Chen",
+     "email": "mei.chen@kestrel-demo.example",
+     "phone": "+36 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Marta Weber",
+     "email": "marta.weber@kestrel-demo.example",
+     "phone": "+36 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "KA21",
+   "name": "Bratislava Parts DC",
+   "type": "warehouse",
+   "country": "SK",
+   "lat": 48.15,
+   "lon": 17.11,
+   "city": "Bratislava",
+   "zone": "Europe",
+   "address": "Bratislava, SK (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Chloé Keller",
+     "email": "chloe.keller@kestrel-demo.example",
+     "phone": "+421 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Anna Haddad",
+     "email": "anna.haddad@kestrel-demo.example",
+     "phone": "+421 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Anna Weber",
+     "email": "anna.weber@kestrel-demo.example",
+     "phone": "+421 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "KA22",
+   "name": "Valencia Parts DC",
+   "type": "warehouse",
+   "country": "ES",
+   "lat": 39.47,
+   "lon": -0.38,
+   "city": "Valencia",
+   "zone": "Europe",
+   "address": "Valencia, ES (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Pierre Tanaka",
+     "email": "pierre.tanaka@kestrel-demo.example",
+     "phone": "+34 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Lena Moreau",
+     "email": "lena.moreau@kestrel-demo.example",
+     "phone": "+34 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marco Haddad",
+     "email": "marco.haddad@kestrel-demo.example",
+     "phone": "+34 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "KA23",
+   "name": "Bursa Parts DC",
+   "type": "warehouse",
+   "country": "TR",
+   "lat": 40.19,
+   "lon": 29.06,
+   "city": "Bursa",
+   "zone": "Europe",
+   "address": "Bursa, TR (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Mei Chen",
+     "email": "mei.chen@kestrel-demo.example",
+     "phone": "+90 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Lena Silva",
+     "email": "lena.silva@kestrel-demo.example",
+     "phone": "+90 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Nadia Silva",
+     "email": "nadia.silva@kestrel-demo.example",
+     "phone": "+90 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-BRAKE-CAL",
+   "description": "Brake caliper assembly",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 64.0,
+   "safety_stock": 600
+  },
+  {
+   "code": "FG-BRAKE-DISC",
+   "description": "Ventilated brake disc 340 mm",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 28.0,
+   "safety_stock": 900
+  },
+  {
+   "code": "FG-ABS-SENSOR",
+   "description": "ABS wheel-speed sensor",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 11.0,
+   "safety_stock": 1500
+  },
+  {
+   "code": "CM-CAL-CASTING",
+   "description": "Caliper iron casting",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 18.0,
+   "safety_stock": 3000
+  },
+  {
+   "code": "CM-PISTON",
+   "description": "Phenolic piston",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 2.1,
+   "safety_stock": 8000
+  },
+  {
+   "code": "CM-SEAL-KIT",
+   "description": "Seal & boot kit",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 1.4,
+   "safety_stock": 6000
+  },
+  {
+   "code": "CM-DISC-BLANK",
+   "description": "Grey-iron disc blank",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 11.0,
+   "safety_stock": 4000
+  },
+  {
+   "code": "CM-HALL-IC",
+   "description": "Hall-effect IC",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.9,
+   "safety_stock": 20000
+  },
+  {
+   "code": "CM-SENSOR-HOUSING",
+   "description": "Over-moulded sensor housing",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 1.7,
+   "safety_stock": 8000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-KA001",
+   "name": "Ostrava Foundry",
+   "country": "CZ",
+   "materials": [
+    "CM-CAL-CASTING",
+    "CM-DISC-BLANK"
+   ],
+   "contract_lead_time_days": 14,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": "Bursa Döküm",
+   "unit_price_eur": 18.0,
+   "freight_eur_per_order": 600,
+   "typical_order_qty": 4000,
+   "lat": 49.82,
+   "lon": 18.26,
+   "city": "Ostrava",
+   "manufacturing_country": "CZ",
+   "manufacturing_site": "Ductile iron foundry",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-KA002",
+   "name": "Stuttgart Polymer Tech",
+   "country": "DE",
+   "materials": [
+    "CM-PISTON"
+   ],
+   "contract_lead_time_days": 10,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 2.1,
+   "freight_eur_per_order": 250,
+   "typical_order_qty": 20000,
+   "lat": 48.78,
+   "lon": 9.18,
+   "city": "Stuttgart",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "Phenolic moulding",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-KA003",
+   "name": "Turin Sealing",
+   "country": "IT",
+   "materials": [
+    "CM-SEAL-KIT"
+   ],
+   "contract_lead_time_days": 12,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 1.4,
+   "freight_eur_per_order": 260,
+   "typical_order_qty": 15000,
+   "lat": 45.07,
+   "lon": 7.69,
+   "city": "Turin",
+   "manufacturing_country": "IT",
+   "manufacturing_site": "Elastomer moulding",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-KA004",
+   "name": "Penang Semiconductor",
+   "country": "MY",
+   "materials": [
+    "CM-HALL-IC"
+   ],
+   "contract_lead_time_days": 70,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.9,
+   "freight_eur_per_order": 1800,
+   "typical_order_qty": 100000,
+   "lat": 5.41,
+   "lon": 100.33,
+   "city": "Penang",
+   "manufacturing_country": "MY",
+   "manufacturing_site": "Sensor IC backend",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-KA005",
+   "name": "Brno Plastics",
+   "country": "CZ",
+   "materials": [
+    "CM-SENSOR-HOUSING"
+   ],
+   "contract_lead_time_days": 8,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 1.7,
+   "freight_eur_per_order": 220,
+   "typical_order_qty": 20000,
+   "lat": 49.2,
+   "lon": 16.61,
+   "city": "Brno",
+   "manufacturing_country": "CZ",
+   "manufacturing_site": "Insert moulding",
+   "zone": "Europe"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "KA10",
+   "parent": "FG-BRAKE-CAL",
+   "component": "CM-CAL-CASTING",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "KA10",
+   "parent": "FG-BRAKE-CAL",
+   "component": "CM-PISTON",
+   "quantity": 2,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KA10",
+   "parent": "FG-BRAKE-CAL",
+   "component": "CM-SEAL-KIT",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KA10",
+   "parent": "FG-BRAKE-DISC",
+   "component": "CM-DISC-BLANK",
+   "quantity": 1,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "KA10",
+   "parent": "FG-ABS-SENSOR",
+   "component": "CM-HALL-IC",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KA10",
+   "parent": "FG-ABS-SENSOR",
+   "component": "CM-SENSOR-HOUSING",
+   "quantity": 1,
+   "scrap_pct": 1
+  }
+ ],
+ "stock": [
+  {
+   "plant": "KA21",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA21",
+   "quantity": 1520,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA22",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA22",
+   "quantity": 4160,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA23",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA23",
+   "quantity": 1890,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA21",
+   "material": "FG-BRAKE-DISC",
+   "batch": "BRAKE--KA21",
+   "quantity": 12480,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA22",
+   "material": "FG-BRAKE-DISC",
+   "batch": "BRAKE--KA22",
+   "quantity": 9840,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA23",
+   "material": "FG-BRAKE-DISC",
+   "batch": "BRAKE--KA23",
+   "quantity": 7200,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA21",
+   "material": "FG-ABS-SENSOR",
+   "batch": "ABS-SE-KA21",
+   "quantity": 21600,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA22",
+   "material": "FG-ABS-SENSOR",
+   "batch": "ABS-SE-KA22",
+   "quantity": 15360,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA23",
+   "material": "FG-ABS-SENSOR",
+   "batch": "ABS-SE-KA23",
+   "quantity": 12480,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-CAL-CASTING",
+   "batch": "CAL-CA-A",
+   "quantity": 16660,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-PISTON",
+   "batch": "PISTON-A",
+   "quantity": 42840,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-SEAL-KIT",
+   "batch": "SEAL-K-A",
+   "quantity": 8330,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-DISC-BLANK",
+   "batch": "DISC-B-A",
+   "quantity": 30996,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-HALL-IC",
+   "batch": "HALL-I-A",
+   "quantity": 9270,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-SENSOR-HOUSING",
+   "batch": "SENSOR-A",
+   "quantity": 22660,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-HALL-IC",
+   "batch": "HALL-I-Q",
+   "quantity": 2781.0,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "KA10",
+   "material": "CM-CAL-CASTING",
+   "batch": "CAL-CA-QI",
+   "quantity": 2499.0,
+   "status": "quality_inspection",
+   "expiry": null
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45KA00001",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-CAL-CASTING",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00002",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-CAL-CASTING",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-11-06",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00003",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-DISC-BLANK",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00004",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-DISC-BLANK",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-11-10",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00005",
+   "supplier": "Stuttgart Polymer Tech",
+   "material": "CM-PISTON",
+   "plant": "KA10",
+   "quantity": 87969,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00006",
+   "supplier": "Stuttgart Polymer Tech",
+   "material": "CM-PISTON",
+   "plant": "KA10",
+   "quantity": 87969,
+   "delivery_date": "2026-11-16",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00007",
+   "supplier": "Turin Sealing",
+   "material": "CM-SEAL-KIT",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-10-26",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00008",
+   "supplier": "Turin Sealing",
+   "material": "CM-SEAL-KIT",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-11-05",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00009",
+   "supplier": "Penang Semiconductor",
+   "material": "CM-HALL-IC",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00010",
+   "supplier": "Penang Semiconductor",
+   "material": "CM-HALL-IC",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-11-07",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45KA00011",
+   "supplier": "Brno Plastics",
+   "material": "CM-SENSOR-HOUSING",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45KA00012",
+   "supplier": "Brno Plastics",
+   "material": "CM-SENSOR-HOUSING",
+   "plant": "KA10",
+   "quantity": 43984,
+   "delivery_date": "2026-11-06",
+   "status": "unconfirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44KA00001",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-CAL-CASTING",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00002",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-CAL-CASTING",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00003",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-CAL-CASTING",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00004",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-DISC-BLANK",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00005",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-DISC-BLANK",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00006",
+   "supplier": "Ostrava Foundry",
+   "material": "CM-DISC-BLANK",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00007",
+   "supplier": "Stuttgart Polymer Tech",
+   "material": "CM-PISTON",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 87969,
+   "quantity_received": 87969,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00008",
+   "supplier": "Stuttgart Polymer Tech",
+   "material": "CM-PISTON",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 87969,
+   "quantity_received": 87969,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00009",
+   "supplier": "Stuttgart Polymer Tech",
+   "material": "CM-PISTON",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 87969,
+   "quantity_received": 87969,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00010",
+   "supplier": "Turin Sealing",
+   "material": "CM-SEAL-KIT",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00011",
+   "supplier": "Turin Sealing",
+   "material": "CM-SEAL-KIT",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00012",
+   "supplier": "Turin Sealing",
+   "material": "CM-SEAL-KIT",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00013",
+   "supplier": "Penang Semiconductor",
+   "material": "CM-HALL-IC",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00014",
+   "supplier": "Penang Semiconductor",
+   "material": "CM-HALL-IC",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 3518.72
+  },
+  {
+   "po": "44KA00015",
+   "supplier": "Penang Semiconductor",
+   "material": "CM-HALL-IC",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00016",
+   "supplier": "Brno Plastics",
+   "material": "CM-SENSOR-HOUSING",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00017",
+   "supplier": "Brno Plastics",
+   "material": "CM-SENSOR-HOUSING",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44KA00018",
+   "supplier": "Brno Plastics",
+   "material": "CM-SENSOR-HOUSING",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 43984,
+   "quantity_received": 43984,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1KA0001",
+   "plant": "KA10",
+   "material": "FG-BRAKE-CAL",
+   "quantity": 11900,
+   "finish_date": "2026-10-30",
+   "status": "released"
+  },
+  {
+   "order": "1KA0002",
+   "plant": "KA10",
+   "material": "FG-BRAKE-CAL",
+   "quantity": 15470.0,
+   "finish_date": "2026-11-08",
+   "status": "planned"
+  },
+  {
+   "order": "1KA0101",
+   "plant": "KA10",
+   "material": "FG-BRAKE-DISC",
+   "quantity": 22140,
+   "finish_date": "2026-10-28",
+   "status": "released"
+  },
+  {
+   "order": "1KA0102",
+   "plant": "KA10",
+   "material": "FG-BRAKE-DISC",
+   "quantity": 28780.0,
+   "finish_date": "2026-11-07",
+   "status": "planned"
+  },
+  {
+   "order": "1KA0201",
+   "plant": "KA10",
+   "material": "FG-ABS-SENSOR",
+   "quantity": 20600,
+   "finish_date": "2026-11-01",
+   "status": "released"
+  },
+  {
+   "order": "1KA0202",
+   "plant": "KA10",
+   "material": "FG-ABS-SENSOR",
+   "quantity": 26780.0,
+   "finish_date": "2026-11-13",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-KA0001",
+   "plant": "KA10",
+   "material": "CM-HALL-IC",
+   "batch": "HALL-I-Q",
+   "quantity": 2781.0,
+   "supplier": "Penang Semiconductor",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-KA0002",
+   "plant": "KA10",
+   "material": "CM-CAL-CASTING",
+   "batch": "CAL-CA-QI",
+   "quantity": 2499.0,
+   "supplier": "Ostrava Foundry",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-KA7700",
+   "customer": "OEM line feed Bratislava",
+   "warehouse": "KA21",
+   "material": "FG-BRAKE-CAL",
+   "quantity": 1900.0,
+   "requested_date": "2026-10-27",
+   "priority": "high"
+  },
+  {
+   "order": "SO-KA7701",
+   "customer": "Aftermarket ES",
+   "warehouse": "KA22",
+   "material": "FG-BRAKE-DISC",
+   "quantity": 3440.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-KA7702",
+   "customer": "OEM line feed Bursa",
+   "warehouse": "KA23",
+   "material": "FG-ABS-SENSOR",
+   "quantity": 1870.0,
+   "requested_date": "2026-11-01",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-KA7703",
+   "customer": "Aftermarket TR",
+   "warehouse": "KA21",
+   "material": "FG-BRAKE-CAL",
+   "quantity": 380.0,
+   "requested_date": "2026-10-27",
+   "priority": "high"
+  },
+  {
+   "order": "SO-KA7704",
+   "customer": "OEM customer Valencia",
+   "warehouse": "KA22",
+   "material": "FG-BRAKE-DISC",
+   "quantity": 3440.0,
+   "requested_date": "2026-10-28",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-KA7705",
+   "customer": "Fleet service EU",
+   "warehouse": "KA23",
+   "material": "FG-ABS-SENSOR",
+   "quantity": 1870.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-KA01",
+   "type": "stock_transfer",
+   "from": "KA21",
+   "to": "KA22",
+   "material": "FG-BRAKE-CAL",
+   "quantity": 780,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-KA02",
+   "type": "stock_transfer",
+   "from": "KA21",
+   "to": "KA23",
+   "material": "FG-BRAKE-DISC",
+   "quantity": 1200,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-KA03",
+   "type": "inbound",
+   "from": "V-KA001",
+   "to": "KA10",
+   "material": "CM-CAL-CASTING",
+   "quantity": 43984,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-29",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-KA-01",
+   "count_date": "2026-10-19",
+   "plant": "KA21",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA21",
+   "book_quantity": 1520,
+   "counted_quantity": 1480,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-KA-02",
+   "count_date": "2026-10-19",
+   "plant": "KA22",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA22",
+   "book_quantity": 4160,
+   "counted_quantity": 4143,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-KA-03",
+   "count_date": "2026-10-19",
+   "plant": "KA23",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA23",
+   "book_quantity": 1890,
+   "counted_quantity": 1814,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-KA-04",
+   "count_date": "2026-10-19",
+   "plant": "KA21",
+   "material": "FG-BRAKE-DISC",
+   "batch": "BRAKE--KA21",
+   "book_quantity": 12480,
+   "counted_quantity": 12480,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49KA0001",
+   "type": "goods_issue",
+   "plant": "KA21",
+   "material": "FG-BRAKE-CAL",
+   "batch": "BRAKE--KA21",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-BRAKE-CAL": {
+   "KA21": 380,
+   "KA22": 260,
+   "KA23": 210
+  },
+  "FG-BRAKE-DISC": {
+   "KA21": 520,
+   "KA22": 410,
+   "KA23": 300
+  },
+  "FG-ABS-SENSOR": {
+   "KA21": 900,
+   "KA22": 640,
+   "KA23": 520
+  }
+ },
+ "lanes": [
+  {
+   "from": "KA21",
+   "to": "KA22",
+   "lead_days": 2,
+   "cost_per_unit": 0.48,
+   "carbon_kg_per_unit": 0.068
+  },
+  {
+   "from": "KA21",
+   "to": "KA23",
+   "lead_days": 3,
+   "cost_per_unit": 0.49,
+   "carbon_kg_per_unit": 0.077
+  },
+  {
+   "from": "KA22",
+   "to": "KA21",
+   "lead_days": 3,
+   "cost_per_unit": 0.47,
+   "carbon_kg_per_unit": 0.066
+  },
+  {
+   "from": "KA22",
+   "to": "KA23",
+   "lead_days": 2,
+   "cost_per_unit": 0.45,
+   "carbon_kg_per_unit": 0.062
+  },
+  {
+   "from": "KA23",
+   "to": "KA21",
+   "lead_days": 2,
+   "cost_per_unit": 0.41,
+   "carbon_kg_per_unit": 0.067
+  },
+  {
+   "from": "KA23",
+   "to": "KA22",
+   "lead_days": 3,
+   "cost_per_unit": 0.52,
+   "carbon_kg_per_unit": 0.061
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Bursa Döküm",
+   "material": "CM-DISC-BLANK",
+   "unit_price_eur": 9.9,
+   "freight_eur_per_order": 900,
+   "typical_order_qty": 4000,
+   "quoted_lead_time_days": 16,
+   "qualified": true,
+   "country": "TR",
+   "city": "Bursa",
+   "lat": 40.18,
+   "lon": 29.07,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Pig iron & scrap steel",
+   "origin": "Silesia, Poland",
+   "country": "PL",
+   "lat": 50.3,
+   "lon": 19.0,
+   "feeds_supplier": "Ostrava Foundry",
+   "feeds_material": "CM-CAL-CASTING",
+   "share_of_material_pct": 90,
+   "transit_days": 2,
+   "transit_variability_days": 1,
+   "criticality": "medium",
+   "alternatives": "see sourcing plan",
+   "note": "energy-price exposure"
+  }
+ ]
+}

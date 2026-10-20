@@ -1,0 +1,1349 @@
+{
+ "snapshot": {
+  "id": "SAP-MV-2026-10-20T040000Z",
+  "source_system": "S4HANA-PHARMACEUTICAL-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "pharmaceutical",
+  "customer": "Medivia Pharma",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "PH10",
+   "name": "Cork Oral Solids Plant",
+   "type": "factory",
+   "country": "IE",
+   "lat": 51.9,
+   "lon": -8.47,
+   "city": "Cork",
+   "zone": "Europe",
+   "address": "Cork, IE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Nadia Sharma",
+     "email": "nadia.sharma@medivia-demo.example",
+     "phone": "+353 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Mei Andersen",
+     "email": "mei.andersen@medivia-demo.example",
+     "phone": "+353 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Marta Sharma",
+     "email": "marta.sharma@medivia-demo.example",
+     "phone": "+353 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "PH20",
+   "name": "Basel Sterile Fill Plant",
+   "type": "factory",
+   "country": "CH",
+   "lat": 47.56,
+   "lon": 7.59,
+   "city": "Basel",
+   "zone": "Europe",
+   "address": "Basel, CH (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Lukas Haddad",
+     "email": "lukas.haddad@medivia-demo.example",
+     "phone": "+41 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Elena Weber",
+     "email": "elena.weber@medivia-demo.example",
+     "phone": "+41 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Daniel Costa",
+     "email": "daniel.costa@medivia-demo.example",
+     "phone": "+41 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DP01",
+   "name": "Rotterdam Pharma DC (GDP)",
+   "type": "warehouse",
+   "country": "NL",
+   "lat": 51.92,
+   "lon": 4.48,
+   "city": "Rotterdam",
+   "zone": "Europe",
+   "address": "Rotterdam, NL (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Elena Andersen",
+     "email": "elena.andersen@medivia-demo.example",
+     "phone": "+31 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Pierre Moreau",
+     "email": "pierre.moreau@medivia-demo.example",
+     "phone": "+31 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Sofia Rossi",
+     "email": "sofia.rossi@medivia-demo.example",
+     "phone": "+31 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DP02",
+   "name": "Memphis US DC (GDP)",
+   "type": "warehouse",
+   "country": "US",
+   "lat": 35.15,
+   "lon": -90.05,
+   "city": "Memphis",
+   "zone": "North America",
+   "address": "Memphis, US (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Yuki Moreau",
+     "email": "yuki.moreau@medivia-demo.example",
+     "phone": "+1 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Marco Sharma",
+     "email": "marco.sharma@medivia-demo.example",
+     "phone": "+1 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Omar Chen",
+     "email": "omar.chen@medivia-demo.example",
+     "phone": "+1 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "DP03",
+   "name": "Singapore APAC DC (GDP)",
+   "type": "warehouse",
+   "country": "SG",
+   "lat": 1.35,
+   "lon": 103.82,
+   "city": "Singapore",
+   "zone": "Asia-Pacific",
+   "address": "Singapore, SG (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Elena Tanaka",
+     "email": "elena.tanaka@medivia-demo.example",
+     "phone": "+65 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Jonas Novak",
+     "email": "jonas.novak@medivia-demo.example",
+     "phone": "+65 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Mei Andersen",
+     "email": "mei.andersen@medivia-demo.example",
+     "phone": "+65 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-AMOX-500",
+   "description": "Amoxicillin 500 mg caps (box 21)",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 1.9,
+   "safety_stock": 6000
+  },
+  {
+   "code": "FG-METF-850",
+   "description": "Metformin 850 mg tabs (box 60)",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 1.4,
+   "safety_stock": 8000
+  },
+  {
+   "code": "FG-INSULIN-PEN",
+   "description": "Insulin glargine pen 3 ml (cold chain)",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 7.5,
+   "safety_stock": 2500
+  },
+  {
+   "code": "API-AMOXICILLIN",
+   "description": "Amoxicillin trihydrate API",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 48.0,
+   "safety_stock": 300
+  },
+  {
+   "code": "API-METFORMIN",
+   "description": "Metformin HCl API",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 9.5,
+   "safety_stock": 1200
+  },
+  {
+   "code": "EX-GELATIN-CAPS",
+   "description": "Hard gelatin capsules",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.004,
+   "safety_stock": 600000
+  },
+  {
+   "code": "PK-BLISTER-FOIL",
+   "description": "Alu blister foil",
+   "type": "PACK",
+   "uom": "KG",
+   "unit_cost": 14.0,
+   "safety_stock": 150
+  },
+  {
+   "code": "PK-CARTON-PH",
+   "description": "Pharma folding carton",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.07,
+   "safety_stock": 40000
+  },
+  {
+   "code": "API-INSULIN",
+   "description": "Insulin glargine API",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 98000.0,
+   "safety_stock": 0.02
+  },
+  {
+   "code": "PK-PEN-INJECTOR",
+   "description": "Pen injector device",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 1.8,
+   "safety_stock": 15000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-MV001",
+   "name": "Hyderabad Fine Chem",
+   "country": "IN",
+   "materials": [
+    "API-AMOXICILLIN"
+   ],
+   "contract_lead_time_days": 60,
+   "otif_target_pct": 92,
+   "approved": true,
+   "secondary_source": "Shijiazhuang API Works",
+   "unit_price_eur": 48.0,
+   "freight_eur_per_order": 2200,
+   "typical_order_qty": 2000,
+   "lat": 17.39,
+   "lon": 78.49,
+   "city": "Hyderabad",
+   "manufacturing_country": "IN",
+   "manufacturing_site": "API synthesis (GMP)",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-MV002",
+   "name": "Gujarat API Ltd",
+   "country": "IN",
+   "materials": [
+    "API-METFORMIN"
+   ],
+   "contract_lead_time_days": 55,
+   "otif_target_pct": 93,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 9.5,
+   "freight_eur_per_order": 2000,
+   "typical_order_qty": 8000,
+   "lat": 22.31,
+   "lon": 73.18,
+   "city": "Vadodara",
+   "manufacturing_country": "IN",
+   "manufacturing_site": "API synthesis (GMP)",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-MV003",
+   "name": "Capsulas Ibéricas",
+   "country": "ES",
+   "materials": [
+    "EX-GELATIN-CAPS"
+   ],
+   "contract_lead_time_days": 14,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.004,
+   "freight_eur_per_order": 400,
+   "typical_order_qty": 2000000,
+   "lat": 41.39,
+   "lon": 2.17,
+   "city": "Barcelona",
+   "manufacturing_country": "ES",
+   "manufacturing_site": "Capsule moulding",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-MV004",
+   "name": "Alufoil Westfalen",
+   "country": "DE",
+   "materials": [
+    "PK-BLISTER-FOIL"
+   ],
+   "contract_lead_time_days": 18,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": "Amcor Benelux",
+   "unit_price_eur": 14.0,
+   "freight_eur_per_order": 350,
+   "typical_order_qty": 1500,
+   "lat": 52.02,
+   "lon": 8.53,
+   "city": "Bielefeld",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "Foil lamination",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-MV005",
+   "name": "Dublin Pharma Print",
+   "country": "IE",
+   "materials": [
+    "PK-CARTON-PH"
+   ],
+   "contract_lead_time_days": 7,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.07,
+   "freight_eur_per_order": 200,
+   "typical_order_qty": 100000,
+   "lat": 53.35,
+   "lon": -6.26,
+   "city": "Dublin",
+   "manufacturing_country": "IE",
+   "manufacturing_site": "GMP carton printing",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-MV006",
+   "name": "Copenhagen BioAPI",
+   "country": "DK",
+   "materials": [
+    "API-INSULIN"
+   ],
+   "contract_lead_time_days": 70,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 98000.0,
+   "freight_eur_per_order": 5000,
+   "typical_order_qty": 0.2,
+   "lat": 55.68,
+   "lon": 11.09,
+   "city": "Kalundborg",
+   "manufacturing_country": "DK",
+   "manufacturing_site": "Recombinant API (cold chain)",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-MV007",
+   "name": "Ostrava Devices",
+   "country": "CZ",
+   "materials": [
+    "PK-PEN-INJECTOR"
+   ],
+   "contract_lead_time_days": 28,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 1.8,
+   "freight_eur_per_order": 900,
+   "typical_order_qty": 40000,
+   "lat": 49.82,
+   "lon": 18.26,
+   "city": "Ostrava",
+   "manufacturing_country": "CZ",
+   "manufacturing_site": "Injector assembly (ISO 13485)",
+   "zone": "Europe"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "PH10",
+   "parent": "FG-AMOX-500",
+   "component": "API-AMOXICILLIN",
+   "quantity": 0.0105,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-AMOX-500",
+   "component": "EX-GELATIN-CAPS",
+   "quantity": 21,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-AMOX-500",
+   "component": "PK-BLISTER-FOIL",
+   "quantity": 0.003,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-AMOX-500",
+   "component": "PK-CARTON-PH",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-METF-850",
+   "component": "API-METFORMIN",
+   "quantity": 0.051,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-METF-850",
+   "component": "PK-BLISTER-FOIL",
+   "quantity": 0.006,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "PH10",
+   "parent": "FG-METF-850",
+   "component": "PK-CARTON-PH",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PH20",
+   "parent": "FG-INSULIN-PEN",
+   "component": "API-INSULIN",
+   "quantity": 1.08e-05,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "PH20",
+   "parent": "FG-INSULIN-PEN",
+   "component": "PK-PEN-INJECTOR",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "PH20",
+   "parent": "FG-INSULIN-PEN",
+   "component": "PK-CARTON-PH",
+   "quantity": 1,
+   "scrap_pct": 1
+  }
+ ],
+ "stock": [
+  {
+   "plant": "DP01",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP01",
+   "quantity": 28000,
+   "status": "unrestricted",
+   "expiry": "2028-02-29"
+  },
+  {
+   "plant": "DP02",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP02",
+   "quantity": 5400,
+   "status": "unrestricted",
+   "expiry": "2028-04-08"
+  },
+  {
+   "plant": "DP03",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP03",
+   "quantity": 15000,
+   "status": "unrestricted",
+   "expiry": "2029-02-25"
+  },
+  {
+   "plant": "DP01",
+   "material": "FG-METF-850",
+   "batch": "METF-8-DP01",
+   "quantity": 51000,
+   "status": "unrestricted",
+   "expiry": "2029-01-08"
+  },
+  {
+   "plant": "DP02",
+   "material": "FG-METF-850",
+   "batch": "METF-8-DP02",
+   "quantity": 50400,
+   "status": "unrestricted",
+   "expiry": "2028-12-29"
+  },
+  {
+   "plant": "DP03",
+   "material": "FG-METF-850",
+   "batch": "METF-8-DP03",
+   "quantity": 21600,
+   "status": "unrestricted",
+   "expiry": "2027-10-26"
+  },
+  {
+   "plant": "DP01",
+   "material": "FG-INSULIN-PEN",
+   "batch": "INSULI-DP01",
+   "quantity": 10080,
+   "status": "unrestricted",
+   "expiry": "2028-09-16"
+  },
+  {
+   "plant": "DP02",
+   "material": "FG-INSULIN-PEN",
+   "batch": "INSULI-DP02",
+   "quantity": 9500,
+   "status": "unrestricted",
+   "expiry": "2028-02-06"
+  },
+  {
+   "plant": "DP03",
+   "material": "FG-INSULIN-PEN",
+   "batch": "INSULI-DP03",
+   "quantity": 6240,
+   "status": "unrestricted",
+   "expiry": "2028-03-08"
+  },
+  {
+   "plant": "PH10",
+   "material": "API-AMOXICILLIN",
+   "batch": "-AMOXI-A",
+   "quantity": 986.58,
+   "status": "unrestricted",
+   "expiry": "2029-03-08"
+  },
+  {
+   "plant": "PH10",
+   "material": "EX-GELATIN-CAPS",
+   "batch": "GELATI-A",
+   "quantity": 1973160,
+   "status": "unrestricted",
+   "expiry": "2028-01-26"
+  },
+  {
+   "plant": "PH10",
+   "material": "PK-BLISTER-FOIL",
+   "batch": "BLISTE-A",
+   "quantity": 281.88,
+   "status": "unrestricted",
+   "expiry": "2028-11-15"
+  },
+  {
+   "plant": "PH10",
+   "material": "PK-CARTON-PH",
+   "batch": "CARTON-A",
+   "quantity": 36540,
+   "status": "unrestricted",
+   "expiry": "2028-12-18"
+  },
+  {
+   "plant": "PH10",
+   "material": "API-METFORMIN",
+   "batch": "-METFO-A",
+   "quantity": 2013.48,
+   "status": "unrestricted",
+   "expiry": "2028-02-05"
+  },
+  {
+   "plant": "PH20",
+   "material": "API-INSULIN",
+   "batch": "-INSUL-A",
+   "quantity": 0.206,
+   "status": "unrestricted",
+   "expiry": "2028-02-03"
+  },
+  {
+   "plant": "PH20",
+   "material": "PK-PEN-INJECTOR",
+   "batch": "PEN-IN-A",
+   "quantity": 4770,
+   "status": "unrestricted",
+   "expiry": "2027-08-26"
+  },
+  {
+   "plant": "PH20",
+   "material": "PK-CARTON-PH",
+   "batch": "CARTON-A",
+   "quantity": 4770,
+   "status": "unrestricted",
+   "expiry": "2028-03-12"
+  },
+  {
+   "plant": "PH10",
+   "material": "API-AMOXICILLIN",
+   "batch": "-AMOXI-Q",
+   "quantity": 295.974,
+   "status": "blocked",
+   "expiry": "2029-01-15"
+  },
+  {
+   "plant": "PH10",
+   "material": "API-AMOXICILLIN",
+   "batch": "-AMOXI-QI",
+   "quantity": 147.987,
+   "status": "quality_inspection",
+   "expiry": "2028-11-09"
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45MV00001",
+   "supplier": "Hyderabad Fine Chem",
+   "material": "API-AMOXICILLIN",
+   "plant": "PH10",
+   "quantity": 917.941,
+   "delivery_date": "2026-10-26",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00002",
+   "supplier": "Hyderabad Fine Chem",
+   "material": "API-AMOXICILLIN",
+   "plant": "PH10",
+   "quantity": 917.941,
+   "delivery_date": "2026-11-13",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00003",
+   "supplier": "Gujarat API Ltd",
+   "material": "API-METFORMIN",
+   "plant": "PH10",
+   "quantity": 4458.573,
+   "delivery_date": "2026-10-26",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00004",
+   "supplier": "Gujarat API Ltd",
+   "material": "API-METFORMIN",
+   "plant": "PH10",
+   "quantity": 4458.573,
+   "delivery_date": "2026-11-15",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00005",
+   "supplier": "Capsulas Ibéricas",
+   "material": "EX-GELATIN-CAPS",
+   "plant": "PH10",
+   "quantity": 1835883,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00006",
+   "supplier": "Capsulas Ibéricas",
+   "material": "EX-GELATIN-CAPS",
+   "plant": "PH10",
+   "quantity": 1835883,
+   "delivery_date": "2026-11-18",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45MV00007",
+   "supplier": "Alufoil Westfalen",
+   "material": "PK-BLISTER-FOIL",
+   "plant": "PH10",
+   "quantity": 262.269,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00008",
+   "supplier": "Alufoil Westfalen",
+   "material": "PK-BLISTER-FOIL",
+   "plant": "PH10",
+   "quantity": 262.269,
+   "delivery_date": "2026-11-08",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00009",
+   "supplier": "Dublin Pharma Print",
+   "material": "PK-CARTON-PH",
+   "plant": "PH10",
+   "quantity": 87423,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00010",
+   "supplier": "Dublin Pharma Print",
+   "material": "PK-CARTON-PH",
+   "plant": "PH10",
+   "quantity": 87423,
+   "delivery_date": "2026-11-05",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00011",
+   "supplier": "Copenhagen BioAPI",
+   "material": "API-INSULIN",
+   "plant": "PH20",
+   "quantity": 0.092,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00012",
+   "supplier": "Copenhagen BioAPI",
+   "material": "API-INSULIN",
+   "plant": "PH20",
+   "quantity": 0.092,
+   "delivery_date": "2026-11-10",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00013",
+   "supplier": "Ostrava Devices",
+   "material": "PK-PEN-INJECTOR",
+   "plant": "PH20",
+   "quantity": 8533,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45MV00014",
+   "supplier": "Ostrava Devices",
+   "material": "PK-PEN-INJECTOR",
+   "plant": "PH20",
+   "quantity": 8533,
+   "delivery_date": "2026-11-17",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44MV00001",
+   "supplier": "Hyderabad Fine Chem",
+   "material": "API-AMOXICILLIN",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 917.941,
+   "quantity_received": 917.941,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00002",
+   "supplier": "Hyderabad Fine Chem",
+   "material": "API-AMOXICILLIN",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 917.941,
+   "quantity_received": 917.941,
+   "quality_rejected": 73.435
+  },
+  {
+   "po": "44MV00003",
+   "supplier": "Hyderabad Fine Chem",
+   "material": "API-AMOXICILLIN",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 917.941,
+   "quantity_received": 917.941,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00004",
+   "supplier": "Gujarat API Ltd",
+   "material": "API-METFORMIN",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 4458.573,
+   "quantity_received": 4458.573,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00005",
+   "supplier": "Gujarat API Ltd",
+   "material": "API-METFORMIN",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 4458.573,
+   "quantity_received": 4458.573,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00006",
+   "supplier": "Gujarat API Ltd",
+   "material": "API-METFORMIN",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 4458.573,
+   "quantity_received": 4458.573,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00007",
+   "supplier": "Capsulas Ibéricas",
+   "material": "EX-GELATIN-CAPS",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 1835883,
+   "quantity_received": 1835883,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00008",
+   "supplier": "Capsulas Ibéricas",
+   "material": "EX-GELATIN-CAPS",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 1835883,
+   "quantity_received": 1835883,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00009",
+   "supplier": "Capsulas Ibéricas",
+   "material": "EX-GELATIN-CAPS",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 1835883,
+   "quantity_received": 1835883,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00010",
+   "supplier": "Alufoil Westfalen",
+   "material": "PK-BLISTER-FOIL",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 262.269,
+   "quantity_received": 262.269,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00011",
+   "supplier": "Alufoil Westfalen",
+   "material": "PK-BLISTER-FOIL",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 262.269,
+   "quantity_received": 262.269,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00012",
+   "supplier": "Alufoil Westfalen",
+   "material": "PK-BLISTER-FOIL",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 262.269,
+   "quantity_received": 262.269,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00013",
+   "supplier": "Dublin Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 87423,
+   "quantity_received": 87423,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00014",
+   "supplier": "Dublin Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 87423,
+   "quantity_received": 87423,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00015",
+   "supplier": "Dublin Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 87423,
+   "quantity_received": 87423,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00016",
+   "supplier": "Copenhagen BioAPI",
+   "material": "API-INSULIN",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 0.092,
+   "quantity_received": 0.092,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00017",
+   "supplier": "Copenhagen BioAPI",
+   "material": "API-INSULIN",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 0.092,
+   "quantity_received": 0.092,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00018",
+   "supplier": "Copenhagen BioAPI",
+   "material": "API-INSULIN",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 0.092,
+   "quantity_received": 0.092,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44MV00019",
+   "supplier": "Ostrava Devices",
+   "material": "PK-PEN-INJECTOR",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00020",
+   "supplier": "Ostrava Devices",
+   "material": "PK-PEN-INJECTOR",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44MV00021",
+   "supplier": "Ostrava Devices",
+   "material": "PK-PEN-INJECTOR",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1MV0001",
+   "plant": "PH10",
+   "material": "FG-AMOX-500",
+   "quantity": 52200,
+   "finish_date": "2026-10-26",
+   "status": "released"
+  },
+  {
+   "order": "1MV0002",
+   "plant": "PH10",
+   "material": "FG-AMOX-500",
+   "quantity": 67860.0,
+   "finish_date": "2026-11-11",
+   "status": "planned"
+  },
+  {
+   "order": "1MV0101",
+   "plant": "PH10",
+   "material": "FG-METF-850",
+   "quantity": 56400,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1MV0102",
+   "plant": "PH10",
+   "material": "FG-METF-850",
+   "quantity": 73320.0,
+   "finish_date": "2026-11-10",
+   "status": "planned"
+  },
+  {
+   "order": "1MV0201",
+   "plant": "PH20",
+   "material": "FG-INSULIN-PEN",
+   "quantity": 10600,
+   "finish_date": "2026-10-27",
+   "status": "released"
+  },
+  {
+   "order": "1MV0202",
+   "plant": "PH20",
+   "material": "FG-INSULIN-PEN",
+   "quantity": 13780.0,
+   "finish_date": "2026-11-06",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-MV0001",
+   "plant": "PH10",
+   "material": "API-AMOXICILLIN",
+   "batch": "-AMOXI-Q",
+   "quantity": 295.974,
+   "supplier": "Hyderabad Fine Chem",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-MV0002",
+   "plant": "PH10",
+   "material": "API-AMOXICILLIN",
+   "batch": "-AMOXI-QI",
+   "quantity": 147.987,
+   "supplier": "Hyderabad Fine Chem",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-MV7700",
+   "customer": "NHS Supply Chain",
+   "warehouse": "DP01",
+   "material": "FG-AMOX-500",
+   "quantity": 35000.0,
+   "requested_date": "2026-11-01",
+   "priority": "high"
+  },
+  {
+   "order": "SO-MV7701",
+   "customer": "McKesson US",
+   "warehouse": "DP02",
+   "material": "FG-METF-850",
+   "quantity": 7560.0,
+   "requested_date": "2026-10-28",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-MV7702",
+   "customer": "Zuellig Pharma",
+   "warehouse": "DP03",
+   "material": "FG-INSULIN-PEN",
+   "quantity": 1560.0,
+   "requested_date": "2026-10-30",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-MV7703",
+   "customer": "Phoenix Group",
+   "warehouse": "DP01",
+   "material": "FG-AMOX-500",
+   "quantity": 7000.0,
+   "requested_date": "2026-10-27",
+   "priority": "high"
+  },
+  {
+   "order": "SO-MV7704",
+   "customer": "Cardinal Health",
+   "warehouse": "DP02",
+   "material": "FG-METF-850",
+   "quantity": 12600.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-MV7705",
+   "customer": "Alliance Healthcare",
+   "warehouse": "DP03",
+   "material": "FG-INSULIN-PEN",
+   "quantity": 1560.0,
+   "requested_date": "2026-11-03",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-MV01",
+   "type": "stock_transfer",
+   "from": "DP01",
+   "to": "DP02",
+   "material": "FG-AMOX-500",
+   "quantity": 2700,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-MV02",
+   "type": "stock_transfer",
+   "from": "DP01",
+   "to": "DP03",
+   "material": "FG-METF-850",
+   "quantity": 3600,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-MV03",
+   "type": "inbound",
+   "from": "V-MV001",
+   "to": "PH10",
+   "material": "API-AMOXICILLIN",
+   "quantity": 917.941,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-26",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-MV-01",
+   "count_date": "2026-10-19",
+   "plant": "DP01",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP01",
+   "book_quantity": 28000,
+   "counted_quantity": 27960,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-MV-02",
+   "count_date": "2026-10-19",
+   "plant": "DP02",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP02",
+   "book_quantity": 5400,
+   "counted_quantity": 5378,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-MV-03",
+   "count_date": "2026-10-19",
+   "plant": "DP03",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP03",
+   "book_quantity": 15000,
+   "counted_quantity": 14400,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-MV-04",
+   "count_date": "2026-10-19",
+   "plant": "DP01",
+   "material": "FG-METF-850",
+   "batch": "METF-8-DP01",
+   "book_quantity": 51000,
+   "counted_quantity": 51000,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49MV0001",
+   "type": "goods_issue",
+   "plant": "DP01",
+   "material": "FG-AMOX-500",
+   "batch": "AMOX-5-DP01",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-AMOX-500": {
+   "DP01": 1400,
+   "DP02": 900,
+   "DP03": 600
+  },
+  "FG-METF-850": {
+   "DP01": 1700,
+   "DP02": 2100,
+   "DP03": 900
+  },
+  "FG-INSULIN-PEN": {
+   "DP01": 420,
+   "DP02": 380,
+   "DP03": 260
+  }
+ },
+ "lanes": [
+  {
+   "from": "DP01",
+   "to": "DP02",
+   "lead_days": 14,
+   "cost_per_unit": 2.06,
+   "carbon_kg_per_unit": 0.449
+  },
+  {
+   "from": "DP01",
+   "to": "DP03",
+   "lead_days": 14,
+   "cost_per_unit": 1.68,
+   "carbon_kg_per_unit": 0.501
+  },
+  {
+   "from": "DP02",
+   "to": "DP01",
+   "lead_days": 21,
+   "cost_per_unit": 1.82,
+   "carbon_kg_per_unit": 0.457
+  },
+  {
+   "from": "DP02",
+   "to": "DP03",
+   "lead_days": 9,
+   "cost_per_unit": 2.03,
+   "carbon_kg_per_unit": 0.519
+  },
+  {
+   "from": "DP03",
+   "to": "DP01",
+   "lead_days": 9,
+   "cost_per_unit": 1.98,
+   "carbon_kg_per_unit": 0.532
+  },
+  {
+   "from": "DP03",
+   "to": "DP02",
+   "lead_days": 9,
+   "cost_per_unit": 1.78,
+   "carbon_kg_per_unit": 0.44
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Shijiazhuang API Works",
+   "material": "API-AMOXICILLIN",
+   "unit_price_eur": 41.0,
+   "freight_eur_per_order": 3500,
+   "typical_order_qty": 2000,
+   "quoted_lead_time_days": 70,
+   "qualified": false,
+   "country": "CN",
+   "city": "Shijiazhuang",
+   "lat": 38.04,
+   "lon": 114.51,
+   "zone": "Asia-Pacific",
+   "reference": "qualification in progress"
+  },
+  {
+   "supplier": "Amcor Benelux",
+   "material": "PK-BLISTER-FOIL",
+   "unit_price_eur": 14.9,
+   "freight_eur_per_order": 320,
+   "typical_order_qty": 1500,
+   "quoted_lead_time_days": 12,
+   "qualified": true,
+   "country": "BE",
+   "city": "Ghent",
+   "lat": 51.05,
+   "lon": 3.72,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Penicillin intermediate 6-APA",
+   "origin": "Hebei, China",
+   "country": "CN",
+   "lat": 38.0,
+   "lon": 114.5,
+   "feeds_supplier": "Hyderabad Fine Chem",
+   "feeds_material": "API-AMOXICILLIN",
+   "share_of_material_pct": 60,
+   "transit_days": 30,
+   "transit_variability_days": 10,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "concentrated global supply; export controls risk"
+  }
+ ]
+}

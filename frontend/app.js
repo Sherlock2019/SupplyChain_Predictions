@@ -1,0 +1,1096 @@
+/* SPARC — Smart Supply Chain Performer Copilot — application. Vanilla JS; every call goes through the governed FastAPI gateway. */
+(() => {
+  const { esc, fmt, statusBadge } = window.Charts;
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const local = {
+    get(k) { try { return localStorage.getItem(k) || ''; } catch { return ''; } },
+    set(k, v) { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch { /* storage unavailable */ } },
+  };
+  const session = {
+    get(k) { try { return sessionStorage.getItem(k) || ''; } catch { return ''; } },
+    set(k, v) { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch { /* storage unavailable */ } },
+  };
+  const state = { key: session.get('apiKey'), role: '', cfg: {}, insights: [], filter: 'all', recFilter: 'pending_review', persona: local.get('persona'), focus: local.get('focus'), product: '', kinds: {}, products: null,
+    tenant: local.get('tenant'), catalogue: null, snapshot: null, sites: null, site: local.get('site') };
+
+  // ------------------------------------------------------------------ helpers
+  const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 4200); };
+  const chip = (text) => `<span class="chip">${esc(text)}</span>`;
+  const STATUS_OF = {
+    ready: 'good', on_track: 'good', matched: 'good', covered: 'good', accepted: 'good', executed: 'good', up: 'good', low: 'good', released: 'good', explained: 'info',
+    at_risk: 'warning', depends_on_inbound: 'warning', within_tolerance: 'info', medium: 'warning', timing_gap: 'warning', order_this_week: 'warning', inspection: 'warning',
+    replenish_safety_stock: 'info', plan: 'info', pending_review: 'info', disabled: 'info', not_configured: 'info',
+    not_ready: 'critical', high: 'critical', short: 'critical', late: 'critical', investigate: 'critical', down: 'critical', rejected: 'critical', blocked: 'critical', expired: 'critical', model_missing: 'warning',
+  };
+  // Status = color + icon + label, never color alone.
+  const pill = (level, label) => { const s = window.Charts.STATUS[level] || window.Charts.STATUS.info; return `<span class="status" style="--dot:${s.color}"><i></i>${s.icon} ${esc(label ?? s.label)}</span>`; };
+  const badge = (value, label) => pill(STATUS_OF[value] || 'info', label ?? String(value).replaceAll('_', ' '));
+  const table = (cols, rows, opts = {}) => (rows.length
+    ? `<div class="scroll"><table><thead><tr>${cols.map((c) => `<th class="${c[2] || ''}">${esc(c[0])}</th>`).join('')}</tr></thead><tbody>${rows.map((r, i) => `<tr${opts.click ? ` class="clickable" data-i="${i}"` : ''}>${cols.map((c) => `<td class="${c[2] || ''}">${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+    : '<div class="empty">No rows.</div>');
+  const num = (v, d = 0) => (v === null || v === undefined || v === '' ? '—' : Number(v).toLocaleString(undefined, { maximumFractionDigits: d }));
+
+  function md(text) {
+    const lines = esc(text || '').split('\n');
+    let html = '', list = null;
+    const inline = (s) => s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    const close = () => { if (list) { html += `</${list}>`; list = null; } };
+    for (const raw of lines) {
+      const line = raw.trimEnd(); let m;
+      if ((m = line.match(/^#{1,4}\s+(.*)/))) { close(); html += `<h4>${inline(m[1])}</h4>`; }
+      else if ((m = line.match(/^\s*[-*]\s+(.*)/))) { if (list !== 'ul') { close(); list = 'ul'; html += '<ul>'; } html += `<li>${inline(m[1])}</li>`; }
+      else if ((m = line.match(/^\s*\d+\.\s+(.*)/))) { if (list !== 'ol') { close(); list = 'ol'; html += '<ol>'; } html += `<li>${inline(m[1])}</li>`; }
+      else if (!line.trim()) close();
+      else { close(); html += `<p>${inline(line)}</p>`; }
+    }
+    close();
+    return `<div class="md">${html}</div>`;
+  }
+
+  async function api(path, opts = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(state.key ? { 'X-API-Key': state.key } : {}), ...(state.tenant ? { 'X-Tenant': state.tenant } : {}) };
+    const res = await fetch(path, { method: opts.method || (opts.body ? 'POST' : 'GET'), headers, body: opts.body ? JSON.stringify(opts.body) : undefined });
+    const text = await res.text();
+    let data; try { data = text ? JSON.parse(text) : {}; } catch { data = { detail: text }; }
+    if (!res.ok) throw new Error(`${res.status}: ${data?.error?.message || (typeof data?.detail === 'string' ? data.detail : JSON.stringify(data?.detail || data)).slice(0, 300)}`);
+    return data;
+  }
+  async function busy(button, fn) {
+    if (!button) return fn();
+    const label = button.innerHTML;
+    button.disabled = true; button.innerHTML = `<span class="spinner"></span>${label}`;
+    try { return await fn(); } catch (e) { toast(e.message); return null; } finally { button.disabled = false; button.innerHTML = label; }
+  }
+  const formData = (form) => Object.fromEntries(new FormData(form).entries());
+  function modal(title, html) {
+    const back = document.createElement('div');
+    back.className = 'modal-backdrop';
+    back.innerHTML = `<div class="modal" role="dialog" aria-label="${esc(title)}"><h2>${esc(title)}</h2>${html}<div class="row" style="justify-content:flex-end;margin-top:14px"><button class="ghost" data-close>Close</button></div></div>`;
+    back.addEventListener('click', (e) => { if (e.target === back || e.target.matches('[data-close]')) back.remove(); });
+    document.body.appendChild(back);
+    return back;
+  }
+  function kpiTiles(target, kpis) {
+    const colors = { critical: 'var(--critical)', warning: 'var(--warning)', good: 'var(--good)', info: 'var(--info)' };
+    const flags = { critical: ['Act now', 'var(--critical-text)', 'var(--critical-soft)'], warning: ['Watch', 'var(--ink)', 'color-mix(in srgb, var(--warning) 22%, transparent)'] };
+    (typeof target === 'string' ? $(target) : target).innerHTML = kpis.map((k) => `<div class="kpi" style="--kpi-color:${colors[k.status] || 'var(--axis)'}"><div class="label"><i></i>${esc(k.label)}${flags[k.status] ? `<span class="flag" style="--flag-text:${flags[k.status][1]};--flag-bg:${flags[k.status][2]}">${flags[k.status][0]}</span>` : ''}</div>
+      <div class="value">${k.value === null || k.value === undefined ? '—' : k.unit === '€' ? '€' + num(k.value) : num(k.value, 1) + (k.unit ? esc(k.unit) : '')}</div>${k.hint ? `<div class="hint">${esc(k.hint)}</div>` : ''}</div>`).join('');
+  }
+  function renderChart(spec) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    if (spec.type === 'bar' && spec.rows?.length && spec.rows.every((r) => !r.value)) {  // nothing to plot yet: say so instead of drawing empty axes
+      card.innerHTML = `<h2>${esc(spec.title)}</h2><p class="sub">${esc(spec.subtitle || '')}</p><div class="empty">Nothing here yet for this selection.</div>`;
+      return card;
+    }
+    card.appendChild(window.Charts[spec.type](spec));
+    return card;
+  }
+
+  // ------------------------------------------------------------------ theme, nav, auth
+  const applyTheme = (t) => { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
+  applyTheme(local.get('theme'));
+  $('#theme-toggle').addEventListener('click', () => {
+    const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = dark ? 'light' : 'dark'; local.set('theme', next); applyTheme(next);
+  });
+  $('#menu-toggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+
+  const PAGES = {
+    command: ['Command center', loadCommand], dashboard: ['My dashboard', loadDashboard], products: ['Product 360', loadProducts], sites: ['Warehouse 360', loadSites],
+    map: ['Network map', loadMap],
+    inventory: ['Inventory & balancing', () => { if (!$('#balance-out').innerHTML) $('#form-balance').requestSubmit(); }],
+    sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
+    suppliers: ['Suppliers, quality & logistics', loadSuppliersPage], approvals: ['Approvals & execution', loadApprovals], watches: ['Watchlists', loadWatches],
+    chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', null],
+    platform: ['Status & access', loadPlatform],
+  };
+  function route() {
+    const [page, arg, arg2] = (location.hash || '#command').slice(1).split('/');
+    // Deep links: #dashboard/<persona>[/<material>], #products/<material>
+    if (page === 'dashboard' && arg) { state.persona = arg; local.set('persona', arg); }
+    if (page === 'dashboard' && arg2 !== undefined) { state.focus = arg2.toUpperCase(); local.set('focus', state.focus); }
+    if (page === 'products' && arg) state.product = arg.toUpperCase();
+    if (page === 'sites' && arg) { state.site = arg.toUpperCase(); local.set('site', state.site); }
+    const [title, loader] = PAGES[page] || PAGES.command;
+    $$('.page').forEach((p) => p.classList.toggle('active', p.id === `page-${page}`));
+    $$('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.page === page));
+    $('#page-title').textContent = title;
+    renderPageActions(page in PAGES ? page : 'command');
+    $('#sidebar').classList.remove('open');
+    if (loader && state.key) loader();
+  }
+  // One clear primary call to action per page (filled), plus at most one secondary (tinted).
+  const PAGE_ACTIONS = {
+    command: () => [['Refresh', 'link', loadCommand], ['Review approvals', 'ghost', () => go('approvals')]],  // the spotlight owns the primary CTA
+    dashboard: () => [['Ask about this view', 'ghost', () => openDrawer(`Summarise the ${state.persona} dashboard${state.focus ? ` for ${state.focus}` : ''} and tell me the first thing to do`)],
+      ['Open product detail', 'arrow', () => go(state.focus ? `products/${state.focus}` : 'products')]],
+    products: () => [['Ask about this product', 'ghost', () => openDrawer(`What should I do about ${state.product} this week?`)],
+      ['Plan stock transfer', 'arrow', () => act({ kind: 'stock_balance', params: { material: state.product } })]],
+    sites: () => [['See on map', 'ghost', () => go('map')], ['Ask about this site', 'arrow', () => openDrawer(`What needs attention at ${state.site} this week?`)]],
+    map: () => [['Ask about suppliers', 'ghost', () => openDrawer('Which suppliers are delivering later than SAP promises and what should we do?')], ['Open warehouses', 'arrow', () => go('sites')]],
+    approvals: () => [['Refresh', 'ghost', loadApprovals]],
+    watches: () => [['Check now', '', loadWatches]],
+    chat: () => [['New conversation', '', () => $('#new-thread').click()]],
+    compare: () => [['New conversations', 'ghost', () => $('#compare-reset').click()]],
+  };
+  function renderPageActions(page) {
+    const host = $('#page-actions');
+    const items = (PAGE_ACTIONS[page] || (() => [['Ask copilot', 'ghost', () => openDrawer()]]))();
+    host.innerHTML = items.map(([label, cls], i) => `<button type="button" class="${cls}" data-pa="${i}">${esc(label)}</button>`).join('');
+    $$('[data-pa]', host).forEach((b) => b.addEventListener('click', () => busy(b, async () => items[Number(b.dataset.pa)][2]())));
+  }
+  window.addEventListener('hashchange', route);
+  const go = (page) => { if (location.hash === `#${page}`) route(); else location.hash = page; };
+
+  async function signIn(key, quiet) {
+    state.key = key; session.set('apiKey', key);
+    try { await api('/api/v1/kpis'); } catch (e) { state.key = ''; session.set('apiKey', ''); setRole(''); if (!quiet) toast('Sign-in failed: ' + e.message); return; }
+    try { await api('/api/v1/audit?limit=1'); setRole('manager'); } catch { setRole('planner'); }
+    await loadSuppliers();
+    envLine();
+    refreshBadges();
+    route();
+  }
+  function setRole(role) {
+    state.role = role;
+    $('#role-chip').textContent = role || 'signed out';
+    if (!state.persona) state.persona = role === 'manager' ? 'executive' : 'inventory';
+  }
+  $('#login').addEventListener('submit', (e) => { e.preventDefault(); const k = $('#api-key').value.trim(); if (k) signIn(k); $('#api-key').value = ''; });
+
+  // ================================================================ COMMAND CENTER
+  const SEV = { critical: 'critical', warning: 'warning', info: 'info', good: 'good' };
+  async function loadCommand() {
+    const hour = new Date().getHours();
+    $('#page-title').textContent = `${hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'}`;
+    try {
+      const [ins, exec] = await Promise.all([api('/api/v1/insights'), api('/api/v1/dashboards/executive')]);
+      state.insights = ins.insights;
+      const c = ins.counts;
+      $('#hero-line').innerHTML = c.critical || c.warning
+        ? `<b>${c.critical} critical</b> and <b>${c.warning} warning${c.warning === 1 ? '' : 's'}</b> today. Start with the one below.`
+        : 'Everything is on track today.';
+      renderSpotlight();
+      kpiTiles('#cc-kpis', exec.kpis);
+      renderFilters(); renderFeed();
+      ccWatches(); ccApprovals(); ccForecast();
+      refreshBadges();
+    } catch (e) { toast(e.message); }
+  }
+  // The single most urgent insight, with one big primary button.
+  function renderSpotlight() {
+    const top = state.insights[0];
+    const host = $('#spotlight');
+    state.calm = !top || top.severity === 'good' || top.severity === 'info';
+    if (state.calm) {
+      host.innerHTML = `<section class="spotlight calm"><div><div class="eyebrow">${statusBadge('good')}</div><h2>No urgent issues</h2><p>Stock, orders, counts and suppliers are within their targets. Watches keep checking for you.</p></div>
+        <div class="cta"><button class="large arrow" data-go="dashboard">Open my dashboard</button></div></section>`;
+    } else {
+      host.innerHTML = `<section class="spotlight" style="--dot:var(--${SEV[top.severity]});--dot-text:var(--${top.severity === 'critical' ? 'critical-text' : 'ink-2'})">
+        <div><div class="eyebrow">Most urgent · ${esc(top.category)}</div><h2>${esc(top.title)}</h2><p>${esc(top.detail)}</p></div>
+        <div class="cta"><button class="large arrow" data-sp="act">${esc(top.action.label)}</button><button class="ghost" data-sp="why">Why?</button><button class="link" data-sp="ask">Ask copilot</button></div></section>`;
+      $('[data-sp=act]', host).addEventListener('click', () => act(top.action));
+      $('[data-sp=ask]', host).addEventListener('click', () => openDrawer(top.ask));
+      $('[data-sp=why]', host).addEventListener('click', () => whyModal(top));
+    }
+    $$('[data-go]', host).forEach((b) => b.addEventListener('click', () => go(b.dataset.go)));
+    const counts = (cat) => state.insights.filter((i) => i.category === cat && i.severity === 'critical').length;
+    const shortcuts = [...new Set(state.insights.map((i) => i.category))].map((cat) => [cat, counts(cat)]).filter(([, n]) => n);
+    $('#next-up').innerHTML = shortcuts.map(([cat, n]) => `<button data-cat="${esc(cat)}">${esc(cat)} <b>${n}</b></button>`).join('');
+    $$('#next-up [data-cat]').forEach((b) => b.addEventListener('click', () => { state.filter = b.dataset.cat; renderFilters(); renderFeed(); $('#insight-filters').scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+  }
+  function whyModal(i) {
+    modal('Why this insight?', `<p>${esc(i.detail)}</p>${table([['Evidence', (e) => esc(e.label)], ['Value', (e) => esc(String(e.value))]], i.evidence)}<p class="note">Deterministic: computed from SAP snapshot data by the rules engine — no language model involved.</p>`);
+  }
+  function renderFilters() {
+    const cats = ['all', ...new Set(state.insights.map((i) => i.category))];
+    $('#insight-filters').innerHTML = cats.map((c) => `<button class="${state.filter === c ? 'on' : ''}" data-f="${esc(c)}">${esc(c === 'all' ? `All (${state.insights.length})` : `${c} (${state.insights.filter((i) => i.category === c).length})`)}</button>`).join('');
+    $$('#insight-filters button').forEach((b) => b.addEventListener('click', () => { state.filter = b.dataset.f; renderFilters(); renderFeed(); }));
+  }
+  function renderFeed() {
+    // The spotlight already shows the top insight, so the unfiltered feed lists the rest.
+    const items = state.insights.filter((i, n) => (state.filter === 'all' ? n > 0 || state.calm : i.category === state.filter));
+    $('#feed').innerHTML = items.length ? items.map((i, n) => `<article class="insight" style="--dot:var(--${SEV[i.severity]})"><div class="bar"></div>
+      <div class="top">${statusBadge(SEV[i.severity])} ${chip(i.category)} <span class="metric">${esc(i.metric.label)} <b>${esc(String(i.metric.value))}</b></span></div>
+      <h3>${esc(i.title)}</h3><p>${esc(i.detail)}</p>
+      <div class="actions"><button class="ghost small arrow" data-act="${n}">${esc(i.action.label)}</button><button class="link small" data-why="${n}">Why?</button>
+      <button class="link small" data-ask="${n}">Ask copilot</button><button class="link small" data-watch="${n}">Watch</button></div></article>`).join('') : '<div class="empty">Nothing else needs attention — all clear.</div>';
+    const pick = (b, attr) => items[Number(b.dataset[attr])];
+    $$('#feed [data-why]').forEach((b) => b.addEventListener('click', () => whyModal(pick(b, 'why'))));
+    $$('#feed [data-ask]').forEach((b) => b.addEventListener('click', () => openDrawer(pick(b, 'ask').ask)));
+    $$('#feed [data-act]').forEach((b) => b.addEventListener('click', () => act(pick(b, 'act').action)));
+    $$('#feed [data-watch]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+      const i = pick(b, 'watch');
+      const p = i.action.params || {};
+      const body = i.action.kind === 'stock_balance' && p.warehouse
+        ? { name: `${p.material} @ ${p.warehouse} cover`, kind: 'days_of_cover', params: { material: p.material, warehouse: p.warehouse }, threshold: 7 }
+        : i.category === 'Suppliers' ? { name: `${p.supplier} risk`, kind: 'supplier_risk', params: { supplier: p.supplier }, threshold: 50 }
+          : i.category === 'Sales orders' ? { name: 'Sales orders at risk', kind: 'sales_orders_at_risk', params: {}, threshold: 1 }
+            : { name: i.title.slice(0, 110), kind: 'question', params: { question: i.ask }, threshold: 0 };
+      await api('/api/v1/watches', { body }); toast(`Watching: ${body.name}`); ccWatches();
+    })));
+  }
+  function act(action) {
+    const p = action.params || {};
+    if (action.kind === 'stock_balance') { go('inventory'); $('#form-balance [name=material]').value = p.material; $('#form-balance').requestSubmit(); }
+    else if (action.kind === 'factory_readiness') {
+      go('production'); const f = $('#form-readiness');
+      f.plant.value = p.plant; f.material.value = p.material; f.quantity.value = p.quantity; f.need_by.value = p.need_by; f.requestSubmit();
+    } else if (action.kind === 'supplier') { go('suppliers'); $('#supplier-select').value = p.supplier; $('#form-supplier').requestSubmit(); }
+    else go({ sales_orders: 'sales', stocktake: 'stocktake', suppliers: 'suppliers' }[action.kind] || 'command');
+  }
+  async function ccWatches() {
+    try {
+      const r = await api('/api/v1/watches/evaluate', { body: {} });
+      $('#cc-watches').innerHTML = r.watches.length ? r.watches.map((w) => `<div class="row" style="margin:0 0 8px;align-items:center">${w.kind === 'question' ? chip('question') : pill(w.triggered ? 'critical' : 'good', w.triggered ? 'Triggered' : 'OK')}
+        <span class="grow">${esc(w.name)}<br><span class="note">${esc(w.text)}${w.changed ? ` · changed from ${esc(String(w.previous_value))}` : ''}</span></span>
+        ${w.kind === 'question' ? `<button class="ghost small" data-q="${esc(w.params.question)}">Ask</button>` : ''}</div>`).join('')
+        : '<div class="empty">No watches yet — use “Watch” on any insight.</div>';
+      $$('#cc-watches [data-q]').forEach((b) => b.addEventListener('click', () => openDrawer(b.dataset.q)));
+    } catch (e) { $('#cc-watches').innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+  }
+  async function ccApprovals() {
+    const recs = await api('/api/v1/recommendations?status=pending_review').catch(() => []);
+    const accepted = await api('/api/v1/recommendations?status=accepted').catch(() => []);
+    $('#cc-approvals').innerHTML = `<p style="margin:0 0 8px"><b>${recs.length}</b> pending review · <b>${accepted.length}</b> accepted, ready to execute</p>` +
+      recs.slice(0, 4).map((r) => `<div class="note" style="margin:0 0 4px">#${r.id} ${esc(r.kind.replaceAll('_', ' '))} · ${r.actions.length} action(s) · via ${esc(r.source)}</div>`).join('') +
+      `<button class="ghost small arrow" onclick="location.hash='approvals'">${recs.length ? 'Review now' : 'Open approvals'}</button>`;
+  }
+  // The busiest finished good / warehouse of the selected customer (drives default forecasts and forms).
+  function headlineProduct() {
+    const demand = state.snapshot?.warehouse_demand_daily || {};
+    let best = null;
+    for (const [material, byDc] of Object.entries(demand)) for (const [dc, v] of Object.entries(byDc)) if (!best || v > best.v) best = { material, dc, v };
+    return best || { material: '', dc: '' };
+  }
+  async function ccForecast() {
+    try {
+      const h = headlineProduct();
+      if (!h.material) return;
+      const desc = state.snapshot.materials.find((m) => m.code === h.material)?.description || h.material;
+      const f = await api(`/api/v1/analysis/forecast-vs-actuals?material=${encodeURIComponent(h.material)}&warehouse=${encodeURIComponent(h.dc)}`);
+      const box = $('#cc-forecast'); box.innerHTML = '';
+      box.appendChild(window.Charts.line({ title: `Forecast vs actuals — ${desc}, ${h.dc}`, subtitle: `XGBoost back-test MAPE ${f.holdout_mape_pct}% over the last ${f.backtest.length} days`, today: state.cfg.as_of,
+        series: [{ name: 'Actual demand', label: 'actual', points: f.actual }, { name: 'Back-test forecast', label: 'back-test', points: f.backtest }, { name: 'Forecast', label: 'forecast', points: f.forecast, color: 'var(--s3)' }] }));
+    } catch { /* optional */ }
+  }
+  async function refreshBadges() {
+    try {
+      const [ins, recs] = await Promise.all([api('/api/v1/insights'), api('/api/v1/recommendations?status=pending_review')]);
+      const b1 = $('#badge-critical'); b1.textContent = ins.counts.critical; b1.hidden = !ins.counts.critical;
+      const b2 = $('#badge-approvals'); b2.textContent = recs.length; b2.hidden = !recs.length;
+    } catch { /* ignore */ }
+  }
+
+  // ================================================================ ROLE DASHBOARDS
+  async function loadDashboard() {
+    try {
+      const personas = await api('/api/v1/dashboards');
+      if (!personas[state.persona]) state.persona = 'executive';
+      $('#persona-pills').innerHTML = Object.entries(personas).map(([k, p]) => `<button class="${k === state.persona ? 'on' : ''}" data-p="${k}">${esc(p.title)}</button>`).join('');
+      $$('#persona-pills button').forEach((b) => b.addEventListener('click', () => { state.persona = b.dataset.p; local.set('persona', b.dataset.p); loadDashboard(); }));
+      // Product focus dropdown: filters every role dashboard to one product and adds its detailed view below.
+      if (!state.products) state.products = await api('/api/v1/products');
+      $('#product-focus').innerHTML = '<option value="">All products</option>' + state.products.map((p) =>
+        `<option value="${esc(p.material)}">${esc(p.description)} · ${esc(p.material)} — ${p.health === 'critical' ? '▲ critical' : p.health === 'warning' ? '◆ warning' : '✓ good'}</option>`).join('');
+      if (state.focus && !state.products.some((p) => p.material === state.focus)) state.focus = '';
+      $('#product-focus').value = state.focus || '';
+      const d = await api(`/api/v1/dashboards/${state.persona}${state.focus ? `?material=${encodeURIComponent(state.focus)}` : ''}`);
+      $('#persona-task').textContent = `${d.title}: ${d.task}${d.product ? ` · focus: ${d.product.description} (${d.product.scope.length - 1} components in scope)` : ' · whole network'} · as of ${d.as_of}`;
+      kpiTiles('#dash-kpis', d.kpis);
+      renderOutlook($('#dash-outlook'), state.focus).catch((e) => { $('#dash-outlook').innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
+      const charts = $('#dash-charts'); charts.innerHTML = '';
+      d.charts.forEach((c) => charts.appendChild(renderChart(c)));
+      if (d.forecast) {
+        const f = await api(`/api/v1/analysis/forecast-vs-actuals?material=${d.forecast.material}&warehouse=${d.forecast.warehouse}`);
+        charts.appendChild(renderChart({ type: 'line', title: `Forecast vs actuals — ${d.forecast.material} @ ${d.forecast.warehouse}`, subtitle: `back-test MAPE ${f.holdout_mape_pct}%`, today: state.cfg.as_of,
+          series: [{ name: 'Actual', label: 'actual', points: f.actual }, { name: 'Back-test', label: 'back-test', points: f.backtest }, { name: 'Forecast', label: 'forecast', points: f.forecast, color: 'var(--s3)' }] }));
+      }
+      $('#dash-tables').innerHTML = (d.tables || []).map((t) => `<div class="card"><h2>${esc(t.title)}</h2>${table(t.columns.map((c, i) => [c, (r) => (STATUS_OF[r[i]] ? badge(r[i]) : esc(typeof r[i] === 'number' ? num(r[i], 2) : r[i] ?? '—'))]), t.rows)}</div>`).join('') +
+        (d.analysis ? `<div class="row"><button onclick="location.hash='${d.analysis}'">Open ${d.analysis === 'sales' ? 'sales order' : 'stocktake'} workspace</button></div>` : '');
+      // Product picked: the one-screen product brief leads the page; the role view follows; full analysis is one click away.
+      const brief = $('#dash-brief'), detail = $('#dash-product');
+      $('#dash-role-title').hidden = !d.product;
+      $('#dash-role-title').innerHTML = d.product ? `<h2>${esc(d.title)} view</h2><span class="note">${esc(d.task)}</span>` : '';
+      if (d.product) {
+        await renderBrief(d.product.material, brief);
+        detail.innerHTML = `<div class="row" style="justify-content:center;margin-top:8px"><button class="ghost arrow" onclick="location.hash='products/${esc(d.product.material)}'">Open the full analysis for ${esc(d.product.description)}</button></div>`;
+      } else {
+        brief.innerHTML = '';
+        detail.innerHTML = '<div class="empty">Pick a product in the <b>Product</b> menu above for its brief: supply status, reserve, time to out-of-stock, issues with proposed fixes, top suppliers and warehouses.</div>';
+      }
+    } catch (e) { toast(e.message); }
+  }
+
+  // ================================================================ PRODUCT 360
+  async function loadProducts() {
+    try {
+      const products = await api('/api/v1/products');
+      if (!state.product) state.product = products[0].material;
+      $('#product-cards').innerHTML = products.map((p) => `<button class="product ${p.material === state.product ? 'on' : ''}" data-m="${p.material}">
+        <div class="row" style="justify-content:space-between;margin:0"><h3>${esc(p.description)}</h3>${statusBadge(p.health)}</div>
+        <div class="note" style="margin:0">${esc(p.material)} · made at ${esc(p.producing_plant)}</div>
+        <div class="big">${num(p.network_on_hand)} <span class="note">units · ${num(p.network_days_of_cover, 1)} days of cover</span></div>
+        <div class="note" style="margin:0">${p.first_stockout ? `First stock-out <b>${esc(p.first_stockout)}</b>` : 'No stock-out in 60 days'}</div></button>`).join('');
+      $$('#product-cards .product').forEach((b) => b.addEventListener('click', () => { state.product = b.dataset.m; loadProducts(); }));
+      await renderBrief(state.product, $('#product-brief'));
+      await renderProduct(state.product);
+    } catch (e) { toast(e.message); }
+  }
+  // ---------------------------------------------------------------- sales rates + out-of-stock calendar
+  const spark = (values) => {
+    const w = 96, h = 24, max = Math.max(...values), min = Math.min(...values), span = max - min || 1;
+    const pts = values.map((v, i) => `${((i / (values.length - 1)) * w).toFixed(1)},${(h - 2 - ((v - min) / span) * (h - 4)).toFixed(1)}`).join(' ');
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts}"/></svg>`;
+  };
+  const EVENT = {
+    stockout: { icon: '▲', label: 'Out of stock', cls: 'ev-critical' }, below_safety: { icon: '◆', label: 'Below safety stock', cls: 'ev-warning' },
+    arrival: { icon: '↓', label: 'Shipment arrives', cls: 'ev-info' }, production: { icon: '⚙', label: 'Production lands', cls: 'ev-good' },
+  };
+  async function renderOutlook(box, material) {
+    box.innerHTML = '<p class="note"><span class="spinner"></span>Loading sales rates and the out-of-stock calendar…</p>';
+    const o = await api(`/api/v1/sales/outlook${material ? `?material=${encodeURIComponent(material)}` : ''}`);
+    const short = (e) => (state.products?.find((p) => p.material === e.material)?.description || e.description).replace(/\s+\d+\s?(ml|g|l|kg)$/i, '');
+    const trend = (r) => (r.trend === 'up' ? pill('good', `▲ +${num(r.trend_pct, 1)}%`) : r.trend === 'down' ? pill('warning', `▼ ${num(r.trend_pct, 1)}%`) : `<span class="status"><i></i>→ ${num(r.trend_pct, 1)}%</span>`);
+    // Calendar: weeks from the Monday of "today" to the end of the prediction horizon.
+    const today = new Date(`${o.as_of}T00:00:00`);
+    const start = new Date(today); start.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    const end = new Date(`${o.end}T00:00:00`);
+    const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const byDay = {}; o.calendar.forEach((e, i) => (byDay[e.date] ||= []).push(i));
+    let cells = '';
+    for (let d = new Date(start); d <= end || d.getDay() !== 1; d.setDate(d.getDate() + 1)) {
+      const key = iso(d), evs = byDay[key] || [], past = d < today, weekend = d.getDay() === 0 || d.getDay() === 6;
+      const label = d.getDate() === 1 || +d === +start ? `${d.toLocaleString(undefined, { month: 'short' })} ${d.getDate()}` : d.getDate();
+      cells += `<div class="cal-day${past ? ' past' : ''}${weekend ? ' weekend' : ''}${key === o.as_of ? ' today' : ''}"><div class="cal-date">${label}${key === o.as_of ? ' <b>Today</b>' : ''}</div>
+        ${evs.slice(0, 3).map((i) => { const e = o.calendar[i], k = EVENT[e.kind]; return `<button class="ev ${k.cls}" data-ev="${i}" title="${esc(`${k.label} · ${e.description} @ ${e.warehouse} — ${e.fix}`)}">${k.icon} ${esc(e.warehouse === 'all DCs' ? 'Prod.' : e.warehouse)} ${esc(short(e))}</button>`; }).join('')}
+        ${evs.length > 3 ? `<button class="ev ev-more" data-day="${key}">+${evs.length - 3} more</button>` : ''}</div>`;
+    }
+    const outs = o.calendar.filter((e) => e.kind === 'stockout');
+    box.innerHTML = `
+      <div class="card"><div class="chart-head"><div><h2>Current sales rates</h2><p class="sub">Units per day by product and warehouse · last 28 days of actual sales · ${esc(o.model_scope)}</p></div></div>
+        ${table([['Product · warehouse', (r) => `<b>${esc(r.description)}</b><br><span class="note">${esc(r.material)} · ${esc(r.warehouse)} ${esc(r.name)}</span>`], ['Last 28 days', (r) => spark(r.sparkline)],
+          ['Today’s rate (7 d)', (r) => `<b>${num(r.last_7d_per_day, 1)}</b>/day`, 'num'], ['28-day average', (r) => `${num(r.last_28d_per_day, 1)}/day`, 'num'],
+          ['Forecast next 14 d', (r) => `${num(r.forecast_14d_per_day, 1)}/day`, 'num'], ['Trend', trend],
+          ['Out of stock in', (r) => (r.days_to_stockout === null ? pill('good', '60+ days') : pill(r.days_to_stockout <= 14 ? 'critical' : r.days_to_stockout <= 30 ? 'warning' : 'info', `${r.days_to_stockout} days`)), 'num']], o.sales_rates)}</div>
+      <div class="card"><div class="chart-head"><div><h2>Out-of-stock calendar</h2><p class="sub">Predicted from today’s stock, forecast sales, inbound shipments and planned production · next ${o.horizon_days} days · ${outs.length} predicted stock-out${outs.length === 1 ? '' : 's'}</p></div></div>
+        <div class="legend">${Object.values(EVENT).map((k) => `<span class="ev ${k.cls}" style="cursor:default">${k.icon} ${k.label}</span>`).join('')}</div>
+        <div class="scroll"><div class="calendar"><div class="cal-head">Mon</div><div class="cal-head">Tue</div><div class="cal-head">Wed</div><div class="cal-head">Thu</div><div class="cal-head">Fri</div><div class="cal-head">Sat</div><div class="cal-head">Sun</div>${cells}</div></div>
+        <details class="more"><summary>List view (${o.calendar.length} events)</summary>
+          ${table([['Date', (e) => `<span class="nowrap">${esc(e.date)}</span>`], ['In', (e) => `${e.days_from_today} d`, 'num'], ['Event', (e) => `<span class="ev ${EVENT[e.kind].cls}">${EVENT[e.kind].icon} ${EVENT[e.kind].label}</span>`],
+            ['Product', (e) => esc(e.description)], ['Where', (e) => esc(e.warehouse)], ['Fix / detail', (e) => esc(e.fix)]], o.calendar)}</details></div>`;
+    const open = (idxs, title) => modal(title, table([['Event', (e) => `<span class="ev ${EVENT[e.kind].cls}">${EVENT[e.kind].icon} ${EVENT[e.kind].label}</span>`], ['Product', (e) => `${esc(e.description)}<br><span class="note">${esc(e.material)}</span>`],
+      ['Where', (e) => esc(e.warehouse)], ['Fix / detail', (e) => esc(e.fix)]], idxs.map((i) => o.calendar[i])) +
+      `<div class="row" style="margin-top:12px">${[...new Set(idxs.map((i) => o.calendar[i].material))].map((m) => `<button class="arrow" onclick="location.hash='products/${esc(m)}';document.querySelector('.modal-backdrop')?.remove()">Open ${esc(m)} brief</button>`).join('')}</div>`);
+    $$('[data-ev]', box).forEach((b) => b.addEventListener('click', () => { const e = o.calendar[Number(b.dataset.ev)]; open(byDay[e.date], e.date); }));
+    $$('[data-day]', box).forEach((b) => b.addEventListener('click', () => open(byDay[b.dataset.day], b.dataset.day)));
+  }
+
+  // ---------------------------------------------------------------- product brief: status, reserve, time to out-of-stock, issues -> fixes
+  async function renderBrief(material, box) {
+    box.innerHTML = '<p class="note"><span class="spinner"></span>Building the product brief…</p>';
+    const b = await api(`/api/v1/products/${encodeURIComponent(material)}/brief`);
+    const s = b.supply, r = b.reserve, t = b.time_to_out_of_stock, c = b.issue_counts;
+    const tone = (level) => ({ critical: 'var(--critical)', warning: 'var(--warning)', good: 'var(--good)', info: 'var(--info)' }[level] || 'var(--axis)');
+    const oosLevel = t.days === null ? 'good' : t.days <= 14 ? 'critical' : t.days <= 30 ? 'warning' : 'good';
+    const top = b.issues[0];
+    const stat = (label, value, sub, level) => `<div class="brief-stat" style="--tone:${tone(level)}"><div class="label"><i></i>${esc(label)}</div><div class="value">${value}</div><div class="hint">${sub}</div></div>`;
+    const issueRow = (i, n) => `<div class="issue-row" style="--tone:${tone(i.severity)}">
+        <div class="sev">${statusBadge(i.severity)}<span class="chip">${esc(i.area)}</span></div>
+        <div class="what"><b>${esc(i.issue)}</b><span>${esc(i.impact)}</span></div>
+        <div class="fix"><span class="fix-label">Proposed fix</span>${esc(i.fix)}</div>
+        <div class="go"><button class="ghost small arrow" data-issue="${n}">${esc(i.action.label)}</button></div></div>`;
+    const urgent = b.issues.filter((i) => i.severity !== 'info'), later = b.issues.filter((i) => i.severity === 'info');
+    box.innerHTML = `
+      <section class="spotlight${b.status === 'good' ? ' calm' : ''}" style="--dot:${tone(b.status)};--dot-text:var(--${b.status === 'critical' ? 'critical-text' : b.status === 'good' ? 'good-text' : 'ink-2'})">
+        <div><div class="eyebrow">Product brief · ${esc(b.material)} · made at ${esc(b.producing_plant || '—')} · as of ${esc(b.as_of)}</div>
+          <h2>${esc(b.description)}</h2><p>${esc(b.headline)}</p></div>
+        <div class="cta">${top && b.status !== 'good' ? `<button class="large arrow" data-issue="0">${esc(top.action.label)}</button>` : ''}
+          <button class="ghost" data-brief-ask>Ask copilot</button></div></section>
+      <div class="brief-stats">
+        ${stat('Supply now', `${num(s.on_hand)} <small>units</small>`, `+${num(s.in_transit)} in transit · +${num(s.from_planned_production)} from planned production · ${num(s.days_of_cover, 1)} d of cover`, 'info')}
+        ${stat('Reserve above safety stock', `${num(r.units_above_safety)} <small>units</small>`, `${num(r.days, 1)} days of sales · safety stock ${num(r.safety_stock_total)} (${num(r.safety_stock_per_dc)} per DC)`, r.status)}
+        ${stat('Time to out-of-stock', t.days === null ? 'None <small>in 60 d</small>' : `${t.days} <small>days</small>`, t.days === null ? 'every warehouse covered for 60 days' : `first at ${esc(t.warehouse)} on ${esc(t.date)}`, oosLevel)}
+        ${stat('Open issues', `${c.critical + c.warning} <small>to act on</small>`, `${c.critical} critical · ${c.warning} warning${c.warning === 1 ? '' : 's'} · ${c.info} for information`, b.status)}
+      </div>
+      <div class="card">
+        <div class="chart-head"><div><h2>Issues and proposed fixes</h2><p class="sub">Most urgent first. Each fix is computed from SAP data (stock, orders, POs, lanes, supplier performance) — no language model.</p></div></div>
+        <div class="issues">${urgent.length ? urgent.map((i) => issueRow(i, b.issues.indexOf(i))).join('') : '<div class="empty">No issues need action — supply is on track.</div>'}</div>
+        ${later.length ? `<details class="more"><summary>${later.length} more for information</summary><div class="issues">${later.map((i) => issueRow(i, b.issues.indexOf(i))).join('')}</div></details>` : ''}
+      </div>
+      <div class="grid g2">
+        <div class="card" data-oos></div>
+        <div class="card"><h2>Top suppliers</h2><p class="sub">Recommended source per component — fastest qualified option within 10% of the cheapest landed cost</p>
+          ${table([['Component', (o) => esc(o.material)], ['Supplier', (o) => `<b>${esc(o.supplier)}</b>${o.type === 'alternative' ? ' <span class="chip">alternative</span>' : ''}`],
+            ['Time to deliver', (o) => `${num(o.time_to_deliver_days, 1)} d`, 'num'], ['Landed €/unit', (o) => `€${num(o.landed_cost_per_unit_eur, 2)}`, 'num'],
+            ['OTIF', (o) => (o.otif_pct === null ? 'quote' : `${num(o.otif_pct, 1)}%`), 'num']], b.top_suppliers)}
+          <h2 style="margin-top:18px">Top warehouses</h2><p class="sub">Best → worst by time to out-of-stock</p>
+          ${table([['#', (w) => `<b>${w.rank}</b>`], ['Warehouse', (w) => `<a href="#sites/${esc(w.warehouse)}">${esc(w.warehouse)} · ${esc(w.name)}</a>`], ['On hand', (w) => num(w.on_hand), 'num'],
+            ['Cover', (w) => `${num(w.sales_days_of_cover, 1)} d`, 'num'], ['Out of stock', (w) => (w.stockout_date ? esc(w.stockout_date) : '—'), 'num'], ['', (w) => statusBadge(w.health)]], b.top_warehouses)}
+        </div>
+      </div>`;
+    box.querySelector('[data-oos]').appendChild(window.Charts.bar({ title: 'Time to out-of-stock by warehouse', subtitle: 'days at forecast sales, including inbound and planned production; 60 = not within 60 days', unit: ' d',
+      rows: t.by_warehouse.map((w) => ({ label: `${w.warehouse} · ${w.name}`, value: w.days_to_stockout ?? 60, status: w.health, hint: `${num(w.on_hand)} on hand · ${w.stockout_date ? `out of stock ${w.stockout_date}` : 'covered'}${w.below_safety_date ? ` · below safety ${w.below_safety_date}` : ''}` })) }));
+    $$('[data-issue]', box).forEach((btn) => btn.addEventListener('click', () => act(b.issues[Number(btn.dataset.issue)].action)));
+    $('[data-brief-ask]', box).addEventListener('click', () => openDrawer(`Give me the supply plan for ${b.description} (${b.material}): what are the issues and what should we do first?`));
+  }
+  async function renderProduct(material, box = $('#product-detail')) {
+    box.innerHTML = '<p class="note"><span class="spinner"></span>Building the product view…</p>';
+    const p = await api(`/api/v1/products/${material}`);
+    const r = p.resupply;
+    box.innerHTML = '';
+    // 1. Key supply-chain metrics for this product, at a glance
+    const kpis = document.createElement('div'); kpis.className = 'kpis'; box.appendChild(kpis);
+    kpiTiles(kpis, p.scorecard);
+
+    // 2. Inventory vs time to out-of-stock (forecast sales), warehouses best -> worst
+    const H = p.horizon_days;
+    const wr = p.warehouse_ranking;
+    const oos = document.createElement('div'); oos.className = 'grid g2'; box.appendChild(oos);
+    oos.appendChild(renderChart({ type: 'bar', title: 'Time to out-of-stock by warehouse', subtitle: `days until stock runs out at forecast sales (incl. shipments and planned production); ${H} = not within ${H} days`,
+      unit: ' d', reference: 7, reference_label: '7 days',
+      rows: wr.map((d) => ({ label: `#${d.rank} ${d.warehouse} · ${d.name}`, value: d.days_to_stockout ?? H, status: d.health,
+        hint: `${num(d.on_hand)} units on hand · ${num(d.sales_days_of_cover, 1)} days of cover at forecast sales · ${d.stockout_date ? `out of stock ${d.stockout_date}` : `no stock-out within ${H} days`}` })) }));
+    oos.appendChild(renderChart({ type: 'bar', title: 'Inventory by warehouse (units)', subtitle: 'on hand today, ranked best → worst by time to out-of-stock', unit: '',
+      rows: wr.map((d) => ({ label: `#${d.rank} ${d.warehouse}`, value: d.on_hand, status: d.health, hint: `${num(d.in_transit)} in transit · 14-day surplus/gap ${num(d.surplus_14d)}` })) }));
+    const rank = document.createElement('div'); rank.className = 'card'; box.appendChild(rank);
+    rank.innerHTML = `<h2>Warehouse ranking — best to worst for ${esc(p.description)}</h2><p class="sub">Ranked by time to out-of-stock at forecast sales, then days of cover (${wr.length} DCs in the network)</p>` +
+      table([['Rank', (d) => `<b>#${d.rank}</b>`], ['Warehouse', (d) => `<a href="#sites/${esc(d.warehouse)}">${esc(d.warehouse)} · ${esc(d.name)}</a>`], ['On hand', (d) => num(d.on_hand), 'num'], ['Days of cover (sales)', (d) => num(d.sales_days_of_cover, 1), 'num'],
+        ['Time to out-of-stock', (d) => (d.days_to_stockout === null ? `> ${H} d` : `<b>${d.days_to_stockout} d</b>`), 'num'], ['Out-of-stock date', (d) => esc(d.stockout_date || '—'), 'nowrap'],
+        ['14-day surplus / gap', (d) => num(d.surplus_14d), 'num'], ['Health', (d) => pill(d.health)]], wr);
+
+    const dcs = document.createElement('div'); dcs.className = 'dc-cards'; box.appendChild(dcs);
+    dcs.innerHTML = p.warehouses.map((d) => `<div class="dc"><h3>${esc(d.warehouse)} · ${esc(d.name)} ${statusBadge(d.stockout_date && d.days_of_cover < 14 ? 'critical' : d.below_safety_date ? 'warning' : 'good')}</h3>
+      <dl><dt>On hand</dt><dd>${num(d.on_hand)}</dd><dt>In transit</dt><dd>${num(d.in_transit)}</dd><dt>From planned production</dt><dd>${num(d.from_planned_production)}</dd><dt>Demand / day</dt><dd>${num(d.daily_demand)}</dd>
+      <dt>Days of cover</dt><dd>${num(d.days_of_cover, 1)}</dd><dt>Open orders</dt><dd>${num(d.open_sales_orders)}</dd>
+      <dt>Below safety stock</dt><dd>${esc(d.below_safety_date || '—')}</dd><dt>Projected stock-out</dt><dd><b>${esc(d.stockout_date || '—')}</b></dd></dl>
+      ${d.best_donor ? `<div class="donor">Best donor warehouse: <b>${esc(d.best_donor.from)}</b> → ${num(d.best_donor.quantity)} units, arrives ${esc(d.best_donor.arrives)} (${d.best_donor.in_time ? 'before the stock-out' : 'after the stock-out'}) · €${num(d.best_donor.estimated_cost)} · ${num(d.best_donor.carbon_kg)} kg CO₂
+        <div style="margin-top:6px"><button class="small" data-balance="${esc(p.material)}">Plan transfer</button></div></div>` : d.stockout_date || d.below_safety_date ? '<div class="donor">No DC has spare stock in the 14-day window — resupply from production.</div>' : ''}</div>`).join('');
+    $$('[data-balance]', dcs).forEach((b) => b.addEventListener('click', () => act({ kind: 'stock_balance', params: { material: b.dataset.balance } })));
+
+    const charts = document.createElement('div'); charts.className = 'grid g2'; box.appendChild(charts);
+    charts.appendChild(renderChart({ type: 'line', title: 'Projected stock by DC — next 60 days', subtitle: 'on hand + shipments + planned production − XGBoost daily forecast; red dots = stock-out, below 0 = unmet demand', references: [{ value: p.safety_stock, label: 'safety' }],
+      series: p.warehouses.map((d) => ({ name: d.warehouse, label: d.warehouse, points: d.projection, markers: d.stockout_date ? [{ date: d.stockout_date, value: 0 }] : [] })) }));
+    const f = p.sales.forecast_vs_actuals;
+    charts.appendChild(renderChart({ type: 'line', title: `Sales: forecast vs actuals @ ${f.warehouse}`, subtitle: `back-test MAPE ${f.holdout_mape_pct}% · ${f.model_scope}`, today: state.cfg.as_of,
+      series: [{ name: 'Actual', label: 'actual', points: f.actual }, { name: 'Back-test', label: 'back-test', points: f.backtest }, { name: 'Forecast', label: 'forecast', points: f.forecast, color: 'var(--s3)' }] }));
+
+    // 3. Suppliers for this product: best time and cost to deliver
+    const sr = p.supplier_ranking;
+    const supCharts = document.createElement('div'); supCharts.className = 'grid g2'; box.appendChild(supCharts);
+    const optHint = (o) => `${o.material} · ${o.type}${o.qualified ? '' : ' (not qualified)'} · landed €${o.landed_cost_per_unit_eur}/unit · €${num(o.cost_per_1000_finished_eur, 2)} per 1,000 finished units · OTIF ${o.otif_pct ?? 'n/a'}% · ${o.time_basis}`;
+    supCharts.appendChild(renderChart({ type: 'bar', title: 'Top 5 suppliers — fastest to deliver', subtitle: 'days: contract lead time + actual average delay (alternatives: quoted lead time)', unit: ' d',
+      rows: sr.fastest.map((o) => ({ label: `${o.supplier} · ${o.material}`, value: o.time_to_deliver_days, status: o.recommended ? 'good' : o.type === 'alternative' ? 'info' : 'warning', hint: optHint(o) })) }));
+    supCharts.appendChild(renderChart({ type: 'bar', title: 'Top 5 suppliers — lowest cost to deliver', subtitle: '€ landed cost (price + freight) per 1,000 finished units — comparable across components', unit: ' €',
+      rows: [...sr.lowest_cost].sort((a, b) => a.cost_per_1000_finished_eur - b.cost_per_1000_finished_eur).map((o) => ({ label: `${o.supplier} · ${o.material}`, value: o.cost_per_1000_finished_eur, status: o.recommended ? 'good' : 'info', hint: optHint(o) })) }));
+    const opts = document.createElement('div'); opts.className = 'card'; box.appendChild(opts);
+    opts.innerHTML = `<h2>Supply options per component</h2><p class="sub">★ = recommended source: fastest qualified option within 10% of the cheapest landed cost. Primary suppliers are measured on actual deliveries; alternatives on quotes.</p>` +
+      table([['Component', (o) => `<b>${esc(o.material)}</b>`], ['Supplier', (o) => `${o.recommended ? '★ ' : ''}${esc(o.supplier)}`], ['Type', (o) => chip(o.type + (o.qualified ? '' : ' · not qualified'))],
+        ['Time to deliver', (o) => `${num(o.time_to_deliver_days, 1)} d`, 'num'], ['vs fastest', (o) => (o.days_slower_than_best ? `+${num(o.days_slower_than_best, 1)} d` : 'fastest'), 'num'],
+        ['Landed €/unit', (o) => num(o.landed_cost_per_unit_eur, 3), 'num'], ['Premium', (o) => (o.cost_premium_pct ? `+${num(o.cost_premium_pct, 1)}%` : 'cheapest'), 'num'],
+        ['€ / 1,000 finished', (o) => num(o.cost_per_1000_finished_eur, 2), 'num'], ['OTIF', (o) => (o.otif_pct === null ? '<span class="note">no history</span>' : `${num(o.otif_pct, 1)}%`), 'num'],
+        ['Risk', (o) => (o.risk_rating ? badge(o.risk_rating, `${o.risk_rating} risk`) : '—')]], p.supply_options);
+
+    const comp = document.createElement('div'); comp.className = 'card'; box.appendChild(comp);
+    comp.innerHTML = `<h2>Resupply needs per component — made at ${esc(p.producing_plant)}</h2><p class="sub">${esc(r.assumptions)}. Product needed at the DCs by <b>${esc(r.need_at_dc_by)}</b>.</p>` +
+      table([
+        ['Component', (c) => `<b>${esc(c.component)}</b><br><span class="note">${esc(c.description)}</span>`],
+        ['Need for builds', (c) => `${num(c.requirement_total, 2)} ${esc(c.uom)}`, 'num'], ['On hand', (c) => num(c.on_hand, 2), 'num'], ['Confirmed POs', (c) => num(c.confirmed_inbound, 2), 'num'],
+        ['Shortfall', (c) => (c.shortfall ? `<b>${num(c.shortfall, 2)}</b>` : '0'), 'num'],
+        ['First shortage', (c) => esc(c.first_shortage_date || '—'), 'nowrap'], ['Order by', (c) => `<b>${esc(c.order_by || '—')}</b>`, 'nowrap'], ['Status', (c) => badge(c.status)],
+        ['Best supplier · time to deliver', (c) => (c.best_suppliers.length ? c.best_suppliers.map((s, i) => `${i ? '' : '★ '}${esc(s.supplier)} · ${num(s.effective_lead_time_days, 1)} d · OTIF ${num(s.otif_pct, 1)}% ${badge(s.risk_rating, s.risk_rating + ' risk')}`).join('<br>') : '—') +
+          (c.alternative_sources.length ? `<br><span class="note">Alternative: ${esc(c.alternative_sources.join(', '))}</span>` : '')],
+        ['Expedite', (c) => esc(c.expedite_candidates.join(', ') || '—')],
+      ], r.components) +
+      `<h2 style="margin-top:14px">Builds</h2>${table([['Order', (b) => esc(b.order)], ['Quantity', (b) => num(b.quantity), 'num'], ['Finish', (b) => esc(b.finish_date)], ['Components due', (b) => esc(b.components_needed_by)], ['Status', (b) => chip(b.status)]], r.builds)}`;
+
+    const so = document.createElement('div'); so.className = 'card'; box.appendChild(so);
+    so.innerHTML = `<h2>Open sales orders</h2>${table([['Order', (o) => esc(o.order)], ['Customer', (o) => esc(o.customer)], ['DC', (o) => esc(o.warehouse)], ['Qty', (o) => num(o.quantity), 'num'], ['Requested', (o) => esc(o.requested_date)], ['Priority', (o) => chip(o.priority)]], p.sales.open_orders)}
+      <div class="row" style="margin-top:10px"><button class="ghost" data-ask-product>Ask the copilot about ${esc(p.description)}</button></div>`;
+    $('[data-ask-product]', so).addEventListener('click', () => openDrawer(`Give me the supply situation and resupply plan for ${p.material}.`));
+  }
+
+  // ================================================================ WAREHOUSE 360
+  async function loadSites() {
+    try {
+      if (!state.sites) state.sites = await api('/api/v1/sites');
+      $('#site-select').innerHTML = ['warehouse', 'factory', 'contract_manufacturer'].map((type) => {
+        const group = state.sites.filter((s) => s.type === type);
+        return group.length ? `<optgroup label="${{ warehouse: 'Distribution centres', factory: 'Factories', contract_manufacturer: 'Contract manufacturers' }[type]}">${group.map((s) =>
+          `<option value="${esc(s.code)}">${esc(s.code)} · ${esc(s.name)}${s.below_target ? ` — ${s.below_target} below target` : ''}</option>`).join('')}</optgroup>` : '';
+      }).join('');
+      if (!state.sites.some((s) => s.code === state.site)) state.site = (state.sites.find((s) => s.type === 'warehouse') || state.sites[0]).code;
+      $('#site-select').value = state.site;
+      await renderSite(state.site);
+    } catch (e) { toast(e.message); }
+  }
+
+  async function renderSite(code) {
+    const box = $('#site-detail');
+    box.innerHTML = '<p class="note"><span class="spinner"></span>Loading site…</p>';
+    const s = await api(`/api/v1/sites/${code}`);
+    const site = s.site;
+    $('#site-note').textContent = `${site.type.replaceAll('_', ' ')} · ${site.country} · as of ${s.as_of}`;
+    box.innerHTML = `<div class="card contact-card">
+        <div><h2>${esc(site.code)} · ${esc(site.name)}</h2><span class="chip">${esc(site.type.replaceAll('_', ' '))}</span>
+          <dl><dt>Address</dt><dd>${esc(site.address || '—')}</dd><dt>Hours</dt><dd>${esc(site.operating_hours || '—')}</dd><dt>Time zone</dt><dd>${esc(site.timezone || '—')}</dd></dl></div>
+        <div><h2 style="font-size:14px">Site management contacts</h2><div class="people">${(site.contacts || []).map((c) => `<div class="person">
+          <div class="role">${esc(c.role)}${c.primary ? ' · primary' : ''}</div><b>${esc(c.name)}</b>
+          <a href="mailto:${esc(c.email)}">✉ ${esc(c.email)}</a><a href="tel:${esc(c.phone.replaceAll(' ', ''))}">☎ ${esc(c.phone)}</a></div>`).join('')}</div>
+          <p class="note" style="margin:8px 0 0">${esc(site.contacts_note || '')}</p></div></div>
+      <div class="kpis" id="site-kpis"></div><div class="grid g2" id="site-charts"></div><div id="site-tables"></div>`;
+    kpiTiles('#site-kpis', s.kpis);
+    const charts = $('#site-charts');
+    const tables = [];
+    if (s.kind === 'warehouse') {
+      const H = 60;
+      const byRisk = [...s.products].sort((a, b) => (a.days_to_stockout ?? H + 1) - (b.days_to_stockout ?? H + 1));
+      charts.appendChild(renderChart({ type: 'bar', title: 'Time to out-of-stock by product', subtitle: `days at forecast sales (incl. shipments and planned production); ${H} = not within ${H} days`, unit: ' d', reference: 7, reference_label: '7 days',
+        rows: byRisk.map((p) => ({ label: p.description, value: p.days_to_stockout ?? H, status: p.health, hint: `${num(p.on_hand)} on hand · ${num(p.sales_days_of_cover, 1)} days of cover · rank #${p.rank_in_network} of ${p.network_dcs} DCs` })) }));
+      charts.appendChild(renderChart({ type: 'diverging', title: '14-day surplus (+) / gap (−) by product', subtitle: 'stock + inbound − (forecast + safety stock)', unit: ' units',
+        rows: s.products.map((p) => ({ label: p.material, value: p.surplus_14d })) }));
+      tables.push(`<div class="card"><h2>Products at this warehouse</h2>${table([['Product', (p) => `<a href="#products/${esc(p.material)}">${esc(p.description)}</a><br><span class="note">${esc(p.material)}</span>`],
+        ['On hand', (p) => num(p.on_hand), 'num'], ['In transit', (p) => num(p.in_transit), 'num'], ['Demand / day', (p) => num(p.daily_demand), 'num'], ['Days of cover', (p) => num(p.sales_days_of_cover, 1), 'num'],
+        ['Out of stock', (p) => esc(p.stockout_date || `> ${H} d`), 'nowrap'], ['Network rank', (p) => `#${p.rank_in_network} / ${p.network_dcs}`, 'num'], ['Health', (p) => pill(p.health)],
+        ['Best donor', (p) => (p.best_donor ? `${esc(p.best_donor.from)} → ${num(p.best_donor.quantity)} units, arrives ${esc(p.best_donor.arrives)}` : '—')]], s.products)}</div>`);
+      tables.push(`<div class="card"><h2>Proposed transfers in / out</h2><p class="sub">OR-Tools balancing proposals touching this warehouse</p>${table([['Direction', (t) => chip(t.direction === 'in' ? '↘ in' : '↗ out')], ['Product', (t) => esc(t.material)],
+        ['Lane', (t) => esc(`${t.from} → ${t.to}`)], ['Quantity', (t) => num(t.quantity), 'num'], ['Lead', (t) => `${t.lead_days} d`, 'num'], ['Cost', (t) => `€${num(t.estimated_cost, 2)}`, 'num'], ['CO₂', (t) => `${num(t.carbon_kg, 1)} kg`, 'num']], s.transfers)}</div>`);
+      tables.push(`<div class="card"><h2>Open sales orders</h2>${table([['Order', (o) => esc(o.order)], ['Customer', (o) => esc(o.customer)], ['Product', (o) => esc(o.material)], ['Qty', (o) => num(o.quantity), 'num'],
+        ['Due', (o) => esc(o.requested_date), 'nowrap'], ['Confirmed', (o) => num(o.confirmed), 'num'], ['Status', (o) => badge(o.status)]], s.sales_orders)}</div>`);
+    } else {
+      const comps = s.positions.filter((r) => r.coverage_pct !== null).sort((a, b) => a.coverage_pct - b.coverage_pct);
+      charts.appendChild(renderChart({ type: 'bar', title: 'Component coverage vs 14-day need', subtitle: 'stock + confirmed POs as % of production need + safety stock', unit: '%', reference: 100, reference_label: 'target',
+        rows: comps.map((r) => ({ label: r.material, value: r.coverage_pct, status: r.coverage_pct < 60 ? 'critical' : r.coverage_pct < 100 ? 'warning' : 'good', hint: `${num(r.on_hand)} on hand + ${num(r.inbound)} inbound vs ${num(r.target)} ${r.uom}` })) }));
+      charts.appendChild(renderChart({ type: 'bar', title: 'Production orders: component readiness', subtitle: '% of BOM components covered by the finish date', unit: '%', reference: 100,
+        rows: s.production_orders.map((o) => ({ label: `${o.order} · ${o.material}`, value: o.component_readiness_pct, status: { ready: 'good', at_risk: 'warning' }[o.readiness] || 'critical', hint: `${num(o.quantity)} units due ${o.finish_date}; short: ${o.short_components.join(', ') || 'none'}` })) }));
+      tables.push(`<div class="card"><h2>Quality lots</h2>${table([['Lot', (x) => esc(x.lot)], ['Material', (x) => esc(x.material)], ['Qty', (x) => num(x.quantity), 'num'], ['Supplier', (x) => esc(x.supplier || '—')], ['Status', (x) => badge(x.status)], ['Defect / release', (x) => esc(x.defect || x.expected_release || '—')]], s.quality_lots)}</div>`);
+      tables.push(`<div class="card"><h2>Open purchase orders</h2>${table([['PO', (x) => esc(x.po)], ['Supplier', (x) => esc(x.supplier)], ['Material', (x) => esc(x.material)], ['Qty', (x) => num(x.quantity), 'num'], ['Delivery', (x) => esc(x.delivery_date), 'nowrap'], ['Status', (x) => chip(x.status)]], s.purchase_orders)}</div>`);
+    }
+    const shipments = [...s.inbound_shipments.map((x) => ({ ...x, dir: 'inbound' })), ...s.outbound_shipments.map((x) => ({ ...x, dir: 'outbound' }))];
+    tables.push(`<div class="card"><h2>Shipments in / out</h2>${table([['Direction', (x) => chip(x.dir)], ['Shipment', (x) => esc(x.shipment)], ['Route', (x) => esc(`${x.from} → ${x.to}`)], ['Material', (x) => esc(x.material)], ['Qty', (x) => num(x.quantity), 'num'],
+      ['Carrier', (x) => esc(`${x.carrier} (${x.mode})`)], ['Revised ETA', (x) => esc(x.revised_eta), 'nowrap'], ['Delay', (x) => (x.delay_days ? pill(x.escalate ? 'critical' : 'warning', `${x.delay_days} days late`) : pill('good', 'on time'))]], shipments)}</div>`);
+    tables.push(`<div class="grid g2"><div class="card"><h2>Stock counts</h2>${table([['Count', (c) => esc(c.count_id)], ['Material', (c) => esc(c.material)], ['Diff', (c) => num(c.difference), 'num'], ['Status', (c) => badge(c.status)]], s.stocktake)}</div>
+      <div class="card"><h2>Batches expiring ≤ 180 days</h2>${table([['Batch', (r) => esc(r.batch)], ['Material', (r) => esc(r.material)], ['Qty', (r) => num(r.quantity), 'num'], ['Days left', (r) => num(r.days_left), 'num'], ['Value', (r) => `€${num(r.value_eur)}`, 'num']], s.expiry)}</div></div>`);
+    tables.push(`<div class="card"><h2>Transfer lanes</h2>${table([['Lane', (l) => esc(`${l.from} → ${l.to}`)], ['Lead time', (l) => `${l.lead_days} d`, 'num'], ['Cost / unit', (l) => `€${l.cost_per_unit}`, 'num'], ['CO₂ / unit', (l) => `${l.carbon_kg_per_unit} kg`, 'num']], s.lanes)}</div>`);
+    $('#site-tables').innerHTML = tables.join('');
+  }
+
+  // ================================================================ submissions
+  function submitPanel(analysis) {
+    if (!analysis.proposed_actions?.length) return `<div class="panel">${statusBadge('good')} No action required <span class="note">analysis ${esc(analysis.analysis_id)}</span></div>`;
+    return `<div class="panel" data-analysis="${esc(analysis.analysis_id)}"><b>${analysis.proposed_actions.length} proposed action(s)</b> <span class="note">analysis ${esc(analysis.analysis_id)} · quantities fixed by the deterministic engine</span>
+      <pre>${esc(JSON.stringify(analysis.proposed_actions, null, 2))}</pre>
+      <div class="row"><input class="grow" placeholder="Explanation for the manager" value="Proposed by planner from the copilot workspace."><button type="button" class="submit-rec">Submit for manager approval</button></div></div>`;
+  }
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.submit-rec');
+    if (!btn) return;
+    const panel = btn.closest('.panel');
+    busy(btn, async () => {
+      const rec = await api('/api/v1/recommendations', { body: { analysis_id: panel.dataset.analysis, explanation: $('input', panel).value || 'Submitted from dashboard', source: 'dashboard' } });
+      panel.innerHTML = `${badge('pending_review')} Recommendation #${rec.id} queued for manager review. <a href="#approvals">Open approvals</a>`;
+      refreshBadges();
+    });
+  });
+
+  // ================================================================ INVENTORY
+  function balanceView(r, key = 'positions') {
+    const host = document.createElement('div');
+    host.innerHTML = `<p class="note">Forecast engine ${esc((r.forecast_engine || ['xgboost']).join(', '))} · optimizer ${esc(r.optimization.engine)} · objective €${num(r.optimization.objective_cost, 2)}</p>`;
+    const grid = document.createElement('div'); grid.className = 'grid g2'; host.appendChild(grid);
+    grid.appendChild(renderChart({ type: 'diverging', title: 'Surplus (+) / gap (−) vs target by DC', subtitle: 'stock + in transit − (forecast + safety stock)', unit: ' units', rows: r[key].map((p) => ({ label: p.warehouse, value: p.surplus_or_gap })) }));
+    grid.appendChild(renderChart({ type: 'bar', title: 'Proposed transfers', subtitle: 'quantity per lane · cost and CO₂ in the hint', unit: ' units',
+      rows: r.proposed_actions.map((t) => ({ label: `${t.from} → ${t.to}`, value: t.quantity, status: 'info', hint: `€${num(t.estimated_cost, 2)} · ${num(t.carbon_kg, 1)} kg CO₂ · ${t.lead_days} days` })) }));
+    const tbl = document.createElement('div'); tbl.className = 'card';
+    tbl.innerHTML = table([['Warehouse', (p) => esc(p.warehouse)], ['On hand', (p) => num(p.on_hand), 'num'], ['In transit', (p) => num(p.in_transit_within_horizon), 'num'], ['Forecast demand', (p) => num(p.forecast_demand), 'num'],
+      ['Target', (p) => num(p.target_stock), 'num'], ['Surplus / gap', (p) => num(p.surplus_or_gap), 'num'], ['Days of cover', (p) => num(p.days_of_cover, 1), 'num']], r[key]);
+    host.appendChild(tbl);
+    return host;
+  }
+  $('#form-balance').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = formData(e.target);
+    busy($('button[type=submit]', e.target), async () => {
+      const r = await api('/api/v1/analysis/stock-balance', { body: { material: f.material, horizon_days: Number(f.horizon_days), service_level: Number(f.service_level) } });
+      const out = $('#balance-out'); out.innerHTML = ''; out.appendChild(balanceView(r)); out.insertAdjacentHTML('beforeend', submitPanel(r));
+    });
+  });
+  $('#btn-whatif').addEventListener('click', (e) => {
+    const f = formData($('#form-balance'));
+    busy(e.target, async () => {
+      const r = await api('/api/v1/analysis/what-if', { body: { material: f.material, demand_change_pct: Number(f.demand_change_pct), horizon_days: Number(f.horizon_days) } });
+      const out = $('#balance-out'); out.innerHTML = `<p>${statusBadge('warning')} Hypothetical scenario: demand ${r.scenario.demand_change_pct > 0 ? '+' : ''}${r.scenario.demand_change_pct}% (not submittable)</p>`;
+      out.appendChild(balanceView(r, 'scenario_positions'));
+    });
+  });
+
+  // ================================================================ SALES ORDERS
+  async function loadSales() {
+    const out = $('#sales-out');
+    out.innerHTML = '<p class="note"><span class="spinner"></span>Checking every open order…</p>';
+    try {
+      const [r, d] = await Promise.all([api('/api/v1/analysis/sales-orders', { body: {} }), api('/api/v1/dashboards/sales')]);
+      out.innerHTML = '<div class="kpis" id="so-kpis"></div><div class="grid g2" id="so-charts"></div>';
+      kpiTiles('#so-kpis', d.kpis);
+      d.charts.forEach((c) => $('#so-charts').appendChild(renderChart(c)));
+      out.insertAdjacentHTML('beforeend', `<div class="card"><h2>Orders</h2><p class="sub">Allocated by requested date and priority from DC stock plus inbound arriving in time</p>${table([
+        ['Order', (o) => `<b>${esc(o.order)}</b>`], ['Customer', (o) => esc(o.customer)], ['Material', (o) => esc(o.material)], ['DC', (o) => esc(o.warehouse)], ['Qty', (o) => num(o.quantity), 'num'],
+        ['Due', (o) => esc(o.requested_date)], ['Priority', (o) => chip(o.priority)], ['Confirmed', (o) => num(o.confirmed), 'num'], ['Status', (o) => badge(o.status)],
+        ['Resolution', (o) => (!o.resolution ? '—' : o.resolution.action === 'stock_transfer'
+          ? `Transfer <b>${num(o.resolution.quantity)}</b> from ${esc(o.resolution.from)}, arrives ${esc(o.resolution.arrives)} (€${num(o.resolution.estimated_cost)})` : `Partial delivery: ${num(o.resolution.deliverable_now)} now`)],
+      ], r.orders)}${submitPanel(r)}</div>`);
+    } catch (e) { out.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+  }
+
+  // ================================================================ STOCKTAKE
+  async function loadStocktake() {
+    const out = $('#stocktake-out');
+    out.innerHTML = '<p class="note"><span class="spinner"></span>Reconciling counts…</p>';
+    try {
+      const [r, d] = await Promise.all([api('/api/v1/analysis/stocktake', { body: {} }), api('/api/v1/dashboards/stocktake')]);
+      out.innerHTML = '<div class="kpis" id="st-kpis"></div><div class="grid g2" id="st-charts"></div>';
+      kpiTiles('#st-kpis', d.kpis);
+      d.charts.forEach((c) => $('#st-charts').appendChild(renderChart(c)));
+      out.insertAdjacentHTML('beforeend', `<div class="card"><h2>Count differences with evidence</h2><p class="sub">Tolerance ${r.tolerance_pct}% · explanations come from unposted goods movements and pending quality decisions</p>${table([
+        ['Count', (c) => esc(c.count_id)], ['Location', (c) => esc(c.plant)], ['Material · batch', (c) => `${esc(c.material)}<br><span class="note">${esc(c.batch)}</span>`],
+        ['Book', (c) => num(c.book_quantity), 'num'], ['Counted', (c) => num(c.counted_quantity), 'num'], ['Diff', (c) => `<b>${c.difference > 0 ? '+' : ''}${num(c.difference)}</b>`, 'num'],
+        ['Status', (c) => badge(c.status)],
+        ['Explanation & evidence', (c) => (c.evidence.length ? c.evidence.map((e) => `${esc(e.type.replaceAll('_', ' '))} <b>${esc(e.document)}</b> (${e.quantity > 0 ? '+' : ''}${num(e.quantity)}) — ${esc(e.note || '')}`).join('<br>') : c.difference ? '<span class="note">No movement explains it</span>' : '—')],
+        ['Recommendation', (c) => esc((c.recommendation?.action || '—').replaceAll('_', ' '))],
+      ], r.counts)}${submitPanel(r)}</div>`);
+    } catch (e) { out.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+  }
+
+  // ================================================================ PRODUCTION
+  async function loadProduction() {
+    try {
+      const d = await api('/api/v1/dashboards/production');
+      const box = $('#production-overview');
+      box.innerHTML = '<h2>Production orders</h2><p class="sub">Readiness of every planned and released order</p><div class="kpis" id="pr-kpis"></div><div class="grid g2" id="pr-charts"></div>';
+      kpiTiles('#pr-kpis', d.kpis);
+      d.charts.forEach((c) => { const n = document.createElement('div'); n.appendChild(window.Charts[c.type](c)); $('#pr-charts').appendChild(n); });
+    } catch (e) { toast(e.message); }
+  }
+  $('#form-readiness').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const body = formData(e.target); body.quantity = Number(body.quantity);
+    busy($('button', e.target), async () => {
+      const r = await api('/api/v1/analysis/factory-readiness', { body });
+      $('#readiness-out').innerHTML = `<p>${badge(r.status, r.status.replace('_', ' ').toUpperCase())} ${num(r.component_readiness_pct, 1)}% of components covered for ${num(r.planned_quantity)} × ${esc(r.material)} at ${esc(r.plant)} by ${esc(r.need_by)}</p>` +
+        table([['Component', (c) => esc(c.component)], ['Required', (c) => `${num(c.required, 3)} ${esc(c.uom)}`, 'num'], ['Unrestricted', (c) => num(c.unrestricted_on_hand, 3), 'num'],
+          ['Confirmed inbound', (c) => num(c.confirmed_inbound_by_need_date, 3), 'num'], ['Shortage', (c) => num(c.shortage, 3), 'num'], ['Status', (c) => badge(c.status)],
+          ['Excluded stock', (c) => esc((c.excluded_stock || []).map((x) => `${x.batch} ${x.status} ${x.quantity}`).join('; ') || '—')]], r.components) + submitPanel(r);
+    });
+  });
+
+  // ================================================================ SUPPLIERS
+  // Every product / site / supplier dropdown is filled from the selected customer's snapshot.
+  async function loadSuppliers() {
+    try {
+      const snap = await api('/api/v1/snapshot');
+      state.snapshot = snap;
+      const opts = snap.suppliers.map((s) => `<option>${esc(s)}</option>`).join('');
+      $('#supplier-select').innerHTML = opts; $('#research-supplier').innerHTML = opts;
+      if (snap.suppliers.includes('PackGlass Europe')) $('#supplier-select').value = 'PackGlass Europe';
+      if (snap.suppliers.includes('BioActive Labs')) $('#research-supplier').value = 'BioActive Labs';
+      const fgs = snap.materials.filter((m) => m.type === 'FG');
+      const fgOpts = fgs.map((m) => `<option value="${esc(m.code)}">${esc(m.code)} · ${esc(m.description)}</option>`).join('');
+      const factories = snap.plants.filter((p) => p.type !== 'warehouse');
+      $('#form-balance [name=material]').innerHTML = fgOpts;
+      $('#form-readiness [name=material]').innerHTML = fgOpts;
+      $('#form-readiness [name=plant]').innerHTML = factories.map((p) => `<option value="${esc(p.code)}">${esc(p.code)} · ${esc(p.name)}</option>`).join('');
+      const h = headlineProduct();
+      if (h.material) {
+        $('#form-balance [name=material]').value = h.material;
+        $('#form-readiness [name=material]').value = h.material;
+        const total = Object.values(snap.warehouse_demand_daily[h.material] || {}).reduce((a, b) => a + b, 0);
+        $('#form-readiness [name=quantity]').value = Math.max(1, Math.round(total * 10 / 100) * 100);
+      }
+      state.producedAt = Object.fromEntries((await api('/api/v1/products')).map((p) => [p.material, p.producing_plant]));
+      syncReadinessPlant();
+      $('#form-readiness [name=need_by]').value = new Date(Date.parse(snap.as_of_date || state.cfg.as_of) + 7 * 864e5).toISOString().slice(0, 10);
+      $('#balance-out').innerHTML = ''; $('#readiness-out').innerHTML = ''; $('#supplier-out').innerHTML = '';
+    } catch { /* not signed in */ }
+  }
+  function syncReadinessPlant() {
+    const plant = state.producedAt?.[$('#form-readiness [name=material]').value];
+    if (plant) $('#form-readiness [name=plant]').value = plant;
+  }
+  $('#form-readiness [name=material]').addEventListener('change', syncReadinessPlant);
+  async function loadSuppliersPage() {
+    try {
+      const [q, l] = await Promise.all([api('/api/v1/analysis/quality', { body: {} }), api('/api/v1/analysis/logistics', { body: {} })]);
+      $('#quality-out').innerHTML = table([['Lot', (x) => esc(x.lot)], ['Plant', (x) => esc(x.plant)], ['Material', (x) => esc(x.material)], ['Qty', (x) => num(x.quantity), 'num'], ['Status', (x) => badge(x.status)], ['Defect / release', (x) => esc(x.defect || x.expected_release || '—')]], q.lots);
+      $('#logistics-out').innerHTML = table([['Shipment', (x) => esc(x.shipment)], ['Route', (x) => esc(`${x.from} → ${x.to}`)], ['Qty', (x) => num(x.quantity), 'num'], ['Revised ETA', (x) => esc(x.revised_eta)], ['Delay', (x) => (x.delay_days ? pill(x.escalate ? 'critical' : 'warning', `${x.delay_days} days late`) : pill('good', 'on time'))]], l.shipments);
+      if (!$('#supplier-out').innerHTML) $('#form-supplier').requestSubmit();
+    } catch (e) { toast(e.message); }
+  }
+  $('#form-supplier').addEventListener('submit', (e) => {
+    e.preventDefault();
+    busy($('button', e.target), async () => {
+      const r = await api('/api/v1/analysis/supplier-risk', { body: formData(e.target) });
+      $('#supplier-out').innerHTML = `<p>${badge(r.risk_rating, `${r.risk_rating} risk · score ${r.risk_score}`)} OTIF ${num(r.otif_pct, 1)}% vs ${r.otif_target_pct}% · rejects ${num(r.quality_reject_pct, 2)}% · lead time ${r.supplier.contract_lead_time_days} d · exposure €${num(r.open_po_exposure_eur)} · ${r.single_source ? 'single source' : 'secondary: ' + esc(r.supplier.secondary_source)}</p>` +
+        table([['PO', (x) => esc(x.po)], ['Promised', (x) => esc(x.promised_date)], ['Received', (x) => esc(x.received_date)], ['Delay', (x) => num(x.delay_days), 'num'], ['Rejected', (x) => num(x.quality_rejected), 'num'], ['OTIF', (x) => statusBadge(x.otif ? 'good' : 'critical')]], r.receipts) + submitPanel(r);
+    });
+  });
+  $('#form-rag').addEventListener('submit', (e) => {
+    e.preventDefault();
+    busy($('button', e.target), async () => {
+      const r = await api('/api/v1/rag/search', { body: { query: formData(e.target).query, top_k: 4 } });
+      $('#rag-out').innerHTML = r.results.map((h) => `<div class="panel"><b>${esc(h.title)}</b> ${chip(h.category)} <span class="note">score ${h.score}</span><p>${esc(h.text)}</p></div>`).join('');
+    });
+  });
+
+  // ================================================================ APPROVALS & EXECUTION
+  async function loadApprovals() {
+    const filters = [['pending_review', 'Pending review'], ['accepted', 'Accepted · ready to execute'], ['executed', 'Executed'], ['rejected', 'Rejected'], ['', 'All']];
+    $('#rec-filters').innerHTML = filters.map(([k, l]) => `<button class="${state.recFilter === k ? 'on' : ''}" data-r="${k}">${esc(l)}</button>`).join('');
+    $$('#rec-filters button').forEach((b) => b.addEventListener('click', () => { state.recFilter = b.dataset.r; loadApprovals(); }));
+    try {
+      const recs = await api(`/api/v1/recommendations${state.recFilter ? `?status=${state.recFilter}` : ''}`);
+      const manager = state.role === 'manager';
+      $('#recs').innerHTML = recs.length ? recs.map((r) => `<div class="card" data-rec="${r.id}">
+        <div class="row" style="justify-content:space-between;margin:0 0 6px"><div><b>#${r.id} · ${esc(r.kind.replaceAll('_', ' '))}</b> ${badge(r.status)}</div><span class="note">${esc(r.analysis_id)} · by ${esc(r.submitted_by)} via ${esc(r.source)} · ${esc(r.submitted_at.slice(0, 16).replace('T', ' '))}</span></div>
+        ${table([['Action', (a) => `<b>${esc(a.action.replaceAll('_', ' '))}</b>`], ['Detail', (a) => esc(Object.entries(a).filter(([k]) => k !== 'action').map(([k, v]) => `${k.replaceAll('_', ' ')}: ${Array.isArray(v) ? v.join(', ') : v}`).join(' · '))]], r.actions)}
+        <details><summary class="note">Explanation</summary>${md(r.explanation.slice(0, 3000))}</details>
+        ${r.status === 'pending_review' ? (manager ? `<div class="row" style="margin-top:10px"><input class="grow" placeholder="Decision comment"><button class="good" data-d="accepted">Accept</button><button class="bad" data-d="rejected">Reject</button></div>` : '<p class="note">Awaiting a manager decision.</p>')
+          : r.status === 'accepted' ? (manager ? `<div class="row" style="margin-top:10px"><button data-exec>⚡ Execute in SAP (sandbox)</button><span class="note">Creates the documents in the SAP mock sandbox outbox — 1 click, audited.</span></div>` : '<p class="note">Accepted — a manager executes it.</p>')
+            : `<p class="note">${esc(r.decided_by ? `Decided by ${r.decided_by}: ${r.decision_comment || ''}` : '')}</p>`}
+        <div data-docs></div></div>`).join('') : '<div class="empty">Nothing here.</div>';
+      $$('[data-d]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+        const card = b.closest('[data-rec]');
+        await api(`/api/v1/recommendations/${card.dataset.rec}/decision`, { body: { decision: b.dataset.d, comment: $('input', card).value } });
+        toast(`Recommendation #${card.dataset.rec} ${b.dataset.d}`); loadApprovals(); refreshBadges();
+      })));
+      $$('[data-exec]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+        const card = b.closest('[data-rec]');
+        const r = await api(`/api/v1/recommendations/${card.dataset.rec}/execute`, { body: {} });
+        toast(`Executed: ${r.documents.map((d) => `${d.doc_type} ${d.doc_number}`).join(', ')}`); loadApprovals();
+      })));
+      const docs = await api('/api/v1/sap/documents');
+      $('#sap-docs').innerHTML = table([['Document', (d) => `<b>${esc(d.doc_number)}</b>`], ['Type', (d) => chip(d.doc_type)], ['Recommendation', (d) => `#${d.recommendation_id}`], ['Payload', (d) => esc(Object.entries(d.payload).map(([k, v]) => `${k}: ${v}`).join(' · '))], ['By', (d) => esc(d.created_by)], ['Status', (d) => esc(d.status.replaceAll('_', ' '))]], docs);
+      if (manager) {
+        const a = await api('/api/v1/audit?limit=60');
+        $('#chain').innerHTML = pill(a.chain_valid ? 'good' : 'critical', a.chain_valid ? 'hash chain valid' : 'hash chain BROKEN');
+        $('#audit').innerHTML = table([['Time', (x) => esc(x.ts.slice(0, 19).replace('T', ' '))], ['Actor', (x) => esc(`${x.actor} (${x.role})`)], ['Action', (x) => esc(x.action)], ['Details', (x) => `<code>${esc(JSON.stringify(x.details).slice(0, 140))}</code>`], ['Hash', (x) => `<code>${esc(x.hash.slice(0, 10))}</code>`]], a.events);
+      } else { $('#audit').innerHTML = '<p class="note">The audit log is visible to managers.</p>'; }
+    } catch (e) { toast(e.message); }
+  }
+
+  // ================================================================ WATCHES
+  async function loadWatches() {
+    try {
+      state.kinds = await api('/api/v1/watches/kinds');
+      const sel = $('#watch-kind');
+      if (!sel.options.length) {
+        sel.innerHTML = Object.entries(state.kinds).map(([k, v]) => `<option value="${k}">${esc(v.label)}</option>`).join('');
+        sel.addEventListener('change', watchParams); watchParams();
+      }
+      const r = await api('/api/v1/watches/evaluate', { body: {} });
+      $('#watch-list').innerHTML = table([['Watch', (w) => `<b>${esc(w.name)}</b><br><span class="note">${esc(state.kinds[w.kind]?.label || w.kind)}</span>`],
+        ['Now', (w) => esc(w.text)], ['State', (w) => (w.kind === 'question' ? chip('saved question') : pill(w.triggered ? 'critical' : 'good', w.triggered ? 'Triggered' : 'OK'))],
+        ['Change', (w) => (w.changed ? `from ${esc(String(w.previous_value))}` : '—')], ['', (w) => `${w.kind === 'question' ? `<button class="ghost small" data-q="${esc(w.params.question)}">Ask</button> ` : ''}<button class="ghost small" data-del="${w.id}">Remove</button>`]], r.watches);
+      $$('#watch-list [data-del]').forEach((b) => b.addEventListener('click', () => busy(b, async () => { await api(`/api/v1/watches/${b.dataset.del}`, { method: 'DELETE' }); loadWatches(); })));
+      $$('#watch-list [data-q]').forEach((b) => b.addEventListener('click', () => openDrawer(b.dataset.q)));
+    } catch (e) { toast(e.message); }
+  }
+  function watchParams() {
+    const kind = $('#watch-kind').value;
+    const spec = state.kinds[kind];
+    const snap = state.snapshot || { materials: [], plants: [], suppliers: [] };
+    const field = { material: `<label>Material<select name="p_material">${snap.materials.filter((m) => m.type === 'FG').map((m) => `<option>${esc(m.code)}</option>`).join('')}</select></label>`,
+      warehouse: `<label>Warehouse<select name="p_warehouse">${snap.plants.filter((p) => p.type === 'warehouse').map((p) => `<option>${esc(p.code)}</option>`).join('')}</select></label>`,
+      supplier: `<label>Supplier<select name="p_supplier">${snap.suppliers.map((s) => `<option>${esc(s)}</option>`).join('')}</select></label>`,
+      question: '<label class="grow">Question<input name="p_question" required placeholder="Which orders are at risk this week?"></label>' };
+    $('#watch-params').innerHTML = spec.params.map((p) => field[p]).join('');
+    $('#watch-threshold').value = spec.default;
+    $('#watch-threshold').closest('label').hidden = kind === 'question';
+  }
+  $('#form-watch').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = formData(e.target);
+    const params = Object.fromEntries(Object.entries(f).filter(([k]) => k.startsWith('p_')).map(([k, v]) => [k.slice(2), v]));
+    busy($('button[type=submit]', e.target), async () => {
+      await api('/api/v1/watches', { body: { name: f.name, kind: f.kind, params, threshold: Number(f.threshold || 0) } });
+      e.target.name.value = ''; toast('Watch added'); loadWatches();
+    });
+  });
+  $('#eval-watches').addEventListener('click', loadWatches);
+
+  // ================================================================ AGENTS (Flowise + LangGraph)
+  const ENGINES = {
+    'fw-chatflow': { label: 'Flowise · Chatflow', backend: 'Flowise' }, 'fw-agentflow': { label: 'Flowise · AgentFlow V2', backend: 'Flowise' },
+    'lg-chat': { label: 'LangGraph · Chat Graph', backend: 'LangGraph Server' }, 'lg-agentflow': { label: 'LangGraph · AgentFlow', backend: 'LangGraph Server' },
+  };
+  async function callEngine(engine, conv, text, resume) {
+    if (engine === 'lg-chat') {
+      const r = await api('/api/v1/chat', { body: { message: text, thread_id: conv.thread } });
+      conv.thread = r.thread_id;
+      return { html: md(r.answer), meta: `${r.runtime} · tools: ${r.tools_used.join(', ') || 'none'} · ${r.elapsed_seconds}s` };
+    }
+    if (engine === 'lg-agentflow') {
+      const r = resume ? await api(`/api/v1/langgraph/agentflow/${encodeURIComponent(conv.thread)}/resume`, { body: resume })
+        : await api('/api/v1/langgraph/agentflow', { body: { message: text, thread_id: conv.thread } });
+      conv.thread = r.thread_id;
+      const out = { html: md(r.answer || '(no text)'), meta: `${r.runtime} · route: ${r.route || '—'} · tools: ${r.tools_used.join(', ') || 'none'}${r.status ? ' · ' + r.status : ''} · ${r.elapsed_seconds}s` };
+      if (r.interrupts?.length) { const it = r.interrupts[0]; out.approval = { title: `interrupt() · ${it.question}`, actions: it.proposed_actions, decide: (ok, fb) => ({ decision: ok ? 'submit' : 'discard', comment: fb }) }; }
+      return out;
+    }
+    const flow = engine === 'fw-chatflow' ? 'chatflow' : 'agentflow';
+    conv.thread = conv.thread || crypto.randomUUID();
+    const r = await api(`/api/v1/flowise/${flow}/predict`, { body: { question: text || '', session_id: conv.thread, ...(resume ? { human_input: resume } : {}) } });
+    const path = r.agent_flow_executed?.length ? ` · path: ${r.agent_flow_executed.map((n) => n.node).join(' → ')}` : '';
+    const out = { html: md(r.text || '(no text)'), meta: `Flowise ${flow} · tools: ${r.used_tools.join(', ') || 'none'}${path} · ${r.elapsed_seconds}s` };
+    if (r.action?.data?.nodeId) { const nodeId = r.action.data.nodeId; out.approval = { title: `Human Input · ${r.action.data.nodeLabel}`, decide: (ok, fb) => ({ type: ok ? 'proceed' : 'reject', startNodeId: nodeId, feedback: fb }) }; }
+    return out;
+  }
+  class Conversation {
+    constructor(log, engine) { this.log = log; this.engine = engine; this.thread = null; }
+    reset(engine) { this.engine = engine || this.engine; this.thread = null; this.log.innerHTML = ''; }
+    add(role, html, meta = '') {
+      const div = document.createElement('div');
+      div.className = `msg ${role}`; div.innerHTML = html + (meta ? `<div class="meta">${esc(meta)}</div>` : '');
+      this.log.appendChild(div); this.log.scrollTop = this.log.scrollHeight;
+      return div;
+    }
+    async send(text, resume) {
+      if (!state.key) { toast('Sign in first'); return; }
+      if (text) this.add('user', esc(text));
+      const pending = this.add('bot', `<span class="spinner"></span>${esc(ENGINES[this.engine].label)} is working…`);
+      try {
+        const out = await callEngine(this.engine, this, text, resume);
+        pending.innerHTML = out.html + `<div class="meta">${esc(ENGINES[this.engine].label)} · ${esc(out.meta)}</div>`;
+        if (out.approval) this.approval(out.approval);
+      } catch (e) { pending.innerHTML = `${statusBadge('critical')} ${esc(e.message)}`; }
+      this.onChange?.();
+    }
+    approval(a) {
+      const box = this.add('bot', `<b>Planner approval required</b> — ${esc(a.title)}${a.actions ? `<pre>${esc(JSON.stringify(a.actions, null, 2))}</pre>` : ''}
+        <div class="row" style="margin-top:8px"><input class="grow" placeholder="Comment (optional)"><button class="good">Approve &amp; submit</button><button class="bad">Reject</button></div>`);
+      const go2 = (ok) => { const fb = $('input', box).value; box.remove(); this.add('user', ok ? 'Approve &amp; submit' : 'Reject'); this.send('', a.decide(ok, fb)); refreshBadges(); };
+      $('button.good', box).onclick = () => go2(true); $('button.bad', box).onclick = () => go2(false);
+    }
+  }
+  // chat page
+  const chat = new Conversation($('#messages'), $('#engine').value);
+  const threadLabel = () => { $('#thread-label').textContent = chat.thread ? `thread ${chat.thread.slice(0, 8)}… on ${ENGINES[chat.engine].backend}` : `new thread on ${ENGINES[chat.engine].backend}`; };
+  chat.onChange = threadLabel; threadLabel();
+  $('#engine').addEventListener('change', () => { chat.reset($('#engine').value); threadLabel(); });
+  $('#new-thread').addEventListener('click', () => { chat.reset(); threadLabel(); });
+  $$('#suggestions button').forEach((b) => b.addEventListener('click', () => chat.send(b.textContent)));
+  $('#form-chat').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#chat-input').value.trim(); if (t) { $('#chat-input').value = ''; chat.send(t); } });
+  // drawer (copilot on every page)
+  const drawer = new Conversation($('#drawer-log'), $('#drawer-engine').value);
+  function openDrawer(question) { $('#drawer').classList.add('open'); if (question) drawer.send(question); $('#drawer-input').focus(); }
+  $('#drawer-close').addEventListener('click', () => $('#drawer').classList.remove('open'));
+  $('#drawer-engine').addEventListener('change', () => drawer.reset($('#drawer-engine').value));
+  $('#drawer-form').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#drawer-input').value.trim(); if (t) { $('#drawer-input').value = ''; drawer.send(t); } });
+  $('#askbar').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#ask-input').value.trim(); if (t) { $('#ask-input').value = ''; openDrawer(t); } });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('#drawer').classList.remove('open'); if ((e.key === '/' && document.activeElement === document.body) || (e.key === 'k' && (e.metaKey || e.ctrlKey))) { e.preventDefault(); $('#ask-input').focus(); } });
+  // compare
+  const PAIRS = { agent: ['fw-agentflow', 'lg-agentflow'], chat: ['fw-chatflow', 'lg-chat'] };
+  const left = new Conversation($('#left-log'), 'fw-agentflow');
+  const right = new Conversation($('#right-log'), 'lg-agentflow');
+  function setPairing() { const [l, r] = PAIRS[$('#pairing').value]; left.reset(l); right.reset(r); $('#left-title').textContent = ENGINES[l].label; $('#right-title').textContent = ENGINES[r].label; }
+  $('#pairing').addEventListener('change', setPairing); $('#compare-reset').addEventListener('click', setPairing); setPairing();
+  $$('#compare-suggestions button').forEach((b) => b.addEventListener('click', () => { left.send(b.textContent); right.send(b.textContent); }));
+  $('#form-compare').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#compare-input').value.trim(); if (t) { $('#compare-input').value = ''; left.send(t); right.send(t); } });
+  // business graph
+  function renderWorkflow(r) {
+    const v = r.values;
+    let html = `<p>${badge(r.interrupts.length ? 'at_risk' : v.status || 'plan', r.interrupts.length ? 'awaiting planner decision' : (v.status || 'running').replaceAll('_', ' '))} <span class="note">thread ${esc(r.thread_id)} · ${esc(r.runtime)} · ${r.elapsed_seconds}s</span></p>`;
+    if (v.errors?.length) html += `<div class="panel">${v.errors.map((x) => `<p>${esc(x)}</p>`).join('')}</div>`;
+    if (v.request_type) html += `<p class="note">Workflow <b>${esc(v.request_type)}</b> · ${esc(['plant', 'material', 'quantity', 'need_by', 'supplier', 'warehouse'].filter((k) => v[k]).map((k) => `${k}=${v[k]}`).join(' · '))}</p>`;
+    if (v.narrative) html += `<div class="panel"><b>Briefing</b> <span class="note">${esc(v.narrative_source)}</span>${md(v.narrative)}</div>`;
+    if (v.policy_evidence?.length) html += `<div class="panel"><b>Policy evidence</b>${v.policy_evidence.map((p) => `<p><b>${esc(p.title)}</b> — ${esc(p.text.slice(0, 240))}…</p>`).join('')}</div>`;
+    if (r.interrupts.length) { const it = r.interrupts[0]; html += `<div class="panel"><b>interrupt():</b> ${esc(it.question)}<pre>${esc(JSON.stringify(it.proposed_actions, null, 2))}</pre><div class="row"><input class="grow" id="wf-comment" placeholder="Comment"><button class="good" data-wf="submit">Submit to review queue</button><button class="bad" data-wf="discard">Discard</button></div></div>`; }
+    if (v.recommendation) html += `<div class="panel">${badge('pending_review')} Recommendation #${v.recommendation.id} created from ${esc(v.recommendation.analysis_id)}.</div>`;
+    $('#workflow-out').innerHTML = html;
+    $$('[data-wf]').forEach((b) => b.addEventListener('click', () => busy(b, async () => renderWorkflow(await api(`/api/v1/workflows/business/${encodeURIComponent(r.thread_id)}/resume`, { body: { decision: b.dataset.wf, comment: $('#wf-comment')?.value || '' } })))));
+  }
+  $('#form-workflow').addEventListener('submit', (e) => { e.preventDefault(); busy($('button', e.target), async () => renderWorkflow(await api('/api/v1/workflows/business', { body: { request_text: formData(e.target).request_text } }))); });
+  // deep agent
+  $('#form-research').addEventListener('submit', (e) => {
+    e.preventDefault();
+    $('#research-out').innerHTML = '<p class="note"><span class="spinner"></span>Planning, delegating to subagents and calling tools — 1–2 minutes on a 7B model.</p>';
+    busy($('button', e.target), async () => {
+      const r = await api('/api/v1/deep-agents/supplier-research', { body: formData(e.target) });
+      const todos = (r.todos || []).map((t) => `<li>${chip(t.status)} ${esc(t.content)}</li>`).join('');
+      $('#research-out').innerHTML = `<p class="note">${esc(r.runtime)} · ${r.elapsed_seconds}s · ${r.tools_used.length} tool calls · subagents: ${esc(r.subagents_used.join(', ') || 'none')}</p>${todos ? `<div class="panel"><b>Plan</b><ul>${todos}</ul></div>` : ''}<div class="panel">${md(r.report)}</div>`;
+    });
+  });
+
+  // ================================================================ PLATFORM
+  async function loadPlatform() {
+    try {
+      const st = await api('/api/v1/status');
+      $('#runtime').textContent = `cloud: ${st.cloud} · graphs: ${st.graph_runtime}`;
+      $('#status').innerHTML = `<div class="status-grid">${Object.entries(st.components).map(([name, c]) => `<div class="status-item"><b>${esc(name.replaceAll('_', ' '))}</b>${badge(c.status)} <div class="note" style="margin:4px 0 0">${esc(c.model || (c.backend ? `${c.backend} · ${c.chunks} chunks` : c.dialect ? `${c.dialect} · audit chain ${c.audit_chain_valid ? 'valid' : 'BROKEN'}` : c.http ? `HTTP ${c.http}` : c.snapshot || c.forecast || ''))}</div></div>`).join('')}</div>`;
+    } catch (e) { toast(e.message); }
+    const L = state.cfg.links || {};
+    const a = (u, t) => (u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : `<span class="note">${esc(t)} (not provisioned)</span>`);
+    const studio = (g) => `${L.langsmith_studio}&assistantId=${g}`;
+    const fw = state.cfg.flowise || {};
+    $('#backends').innerHTML = table([['Runtime', (r) => `<b>${esc(r[0])}</b>`], ['Chat flow', (r) => r[1]], ['Agent flow', (r) => r[2]], ['Access', (r) => r[3]]], [
+      ['Flowise', a(fw.chatflow_canvas, 'Chatflow canvas'), a(fw.agentflow_canvas, 'AgentFlow V2 canvas'), `${a(L.flowise, 'Flowise UI')}`],
+      ['LangGraph', a(L.langsmith_studio && studio('supply_chain_chat'), 'supply_chain_chat'), a(L.langsmith_studio && studio('supply_chain_agentflow'), 'supply_chain_agentflow'), `${a(L.langsmith_studio, 'LangSmith Studio')}`],
+    ]);
+    const items = [['API docs (Swagger)', state.cfg.api_docs], ['Flowise', L.flowise], ['LangSmith Studio', L.langsmith_studio], ['LangGraph Server', L.langgraph_api], ['MCP server', L.mcp], ['Grafana', L.grafana], ['Langfuse', L.langfuse]];
+    $('#links').innerHTML = items.filter((i) => i[1]).map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a> <span class="note">${esc(u)}</span></li>`).join('');
+  }
+
+  // ================================================================ NETWORK MAP
+  const TIER_COLOR = { local: 'var(--s3)', regional: 'var(--s1)', international: 'var(--s2)' };
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  let leafletMap = null;
+  async function loadMap() {
+    try {
+      const m = await api('/api/v1/network/map');
+      const ft = m.factory_sourcing;
+      const spend = ft.reduce((a, f) => a + f.spend_eur, 0) || 1;
+      const within = ft.reduce((a, f) => a + f.spend_eur * f.within_zone_pct, 0) / spend;
+      const intl = m.tier_summary.find((t) => t.tier === 'international');
+      const local = m.tier_summary.find((t) => t.tier === 'local');
+      kpiTiles('#map-kpis', [
+        { label: 'Sites', value: m.sites.length, status: 'info', hint: `${m.sites.filter((s) => s.type === 'warehouse').length} DCs · ${m.sites.filter((s) => s.type !== 'warehouse').length} plants` },
+        { label: 'Tier-1 suppliers', value: m.suppliers.length, status: 'info', hint: `${m.alternatives.length} qualified/quoted alternatives` },
+        { label: 'Spend within production zone', value: Math.round(within * 10) / 10, unit: '%', status: within >= 75 ? 'good' : 'warning', hint: 'local + regional, spend-weighted' },
+        { label: 'International: actual time to deliver', value: intl?.avg_learned_time_to_deliver_days, unit: ' d', status: 'warning', hint: `${intl?.suppliers || 0} suppliers` },
+        { label: 'Local: actual time to deliver', value: local?.avg_learned_time_to_deliver_days, unit: ' d', status: 'good', hint: `${local?.suppliers || 0} suppliers` },
+        { label: 'Tier-2 origins', value: m.origins.length, status: m.origins.some((o) => o.criticality === 'high') ? 'warning' : 'info', hint: 'raw-material origins' },
+      ]);
+      $('#map-sourcing').innerHTML = table([['Factory', (f) => `<b>${esc(f.plant)}</b> ${esc(f.name)}`], ['Local', (f) => `${num(f.local_pct, 1)}%`, 'num'], ['Regional', (f) => `${num(f.regional_pct, 1)}%`, 'num'],
+        ['International', (f) => `${num(f.international_pct, 1)}%`, 'num'], ['Within zone', (f) => `<b>${num(f.within_zone_pct, 1)}%</b>`, 'num']], ft);
+      $('#map-learned').innerHTML = table([['Supplier', (s) => esc(s.name)], ['SAP', (s) => `${s.sap_lead_time_days} d`, 'num'], ['Actual', (s) => `<b>${num(s.learned_time_to_deliver_days, 1)} d</b>`, 'num'],
+        ['Gap', (s) => (s.learned_vs_sap_days ? pill(s.learned_vs_sap_days > 5 ? 'critical' : 'warning', `+${num(s.learned_vs_sap_days, 1)} d`) : pill('good', 'on promise'))]],
+        [...m.suppliers].sort((a, b) => b.learned_vs_sap_days - a.learned_vs_sap_days));
+      const ref = m.reference;
+      $('#map-reference').innerHTML = ref ? `<h2>Real-world reference</h2><p class="sub">${esc(ref.source)}</p>${ref.figures.map((f) => `<div class="row" style="margin:0 0 6px;align-items:baseline"><b style="font-size:20px">${f.value_pct}%</b><span class="note" style="margin:0">${esc(f.label)}</span></div>`).join('')}
+        <p class="note">${esc(ref.caveat)}</p><ul class="note">${ref.patterns.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : '<h2>Real-world reference</h2><p class="note">No external reference attached to this customer.</p>';
+      $('#map-tiers').innerHTML = table([['Tier', (t) => `<span class="tier-dot" style="background:${TIER_COLOR[t.tier]}"></span><b>${esc(t.tier)}</b>`], ['Suppliers', (t) => num(t.suppliers), 'num'],
+        ['Actual time to deliver', (t) => (t.avg_learned_time_to_deliver_days === null ? '—' : `${num(t.avg_learned_time_to_deliver_days, 1)} d`), 'num'], ['Delay vs SAP', (t) => (t.avg_delay_vs_sap_days === null ? '—' : `+${num(t.avg_delay_vs_sap_days, 1)} d`), 'num'],
+        ['Average OTIF', (t) => (t.avg_otif_pct === null ? '—' : `${num(t.avg_otif_pct, 1)}%`), 'num'], ['AI focus', (t) => esc({ local: 'reliability, capacity, just-in-time', regional: 'cost vs speed, alternative sourcing', international: 'delay prediction, safety stock, early replenishment' }[t.tier])],
+        ['Who', (t) => esc(t.names.join(', ') || '—')]], m.tier_summary);
+      drawMap(m);
+    } catch (e) { toast(e.message); }
+  }
+  function drawMap(m) {
+    const box = $('#network-map');
+    if (!window.L) { box.innerHTML = '<div class="empty">The map library could not load (offline?). All map data is in the tables.</div>'; return; }
+    if (leafletMap) { leafletMap.remove(); leafletMap = null; }
+    leafletMap = L.map(box, { worldCopyJump: true, scrollWheelZoom: false });
+    // OpenStreetMap standard tiles (dark mode inverts them in CSS); light demo usage within the OSM tile policy.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(leafletMap);
+    const color = (v) => cssVar(v.replace(/var\((--[^)]+)\)/, '$1')) || v;
+    const status = { critical: color('var(--critical)'), warning: color('var(--warning)'), good: color('var(--good)'), info: color('var(--info)'), high: color('var(--critical)'), medium: color('var(--warning)'), low: color('var(--good)') };
+    const layers = { sites: L.layerGroup(), suppliers: L.layerGroup(), alternatives: L.layerGroup(), origins: L.layerGroup(), supply: L.layerGroup(), tier2: L.layerGroup(), distribution: L.layerGroup(), lane: L.layerGroup(), shipment: L.layerGroup() };
+    const bounds = [];
+    const link = (code) => `<a href="#sites/${esc(code)}">Open Warehouse 360 →</a>`;
+    m.sites.forEach((s) => {
+      const isDc = s.type === 'warehouse';
+      const mk = L.circleMarker([s.lat, s.lon], { radius: isDc ? 9 : 11, color: color('var(--surface)'), weight: 2, fillColor: isDc ? color('var(--accent)') : color('var(--ink)'), fillOpacity: 1 });
+      mk.bindPopup(`<b>${esc(s.code)} · ${esc(s.name)}</b><br>${esc(s.type.replaceAll('_', ' '))} · ${esc(s.city)}, ${esc(s.country)}<br>Stock €${num(s.stock_value_eur)} · ${s.below_target} position(s) below target${s.manager ? `<br>Manager: ${esc(s.manager.name)} · <a href="mailto:${esc(s.manager.email)}">${esc(s.manager.email)}</a>` : ''}<br>${link(s.code)}`);
+      mk.bindTooltip(s.code, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(layers.sites); bounds.push([s.lat, s.lon]);
+    });
+    m.suppliers.forEach((s) => {
+      const c = color(TIER_COLOR[s.worst_tier]);
+      L.circleMarker([s.lat, s.lon], { radius: 7, color: status[s.risk_rating] || c, weight: 3, fillColor: c, fillOpacity: 0.95 })
+        .bindPopup(`<b>${esc(s.name)}</b><br>${esc(s.manufacturing_site || '')} · ${esc(s.city)}, ${esc(s.country)}<br>Supplies ${esc(s.materials.join(', '))}<br>Tier: ${s.serves.map((x) => `${esc(x.plant)} ${esc(x.tier)}`).join(', ')}<br>
+          SAP lead time <b>${s.sap_lead_time_days} d</b> · actual <b>${num(s.learned_time_to_deliver_days, 1)} d</b><br>OTIF ${num(s.otif_pct, 1)}% · risk ${esc(s.risk_rating)}${s.single_source ? ' · single source' : ''}`)
+        .addTo(layers.suppliers);
+      bounds.push([s.lat, s.lon]);
+    });
+    m.alternatives.forEach((q) => L.circleMarker([q.lat, q.lon], { radius: 5, color: color(TIER_COLOR.regional), weight: 2, fillOpacity: 0, dashArray: '3' })
+      .bindPopup(`<b>${esc(q.supplier)}</b> (alternative)<br>${esc(q.material)} · quoted ${q.quoted_lead_time_days} d · €${q.unit_price_eur}/unit<br>${q.qualified ? 'qualified' : 'not yet qualified'} · ${esc(q.reference || '')}`).addTo(layers.alternatives));
+    m.origins.forEach((o) => {
+      L.circleMarker([o.lat, o.lon], { radius: 6, color: status[o.criticality], weight: 2, fillColor: color('var(--s2)'), fillOpacity: 0.5 })
+        .bindPopup(`<b>${esc(o.ingredient)}</b> · ${esc(o.origin)}<br>feeds ${esc(o.feeds_supplier)} (${esc(o.feeds_material)}, ${o.share_of_material_pct}%)<br>transit ${o.transit_days} ± ${o.transit_variability_days} d · criticality ${esc(o.criticality)}<br>${esc(o.note)}`).addTo(layers.origins);
+      bounds.push([o.lat, o.lon]);
+    });
+    m.flows.forEach((f) => {
+      if (!f.from[0] || !f.to[0]) return;
+      const style = {
+        supply: { color: color(TIER_COLOR[f.tier] || 'var(--s1)'), weight: 2, opacity: 0.75 }, tier2: { color: color('var(--s2)'), weight: 1.5, opacity: 0.6, dashArray: '2 6' },
+        distribution: { color: color('var(--muted)'), weight: 1, opacity: 0.45 }, lane: { color: color('var(--accent)'), weight: 1.5, opacity: 0.5, dashArray: '6 6' },
+        shipment: { color: status[f.status], weight: 3, opacity: 0.9 } }[f.kind];
+      L.polyline([f.from, f.to], style).bindTooltip(esc(f.label), { sticky: true }).addTo(layers[f.kind]);
+    });
+    const shown = { sites: true, suppliers: true, alternatives: false, origins: true, supply: true, tier2: true, distribution: false, lane: true, shipment: true };
+    const labels = { sites: 'Sites', suppliers: 'Suppliers', alternatives: 'Alternatives', origins: 'Ingredient origins', supply: 'Supply flows', tier2: 'Tier-2 flows', distribution: 'Distribution', lane: 'DC lanes', shipment: 'Shipments' };
+    Object.entries(layers).forEach(([k, layer]) => { if (shown[k]) layer.addTo(leafletMap); });
+    $('#map-layers').innerHTML = Object.keys(layers).map((k) => `<label><input type="checkbox" data-layer="${k}" ${shown[k] ? 'checked' : ''}>${labels[k]}</label>`).join('');
+    $$('#map-layers input').forEach((cb) => cb.addEventListener('change', () => (cb.checked ? layers[cb.dataset.layer].addTo(leafletMap) : leafletMap.removeLayer(layers[cb.dataset.layer]))));
+    $('#map-legend').innerHTML = [['local supplier', TIER_COLOR.local], ['regional supplier', TIER_COLOR.regional], ['international supplier', TIER_COLOR.international], ['plant', 'var(--ink)'], ['distribution centre', 'var(--accent)']]
+      .map(([l, c]) => `<span><i class="dot" style="--c:${c}"></i>${l}</span>`).join('') + '<span class="note" style="margin:0">ring colour = supplier risk · red/amber lines = delayed shipments</span>';
+    leafletMap.fitBounds(bounds, { padding: [24, 24] });
+  }
+
+  // ================================================================ industry / customer
+  function agentNotes() {
+    const off = state.tenant && state.tenant !== state.catalogue?.default;
+    $$('#page-chat, #page-compare, #page-workflow, #page-research').forEach((page) => {
+      let note = page.querySelector('.agent-note');
+      if (!note) { note = document.createElement('div'); note.className = 'empty agent-note'; page.prepend(note); }
+      note.hidden = !off;
+      note.innerHTML = 'AI agents, MCP tools and the RAG knowledge base are connected to the <b>Aurelia Cosmetics</b> demo tenant. Dashboards, maps and analytics follow the customer selected in the top bar.';
+    });
+  }
+  function fillTenantBar() {
+    const cat = state.catalogue;
+    const tid = state.tenant || cat.default;
+    const industry = tid.split('/')[0];
+    $('#industry-select').innerHTML = cat.industries.map((i) => `<option value="${esc(i.id)}">${esc(i.label)} (${i.customers.length})</option>`).join('');
+    $('#industry-select').value = industry;
+    const customers = cat.industries.find((i) => i.id === industry)?.customers || [];
+    $('#customer-select').innerHTML = customers.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}${c.synthetic ? ' · demo' : ''}</option>`).join('');
+    $('#customer-select').value = tid;
+  }
+  async function setTenant(id) {
+    state.tenant = id; local.set('tenant', id);
+    Object.assign(state, { products: null, sites: null, product: '', focus: '', site: '', insights: [], filter: 'all' });
+    local.set('focus', ''); local.set('site', '');
+    fillTenantBar(); agentNotes();
+    try { state.cfg = await api('/api/v1/config/public'); } catch { /* keep */ }
+    if (state.key) { await loadSuppliers(); refreshBadges(); }
+    envLine();
+    route();
+  }
+  function envLine() {
+    const t = state.snapshot?.tenant;
+    $('#env-line').textContent = `${t ? `${t.customer} · ${t.industry_label} · ` : ''}${(state.cfg.cloud || 'local').toUpperCase()} · graphs on ${state.cfg.graph_runtime || '—'}${state.cfg.llm_model ? ' · ' + state.cfg.llm_model : ''}`;
+  }
+  $('#industry-select').addEventListener('change', () => {
+    const industry = state.catalogue.industries.find((i) => i.id === $('#industry-select').value);
+    setTenant(industry.customers[0].id);
+  });
+  $('#customer-select').addEventListener('change', () => setTenant($('#customer-select').value));
+  $('#product-focus').addEventListener('change', () => { state.focus = $('#product-focus').value; local.set('focus', state.focus); loadDashboard(); });
+  $('#site-select').addEventListener('change', () => { state.site = $('#site-select').value; local.set('site', state.site); loadSites(); });
+
+  // ================================================================ boot
+  async function boot() {
+    try { state.cfg = await api('/api/v1/config/public'); } catch { /* optional */ }
+    try {
+      const fromUrl = new URLSearchParams(location.search).get('tenant');  // shareable link: /?tenant=pharmaceutical/medivia#dashboard
+      if (fromUrl) { state.tenant = fromUrl; local.set('tenant', fromUrl); }
+      state.catalogue = await api('/api/v1/tenants');
+      const known = state.catalogue.industries.some((i) => i.customers.some((c) => c.id === state.tenant));
+      if (!known) state.tenant = state.catalogue.default;
+      fillTenantBar(); agentNotes();
+    } catch { $('#tenant-bar').hidden = true; }
+    envLine();
+    if (state.cfg.demo_auto_login) {
+      const keys = await api('/api/v1/demo/session');
+      $('#login').hidden = true; $('#demo-role').hidden = false;
+      $('#role-select').value = local.get('demoRole') || 'manager';
+      $('#role-select').addEventListener('change', () => { local.set('demoRole', $('#role-select').value); signIn(keys[$('#role-select').value]); });
+      await signIn(keys[$('#role-select').value], true);
+    } else if (state.key) {
+      $('#demo-role').hidden = true;
+      await signIn(state.key, true);
+    } else { route(); }
+  }
+  boot();
+})();

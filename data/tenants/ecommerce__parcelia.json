@@ -1,0 +1,1190 @@
+{
+ "snapshot": {
+  "id": "SAP-PM-2026-10-20T040000Z",
+  "source_system": "S4HANA-ECOMMERCE-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "ecommerce",
+  "customer": "Parcelia Marketplace",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "KT40",
+   "name": "Lille Kitting Centre",
+   "type": "factory",
+   "country": "FR",
+   "lat": 50.63,
+   "lon": 3.06,
+   "city": "Lille",
+   "zone": "Europe",
+   "address": "Lille, FR (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Yuki Martens",
+     "email": "yuki.martens@parcelia-demo.example",
+     "phone": "+33 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Marta Rossi",
+     "email": "marta.rossi@parcelia-demo.example",
+     "phone": "+33 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Omar Kowalski",
+     "email": "omar.kowalski@parcelia-demo.example",
+     "phone": "+33 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC41",
+   "name": "Lille Fulfilment Centre",
+   "type": "warehouse",
+   "country": "FR",
+   "lat": 50.6,
+   "lon": 3.1,
+   "city": "Lille",
+   "zone": "Europe",
+   "address": "Lille, FR (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Elena Moreau",
+     "email": "elena.moreau@parcelia-demo.example",
+     "phone": "+33 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Lukas Keller",
+     "email": "lukas.keller@parcelia-demo.example",
+     "phone": "+33 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Nadia Andersen",
+     "email": "nadia.andersen@parcelia-demo.example",
+     "phone": "+33 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC42",
+   "name": "Madrid Fulfilment Centre",
+   "type": "warehouse",
+   "country": "ES",
+   "lat": 40.42,
+   "lon": -3.7,
+   "city": "Madrid",
+   "zone": "Europe",
+   "address": "Madrid, ES (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Elena Andersen",
+     "email": "elena.andersen@parcelia-demo.example",
+     "phone": "+34 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Elena Novak",
+     "email": "elena.novak@parcelia-demo.example",
+     "phone": "+34 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Carlos Haddad",
+     "email": "carlos.haddad@parcelia-demo.example",
+     "phone": "+34 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC43",
+   "name": "Milan Fulfilment Centre",
+   "type": "warehouse",
+   "country": "IT",
+   "lat": 45.46,
+   "lon": 9.19,
+   "city": "Milan",
+   "zone": "Europe",
+   "address": "Milan, IT (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Tomas Weber",
+     "email": "tomas.weber@parcelia-demo.example",
+     "phone": "+39 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Chloé Andersen",
+     "email": "chloe.andersen@parcelia-demo.example",
+     "phone": "+39 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marco Tanaka",
+     "email": "marco.tanaka@parcelia-demo.example",
+     "phone": "+39 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-COFFEE-BUNDLE",
+   "description": "Specialty coffee starter bundle",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 11.5,
+   "safety_stock": 600
+  },
+  {
+   "code": "FG-YOGA-SET",
+   "description": "Yoga starter set",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 8.2,
+   "safety_stock": 500
+  },
+  {
+   "code": "FG-LED-DESK",
+   "description": "LED desk lamp",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 13.0,
+   "safety_stock": 400
+  },
+  {
+   "code": "CM-COFFEE-BEANS",
+   "description": "Roasted beans 500 g",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 5.2,
+   "safety_stock": 3000
+  },
+  {
+   "code": "CM-MILK-FROTHER",
+   "description": "Handheld frother",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 2.9,
+   "safety_stock": 2000
+  },
+  {
+   "code": "PK-MAILER-BOX",
+   "description": "Corrugated mailer box",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.38,
+   "safety_stock": 15000
+  },
+  {
+   "code": "CM-YOGA-MAT",
+   "description": "TPE yoga mat",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 4.1,
+   "safety_stock": 2000
+  },
+  {
+   "code": "CM-YOGA-BLOCK",
+   "description": "Cork yoga block",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 1.2,
+   "safety_stock": 4000
+  },
+  {
+   "code": "CM-LED-LAMP",
+   "description": "LED lamp (bulk)",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 8.7,
+   "safety_stock": 1500
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-PM001",
+   "name": "Torrefazione Lombarda",
+   "country": "IT",
+   "materials": [
+    "CM-COFFEE-BEANS"
+   ],
+   "contract_lead_time_days": 6,
+   "otif_target_pct": 97,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 5.2,
+   "freight_eur_per_order": 300,
+   "typical_order_qty": 3000,
+   "lat": 45.7,
+   "lon": 9.67,
+   "city": "Bergamo",
+   "manufacturing_country": "IT",
+   "manufacturing_site": "Roastery",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-PM002",
+   "name": "Zhejiang Kitchenware",
+   "country": "CN",
+   "materials": [
+    "CM-MILK-FROTHER"
+   ],
+   "contract_lead_time_days": 44,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 2.9,
+   "freight_eur_per_order": 2200,
+   "typical_order_qty": 20000,
+   "lat": 29.31,
+   "lon": 120.08,
+   "city": "Yiwu",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "Small appliance assembly",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-PM003",
+   "name": "Cartonajes del Sur",
+   "country": "ES",
+   "materials": [
+    "PK-MAILER-BOX"
+   ],
+   "contract_lead_time_days": 8,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": "Smurfit Nord",
+   "unit_price_eur": 0.38,
+   "freight_eur_per_order": 260,
+   "typical_order_qty": 30000,
+   "lat": 37.39,
+   "lon": -5.98,
+   "city": "Sevilla",
+   "manufacturing_country": "ES",
+   "manufacturing_site": "Corrugator",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-PM004",
+   "name": "Penang Fitness Goods",
+   "country": "MY",
+   "materials": [
+    "CM-YOGA-MAT"
+   ],
+   "contract_lead_time_days": 40,
+   "otif_target_pct": 92,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 4.1,
+   "freight_eur_per_order": 2400,
+   "typical_order_qty": 8000,
+   "lat": 5.41,
+   "lon": 100.33,
+   "city": "Penang",
+   "manufacturing_country": "MY",
+   "manufacturing_site": "TPE moulding",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-PM005",
+   "name": "Corticeira do Douro",
+   "country": "PT",
+   "materials": [
+    "CM-YOGA-BLOCK"
+   ],
+   "contract_lead_time_days": 9,
+   "otif_target_pct": 96,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 1.2,
+   "freight_eur_per_order": 220,
+   "typical_order_qty": 10000,
+   "lat": 41.15,
+   "lon": -8.61,
+   "city": "Porto",
+   "manufacturing_country": "PT",
+   "manufacturing_site": "Cork processing",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-PM006",
+   "name": "Foshan Lighting",
+   "country": "CN",
+   "materials": [
+    "CM-LED-LAMP"
+   ],
+   "contract_lead_time_days": 42,
+   "otif_target_pct": 91,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 8.7,
+   "freight_eur_per_order": 2600,
+   "typical_order_qty": 6000,
+   "lat": 23.02,
+   "lon": 113.12,
+   "city": "Foshan",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "LED luminaire factory",
+   "zone": "Asia-Pacific"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "KT40",
+   "parent": "FG-COFFEE-BUNDLE",
+   "component": "CM-COFFEE-BEANS",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-COFFEE-BUNDLE",
+   "component": "CM-MILK-FROTHER",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-COFFEE-BUNDLE",
+   "component": "PK-MAILER-BOX",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-YOGA-SET",
+   "component": "CM-YOGA-MAT",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-YOGA-SET",
+   "component": "CM-YOGA-BLOCK",
+   "quantity": 2,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-YOGA-SET",
+   "component": "PK-MAILER-BOX",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-LED-DESK",
+   "component": "CM-LED-LAMP",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT40",
+   "parent": "FG-LED-DESK",
+   "component": "PK-MAILER-BOX",
+   "quantity": 1,
+   "scrap_pct": 1
+  }
+ ],
+ "stock": [
+  {
+   "plant": "FC41",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC41",
+   "quantity": 3300,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC42",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC42",
+   "quantity": 800,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC43",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC43",
+   "quantity": 570,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC41",
+   "material": "FG-YOGA-SET",
+   "batch": "YOGA-S-FC41",
+   "quantity": 3360,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC42",
+   "material": "FG-YOGA-SET",
+   "batch": "YOGA-S-FC42",
+   "quantity": 4080,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC43",
+   "material": "FG-YOGA-SET",
+   "batch": "YOGA-S-FC43",
+   "quantity": 2880,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC41",
+   "material": "FG-LED-DESK",
+   "batch": "LED-DE-FC41",
+   "quantity": 2280,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC42",
+   "material": "FG-LED-DESK",
+   "batch": "LED-DE-FC42",
+   "quantity": 2400,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC43",
+   "material": "FG-LED-DESK",
+   "batch": "LED-DE-FC43",
+   "quantity": 2640,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-COFFEE-BEANS",
+   "batch": "COFFEE-A",
+   "quantity": 8778,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-MILK-FROTHER",
+   "batch": "MILK-F-A",
+   "quantity": 8778,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "PK-MAILER-BOX",
+   "batch": "MAILER-A",
+   "quantity": 3591,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-YOGA-MAT",
+   "batch": "YOGA-M-A",
+   "quantity": 2709,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-YOGA-BLOCK",
+   "batch": "YOGA-B-A",
+   "quantity": 21672,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-LED-LAMP",
+   "batch": "LED-LA-A",
+   "quantity": 6156,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-MILK-FROTHER",
+   "batch": "MILK-F-Q",
+   "quantity": 2633.4,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "KT40",
+   "material": "CM-COFFEE-BEANS",
+   "batch": "COFFEE-QI",
+   "quantity": 1316.7,
+   "status": "quality_inspection",
+   "expiry": null
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45PM00001",
+   "supplier": "Torrefazione Lombarda",
+   "material": "CM-COFFEE-BEANS",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00002",
+   "supplier": "Torrefazione Lombarda",
+   "material": "CM-COFFEE-BEANS",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-11-17",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45PM00003",
+   "supplier": "Zhejiang Kitchenware",
+   "material": "CM-MILK-FROTHER",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00004",
+   "supplier": "Zhejiang Kitchenware",
+   "material": "CM-MILK-FROTHER",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-11-09",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00005",
+   "supplier": "Cartonajes del Sur",
+   "material": "PK-MAILER-BOX",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00006",
+   "supplier": "Cartonajes del Sur",
+   "material": "PK-MAILER-BOX",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-11-15",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45PM00007",
+   "supplier": "Penang Fitness Goods",
+   "material": "CM-YOGA-MAT",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00008",
+   "supplier": "Penang Fitness Goods",
+   "material": "CM-YOGA-MAT",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-11-10",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00009",
+   "supplier": "Corticeira do Douro",
+   "material": "CM-YOGA-BLOCK",
+   "plant": "KT40",
+   "quantity": 28049,
+   "delivery_date": "2026-10-25",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00010",
+   "supplier": "Corticeira do Douro",
+   "material": "CM-YOGA-BLOCK",
+   "plant": "KT40",
+   "quantity": 28049,
+   "delivery_date": "2026-11-08",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00011",
+   "supplier": "Foshan Lighting",
+   "material": "CM-LED-LAMP",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45PM00012",
+   "supplier": "Foshan Lighting",
+   "material": "CM-LED-LAMP",
+   "plant": "KT40",
+   "quantity": 14024,
+   "delivery_date": "2026-11-11",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44PM00001",
+   "supplier": "Torrefazione Lombarda",
+   "material": "CM-COFFEE-BEANS",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00002",
+   "supplier": "Torrefazione Lombarda",
+   "material": "CM-COFFEE-BEANS",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00003",
+   "supplier": "Torrefazione Lombarda",
+   "material": "CM-COFFEE-BEANS",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00004",
+   "supplier": "Zhejiang Kitchenware",
+   "material": "CM-MILK-FROTHER",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00005",
+   "supplier": "Zhejiang Kitchenware",
+   "material": "CM-MILK-FROTHER",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 1121.92
+  },
+  {
+   "po": "44PM00006",
+   "supplier": "Zhejiang Kitchenware",
+   "material": "CM-MILK-FROTHER",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00007",
+   "supplier": "Cartonajes del Sur",
+   "material": "PK-MAILER-BOX",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00008",
+   "supplier": "Cartonajes del Sur",
+   "material": "PK-MAILER-BOX",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00009",
+   "supplier": "Cartonajes del Sur",
+   "material": "PK-MAILER-BOX",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00010",
+   "supplier": "Penang Fitness Goods",
+   "material": "CM-YOGA-MAT",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00011",
+   "supplier": "Penang Fitness Goods",
+   "material": "CM-YOGA-MAT",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00012",
+   "supplier": "Penang Fitness Goods",
+   "material": "CM-YOGA-MAT",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00013",
+   "supplier": "Corticeira do Douro",
+   "material": "CM-YOGA-BLOCK",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 28049,
+   "quantity_received": 28049,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00014",
+   "supplier": "Corticeira do Douro",
+   "material": "CM-YOGA-BLOCK",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 28049,
+   "quantity_received": 28049,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00015",
+   "supplier": "Corticeira do Douro",
+   "material": "CM-YOGA-BLOCK",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 28049,
+   "quantity_received": 28049,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00016",
+   "supplier": "Foshan Lighting",
+   "material": "CM-LED-LAMP",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00017",
+   "supplier": "Foshan Lighting",
+   "material": "CM-LED-LAMP",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44PM00018",
+   "supplier": "Foshan Lighting",
+   "material": "CM-LED-LAMP",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 14024,
+   "quantity_received": 14024,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1PM0001",
+   "plant": "KT40",
+   "material": "FG-COFFEE-BUNDLE",
+   "quantity": 7980,
+   "finish_date": "2026-10-28",
+   "status": "released"
+  },
+  {
+   "order": "1PM0002",
+   "plant": "KT40",
+   "material": "FG-COFFEE-BUNDLE",
+   "quantity": 10370.0,
+   "finish_date": "2026-11-11",
+   "status": "planned"
+  },
+  {
+   "order": "1PM0101",
+   "plant": "KT40",
+   "material": "FG-YOGA-SET",
+   "quantity": 6020,
+   "finish_date": "2026-10-29",
+   "status": "released"
+  },
+  {
+   "order": "1PM0102",
+   "plant": "KT40",
+   "material": "FG-YOGA-SET",
+   "quantity": 7830.0,
+   "finish_date": "2026-11-10",
+   "status": "planned"
+  },
+  {
+   "order": "1PM0201",
+   "plant": "KT40",
+   "material": "FG-LED-DESK",
+   "quantity": 3420,
+   "finish_date": "2026-10-28",
+   "status": "released"
+  },
+  {
+   "order": "1PM0202",
+   "plant": "KT40",
+   "material": "FG-LED-DESK",
+   "quantity": 4450.0,
+   "finish_date": "2026-11-06",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-PM0001",
+   "plant": "KT40",
+   "material": "CM-MILK-FROTHER",
+   "batch": "MILK-F-Q",
+   "quantity": 2633.4,
+   "supplier": "Zhejiang Kitchenware",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-PM0002",
+   "plant": "KT40",
+   "material": "CM-COFFEE-BEANS",
+   "batch": "COFFEE-QI",
+   "quantity": 1316.7,
+   "supplier": "Torrefazione Lombarda",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-PM7700",
+   "customer": "Web orders FR",
+   "warehouse": "FC41",
+   "material": "FG-COFFEE-BUNDLE",
+   "quantity": 4120.0,
+   "requested_date": "2026-10-30",
+   "priority": "high"
+  },
+  {
+   "order": "SO-PM7701",
+   "customer": "Web orders ES",
+   "warehouse": "FC42",
+   "material": "FG-YOGA-SET",
+   "quantity": 610.0,
+   "requested_date": "2026-11-02",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-PM7702",
+   "customer": "Web orders IT",
+   "warehouse": "FC43",
+   "material": "FG-LED-DESK",
+   "quantity": 660.0,
+   "requested_date": "2026-10-31",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-PM7703",
+   "customer": "Corporate wellness",
+   "warehouse": "FC41",
+   "material": "FG-COFFEE-BUNDLE",
+   "quantity": 1160.0,
+   "requested_date": "2026-10-29",
+   "priority": "high"
+  },
+  {
+   "order": "SO-PM7704",
+   "customer": "Marketplace partners",
+   "warehouse": "FC42",
+   "material": "FG-YOGA-SET",
+   "quantity": 1430.0,
+   "requested_date": "2026-10-26",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-PM7705",
+   "customer": "Flash sale",
+   "warehouse": "FC43",
+   "material": "FG-LED-DESK",
+   "quantity": 660.0,
+   "requested_date": "2026-10-27",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-PM01",
+   "type": "stock_transfer",
+   "from": "FC41",
+   "to": "FC42",
+   "material": "FG-COFFEE-BUNDLE",
+   "quantity": 480,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-PM02",
+   "type": "stock_transfer",
+   "from": "FC41",
+   "to": "FC43",
+   "material": "FG-YOGA-SET",
+   "quantity": 480,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-PM03",
+   "type": "inbound",
+   "from": "V-PM001",
+   "to": "KT40",
+   "material": "CM-COFFEE-BEANS",
+   "quantity": 14024,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-PM-01",
+   "count_date": "2026-10-19",
+   "plant": "FC41",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC41",
+   "book_quantity": 3300,
+   "counted_quantity": 3260,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-PM-02",
+   "count_date": "2026-10-19",
+   "plant": "FC42",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC42",
+   "book_quantity": 800,
+   "counted_quantity": 797,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-PM-03",
+   "count_date": "2026-10-19",
+   "plant": "FC43",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC43",
+   "book_quantity": 570,
+   "counted_quantity": 547,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-PM-04",
+   "count_date": "2026-10-19",
+   "plant": "FC41",
+   "material": "FG-YOGA-SET",
+   "batch": "YOGA-S-FC41",
+   "book_quantity": 3360,
+   "counted_quantity": 3360,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49PM0001",
+   "type": "goods_issue",
+   "plant": "FC41",
+   "material": "FG-COFFEE-BUNDLE",
+   "batch": "COFFEE-FC41",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-COFFEE-BUNDLE": {
+   "FC41": 220,
+   "FC42": 160,
+   "FC43": 190
+  },
+  "FG-YOGA-SET": {
+   "FC41": 140,
+   "FC42": 170,
+   "FC43": 120
+  },
+  "FG-LED-DESK": {
+   "FC41": 95,
+   "FC42": 80,
+   "FC43": 110
+  }
+ },
+ "lanes": [
+  {
+   "from": "FC41",
+   "to": "FC42",
+   "lead_days": 2,
+   "cost_per_unit": 0.45,
+   "carbon_kg_per_unit": 0.078
+  },
+  {
+   "from": "FC41",
+   "to": "FC43",
+   "lead_days": 2,
+   "cost_per_unit": 0.42,
+   "carbon_kg_per_unit": 0.078
+  },
+  {
+   "from": "FC42",
+   "to": "FC41",
+   "lead_days": 3,
+   "cost_per_unit": 0.51,
+   "carbon_kg_per_unit": 0.077
+  },
+  {
+   "from": "FC42",
+   "to": "FC43",
+   "lead_days": 3,
+   "cost_per_unit": 0.52,
+   "carbon_kg_per_unit": 0.072
+  },
+  {
+   "from": "FC43",
+   "to": "FC41",
+   "lead_days": 3,
+   "cost_per_unit": 0.53,
+   "carbon_kg_per_unit": 0.076
+  },
+  {
+   "from": "FC43",
+   "to": "FC42",
+   "lead_days": 3,
+   "cost_per_unit": 0.51,
+   "carbon_kg_per_unit": 0.062
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Smurfit Nord",
+   "material": "PK-MAILER-BOX",
+   "unit_price_eur": 0.4,
+   "freight_eur_per_order": 240,
+   "typical_order_qty": 30000,
+   "quoted_lead_time_days": 5,
+   "qualified": true,
+   "country": "FR",
+   "city": "Arras",
+   "lat": 50.29,
+   "lon": 2.78,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Arabica green coffee",
+   "origin": "Minas Gerais, Brazil",
+   "country": "BR",
+   "lat": -19.9,
+   "lon": -43.9,
+   "feeds_supplier": "Torrefazione Lombarda",
+   "feeds_material": "CM-COFFEE-BEANS",
+   "share_of_material_pct": 80,
+   "transit_days": 24,
+   "transit_variability_days": 6,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "harvest May–Sep; price volatility"
+  }
+ ]
+}

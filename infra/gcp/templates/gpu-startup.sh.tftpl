@@ -1,0 +1,24 @@
+#!/bin/bash
+# GCP GPU VM (Container-Optimized OS + NVIDIA L4): install the driver and serve Qwen with vLLM.
+set -euo pipefail
+cos-extensions install gpu -- --version=latest
+mount --bind /var/lib/nvidia /var/lib/nvidia
+mount -o remount,exec /var/lib/nvidia
+/var/lib/nvidia/bin/nvidia-smi
+
+TOKEN=$(curl -s -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" | sed -E 's/.*"access_token":"([^"]+)".*/\1/')
+QWEN_API_KEY=$(curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://secretmanager.googleapis.com/v1/projects/${project_id}/secrets/${secret_name}/versions/latest:access" \
+  | sed -E 's/.*"data": *"([^"]+)".*/\1/' | base64 -d)
+
+mkdir -p /mnt/stateful_partition/hf-cache
+docker rm -f qwen 2>/dev/null || true
+docker run -d --name qwen --restart unless-stopped --log-driver gcplogs --ipc=host -p 8000:8000 \
+  --volume /var/lib/nvidia/lib64:/usr/local/nvidia/lib64 --volume /var/lib/nvidia/bin:/usr/local/nvidia/bin \
+  --device /dev/nvidia0:/dev/nvidia0 --device /dev/nvidia-uvm:/dev/nvidia-uvm --device /dev/nvidiactl:/dev/nvidiactl \
+  -v /mnt/stateful_partition/hf-cache:/root/.cache/huggingface \
+  "${vllm_image}" \
+  --model "${vllm_model}" --served-model-name "${served_name}" \
+  --enable-auto-tool-choice --tool-call-parser hermes \
+  --max-model-len 16384 --gpu-memory-utilization 0.90 \
+  --api-key "$QWEN_API_KEY"

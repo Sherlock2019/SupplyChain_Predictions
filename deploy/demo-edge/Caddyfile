@@ -1,0 +1,50 @@
+# LOCAL DEMO ONLY — "no login" front door for Flowise (:3000) and Langfuse (:3003).
+# Flowise and Langfuse cannot disable authentication, so this proxy serves an auto-login page on each tool's own origin:
+# it signs in as the demo admin (same-origin fetch), stores what the UI expects, and redirects back. Never use in the cloud.
+{
+	auto_https off
+	admin off
+}
+
+:3000 {
+	# Full page loads without a fresh demo session marker (or the UI's own sign-in routes) go through auto-login.
+	@needs_login {
+		not path /__autologin /api/* /assets/* /favicon* /manifest.json /logo*
+		header Accept *text/html*
+		not header_regexp Cookie aurelia_demo_flowise=1
+	}
+	@signin path /login /signin
+	redir @signin /__autologin 302
+	redir @needs_login /__autologin?next={uri} 302
+	handle /__autologin {
+		root * /srv
+		rewrite * /flowise-autologin.html
+		templates
+		file_server
+	}
+	reverse_proxy flowise:3000 {
+		flush_interval -1
+	}
+}
+
+:3003 {
+	@signin {
+		path /auth/sign-in
+		not query manual=1
+	}
+	redir @signin /__autologin?{query} 302
+	# Langfuse sends unauthenticated users to sign-in client-side, so full page loads without a session go through auto-login.
+	@needs_login {
+		not path /__autologin /api/* /_next/* /auth/* /favicon* /icon* /manifest*
+		header Accept *text/html*
+		not header_regexp Cookie next-auth\.session-token
+	}
+	redir @needs_login /__autologin?targetPath={uri} 302
+	handle /__autologin {
+		root * /srv
+		rewrite * /langfuse-autologin.html
+		templates
+		file_server
+	}
+	reverse_proxy langfuse:3000
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://langgra.ph/schema.json",
+  "dependencies": ["."],
+  "graphs": {
+    "supply_chain_chat": "./backend/app/graphs.py:chat_graph",
+    "supply_chain_agentflow": "./backend/app/agentflow.py:graph",
+    "supply_chain_business": "./backend/app/graphs.py:business_graph",
+    "supplier_deep_agent": "./backend/app/deep_agent.py:graph"
+  },
+  "env": ".env"
+}

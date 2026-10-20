@@ -1,0 +1,84 @@
+{
+ "default": "cosmetics/aurelia",
+ "industries": {
+  "cosmetics": {
+   "label": "Cosmetics & beauty",
+   "customers": [
+    {
+     "id": "aurelia",
+     "name": "Aurelia Cosmetics",
+     "file": "data/sap_mock.json",
+     "synthetic": true
+    },
+    {
+     "id": "lumiere",
+     "name": "Lumière Beauty Group",
+     "file": "data/tenants/cosmetics__lumiere.json",
+     "synthetic": true
+    }
+   ]
+  },
+  "ecommerce": {
+   "label": "E-commerce & retail",
+   "customers": [
+    {
+     "id": "shopnova",
+     "name": "ShopNova Online",
+     "file": "data/tenants/ecommerce__shopnova.json",
+     "synthetic": true
+    },
+    {
+     "id": "parcelia",
+     "name": "Parcelia Marketplace",
+     "file": "data/tenants/ecommerce__parcelia.json",
+     "synthetic": true
+    }
+   ]
+  },
+  "pharmaceutical": {
+   "label": "Pharmaceutical",
+   "customers": [
+    {
+     "id": "medivia",
+     "name": "Medivia Pharma",
+     "file": "data/tenants/pharmaceutical__medivia.json",
+     "synthetic": true
+    },
+    {
+     "id": "bionord",
+     "name": "BioNord Labs",
+     "file": "data/tenants/pharmaceutical__bionord.json",
+     "synthetic": true
+    }
+   ]
+  },
+  "automotive": {
+   "label": "Automotive",
+   "customers": [
+    {
+     "id": "voltara",
+     "name": "Voltara Motors",
+     "file": "data/tenants/automotive__voltara.json",
+     "synthetic": true
+    },
+    {
+     "id": "kestrel",
+     "name": "Kestrel Automotive",
+     "file": "data/tenants/automotive__kestrel.json",
+     "synthetic": true
+    }
+   ]
+  },
+  "food": {
+   "label": "Food & beverage",
+   "customers": [
+    {
+     "id": "verdant",
+     "name": "Verdant Foods",
+     "file": "data/tenants/food__verdant.json",
+     "synthetic": true
+    }
+   ]
+  }
+ }
+}

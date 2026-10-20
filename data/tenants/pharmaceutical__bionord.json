@@ -1,0 +1,1170 @@
+{
+ "snapshot": {
+  "id": "SAP-BN-2026-10-20T040000Z",
+  "source_system": "S4HANA-PHARMACEUTICAL-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "pharmaceutical",
+  "customer": "BioNord Labs",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "BN10",
+   "name": "Uppsala Biologics Plant",
+   "type": "factory",
+   "country": "SE",
+   "lat": 59.86,
+   "lon": 17.64,
+   "city": "Uppsala",
+   "zone": "Europe",
+   "address": "Uppsala, SE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Chloé Silva",
+     "email": "chloe.silva@bionord-demo.example",
+     "phone": "+46 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Ravi Martens",
+     "email": "ravi.martens@bionord-demo.example",
+     "phone": "+46 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Nadia Weber",
+     "email": "nadia.weber@bionord-demo.example",
+     "phone": "+46 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "BN21",
+   "name": "Stockholm Nordic DC",
+   "type": "warehouse",
+   "country": "SE",
+   "lat": 59.33,
+   "lon": 18.07,
+   "city": "Stockholm",
+   "zone": "Europe",
+   "address": "Stockholm, SE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Omar Lambert",
+     "email": "omar.lambert@bionord-demo.example",
+     "phone": "+46 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Ravi Moreau",
+     "email": "ravi.moreau@bionord-demo.example",
+     "phone": "+46 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marta Lambert",
+     "email": "marta.lambert@bionord-demo.example",
+     "phone": "+46 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "BN22",
+   "name": "Hamburg EU DC",
+   "type": "warehouse",
+   "country": "DE",
+   "lat": 53.55,
+   "lon": 9.99,
+   "city": "Hamburg",
+   "zone": "Europe",
+   "address": "Hamburg, DE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Ravi Novak",
+     "email": "ravi.novak@bionord-demo.example",
+     "phone": "+49 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Marta Kowalski",
+     "email": "marta.kowalski@bionord-demo.example",
+     "phone": "+49 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Mei Chen",
+     "email": "mei.chen@bionord-demo.example",
+     "phone": "+49 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "BN23",
+   "name": "Boston US DC",
+   "type": "warehouse",
+   "country": "US",
+   "lat": 42.36,
+   "lon": -71.06,
+   "city": "Boston",
+   "zone": "North America",
+   "address": "Boston, US (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Ravi Schmidt",
+     "email": "ravi.schmidt@bionord-demo.example",
+     "phone": "+1 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Marta Kowalski",
+     "email": "marta.kowalski@bionord-demo.example",
+     "phone": "+1 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Omar Lambert",
+     "email": "omar.lambert@bionord-demo.example",
+     "phone": "+1 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-VACC-FLU",
+   "description": "Influenza vaccine prefilled syringe",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 4.2,
+   "safety_stock": 10000
+  },
+  {
+   "code": "FG-MAB-200",
+   "description": "Monoclonal antibody 200 mg vial",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 310.0,
+   "safety_stock": 300
+  },
+  {
+   "code": "FG-SALINE-FLUSH",
+   "description": "Saline flush syringe 10 ml",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 0.35,
+   "safety_stock": 20000
+  },
+  {
+   "code": "API-ANTIGEN-FLU",
+   "description": "Flu antigen bulk",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 2400000.0,
+   "safety_stock": 0.002
+  },
+  {
+   "code": "PK-SYRINGE-PF",
+   "description": "Prefilled syringe barrel",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.18,
+   "safety_stock": 150000
+  },
+  {
+   "code": "PK-CARTON-PH",
+   "description": "Pharma folding carton",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.07,
+   "safety_stock": 50000
+  },
+  {
+   "code": "API-MAB",
+   "description": "Antibody drug substance",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 900000.0,
+   "safety_stock": 0.02
+  },
+  {
+   "code": "PK-VIAL-10ML",
+   "description": "Type I glass vial 10 ml",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.22,
+   "safety_stock": 30000
+  },
+  {
+   "code": "RM-SALINE-WFI",
+   "description": "Saline WFI bulk",
+   "type": "RPM",
+   "uom": "KG",
+   "unit_cost": 0.6,
+   "safety_stock": 4000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-BN001",
+   "name": "Leiden Antigen BV",
+   "country": "NL",
+   "materials": [
+    "API-ANTIGEN-FLU"
+   ],
+   "contract_lead_time_days": 45,
+   "otif_target_pct": 95,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 2400000.0,
+   "freight_eur_per_order": 3000,
+   "typical_order_qty": 0.01,
+   "lat": 52.16,
+   "lon": 4.49,
+   "city": "Leiden",
+   "manufacturing_country": "NL",
+   "manufacturing_site": "Egg-free antigen production",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-BN002",
+   "name": "Schott-type Glass Mainz",
+   "country": "DE",
+   "materials": [
+    "PK-SYRINGE-PF",
+    "PK-VIAL-10ML"
+   ],
+   "contract_lead_time_days": 21,
+   "otif_target_pct": 94,
+   "approved": true,
+   "secondary_source": "Gerresheimer-type Pilsen",
+   "unit_price_eur": 0.18,
+   "freight_eur_per_order": 900,
+   "typical_order_qty": 200000,
+   "lat": 49.99,
+   "lon": 8.25,
+   "city": "Mainz",
+   "manufacturing_country": "DE",
+   "manufacturing_site": "Tubular glass converting",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-BN003",
+   "name": "Göteborg Pharma Print",
+   "country": "SE",
+   "materials": [
+    "PK-CARTON-PH"
+   ],
+   "contract_lead_time_days": 6,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.07,
+   "freight_eur_per_order": 200,
+   "typical_order_qty": 100000,
+   "lat": 57.71,
+   "lon": 11.97,
+   "city": "Gothenburg",
+   "manufacturing_country": "SE",
+   "manufacturing_site": "GMP carton printing",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-BN004",
+   "name": "Cambridge MAb CDMO",
+   "country": "GB",
+   "materials": [
+    "API-MAB"
+   ],
+   "contract_lead_time_days": 90,
+   "otif_target_pct": 92,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 900000.0,
+   "freight_eur_per_order": 8000,
+   "typical_order_qty": 0.1,
+   "lat": 52.2,
+   "lon": 0.12,
+   "city": "Cambridge",
+   "manufacturing_country": "GB",
+   "manufacturing_site": "Biologics CDMO",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-BN005",
+   "name": "Aarhus Fluids",
+   "country": "DK",
+   "materials": [
+    "RM-SALINE-WFI"
+   ],
+   "contract_lead_time_days": 5,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.6,
+   "freight_eur_per_order": 150,
+   "typical_order_qty": 20000,
+   "lat": 56.16,
+   "lon": 10.2,
+   "city": "Aarhus",
+   "manufacturing_country": "DK",
+   "manufacturing_site": "WFI production",
+   "zone": "Europe"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "BN10",
+   "parent": "FG-VACC-FLU",
+   "component": "API-ANTIGEN-FLU",
+   "quantity": 5e-07,
+   "scrap_pct": 3
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-VACC-FLU",
+   "component": "PK-SYRINGE-PF",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-VACC-FLU",
+   "component": "PK-CARTON-PH",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-MAB-200",
+   "component": "API-MAB",
+   "quantity": 0.0002,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-MAB-200",
+   "component": "PK-VIAL-10ML",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-MAB-200",
+   "component": "PK-CARTON-PH",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-SALINE-FLUSH",
+   "component": "RM-SALINE-WFI",
+   "quantity": 0.0105,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "BN10",
+   "parent": "FG-SALINE-FLUSH",
+   "component": "PK-SYRINGE-PF",
+   "quantity": 1,
+   "scrap_pct": 1.5
+  }
+ ],
+ "stock": [
+  {
+   "plant": "BN21",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN21",
+   "quantity": 27000,
+   "status": "unrestricted",
+   "expiry": "2027-07-27"
+  },
+  {
+   "plant": "BN22",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN22",
+   "quantity": 12000,
+   "status": "unrestricted",
+   "expiry": "2028-08-18"
+  },
+  {
+   "plant": "BN23",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN23",
+   "quantity": 21600,
+   "status": "unrestricted",
+   "expiry": "2027-12-31"
+  },
+  {
+   "plant": "BN21",
+   "material": "FG-MAB-200",
+   "batch": "MAB-20-BN21",
+   "quantity": 800,
+   "status": "unrestricted",
+   "expiry": "2028-06-23"
+  },
+  {
+   "plant": "BN22",
+   "material": "FG-MAB-200",
+   "batch": "MAB-20-BN22",
+   "quantity": 1080,
+   "status": "unrestricted",
+   "expiry": "2027-11-03"
+  },
+  {
+   "plant": "BN23",
+   "material": "FG-MAB-200",
+   "batch": "MAB-20-BN23",
+   "quantity": 1440,
+   "status": "unrestricted",
+   "expiry": "2027-12-15"
+  },
+  {
+   "plant": "BN21",
+   "material": "FG-SALINE-FLUSH",
+   "batch": "SALINE-BN21",
+   "quantity": 72000,
+   "status": "unrestricted",
+   "expiry": "2028-01-03"
+  },
+  {
+   "plant": "BN22",
+   "material": "FG-SALINE-FLUSH",
+   "batch": "SALINE-BN22",
+   "quantity": 130000,
+   "status": "unrestricted",
+   "expiry": "2027-07-10"
+  },
+  {
+   "plant": "BN23",
+   "material": "FG-SALINE-FLUSH",
+   "batch": "SALINE-BN23",
+   "quantity": 98400,
+   "status": "unrestricted",
+   "expiry": "2027-10-15"
+  },
+  {
+   "plant": "BN10",
+   "material": "API-ANTIGEN-FLU",
+   "batch": "-ANTIG-A",
+   "quantity": 0.064,
+   "status": "unrestricted",
+   "expiry": "2028-01-17"
+  },
+  {
+   "plant": "BN10",
+   "material": "PK-SYRINGE-PF",
+   "batch": "SYRING-A",
+   "quantity": 128520,
+   "status": "unrestricted",
+   "expiry": "2028-07-06"
+  },
+  {
+   "plant": "BN10",
+   "material": "PK-CARTON-PH",
+   "batch": "CARTON-A",
+   "quantity": 41310,
+   "status": "unrestricted",
+   "expiry": "2027-08-19"
+  },
+  {
+   "plant": "BN10",
+   "material": "API-MAB",
+   "batch": "-MAB-A",
+   "quantity": 0.175,
+   "status": "unrestricted",
+   "expiry": "2028-04-01"
+  },
+  {
+   "plant": "BN10",
+   "material": "PK-VIAL-10ML",
+   "batch": "VIAL-1-A",
+   "quantity": 1750,
+   "status": "unrestricted",
+   "expiry": "2028-02-19"
+  },
+  {
+   "plant": "BN10",
+   "material": "RM-SALINE-WFI",
+   "batch": "SALINE-A",
+   "quantity": 581.175,
+   "status": "unrestricted",
+   "expiry": "2028-01-05"
+  },
+  {
+   "plant": "BN10",
+   "material": "PK-SYRINGE-PF",
+   "batch": "SYRING-Q",
+   "quantity": 38556.0,
+   "status": "blocked",
+   "expiry": "2028-02-21"
+  },
+  {
+   "plant": "BN10",
+   "material": "API-ANTIGEN-FLU",
+   "batch": "-ANTIG-QI",
+   "quantity": 1,
+   "status": "quality_inspection",
+   "expiry": "2028-01-21"
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45BN00001",
+   "supplier": "Leiden Antigen BV",
+   "material": "API-ANTIGEN-FLU",
+   "plant": "BN10",
+   "quantity": 0.087,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00002",
+   "supplier": "Leiden Antigen BV",
+   "material": "API-ANTIGEN-FLU",
+   "plant": "BN10",
+   "quantity": 0.087,
+   "delivery_date": "2026-11-18",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45BN00003",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-SYRINGE-PF",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00004",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-SYRINGE-PF",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-11-14",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00005",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-VIAL-10ML",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00006",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-VIAL-10ML",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-11-19",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00007",
+   "supplier": "Göteborg Pharma Print",
+   "material": "PK-CARTON-PH",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00008",
+   "supplier": "Göteborg Pharma Print",
+   "material": "PK-CARTON-PH",
+   "plant": "BN10",
+   "quantity": 173918,
+   "delivery_date": "2026-11-10",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45BN00009",
+   "supplier": "Cambridge MAb CDMO",
+   "material": "API-MAB",
+   "plant": "BN10",
+   "quantity": 34.784,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00010",
+   "supplier": "Cambridge MAb CDMO",
+   "material": "API-MAB",
+   "plant": "BN10",
+   "quantity": 34.784,
+   "delivery_date": "2026-11-14",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00011",
+   "supplier": "Aarhus Fluids",
+   "material": "RM-SALINE-WFI",
+   "plant": "BN10",
+   "quantity": 1826.144,
+   "delivery_date": "2026-10-29",
+   "status": "confirmed"
+  },
+  {
+   "po": "45BN00012",
+   "supplier": "Aarhus Fluids",
+   "material": "RM-SALINE-WFI",
+   "plant": "BN10",
+   "quantity": 1826.144,
+   "delivery_date": "2026-11-13",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44BN00001",
+   "supplier": "Leiden Antigen BV",
+   "material": "API-ANTIGEN-FLU",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 0.087,
+   "quantity_received": 0.087,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00002",
+   "supplier": "Leiden Antigen BV",
+   "material": "API-ANTIGEN-FLU",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 0.087,
+   "quantity_received": 0.087,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00003",
+   "supplier": "Leiden Antigen BV",
+   "material": "API-ANTIGEN-FLU",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 0.087,
+   "quantity_received": 0.087,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00004",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-SYRINGE-PF",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00005",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-SYRINGE-PF",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 13913.44
+  },
+  {
+   "po": "44BN00006",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-SYRINGE-PF",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00007",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-VIAL-10ML",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00008",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-VIAL-10ML",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 13913.44
+  },
+  {
+   "po": "44BN00009",
+   "supplier": "Schott-type Glass Mainz",
+   "material": "PK-VIAL-10ML",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00010",
+   "supplier": "Göteborg Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00011",
+   "supplier": "Göteborg Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00012",
+   "supplier": "Göteborg Pharma Print",
+   "material": "PK-CARTON-PH",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 173918,
+   "quantity_received": 173918,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44BN00013",
+   "supplier": "Cambridge MAb CDMO",
+   "material": "API-MAB",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 34.784,
+   "quantity_received": 34.784,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00014",
+   "supplier": "Cambridge MAb CDMO",
+   "material": "API-MAB",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 34.784,
+   "quantity_received": 34.784,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00015",
+   "supplier": "Cambridge MAb CDMO",
+   "material": "API-MAB",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 34.784,
+   "quantity_received": 34.784,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00016",
+   "supplier": "Aarhus Fluids",
+   "material": "RM-SALINE-WFI",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 1826.144,
+   "quantity_received": 1826.144,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00017",
+   "supplier": "Aarhus Fluids",
+   "material": "RM-SALINE-WFI",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 1826.144,
+   "quantity_received": 1826.144,
+   "quality_rejected": 0.0
+  },
+  {
+   "po": "44BN00018",
+   "supplier": "Aarhus Fluids",
+   "material": "RM-SALINE-WFI",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 1826.144,
+   "quantity_received": 1826.144,
+   "quality_rejected": 0.0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1BN0001",
+   "plant": "BN10",
+   "material": "FG-VACC-FLU",
+   "quantity": 91800,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1BN0002",
+   "plant": "BN10",
+   "material": "FG-VACC-FLU",
+   "quantity": 119340.0,
+   "finish_date": "2026-11-04",
+   "status": "planned"
+  },
+  {
+   "order": "1BN0101",
+   "plant": "BN10",
+   "material": "FG-MAB-200",
+   "quantity": 1250,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1BN0102",
+   "plant": "BN10",
+   "material": "FG-MAB-200",
+   "quantity": 1620.0,
+   "finish_date": "2026-11-07",
+   "status": "planned"
+  },
+  {
+   "order": "1BN0201",
+   "plant": "BN10",
+   "material": "FG-SALINE-FLUSH",
+   "quantity": 123000,
+   "finish_date": "2026-10-31",
+   "status": "released"
+  },
+  {
+   "order": "1BN0202",
+   "plant": "BN10",
+   "material": "FG-SALINE-FLUSH",
+   "quantity": 159900.0,
+   "finish_date": "2026-11-12",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-BN0001",
+   "plant": "BN10",
+   "material": "PK-SYRINGE-PF",
+   "batch": "SYRING-Q",
+   "quantity": 38556.0,
+   "supplier": "Schott-type Glass Mainz",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-BN0002",
+   "plant": "BN10",
+   "material": "API-ANTIGEN-FLU",
+   "batch": "-ANTIG-QI",
+   "quantity": 1,
+   "supplier": "Leiden Antigen BV",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-BN7700",
+   "customer": "Swedish Region Stockholm",
+   "warehouse": "BN21",
+   "material": "FG-VACC-FLU",
+   "quantity": 33750.0,
+   "requested_date": "2026-11-03",
+   "priority": "high"
+  },
+  {
+   "order": "SO-BN7701",
+   "customer": "Bundeswehr Sanitätsdienst",
+   "warehouse": "BN22",
+   "material": "FG-MAB-200",
+   "quantity": 380.0,
+   "requested_date": "2026-11-01",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-BN7702",
+   "customer": "US CDC programme",
+   "warehouse": "BN23",
+   "material": "FG-SALINE-FLUSH",
+   "quantity": 34440.0,
+   "requested_date": "2026-11-03",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-BN7703",
+   "customer": "Apoteket",
+   "warehouse": "BN21",
+   "material": "FG-VACC-FLU",
+   "quantity": 9450.0,
+   "requested_date": "2026-10-29",
+   "priority": "high"
+  },
+  {
+   "order": "SO-BN7704",
+   "customer": "Hospital group DE",
+   "warehouse": "BN22",
+   "material": "FG-MAB-200",
+   "quantity": 160.0,
+   "requested_date": "2026-11-02",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-BN7705",
+   "customer": "IDN Boston",
+   "warehouse": "BN23",
+   "material": "FG-SALINE-FLUSH",
+   "quantity": 14760.0,
+   "requested_date": "2026-10-26",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-BN01",
+   "type": "stock_transfer",
+   "from": "BN21",
+   "to": "BN22",
+   "material": "FG-VACC-FLU",
+   "quantity": 7200,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-BN02",
+   "type": "stock_transfer",
+   "from": "BN21",
+   "to": "BN23",
+   "material": "FG-MAB-200",
+   "quantity": 240,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-BN03",
+   "type": "inbound",
+   "from": "V-BN001",
+   "to": "BN10",
+   "material": "API-ANTIGEN-FLU",
+   "quantity": 0.087,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-28",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-BN-01",
+   "count_date": "2026-10-19",
+   "plant": "BN21",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN21",
+   "book_quantity": 27000,
+   "counted_quantity": 26960,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-BN-02",
+   "count_date": "2026-10-19",
+   "plant": "BN22",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN22",
+   "book_quantity": 12000,
+   "counted_quantity": 11952,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-BN-03",
+   "count_date": "2026-10-19",
+   "plant": "BN23",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN23",
+   "book_quantity": 21600,
+   "counted_quantity": 20736,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-BN-04",
+   "count_date": "2026-10-19",
+   "plant": "BN21",
+   "material": "FG-MAB-200",
+   "batch": "MAB-20-BN21",
+   "book_quantity": 800,
+   "counted_quantity": 800,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49BN0001",
+   "type": "goods_issue",
+   "plant": "BN21",
+   "material": "FG-VACC-FLU",
+   "batch": "VACC-F-BN21",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-VACC-FLU": {
+   "BN21": 900,
+   "BN22": 2400,
+   "BN23": 1800
+  },
+  "FG-MAB-200": {
+   "BN21": 20,
+   "BN22": 45,
+   "BN23": 60
+  },
+  "FG-SALINE-FLUSH": {
+   "BN21": 3000,
+   "BN22": 5200,
+   "BN23": 4100
+  }
+ },
+ "lanes": [
+  {
+   "from": "BN21",
+   "to": "BN22",
+   "lead_days": 2,
+   "cost_per_unit": 0.43,
+   "carbon_kg_per_unit": 0.08
+  },
+  {
+   "from": "BN21",
+   "to": "BN23",
+   "lead_days": 21,
+   "cost_per_unit": 1.91,
+   "carbon_kg_per_unit": 0.413
+  },
+  {
+   "from": "BN22",
+   "to": "BN21",
+   "lead_days": 3,
+   "cost_per_unit": 0.53,
+   "carbon_kg_per_unit": 0.073
+  },
+  {
+   "from": "BN22",
+   "to": "BN23",
+   "lead_days": 9,
+   "cost_per_unit": 1.98,
+   "carbon_kg_per_unit": 0.451
+  },
+  {
+   "from": "BN23",
+   "to": "BN21",
+   "lead_days": 14,
+   "cost_per_unit": 1.65,
+   "carbon_kg_per_unit": 0.468
+  },
+  {
+   "from": "BN23",
+   "to": "BN22",
+   "lead_days": 21,
+   "cost_per_unit": 1.9,
+   "carbon_kg_per_unit": 0.528
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Gerresheimer-type Pilsen",
+   "material": "PK-SYRINGE-PF",
+   "unit_price_eur": 0.2,
+   "freight_eur_per_order": 700,
+   "typical_order_qty": 200000,
+   "quoted_lead_time_days": 18,
+   "qualified": true,
+   "country": "CZ",
+   "city": "Plzeň",
+   "lat": 49.74,
+   "lon": 13.38,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Borosilicate glass tubing",
+   "origin": "Bavaria, Germany",
+   "country": "DE",
+   "lat": 49.0,
+   "lon": 12.1,
+   "feeds_supplier": "Schott-type Glass Mainz",
+   "feeds_material": "PK-SYRINGE-PF",
+   "share_of_material_pct": 100,
+   "transit_days": 3,
+   "transit_variability_days": 1,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "industry-wide tubing capacity constraint"
+  }
+ ]
+}

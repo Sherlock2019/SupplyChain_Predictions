@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: copilot-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["api:8000"]
+        labels: {service: fastapi}
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # vLLM Qwen metrics. The cloud bootstrap writes targets/vllm.json with the GPU VM private address.
+  - job_name: vllm-qwen
+    metrics_path: /metrics
+    file_sd_configs:
+      - files: ["/etc/prometheus/targets/*.json"]
+        refresh_interval: 1m

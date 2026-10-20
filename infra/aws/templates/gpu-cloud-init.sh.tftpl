@@ -1,0 +1,26 @@
+#!/bin/bash
+# AWS GPU VM: Qwen served by vLLM (OpenAI-compatible, tool calling via the hermes parser).
+# Deep Learning Base AMI provides the NVIDIA driver, Docker and the NVIDIA container toolkit.
+set -euo pipefail
+exec > >(tee -a /var/log/aurelia-gpu-bootstrap.log) 2>&1
+echo "[$(date -Is)] GPU bootstrap start"
+command -v aws >/dev/null || { apt-get update -y && apt-get install -y awscli; }
+command -v jq >/dev/null || { apt-get update -y && apt-get install -y jq; }
+
+cat > /etc/docker/daemon.json <<'JSON'
+{"log-driver": "awslogs", "log-opts": {"awslogs-region": "${region}", "awslogs-group": "${log_group}", "tag": "gpu/{{.Name}}"},
+ "runtimes": {"nvidia": {"path": "nvidia-container-runtime", "args": []}}}
+JSON
+systemctl restart docker
+nvidia-smi
+
+QWEN_API_KEY=$(aws secretsmanager get-secret-value --secret-id "${secret_id}" --region "${region}" --query SecretString --output text | jq -r .QWEN_API_KEY)
+docker rm -f qwen 2>/dev/null || true
+docker run -d --name qwen --restart unless-stopped --gpus all --ipc=host -p 8000:8000 \
+  -v /opt/hf-cache:/root/.cache/huggingface \
+  "${vllm_image}" \
+  --model "${vllm_model}" --served-model-name "${served_name}" \
+  --enable-auto-tool-choice --tool-call-parser hermes \
+  --max-model-len 16384 --gpu-memory-utilization 0.90 \
+  --api-key "$QWEN_API_KEY"
+echo "[$(date -Is)] vLLM container started"

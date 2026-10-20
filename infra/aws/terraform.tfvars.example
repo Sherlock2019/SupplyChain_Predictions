@@ -1,0 +1,11 @@
+# cp terraform.tfvars.example terraform.tfvars  (scripts/cloud-preflight.sh aws fills allowed_cidrs automatically)
+region               = "us-east-1"
+allowed_cidrs        = ["203.0.113.10/32"]
+app_instance_type    = "r6i.xlarge"
+enable_gpu           = true
+gpu_instance_type    = "g6.xlarge"
+enable_observability = true
+release_version      = "v1"
+monthly_budget_usd   = 0
+budget_email         = ""
+acme_email           = ""

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPARC — Smart Supply Chain Performer Copilot</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-today" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-product" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+  <symbol id="i-site" viewBox="0 0 24 24"><path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-7h10v7M7 16h10"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4L3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+  <symbol id="i-balance" viewBox="0 0 24 24"><path d="M4 8h14l-3-3M20 16H6l3 3"/></symbol>
+  <symbol id="i-sales" viewBox="0 0 24 24"><path d="M3 4h2.5l2 11h11l2-8H6.3"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></symbol>
+  <symbol id="i-count" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4h6v2.5H9zM8.5 11h7M8.5 15h4.5"/></symbol>
+  <symbol id="i-factory" viewBox="0 0 24 24"><path d="M3 20V10l5 3V10l5 3V10l5 3V5h3v15z"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.7 2.7L16 9.6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0112 0v5.5l1.5 2h-15zM10 20.5a2 2 0 004 0"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9z"/><path d="M18.5 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="7" height="15" rx="2"/><rect x="13.5" y="4.5" width="7" height="15" rx="2"/></symbol>
+  <symbol id="i-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H14a3 3 0 013 3v0a3 3 0 01-3 3h-4a3 3 0 00-3 3v0a3 3 0 003 3h5.5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></symbol>
+</svg>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo"><svg class="ico" style="stroke-width:2.2"><use href="#i-pulse"/></svg></div><div><b>SPARC</b><small>Smart Supply Chain<br>Performer Copilot</small></div></div>
+    <nav class="nav" id="nav">
+      <a href="#command" data-page="command"><svg class="ico"><use href="#i-today"/></svg>Today<span class="badge" id="badge-critical" hidden></span></a>
+      <a href="#approvals" data-page="approvals"><svg class="ico"><use href="#i-check"/></svg>Approvals<span class="badge" id="badge-approvals" hidden></span></a>
+      <div class="nav-group">Insights</div>
+      <a href="#dashboard" data-page="dashboard"><svg class="ico"><use href="#i-dash"/></svg>Dashboards</a>
+      <a href="#products" data-page="products"><svg class="ico"><use href="#i-product"/></svg>Products</a>
+      <a href="#sites" data-page="sites"><svg class="ico"><use href="#i-site"/></svg>Warehouses</a>
+      <a href="#map" data-page="map"><svg class="ico"><use href="#i-map"/></svg>Network map</a>
+      <div class="nav-group">Operations</div>
+      <a href="#inventory" data-page="inventory"><svg class="ico"><use href="#i-balance"/></svg>Stock balancing</a>
+      <a href="#sales" data-page="sales"><svg class="ico"><use href="#i-sales"/></svg>Sales orders</a>
+      <a href="#stocktake" data-page="stocktake"><svg class="ico"><use href="#i-count"/></svg>Stocktake</a>
+      <a href="#production" data-page="production"><svg class="ico"><use href="#i-factory"/></svg>Production</a>
+      <a href="#suppliers" data-page="suppliers"><svg class="ico"><use href="#i-truck"/></svg>Suppliers</a>
+      <a href="#watches" data-page="watches"><svg class="ico"><use href="#i-bell"/></svg>Watchlists</a>
+      <div class="nav-group">AI agents</div>
+      <a href="#chat" data-page="chat"><svg class="ico"><use href="#i-spark"/></svg>Copilot</a>
+      <a href="#compare" data-page="compare"><svg class="ico"><use href="#i-compare"/></svg>Flowise ⇄ LangGraph</a>
+      <a href="#workflow" data-page="workflow"><svg class="ico"><use href="#i-flow"/></svg>Business workflow</a>
+      <a href="#research" data-page="research"><svg class="ico"><use href="#i-search"/></svg>Deep research</a>
+      <div class="nav-group">System</div>
+      <a href="#platform" data-page="platform"><svg class="ico"><use href="#i-pulse"/></svg>Status &amp; access</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon menu-toggle" id="menu-toggle" aria-label="Menu"><svg class="ico"><use href="#i-menu"/></svg></button>
+      <div class="tenant-bar" id="tenant-bar" aria-label="Industry and customer">
+        <label class="inline"><span>Industry</span><select id="industry-select"></select></label>
+        <span class="sep">›</span>
+        <label class="inline"><span>Customer</span><select id="customer-select"></select></label>
+      </div>
+      <form class="askbar" id="askbar"><svg class="ico"><use href="#i-search"/></svg><input id="ask-input" placeholder="Ask SPARC anything…" aria-label="Ask the copilot"><kbd>/</kbd><button type="submit" class="small">Ask</button></form>
+      <div class="controls">
+        <span id="demo-role" class="role-switch" hidden><select id="role-select" aria-label="Acting as"><option value="manager">Manager view</option><option value="planner">Planner view</option></select></span>
+        <form id="login" class="controls" autocomplete="off"><input id="api-key" type="password" placeholder="API key" aria-label="API key"><button type="submit" class="small">Sign in</button></form>
+        <span id="role-chip" class="chip" hidden>signed out</span>
+        <button class="icon" id="theme-toggle" type="button" aria-label="Toggle light or dark appearance"><svg class="ico"><use href="#i-moon"/></svg></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head"><div><h1 id="page-title">Today</h1><div class="sub" id="env-line">Loading…</div></div><div class="page-actions" id="page-actions"></div></div>
+
+      <!-- COMMAND CENTER -->
+      <section class="page" id="page-command">
+        <p class="note" id="hero-line" style="font-size:15px;color:var(--ink-2);margin:-12px 0 20px">Loading insights…</p>
+        <div id="spotlight"></div>
+        <div class="next-up" id="next-up"></div>
+        <div class="kpis" id="cc-kpis"></div>
+        <div class="split">
+          <div>
+            <div class="pills" id="insight-filters"></div>
+            <div class="feed" id="feed"></div>
+          </div>
+          <div>
+            <div class="card"><h2>Watchlist</h2><p class="sub">Your subscriptions, re-checked against the latest snapshot</p><div id="cc-watches"></div></div>
+            <div class="card"><h2>Waiting for a decision</h2><div id="cc-approvals"></div></div>
+            <div class="card" id="cc-forecast"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROLE DASHBOARDS -->
+      <section class="page" id="page-dashboard">
+        <div class="pills" id="persona-pills"></div>
+        <div class="row focus-bar">
+          <label class="inline">Product <select id="product-focus" aria-label="Product focus"><option value="">All products</option></select></label>
+          <span class="note" id="persona-task" style="margin:0"></span>
+        </div>
+        <div id="dash-brief"></div>
+        <div class="section-title" id="dash-role-title" hidden></div>
+        <div class="kpis" id="dash-kpis"></div>
+        <div id="dash-outlook"></div>
+        <div class="grid g2" id="dash-charts"></div>
+        <div id="dash-tables"></div>
+        <div id="dash-product"></div>
+      </section>
+
+      <!-- PRODUCT 360 -->
+      <section class="page" id="page-products">
+        <div class="product-cards" id="product-cards"></div>
+        <div id="product-brief"></div>
+        <div class="section-title"><h2>Full analysis</h2><span class="note">projections, components, supply options and sales</span></div>
+        <div id="product-detail"></div>
+      </section>
+
+      <!-- WAREHOUSE 360 -->
+      <section class="page" id="page-sites">
+        <div class="row focus-bar"><label class="inline">Site <select id="site-select" aria-label="Warehouse or plant"></select></label><span class="note" id="site-note" style="margin:0"></span></div>
+        <div id="site-detail"></div>
+      </section>
+
+      <!-- NETWORK MAP -->
+      <section class="page" id="page-map">
+        <div class="kpis" id="map-kpis"></div>
+        <div class="map-layout">
+          <div class="card map-card">
+            <div class="row" style="margin-bottom:8px" id="map-layers"></div>
+            <div id="network-map" role="img" aria-label="Supply network map"></div>
+            <div class="legend" id="map-legend"></div>
+          </div>
+          <div>
+            <div class="card"><h2>Sourcing within the production zone</h2><p class="sub">share of purchase spend by supplier tier, per factory</p><div id="map-sourcing"></div></div>
+            <div class="card"><h2>Promise vs reality</h2><p class="sub">SAP standard lead time vs what suppliers actually deliver (learned from receipts)</p><div id="map-learned"></div></div>
+            <div class="card" id="map-reference"></div>
+          </div>
+        </div>
+        <div class="card"><h2>Suppliers by tier</h2><div id="map-tiers"></div></div>
+      </section>
+
+      <!-- INVENTORY -->
+      <section class="page" id="page-inventory">
+        <div class="card">
+          <h2>Three-warehouse stock balancing</h2><p class="sub">XGBoost demand forecast → OR-Tools minimum-cost transfers between DC01, DC21 and DC22</p>
+          <form id="form-balance" class="row">
+            <label>Finished good<select name="material"><option>FG-PERFUME-100</option><option>FG-SERUM-50</option><option>FG-CREAM-50</option></select></label>
+            <label>Horizon (days)<input name="horizon_days" type="number" value="14" min="1" max="120"></label>
+            <label>Service level<input name="service_level" type="number" value="0.95" step="0.01" min="0.5" max="0.999"></label>
+            <button type="submit">Optimise</button>
+            <label>What-if demand %<input name="demand_change_pct" type="number" value="25"></label>
+            <button type="button" id="btn-whatif" class="ghost">Run what-if</button>
+          </form>
+          <div id="balance-out"></div>
+        </div>
+      </section>
+
+      <!-- SALES ORDERS -->
+      <section class="page" id="page-sales"><div id="sales-out"></div></section>
+
+      <!-- STOCKTAKE -->
+      <section class="page" id="page-stocktake"><div id="stocktake-out"></div></section>
+
+      <!-- PRODUCTION -->
+      <section class="page" id="page-production">
+        <div class="card" id="production-overview"></div>
+        <div class="card">
+          <h2>Factory material readiness</h2><p class="sub">BOM × unrestricted stock × confirmed purchase orders (SOP SC-104)</p>
+          <form id="form-readiness" class="row">
+            <label>Plant<select name="plant"><option>FR20</option><option>FR10</option><option>TPM1</option></select></label>
+            <label>Finished good<select name="material"><option>FG-SERUM-50</option><option>FG-PERFUME-100</option><option>FG-CREAM-50</option></select></label>
+            <label>Quantity<input name="quantity" type="number" value="6000" min="1"></label>
+            <label>Need by<input name="need_by" type="date" value="2026-10-27"></label>
+            <button type="submit">Check readiness</button>
+          </form>
+          <div id="readiness-out"></div>
+        </div>
+      </section>
+
+      <!-- SUPPLIERS -->
+      <section class="page" id="page-suppliers">
+        <div class="grid g2">
+          <div class="card">
+            <h2>Supplier risk</h2><p class="sub">OTIF, delays, rejects, exposure and single-source risk</p>
+            <form id="form-supplier" class="row"><label>Supplier<select name="supplier" id="supplier-select"></select></label><button type="submit">Assess</button></form>
+            <div id="supplier-out"></div>
+          </div>
+          <div class="card">
+            <h2>Governed knowledge</h2><p class="sub">Contracts, SOPs, quality and product specs — pgvector + bge-small</p>
+            <form id="form-rag" class="row"><input name="query" class="grow" value="What does the BioActive contract say about expediting?" aria-label="Question"><button type="submit">Search</button></form>
+            <div id="rag-out"></div>
+          </div>
+        </div>
+        <div class="grid g2">
+          <div class="card"><h2>Quality lots</h2><div id="quality-out"></div></div>
+          <div class="card"><h2>Shipments &amp; delays</h2><div id="logistics-out"></div></div>
+        </div>
+      </section>
+
+      <!-- APPROVALS -->
+      <section class="page" id="page-approvals">
+        <div class="pills" id="rec-filters"></div>
+        <div id="recs"></div>
+        <div class="card"><h2>SAP sandbox documents</h2><p class="sub">Created by 1-click execution of accepted recommendations — never a production SAP system</p><div id="sap-docs"></div></div>
+        <div class="card"><h2>Audit chain <span id="chain"></span></h2><div id="audit"></div></div>
+      </section>
+
+      <!-- WATCHES -->
+      <section class="page" id="page-watches">
+        <div class="card">
+          <h2>New watch</h2><p class="sub">Subscribe to a metric or a saved question; it is re-checked every time you open the command center</p>
+          <form id="form-watch" class="row">
+            <label>Name<input name="name" required placeholder="Dubai perfume cover"></label>
+            <label>Type<select name="kind" id="watch-kind"></select></label>
+            <span id="watch-params" class="row" style="margin:0"></span>
+            <label>Threshold<input name="threshold" type="number" step="any" id="watch-threshold"></label>
+            <button type="submit">Add watch</button>
+          </form>
+        </div>
+        <div class="card"><div class="row" style="justify-content:space-between"><h2>My watches</h2><button class="ghost small" id="eval-watches">Check now</button></div><div id="watch-list"></div></div>
+      </section>
+
+      <!-- CHAT -->
+      <section class="page" id="page-chat">
+        <div class="card">
+          <div class="row">
+            <label>Agent runtime<select id="engine">
+              <optgroup label="LangGraph"><option value="lg-chat">LangGraph · Chat Graph (Qwen + tools)</option><option value="lg-agentflow">LangGraph · AgentFlow (supervisor + interrupt)</option></optgroup>
+              <optgroup label="Flowise"><option value="fw-chatflow">Flowise · Chatflow (Tool Agent + MCP)</option><option value="fw-agentflow">Flowise · AgentFlow V2 (supervisor + human input)</option></optgroup>
+            </select></label>
+            <button type="button" id="new-thread" class="ghost">New conversation</button>
+            <span class="note" id="thread-label"></span>
+          </div>
+          <div id="messages" class="messages"></div>
+          <div class="pills" id="suggestions">
+            <button>Which sales orders are at risk and how do we fix them?</button>
+            <button>Can FR20 produce 6000 FG-SERUM-50 by 2026-10-27?</button>
+            <button>Explain the stock count differences</button>
+            <button>Is PackGlass Europe a continuity risk? Cite the contract.</button>
+            <button>Create a purchase order in SAP for 50 kg RM-ACTIVE</button>
+          </div>
+          <form id="form-chat" class="row"><input id="chat-input" class="grow" placeholder="Ask about inventory, orders, counts, suppliers…" aria-label="Message"><button type="submit">Send</button></form>
+        </div>
+      </section>
+
+      <!-- COMPARE -->
+      <section class="page" id="page-compare">
+        <div class="card">
+          <div class="row">
+            <label>Pairing<select id="pairing"><option value="agent">Agent flows: Flowise AgentFlow V2 ⇄ LangGraph AgentFlow</option><option value="chat">Chat flows: Flowise Chatflow ⇄ LangGraph Chat Graph</option></select></label>
+            <button type="button" id="compare-reset" class="ghost">New conversations</button><span class="note" id="backend-links"></span>
+          </div>
+          <div class="pills" id="compare-suggestions"><button>Can FR20 produce 6000 FG-SERUM-50 by 2026-10-27?</button><button>Rebalance FG-PERFUME-100 across the three DCs</button><button>Delete purchase order 4500001006 in SAP</button></div>
+          <form id="form-compare" class="row"><input id="compare-input" class="grow" placeholder="Ask both runtimes…" aria-label="Prompt for both runtimes"><button type="submit">Send to both</button></form>
+        </div>
+        <div class="grid g2"><div class="card"><h2 id="left-title">Flowise</h2><div id="left-log" class="messages"></div></div><div class="card"><h2 id="right-title">LangGraph</h2><div id="right-log" class="messages"></div></div></div>
+      </section>
+
+      <!-- WORKFLOW -->
+      <section class="page" id="page-workflow">
+        <div class="card">
+          <h2>LangGraph Business Graph</h2><p class="sub">validate → workflow → policy RAG → narrative → interrupt() → review queue</p>
+          <form id="form-workflow" class="row"><input name="request_text" class="grow" value="Rebalance FG-SERUM-50 across DC01, DC21 and DC22 for the next 14 days" aria-label="Request"><button type="submit">Start workflow</button></form>
+          <div id="workflow-out"></div>
+        </div>
+      </section>
+
+      <!-- RESEARCH -->
+      <section class="page" id="page-research">
+        <div class="card">
+          <h2>Deep Agents supplier research</h2><p class="sub">plan · delegate to contract / quality / logistics analysts · cited report</p>
+          <form id="form-research" class="row"><label>Supplier<select name="supplier" id="research-supplier"></select></label><input name="question" class="grow" value="Assess supply continuity, quality and contract risk, and list the contract levers available." aria-label="Task"><button type="submit">Run research</button></form>
+          <div id="research-out"></div>
+        </div>
+      </section>
+
+      <!-- PLATFORM -->
+      <section class="page" id="page-platform">
+        <div class="card"><h2>Platform status <span class="note" id="runtime"></span></h2><div id="status"></div></div>
+        <div class="grid g2"><div class="card"><h2>Agent backends</h2><div id="backends"></div></div><div class="card"><h2>Workbenches</h2><ul id="links"></ul></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<aside class="drawer" id="drawer" aria-label="Copilot">
+  <header>
+    <h2><svg class="ico" style="color:var(--accent)"><use href="#i-spark"/></svg>Copilot</h2>
+    <select id="drawer-engine" aria-label="Runtime">
+      <option value="lg-chat">LangGraph Chat</option><option value="lg-agentflow">LangGraph AgentFlow</option>
+      <option value="fw-chatflow">Flowise Chatflow</option><option value="fw-agentflow">Flowise AgentFlow V2</option>
+    </select>
+    <button class="link small" id="drawer-close" type="button">Done</button>
+  </header>
+  <div class="messages" id="drawer-log"></div>
+  <form id="drawer-form"><input id="drawer-input" class="grow" placeholder="Ask a follow-up…"><button type="submit">Send</button></form>
+</aside>
+<div id="toast" role="status"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Opening Flowise…</title>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;height:100vh;margin:0;color:#444}</style></head>
+<body><p id="msg">Opening Flowise (local demo, no login)…</p>
+<script>
+// Local demo only: sign in as the demo admin and store exactly what the Flowise UI keeps after its own login.
+(async () => {
+  const next = new URLSearchParams(location.search).get('next') || '/';
+  try {
+    const res = await fetch('/api/v1/auth/login', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: "{{env "FLOWISE_ADMIN_EMAIL" | js}}", password: "{{env "FLOWISE_ADMIN_PASSWORD" | js}}" })
+    });
+    if (!res.ok) throw new Error(`login failed (${res.status})`);
+    const u = await res.json();
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('isGlobal', String(!!u.isOrganizationAdmin));
+    localStorage.setItem('isSSO', String(!!u.isSSO));
+    localStorage.setItem('user', JSON.stringify(u));
+    localStorage.setItem('permissions', JSON.stringify(u.permissions || []));
+    localStorage.setItem('features', JSON.stringify(u.features || {}));
+    // Shorter than Flowise's 60-minute access token, so a reload after expiry signs in again.
+    document.cookie = 'aurelia_demo_flowise=1; path=/; max-age=3000; SameSite=Lax';
+    location.replace(next.startsWith('/') && !next.startsWith('/__autologin') ? next : '/');
+  } catch (e) {
+    document.getElementById('msg').textContent = 'Automatic sign-in failed: ' + e.message;
+  }
+})();
+</script></body></html>

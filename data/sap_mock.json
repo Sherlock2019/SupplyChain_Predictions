@@ -1,0 +1,1549 @@
+{
+  "snapshot": {
+    "id": "SAP-2026-10-20T040000Z",
+    "source_system": "S4HANA-MOCK-PRD",
+    "extracted_at": "2026-10-20T04:00:00+00:00",
+    "as_of_date": "2026-10-20",
+    "read_only": true,
+    "modules": [
+      "MM",
+      "PP",
+      "QM",
+      "SD",
+      "PUR",
+      "WM",
+      "LE"
+    ]
+  },
+  "plants": [
+    {
+      "code": "FR10",
+      "name": "Paris Fragrance Factory",
+      "type": "factory",
+      "country": "FR",
+      "address": "12 Rue des Parfumeurs, 75019 Paris, France",
+      "timezone": "Europe/Paris",
+      "operating_hours": "Mon–Fri 06:00–22:00 (2 shifts)",
+      "contacts": [
+        {
+          "role": "Plant manager",
+          "name": "Claire Martin",
+          "email": "claire.martin@aurelia-demo.example",
+          "phone": "+33 1 55 55 0110",
+          "primary": true
+        },
+        {
+          "role": "Production planning lead",
+          "name": "Hugo Bernard",
+          "email": "hugo.bernard@aurelia-demo.example",
+          "phone": "+33 1 55 55 0111",
+          "primary": false
+        },
+        {
+          "role": "Inventory control",
+          "name": "Inès Moreau",
+          "email": "ines.moreau@aurelia-demo.example",
+          "phone": "+33 1 55 55 0112",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 48.886,
+      "lon": 2.392,
+      "city": "Paris",
+      "zone": "Europe"
+    },
+    {
+      "code": "FR20",
+      "name": "Lyon Skincare Factory",
+      "type": "factory",
+      "country": "FR",
+      "address": "8 Avenue du Soin, 69007 Lyon, France",
+      "timezone": "Europe/Paris",
+      "operating_hours": "Mon–Sat 05:00–23:00 (3 shifts)",
+      "contacts": [
+        {
+          "role": "Plant manager",
+          "name": "Julien Robert",
+          "email": "julien.robert@aurelia-demo.example",
+          "phone": "+33 4 55 55 0210",
+          "primary": true
+        },
+        {
+          "role": "Production planning lead",
+          "name": "Camille Petit",
+          "email": "camille.petit@aurelia-demo.example",
+          "phone": "+33 4 55 55 0211",
+          "primary": false
+        },
+        {
+          "role": "Quality release lead",
+          "name": "Nora Laurent",
+          "email": "nora.laurent@aurelia-demo.example",
+          "phone": "+33 4 55 55 0212",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 45.733,
+      "lon": 4.83,
+      "city": "Lyon",
+      "zone": "Europe"
+    },
+    {
+      "code": "TPM1",
+      "name": "TPM External Filler",
+      "type": "contract_manufacturer",
+      "country": "IT",
+      "address": "Via del Confezionamento 4, 20141 Milano, Italy",
+      "timezone": "Europe/Rome",
+      "operating_hours": "Mon–Fri 07:00–19:00",
+      "contacts": [
+        {
+          "role": "Contract manufacturing manager",
+          "name": "Marco Rossi",
+          "email": "marco.rossi@aurelia-demo.example",
+          "phone": "+39 02 5555 0310",
+          "primary": true
+        },
+        {
+          "role": "Supplier quality contact",
+          "name": "Giulia Bianchi",
+          "email": "giulia.bianchi@aurelia-demo.example",
+          "phone": "+39 02 5555 0311",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 45.43,
+      "lon": 9.19,
+      "city": "Milan",
+      "zone": "Europe"
+    },
+    {
+      "code": "DC01",
+      "name": "Paris Central DC",
+      "type": "warehouse",
+      "country": "FR",
+      "address": "ZA Logistique Nord, 95700 Roissy-en-France, France",
+      "timezone": "Europe/Paris",
+      "operating_hours": "24/7 (3 shifts)",
+      "contacts": [
+        {
+          "role": "Warehouse manager",
+          "name": "Sophie Dubois",
+          "email": "sophie.dubois@aurelia-demo.example",
+          "phone": "+33 1 55 55 0410",
+          "primary": true
+        },
+        {
+          "role": "Inventory control lead",
+          "name": "Lucas Girard",
+          "email": "lucas.girard@aurelia-demo.example",
+          "phone": "+33 1 55 55 0411",
+          "primary": false
+        },
+        {
+          "role": "Transport coordinator",
+          "name": "Emma Lefèvre",
+          "email": "emma.lefevre@aurelia-demo.example",
+          "phone": "+33 1 55 55 0412",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 49.004,
+      "lon": 2.55,
+      "city": "Roissy-en-France",
+      "zone": "Europe"
+    },
+    {
+      "code": "DC21",
+      "name": "Dubai Travel Retail DC",
+      "type": "warehouse",
+      "country": "AE",
+      "address": "Jebel Ali Free Zone, Plot S-21, Dubai, UAE",
+      "timezone": "Asia/Dubai",
+      "operating_hours": "Sun–Thu 06:00–22:00, Fri–Sat 08:00–16:00",
+      "contacts": [
+        {
+          "role": "Warehouse manager",
+          "name": "Omar Haddad",
+          "email": "omar.haddad@aurelia-demo.example",
+          "phone": "+971 4 555 0510",
+          "primary": true
+        },
+        {
+          "role": "Inventory control lead",
+          "name": "Layla Nasser",
+          "email": "layla.nasser@aurelia-demo.example",
+          "phone": "+971 4 555 0511",
+          "primary": false
+        },
+        {
+          "role": "Customs & transport coordinator",
+          "name": "Rami Saleh",
+          "email": "rami.saleh@aurelia-demo.example",
+          "phone": "+971 4 555 0512",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 25.011,
+      "lon": 55.061,
+      "city": "Jebel Ali, Dubai",
+      "zone": "Middle East"
+    },
+    {
+      "code": "DC22",
+      "name": "Singapore APAC DC",
+      "type": "warehouse",
+      "country": "SG",
+      "address": "Tuas South Logistics Hub, 22 Tuas Ave, Singapore 639",
+      "timezone": "Asia/Singapore",
+      "operating_hours": "Mon–Sat 07:00–23:00 (2 shifts)",
+      "contacts": [
+        {
+          "role": "Warehouse manager",
+          "name": "Wei Ling Tan",
+          "email": "wei.ling.tan@aurelia-demo.example",
+          "phone": "+65 6555 0610",
+          "primary": true
+        },
+        {
+          "role": "Inventory control lead",
+          "name": "Arjun Menon",
+          "email": "arjun.menon@aurelia-demo.example",
+          "phone": "+65 6555 0611",
+          "primary": false
+        },
+        {
+          "role": "Transport coordinator",
+          "name": "Mei Chen",
+          "email": "mei.chen@aurelia-demo.example",
+          "phone": "+65 6555 0612",
+          "primary": false
+        }
+      ],
+      "contacts_note": "Fictional demo contacts; replace from SAP plant master / HR directory.",
+      "lat": 1.3,
+      "lon": 103.636,
+      "city": "Tuas, Singapore",
+      "zone": "Asia-Pacific"
+    }
+  ],
+  "materials": [
+    {
+      "code": "FG-PERFUME-100",
+      "description": "Eau de Parfum 100 ml",
+      "type": "FG",
+      "uom": "EA",
+      "unit_cost": 34.0,
+      "safety_stock": 900
+    },
+    {
+      "code": "FG-SERUM-50",
+      "description": "Revitalising Serum 50 ml",
+      "type": "FG",
+      "uom": "EA",
+      "unit_cost": 21.0,
+      "safety_stock": 1100
+    },
+    {
+      "code": "FG-CREAM-50",
+      "description": "Hydrating Cream 50 ml",
+      "type": "FG",
+      "uom": "EA",
+      "unit_cost": 13.5,
+      "safety_stock": 800
+    },
+    {
+      "code": "RM-ALCOHOL",
+      "description": "Cosmetic grade alcohol",
+      "type": "RPM",
+      "uom": "KG",
+      "unit_cost": 2.1,
+      "safety_stock": 500
+    },
+    {
+      "code": "RM-FRAGRANCE",
+      "description": "Fragrance concentrate",
+      "type": "RPM",
+      "uom": "KG",
+      "unit_cost": 94.0,
+      "safety_stock": 80
+    },
+    {
+      "code": "RM-ACTIVE",
+      "description": "Serum active complex",
+      "type": "RPM",
+      "uom": "KG",
+      "unit_cost": 185.0,
+      "safety_stock": 40
+    },
+    {
+      "code": "RM-BASE",
+      "description": "Skincare base",
+      "type": "RPM",
+      "uom": "KG",
+      "unit_cost": 8.5,
+      "safety_stock": 300
+    },
+    {
+      "code": "PK-BOTTLE-100",
+      "description": "100 ml glass bottle",
+      "type": "PACK",
+      "uom": "EA",
+      "unit_cost": 1.8,
+      "safety_stock": 1000
+    },
+    {
+      "code": "PK-BOTTLE-50",
+      "description": "50 ml airless bottle",
+      "type": "PACK",
+      "uom": "EA",
+      "unit_cost": 1.3,
+      "safety_stock": 1200
+    },
+    {
+      "code": "PK-CARTON",
+      "description": "Premium folding carton",
+      "type": "PACK",
+      "uom": "EA",
+      "unit_cost": 0.55,
+      "safety_stock": 1500
+    }
+  ],
+  "suppliers": [
+    {
+      "code": "V-100231",
+      "name": "AromaChem SAS",
+      "country": "FR",
+      "materials": [
+        "RM-FRAGRANCE"
+      ],
+      "contract_lead_time_days": 21,
+      "otif_target_pct": 95,
+      "approved": true,
+      "secondary_source": "Grasse Essences SARL",
+      "unit_price_eur": 94.0,
+      "freight_eur_per_order": 180,
+      "typical_order_qty": 50,
+      "lat": 43.658,
+      "lon": 6.924,
+      "city": "Grasse",
+      "manufacturing_country": "FR",
+      "manufacturing_site": "Fragrance compounding plant",
+      "zone": "Europe"
+    },
+    {
+      "code": "V-100318",
+      "name": "BioActive Labs",
+      "country": "DE",
+      "materials": [
+        "RM-ACTIVE"
+      ],
+      "contract_lead_time_days": 28,
+      "otif_target_pct": 95,
+      "approved": true,
+      "secondary_source": null,
+      "unit_price_eur": 185.0,
+      "freight_eur_per_order": 250,
+      "typical_order_qty": 35,
+      "lat": 49.872,
+      "lon": 8.651,
+      "city": "Darmstadt",
+      "manufacturing_country": "DE",
+      "manufacturing_site": "Active-complex extraction plant",
+      "zone": "Europe"
+    },
+    {
+      "code": "V-100402",
+      "name": "PackGlass Europe",
+      "country": "IT",
+      "materials": [
+        "PK-BOTTLE-100"
+      ],
+      "contract_lead_time_days": 35,
+      "otif_target_pct": 92,
+      "approved": true,
+      "secondary_source": "Verallia Premium",
+      "unit_price_eur": 1.8,
+      "freight_eur_per_order": 900,
+      "typical_order_qty": 4000,
+      "lat": 43.718,
+      "lon": 10.946,
+      "city": "Empoli",
+      "manufacturing_country": "IT",
+      "manufacturing_site": "Glass furnace and decoration",
+      "zone": "Europe"
+    },
+    {
+      "code": "V-100455",
+      "name": "Carton Luxe",
+      "country": "FR",
+      "materials": [
+        "PK-CARTON"
+      ],
+      "contract_lead_time_days": 14,
+      "otif_target_pct": 95,
+      "approved": true,
+      "secondary_source": "Smurfit Luxury Pack",
+      "unit_price_eur": 0.55,
+      "freight_eur_per_order": 300,
+      "typical_order_qty": 8000,
+      "lat": 47.394,
+      "lon": 0.689,
+      "city": "Tours",
+      "manufacturing_country": "FR",
+      "manufacturing_site": "Folding-carton printing plant",
+      "zone": "Europe"
+    },
+    {
+      "code": "V-100517",
+      "name": "EthaPure Iberia",
+      "country": "ES",
+      "materials": [
+        "RM-ALCOHOL"
+      ],
+      "contract_lead_time_days": 10,
+      "otif_target_pct": 97,
+      "approved": true,
+      "secondary_source": "Cristal Union Alcools",
+      "unit_price_eur": 2.1,
+      "freight_eur_per_order": 220,
+      "typical_order_qty": 800,
+      "lat": 41.652,
+      "lon": -4.724,
+      "city": "Valladolid",
+      "manufacturing_country": "ES",
+      "manufacturing_site": "Ethanol rectification plant",
+      "zone": "Europe"
+    },
+    {
+      "code": "V-100604",
+      "name": "AirlessPack Asia",
+      "country": "KR",
+      "materials": [
+        "PK-BOTTLE-50"
+      ],
+      "contract_lead_time_days": 42,
+      "otif_target_pct": 90,
+      "approved": true,
+      "secondary_source": null,
+      "unit_price_eur": 1.3,
+      "freight_eur_per_order": 2400,
+      "typical_order_qty": 9000,
+      "lat": 37.456,
+      "lon": 126.705,
+      "city": "Incheon",
+      "manufacturing_country": "KR",
+      "manufacturing_site": "Airless-pump moulding and assembly",
+      "zone": "Asia-Pacific"
+    },
+    {
+      "code": "V-100688",
+      "name": "BaseChem Iberia",
+      "country": "ES",
+      "materials": [
+        "RM-BASE"
+      ],
+      "contract_lead_time_days": 18,
+      "otif_target_pct": 95,
+      "approved": true,
+      "secondary_source": "Lubrizol Personal Care",
+      "unit_price_eur": 8.5,
+      "freight_eur_per_order": 260,
+      "typical_order_qty": 650,
+      "lat": 41.119,
+      "lon": 1.245,
+      "city": "Tarragona",
+      "manufacturing_country": "ES",
+      "manufacturing_site": "Emulsion-base blending plant",
+      "zone": "Europe"
+    }
+  ],
+  "bom": [
+    {
+      "plant": "FR10",
+      "parent": "FG-PERFUME-100",
+      "component": "RM-ALCOHOL",
+      "quantity": 0.08,
+      "scrap_pct": 2.0
+    },
+    {
+      "plant": "FR10",
+      "parent": "FG-PERFUME-100",
+      "component": "RM-FRAGRANCE",
+      "quantity": 0.02,
+      "scrap_pct": 1.0
+    },
+    {
+      "plant": "FR10",
+      "parent": "FG-PERFUME-100",
+      "component": "PK-BOTTLE-100",
+      "quantity": 1.0,
+      "scrap_pct": 1.5
+    },
+    {
+      "plant": "FR10",
+      "parent": "FG-PERFUME-100",
+      "component": "PK-CARTON",
+      "quantity": 1.0,
+      "scrap_pct": 1.0
+    },
+    {
+      "plant": "FR20",
+      "parent": "FG-SERUM-50",
+      "component": "RM-ACTIVE",
+      "quantity": 0.004,
+      "scrap_pct": 3.0
+    },
+    {
+      "plant": "FR20",
+      "parent": "FG-SERUM-50",
+      "component": "RM-BASE",
+      "quantity": 0.046,
+      "scrap_pct": 2.0
+    },
+    {
+      "plant": "FR20",
+      "parent": "FG-SERUM-50",
+      "component": "PK-BOTTLE-50",
+      "quantity": 1.0,
+      "scrap_pct": 1.5
+    },
+    {
+      "plant": "FR20",
+      "parent": "FG-SERUM-50",
+      "component": "PK-CARTON",
+      "quantity": 1.0,
+      "scrap_pct": 1.0
+    },
+    {
+      "plant": "TPM1",
+      "parent": "FG-CREAM-50",
+      "component": "RM-BASE",
+      "quantity": 0.05,
+      "scrap_pct": 2.0
+    },
+    {
+      "plant": "TPM1",
+      "parent": "FG-CREAM-50",
+      "component": "PK-BOTTLE-50",
+      "quantity": 1.0,
+      "scrap_pct": 1.5
+    },
+    {
+      "plant": "TPM1",
+      "parent": "FG-CREAM-50",
+      "component": "PK-CARTON",
+      "quantity": 1.0,
+      "scrap_pct": 1.0
+    }
+  ],
+  "stock": [
+    {
+      "plant": "FR10",
+      "material": "RM-ALCOHOL",
+      "batch": "ALC-2609",
+      "quantity": 780,
+      "status": "unrestricted",
+      "expiry": "2028-06-30"
+    },
+    {
+      "plant": "FR10",
+      "material": "RM-FRAGRANCE",
+      "batch": "FRA-2608",
+      "quantity": 95,
+      "status": "unrestricted",
+      "expiry": "2027-08-31"
+    },
+    {
+      "plant": "FR10",
+      "material": "PK-BOTTLE-100",
+      "batch": "B100-2610",
+      "quantity": 4100,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "FR10",
+      "material": "PK-BOTTLE-100",
+      "batch": "B100-2611Q",
+      "quantity": 1800,
+      "status": "blocked",
+      "expiry": null
+    },
+    {
+      "plant": "FR10",
+      "material": "PK-CARTON",
+      "batch": "CAR-2610",
+      "quantity": 6000,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "FR20",
+      "material": "RM-ACTIVE",
+      "batch": "ACT-2607",
+      "quantity": 18,
+      "status": "unrestricted",
+      "expiry": "2027-03-31"
+    },
+    {
+      "plant": "FR20",
+      "material": "RM-ACTIVE",
+      "batch": "ACT-QI-1",
+      "quantity": 15,
+      "status": "quality_inspection",
+      "expiry": "2027-06-30"
+    },
+    {
+      "plant": "FR20",
+      "material": "RM-BASE",
+      "batch": "BAS-2609",
+      "quantity": 460,
+      "status": "unrestricted",
+      "expiry": "2027-02-28"
+    },
+    {
+      "plant": "FR20",
+      "material": "PK-BOTTLE-50",
+      "batch": "B50-2610",
+      "quantity": 6100,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "FR20",
+      "material": "PK-CARTON",
+      "batch": "CAR-2609",
+      "quantity": 4900,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "TPM1",
+      "material": "RM-BASE",
+      "batch": "BAS-TP-1",
+      "quantity": 380,
+      "status": "unrestricted",
+      "expiry": "2027-01-31"
+    },
+    {
+      "plant": "TPM1",
+      "material": "RM-BASE",
+      "batch": "BAS-TP-0",
+      "quantity": 60,
+      "status": "unrestricted",
+      "expiry": "2026-10-10"
+    },
+    {
+      "plant": "TPM1",
+      "material": "PK-BOTTLE-50",
+      "batch": "B50-TP-1",
+      "quantity": 3500,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "TPM1",
+      "material": "PK-CARTON",
+      "batch": "CAR-TP-1",
+      "quantity": 3300,
+      "status": "unrestricted",
+      "expiry": null
+    },
+    {
+      "plant": "DC01",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2608",
+      "quantity": 4200,
+      "status": "unrestricted",
+      "expiry": "2028-08-31"
+    },
+    {
+      "plant": "DC21",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2605",
+      "quantity": 330,
+      "status": "unrestricted",
+      "expiry": "2027-02-15"
+    },
+    {
+      "plant": "DC22",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2607",
+      "quantity": 2600,
+      "status": "unrestricted",
+      "expiry": "2028-03-31"
+    },
+    {
+      "plant": "DC01",
+      "material": "FG-SERUM-50",
+      "batch": "S50-2608",
+      "quantity": 3200,
+      "status": "unrestricted",
+      "expiry": "2027-09-30"
+    },
+    {
+      "plant": "DC21",
+      "material": "FG-SERUM-50",
+      "batch": "S50-2606",
+      "quantity": 2500,
+      "status": "unrestricted",
+      "expiry": "2027-05-31"
+    },
+    {
+      "plant": "DC22",
+      "material": "FG-SERUM-50",
+      "batch": "S50-2609",
+      "quantity": 520,
+      "status": "unrestricted",
+      "expiry": "2027-11-30"
+    },
+    {
+      "plant": "DC01",
+      "material": "FG-CREAM-50",
+      "batch": "C50-2608",
+      "quantity": 1800,
+      "status": "unrestricted",
+      "expiry": "2027-06-30"
+    },
+    {
+      "plant": "DC21",
+      "material": "FG-CREAM-50",
+      "batch": "C50-2607",
+      "quantity": 950,
+      "status": "unrestricted",
+      "expiry": "2027-04-30"
+    },
+    {
+      "plant": "DC22",
+      "material": "FG-CREAM-50",
+      "batch": "C50-2609",
+      "quantity": 2400,
+      "status": "unrestricted",
+      "expiry": "2027-08-31"
+    }
+  ],
+  "purchase_orders": [
+    {
+      "po": "4500001001",
+      "supplier": "AromaChem SAS",
+      "material": "RM-FRAGRANCE",
+      "plant": "FR10",
+      "quantity": 40,
+      "delivery_date": "2026-10-24",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001002",
+      "supplier": "BioActive Labs",
+      "material": "RM-ACTIVE",
+      "plant": "FR20",
+      "quantity": 35,
+      "delivery_date": "2026-10-28",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001003",
+      "supplier": "PackGlass Europe",
+      "material": "PK-BOTTLE-100",
+      "plant": "FR10",
+      "quantity": 3000,
+      "delivery_date": "2026-10-26",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001004",
+      "supplier": "Carton Luxe",
+      "material": "PK-CARTON",
+      "plant": "TPM1",
+      "quantity": 2500,
+      "delivery_date": "2026-10-30",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001005",
+      "supplier": "BioActive Labs",
+      "material": "RM-ACTIVE",
+      "plant": "FR20",
+      "quantity": 30,
+      "delivery_date": "2026-11-18",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001006",
+      "supplier": "PackGlass Europe",
+      "material": "PK-BOTTLE-100",
+      "plant": "FR10",
+      "quantity": 4000,
+      "delivery_date": "2026-11-21",
+      "status": "unconfirmed"
+    },
+    {
+      "po": "4500001007",
+      "supplier": "EthaPure Iberia",
+      "material": "RM-ALCOHOL",
+      "plant": "FR10",
+      "quantity": 600,
+      "delivery_date": "2026-11-03",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001008",
+      "supplier": "AirlessPack Asia",
+      "material": "PK-BOTTLE-50",
+      "plant": "TPM1",
+      "quantity": 5000,
+      "delivery_date": "2026-11-25",
+      "status": "confirmed"
+    },
+    {
+      "po": "4500001009",
+      "supplier": "BaseChem Iberia",
+      "material": "RM-BASE",
+      "plant": "TPM1",
+      "quantity": 250,
+      "delivery_date": "2026-11-06",
+      "status": "confirmed"
+    }
+  ],
+  "po_history": [
+    {
+      "po": "4500000901",
+      "supplier": "AromaChem SAS",
+      "material": "RM-FRAGRANCE",
+      "promised_date": "2026-05-12",
+      "received_date": "2026-05-12",
+      "quantity_ordered": 60,
+      "quantity_received": 60,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000922",
+      "supplier": "AromaChem SAS",
+      "material": "RM-FRAGRANCE",
+      "promised_date": "2026-07-08",
+      "received_date": "2026-07-10",
+      "quantity_ordered": 55,
+      "quantity_received": 55,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000957",
+      "supplier": "AromaChem SAS",
+      "material": "RM-FRAGRANCE",
+      "promised_date": "2026-09-02",
+      "received_date": "2026-09-02",
+      "quantity_ordered": 50,
+      "quantity_received": 50,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000904",
+      "supplier": "BioActive Labs",
+      "material": "RM-ACTIVE",
+      "promised_date": "2026-05-20",
+      "received_date": "2026-06-03",
+      "quantity_ordered": 30,
+      "quantity_received": 30,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000931",
+      "supplier": "BioActive Labs",
+      "material": "RM-ACTIVE",
+      "promised_date": "2026-07-15",
+      "received_date": "2026-07-29",
+      "quantity_ordered": 30,
+      "quantity_received": 26,
+      "quality_rejected": 4
+    },
+    {
+      "po": "4500000962",
+      "supplier": "BioActive Labs",
+      "material": "RM-ACTIVE",
+      "promised_date": "2026-09-09",
+      "received_date": "2026-09-19",
+      "quantity_ordered": 35,
+      "quantity_received": 35,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000910",
+      "supplier": "PackGlass Europe",
+      "material": "PK-BOTTLE-100",
+      "promised_date": "2026-06-01",
+      "received_date": "2026-06-04",
+      "quantity_ordered": 5000,
+      "quantity_received": 5000,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000944",
+      "supplier": "PackGlass Europe",
+      "material": "PK-BOTTLE-100",
+      "promised_date": "2026-08-10",
+      "received_date": "2026-08-10",
+      "quantity_ordered": 5000,
+      "quantity_received": 4600,
+      "quality_rejected": 400
+    },
+    {
+      "po": "4500000970",
+      "supplier": "PackGlass Europe",
+      "material": "PK-BOTTLE-100",
+      "promised_date": "2026-10-05",
+      "received_date": "2026-10-09",
+      "quantity_ordered": 4000,
+      "quantity_received": 4000,
+      "quality_rejected": 1800
+    },
+    {
+      "po": "4500000915",
+      "supplier": "Carton Luxe",
+      "material": "PK-CARTON",
+      "promised_date": "2026-06-15",
+      "received_date": "2026-06-15",
+      "quantity_ordered": 8000,
+      "quantity_received": 8000,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000948",
+      "supplier": "Carton Luxe",
+      "material": "PK-CARTON",
+      "promised_date": "2026-08-20",
+      "received_date": "2026-08-19",
+      "quantity_ordered": 9000,
+      "quantity_received": 9000,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000920",
+      "supplier": "EthaPure Iberia",
+      "material": "RM-ALCOHOL",
+      "promised_date": "2026-06-22",
+      "received_date": "2026-06-22",
+      "quantity_ordered": 900,
+      "quantity_received": 900,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000966",
+      "supplier": "EthaPure Iberia",
+      "material": "RM-ALCOHOL",
+      "promised_date": "2026-09-14",
+      "received_date": "2026-09-15",
+      "quantity_ordered": 800,
+      "quantity_received": 800,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000925",
+      "supplier": "AirlessPack Asia",
+      "material": "PK-BOTTLE-50",
+      "promised_date": "2026-07-01",
+      "received_date": "2026-07-16",
+      "quantity_ordered": 8000,
+      "quantity_received": 8000,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000968",
+      "supplier": "AirlessPack Asia",
+      "material": "PK-BOTTLE-50",
+      "promised_date": "2026-09-25",
+      "received_date": "2026-10-06",
+      "quantity_ordered": 9000,
+      "quantity_received": 8400,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000929",
+      "supplier": "BaseChem Iberia",
+      "material": "RM-BASE",
+      "promised_date": "2026-07-06",
+      "received_date": "2026-07-06",
+      "quantity_ordered": 700,
+      "quantity_received": 700,
+      "quality_rejected": 0
+    },
+    {
+      "po": "4500000964",
+      "supplier": "BaseChem Iberia",
+      "material": "RM-BASE",
+      "promised_date": "2026-09-11",
+      "received_date": "2026-09-12",
+      "quantity_ordered": 650,
+      "quantity_received": 650,
+      "quality_rejected": 0
+    }
+  ],
+  "production_orders": [
+    {
+      "order": "10000101",
+      "plant": "FR10",
+      "material": "FG-PERFUME-100",
+      "quantity": 3000,
+      "finish_date": "2026-10-25",
+      "status": "released"
+    },
+    {
+      "order": "10000102",
+      "plant": "FR20",
+      "material": "FG-SERUM-50",
+      "quantity": 5000,
+      "finish_date": "2026-10-27",
+      "status": "released"
+    },
+    {
+      "order": "10000103",
+      "plant": "TPM1",
+      "material": "FG-CREAM-50",
+      "quantity": 2800,
+      "finish_date": "2026-10-31",
+      "status": "planned"
+    },
+    {
+      "order": "10000104",
+      "plant": "FR20",
+      "material": "FG-SERUM-50",
+      "quantity": 8000,
+      "finish_date": "2026-11-06",
+      "status": "planned"
+    }
+  ],
+  "quality_lots": [
+    {
+      "lot": "QL-260011",
+      "plant": "FR20",
+      "material": "RM-ACTIVE",
+      "batch": "ACT-QI-1",
+      "quantity": 15,
+      "supplier": "BioActive Labs",
+      "status": "inspection",
+      "usage_decision": null,
+      "expected_release": "2026-10-23",
+      "defect": null
+    },
+    {
+      "lot": "QL-260014",
+      "plant": "FR10",
+      "material": "PK-BOTTLE-100",
+      "batch": "B100-2611Q",
+      "quantity": 1800,
+      "supplier": "PackGlass Europe",
+      "status": "blocked",
+      "usage_decision": "rejected",
+      "expected_release": null,
+      "defect": "Neck finish out of tolerance; pump crimp leak risk"
+    },
+    {
+      "lot": "QL-260015",
+      "plant": "FR10",
+      "material": "RM-FRAGRANCE",
+      "batch": "FRA-2608",
+      "quantity": 95,
+      "supplier": "AromaChem SAS",
+      "status": "released",
+      "usage_decision": "accepted",
+      "expected_release": null,
+      "defect": null
+    },
+    {
+      "lot": "QL-260017",
+      "plant": "TPM1",
+      "material": "RM-BASE",
+      "batch": "BAS-TP-0",
+      "quantity": 60,
+      "supplier": "BaseChem Iberia",
+      "status": "expired",
+      "usage_decision": "scrap_pending",
+      "expected_release": null,
+      "defect": "Shelf-life expired 2026-10-10"
+    },
+    {
+      "lot": "QL-260019",
+      "plant": "FR20",
+      "material": "PK-BOTTLE-50",
+      "batch": "B50-2610",
+      "quantity": 6100,
+      "supplier": "AirlessPack Asia",
+      "status": "released",
+      "usage_decision": "accepted",
+      "expected_release": null,
+      "defect": null
+    }
+  ],
+  "sales_orders": [
+    {
+      "order": "SO-7710021",
+      "customer": "Galeries Paris Retail",
+      "warehouse": "DC01",
+      "material": "FG-PERFUME-100",
+      "quantity": 1400,
+      "requested_date": "2026-10-27",
+      "priority": "standard"
+    },
+    {
+      "order": "SO-7710044",
+      "customer": "Dubai Duty Free",
+      "warehouse": "DC21",
+      "material": "FG-PERFUME-100",
+      "quantity": 900,
+      "requested_date": "2026-10-26",
+      "priority": "high"
+    },
+    {
+      "order": "SO-7710052",
+      "customer": "Changi Travel Retail",
+      "warehouse": "DC22",
+      "material": "FG-SERUM-50",
+      "quantity": 1300,
+      "requested_date": "2026-10-29",
+      "priority": "high"
+    },
+    {
+      "order": "SO-7710063",
+      "customer": "Sephora EMEA",
+      "warehouse": "DC01",
+      "material": "FG-SERUM-50",
+      "quantity": 1100,
+      "requested_date": "2026-11-02",
+      "priority": "standard"
+    },
+    {
+      "order": "SO-7710070",
+      "customer": "Lotte Duty Free",
+      "warehouse": "DC22",
+      "material": "FG-CREAM-50",
+      "quantity": 700,
+      "requested_date": "2026-11-04",
+      "priority": "standard"
+    },
+    {
+      "order": "SO-7710081",
+      "customer": "Harvey Nichols Dubai",
+      "warehouse": "DC21",
+      "material": "FG-CREAM-50",
+      "quantity": 400,
+      "requested_date": "2026-10-30",
+      "priority": "standard"
+    }
+  ],
+  "shipments": [
+    {
+      "shipment": "SH-880101",
+      "type": "stock_transfer",
+      "from": "DC01",
+      "to": "DC21",
+      "material": "FG-PERFUME-100",
+      "quantity": 600,
+      "carrier": "Emirates SkyCargo",
+      "mode": "air",
+      "departed": "2026-10-17",
+      "eta": "2026-10-20",
+      "status": "in_transit",
+      "delay_days": 2,
+      "delay_reason": "Customs documentation hold in DXB"
+    },
+    {
+      "shipment": "SH-880107",
+      "type": "inbound",
+      "from": "V-100318",
+      "to": "FR20",
+      "material": "RM-ACTIVE",
+      "quantity": 35,
+      "carrier": "DHL Freight",
+      "mode": "road",
+      "departed": "2026-10-22",
+      "eta": "2026-10-28",
+      "status": "planned",
+      "delay_days": 0,
+      "delay_reason": null
+    },
+    {
+      "shipment": "SH-880112",
+      "type": "stock_transfer",
+      "from": "DC21",
+      "to": "DC22",
+      "material": "FG-SERUM-50",
+      "quantity": 400,
+      "carrier": "Maersk",
+      "mode": "sea",
+      "departed": "2026-10-08",
+      "eta": "2026-10-24",
+      "status": "in_transit",
+      "delay_days": 5,
+      "delay_reason": "Port congestion Jebel Ali"
+    },
+    {
+      "shipment": "SH-880115",
+      "type": "inbound",
+      "from": "V-100604",
+      "to": "TPM1",
+      "material": "PK-BOTTLE-50",
+      "quantity": 5000,
+      "carrier": "CMA CGM",
+      "mode": "sea",
+      "departed": "2026-10-14",
+      "eta": "2026-11-25",
+      "status": "in_transit",
+      "delay_days": 0,
+      "delay_reason": null
+    },
+    {
+      "shipment": "SH-880118",
+      "type": "customer_delivery",
+      "from": "DC01",
+      "to": "Galeries Paris Retail",
+      "material": "FG-CREAM-50",
+      "quantity": 300,
+      "carrier": "Geodis",
+      "mode": "road",
+      "departed": "2026-10-19",
+      "eta": "2026-10-21",
+      "status": "in_transit",
+      "delay_days": 0,
+      "delay_reason": null
+    }
+  ],
+  "stocktake_counts": [
+    {
+      "count_id": "PI-2026-1019-01",
+      "count_date": "2026-10-19",
+      "plant": "DC21",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2605",
+      "book_quantity": 330,
+      "counted_quantity": 290,
+      "counter": "Dubai night shift"
+    },
+    {
+      "count_id": "PI-2026-1019-02",
+      "count_date": "2026-10-19",
+      "plant": "DC01",
+      "material": "FG-SERUM-50",
+      "batch": "S50-2608",
+      "book_quantity": 3200,
+      "counted_quantity": 3185,
+      "counter": "Paris cycle count A"
+    },
+    {
+      "count_id": "PI-2026-1019-03",
+      "count_date": "2026-10-19",
+      "plant": "FR20",
+      "material": "RM-BASE",
+      "batch": "BAS-2609",
+      "book_quantity": 460,
+      "counted_quantity": 472,
+      "counter": "Lyon raw-material store"
+    },
+    {
+      "count_id": "PI-2026-1019-04",
+      "count_date": "2026-10-19",
+      "plant": "TPM1",
+      "material": "RM-BASE",
+      "batch": "BAS-TP-0",
+      "book_quantity": 60,
+      "counted_quantity": 0,
+      "counter": "TPM site audit"
+    },
+    {
+      "count_id": "PI-2026-1019-05",
+      "count_date": "2026-10-19",
+      "plant": "DC22",
+      "material": "FG-CREAM-50",
+      "batch": "C50-2609",
+      "book_quantity": 2400,
+      "counted_quantity": 2310,
+      "counter": "Singapore cycle count B"
+    },
+    {
+      "count_id": "PI-2026-1019-06",
+      "count_date": "2026-10-19",
+      "plant": "FR10",
+      "material": "PK-BOTTLE-100",
+      "batch": "B100-2610",
+      "book_quantity": 4100,
+      "counted_quantity": 4100,
+      "counter": "Paris packaging store"
+    }
+  ],
+  "goods_movements": [
+    {
+      "document": "4900007781",
+      "type": "goods_issue",
+      "plant": "DC21",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2605",
+      "quantity": -40,
+      "date": "2026-10-18",
+      "posted": false,
+      "reference": "Marketing samples for Dubai Duty Free, issued but not posted"
+    },
+    {
+      "document": "5000012233",
+      "type": "goods_receipt",
+      "plant": "FR20",
+      "material": "RM-BASE",
+      "batch": "BAS-2609",
+      "quantity": 12,
+      "date": "2026-10-17",
+      "posted": false,
+      "reference": "BaseChem delivery note DN-77812: 12 kg delivered beyond the posted receipt"
+    },
+    {
+      "document": "4900007790",
+      "type": "goods_issue",
+      "plant": "DC01",
+      "material": "FG-PERFUME-100",
+      "batch": "P100-2608",
+      "quantity": -600,
+      "date": "2026-10-17",
+      "posted": true,
+      "reference": "Stock transfer SH-880101 to DC21"
+    }
+  ],
+  "warehouse_demand_daily": {
+    "FG-PERFUME-100": {
+      "DC01": 120,
+      "DC21": 95,
+      "DC22": 65
+    },
+    "FG-SERUM-50": {
+      "DC01": 90,
+      "DC21": 45,
+      "DC22": 105
+    },
+    "FG-CREAM-50": {
+      "DC01": 70,
+      "DC21": 35,
+      "DC22": 60
+    }
+  },
+  "lanes": [
+    {
+      "from": "DC01",
+      "to": "DC21",
+      "lead_days": 3,
+      "cost_per_unit": 0.7,
+      "carbon_kg_per_unit": 0.12
+    },
+    {
+      "from": "DC01",
+      "to": "DC22",
+      "lead_days": 5,
+      "cost_per_unit": 0.92,
+      "carbon_kg_per_unit": 0.16
+    },
+    {
+      "from": "DC21",
+      "to": "DC01",
+      "lead_days": 3,
+      "cost_per_unit": 0.72,
+      "carbon_kg_per_unit": 0.12
+    },
+    {
+      "from": "DC21",
+      "to": "DC22",
+      "lead_days": 4,
+      "cost_per_unit": 0.61,
+      "carbon_kg_per_unit": 0.1
+    },
+    {
+      "from": "DC22",
+      "to": "DC01",
+      "lead_days": 5,
+      "cost_per_unit": 0.94,
+      "carbon_kg_per_unit": 0.16
+    },
+    {
+      "from": "DC22",
+      "to": "DC21",
+      "lead_days": 4,
+      "cost_per_unit": 0.63,
+      "carbon_kg_per_unit": 0.1
+    }
+  ],
+  "supplier_quotes": [
+    {
+      "supplier": "Grasse Essences SARL",
+      "material": "RM-FRAGRANCE",
+      "unit_price_eur": 98.5,
+      "freight_eur_per_order": 180,
+      "typical_order_qty": 50,
+      "quoted_lead_time_days": 25,
+      "qualified": true,
+      "reference": "QP-2025-012 closed",
+      "lat": 43.65,
+      "lon": 6.94,
+      "city": "Grasse",
+      "country": "FR",
+      "zone": "Europe"
+    },
+    {
+      "supplier": "Seoul Actives Co.",
+      "material": "RM-ACTIVE",
+      "unit_price_eur": 172.0,
+      "freight_eur_per_order": 600,
+      "typical_order_qty": 35,
+      "quoted_lead_time_days": 35,
+      "qualified": false,
+      "reference": "QP-2026-031, qualification expected Q2 2027",
+      "lat": 37.566,
+      "lon": 126.978,
+      "city": "Seoul",
+      "country": "KR",
+      "zone": "Asia-Pacific"
+    },
+    {
+      "supplier": "Verallia Premium",
+      "material": "PK-BOTTLE-100",
+      "unit_price_eur": 1.91,
+      "freight_eur_per_order": 750,
+      "typical_order_qty": 4000,
+      "quoted_lead_time_days": 28,
+      "qualified": true,
+      "reference": "contract PG-2026-02 secondary source, +6% price",
+      "lat": 45.695,
+      "lon": -0.329,
+      "city": "Cognac",
+      "country": "FR",
+      "zone": "Europe"
+    },
+    {
+      "supplier": "Smurfit Luxury Pack",
+      "material": "PK-CARTON",
+      "unit_price_eur": 0.58,
+      "freight_eur_per_order": 280,
+      "typical_order_qty": 8000,
+      "quoted_lead_time_days": 12,
+      "qualified": true,
+      "reference": "approved secondary source",
+      "lat": 49.258,
+      "lon": 4.032,
+      "city": "Reims",
+      "country": "FR",
+      "zone": "Europe"
+    },
+    {
+      "supplier": "Cristal Union Alcools",
+      "material": "RM-ALCOHOL",
+      "unit_price_eur": 2.05,
+      "freight_eur_per_order": 260,
+      "typical_order_qty": 800,
+      "quoted_lead_time_days": 12,
+      "qualified": true,
+      "reference": "approved secondary source",
+      "lat": 49.044,
+      "lon": 3.959,
+      "city": "Épernay",
+      "country": "FR",
+      "zone": "Europe"
+    },
+    {
+      "supplier": "Lubrizol Personal Care",
+      "material": "RM-BASE",
+      "unit_price_eur": 9.1,
+      "freight_eur_per_order": 300,
+      "typical_order_qty": 650,
+      "quoted_lead_time_days": 21,
+      "qualified": true,
+      "reference": "approved secondary source",
+      "lat": 51.054,
+      "lon": 3.717,
+      "city": "Ghent",
+      "country": "BE",
+      "zone": "Europe"
+    }
+  ],
+  "ingredient_origins": [
+    {
+      "ingredient": "Shea butter",
+      "origin": "Burkina Faso",
+      "country": "BF",
+      "lat": 12.371,
+      "lon": -1.519,
+      "feeds_supplier": "BaseChem Iberia",
+      "feeds_material": "RM-BASE",
+      "share_of_material_pct": 18,
+      "transit_days": 34,
+      "transit_variability_days": 9,
+      "criticality": "high",
+      "alternatives": "Ghana, Mali",
+      "note": "smallholder cooperatives; harvest Jun–Aug"
+    },
+    {
+      "ingredient": "Centella asiatica extract",
+      "origin": "Madagascar",
+      "country": "MG",
+      "lat": -18.879,
+      "lon": 47.508,
+      "feeds_supplier": "BioActive Labs",
+      "feeds_material": "RM-ACTIVE",
+      "share_of_material_pct": 35,
+      "transit_days": 28,
+      "transit_variability_days": 11,
+      "criticality": "high",
+      "alternatives": "none qualified",
+      "note": "wild-harvested leaves; cyclone season Jan–Mar"
+    },
+    {
+      "ingredient": "Palm-derived emollients",
+      "origin": "Malaysia / Indonesia",
+      "country": "MY",
+      "lat": 3.0,
+      "lon": 101.39,
+      "feeds_supplier": "BaseChem Iberia",
+      "feeds_material": "RM-BASE",
+      "share_of_material_pct": 22,
+      "transit_days": 30,
+      "transit_variability_days": 6,
+      "criticality": "medium",
+      "alternatives": "RSPO segregated sources",
+      "note": "RSPO certification required"
+    },
+    {
+      "ingredient": "Guar gum (thickener)",
+      "origin": "India (Rajasthan)",
+      "country": "IN",
+      "lat": 26.912,
+      "lon": 75.787,
+      "feeds_supplier": "BaseChem Iberia",
+      "feeds_material": "RM-BASE",
+      "share_of_material_pct": 4,
+      "transit_days": 26,
+      "transit_variability_days": 7,
+      "criticality": "low",
+      "alternatives": "Pakistan",
+      "note": "monsoon-dependent crop"
+    }
+  ],
+  "sourcing_reference": {
+    "source": "L'Oréal public reporting (historical, 2014 procurement figures; 2025: 37 manufacturing plants)",
+    "figures": [
+      {
+        "label": "Production-related spend with suppliers in the production's geographic zone",
+        "value_pct": 80
+      },
+      {
+        "label": "European factories' purchases sourced within Europe",
+        "value_pct": 84
+      },
+      {
+        "label": "US factories' purchases sourced within North America",
+        "value_pct": 69
+      }
+    ],
+    "caveat": "Historical figures for context only; not Aurelia data and not verified current percentages. Zones are wider than countries.",
+    "patterns": [
+      "Supplier co-location: supplier-operated bottle lines inside the brand's own factory (e.g. Rambouillet, France)",
+      "Packaging and dispensing sourced close to European plants; natural ingredients from specialised origins"
+    ]
+  }
+}

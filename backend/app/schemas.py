@@ -1,0 +1,145 @@
+from __future__ import annotations
+
+from datetime import date
+from typing import Any, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+CODE = r"^[A-Z0-9][A-Z0-9-]{1,39}$"
+
+
+class StrictModel(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+
+class FactoryReadinessRequest(StrictModel):
+    plant: str = Field(pattern=CODE)
+    material: str = Field(pattern=CODE)
+    quantity: float = Field(gt=0, le=10_000_000)
+    need_by: date
+
+
+class StockBalanceRequest(StrictModel):
+    material: str = Field(pattern=CODE)
+    horizon_days: int = Field(default=14, ge=1, le=120)
+    service_level: float = Field(default=0.95, ge=0.5, le=0.999)
+
+
+class ForecastRequest(StrictModel):
+    material: str = Field(pattern=CODE)
+    warehouse: str | None = Field(default=None, pattern=CODE)
+    horizon_days: int = Field(default=14, ge=1, le=90)
+
+
+class WhatIfRequest(StrictModel):
+    material: str = Field(pattern=CODE)
+    demand_change_pct: float = Field(ge=-100, le=500)
+    supplier_delay_days: int = Field(default=0, ge=0, le=180)
+    horizon_days: int = Field(default=28, ge=1, le=120)
+
+
+class SupplierRiskRequest(StrictModel):
+    supplier: str = Field(min_length=2, max_length=160)
+
+
+class QualityRequest(StrictModel):
+    plant: str | None = Field(default=None, pattern=CODE)
+    material: str | None = Field(default=None, pattern=CODE)
+
+
+class LogisticsRequest(StrictModel):
+    warehouse: str | None = Field(default=None, pattern=CODE)
+    material: str | None = Field(default=None, pattern=CODE)
+
+
+class SalesOrderRequest(StrictModel):
+    warehouse: str | None = Field(default=None, pattern=CODE)
+
+
+class StocktakeRequest(StrictModel):
+    tolerance_pct: float = Field(default=1.0, ge=0, le=20)
+
+
+class WatchRequest(StrictModel):
+    name: str = Field(min_length=1, max_length=120)
+    kind: Literal["days_of_cover", "supplier_risk", "sales_orders_at_risk", "stocktake_unexplained", "shipment_delay", "question"]
+    params: dict[str, str] = Field(default_factory=dict)
+    threshold: float = 0
+
+
+class RagQuery(StrictModel):
+    query: str = Field(min_length=2, max_length=2000)
+    top_k: int = Field(default=4, ge=1, le=12)
+    category: str | None = Field(default=None, max_length=60)
+
+
+class RagDocument(StrictModel):
+    title: str = Field(min_length=1, max_length=240)
+    category: Literal["contract", "sop", "quality", "product_spec", "logistics", "other"] = "other"
+    source: str = Field(min_length=1, max_length=500)
+    text: str = Field(min_length=10, max_length=100_000)
+
+
+class RecommendationRequest(StrictModel):
+    analysis_id: str = Field(pattern=r"^AN-[0-9a-f]{12}$")
+    explanation: str = Field(min_length=1, max_length=12_000)
+    source: Literal["api", "dashboard", "flowise", "langgraph", "mcp"] = "api"
+
+
+class RecommendationFromTextRequest(StrictModel):
+    """Agent hand-off (Flowise HumanInput 'proceed'): the gateway, not the LLM, picks the analysis to submit."""
+
+    text: str = Field(min_length=1, max_length=40_000)
+    expected_kind: Literal["factory_readiness", "stock_balance", "supplier_risk", "quality_status", "logistics_status"]
+    source: Literal["flowise", "langgraph", "mcp", "api"] = "flowise"
+    comment: str = Field(default="", max_length=2000)
+
+
+class DecisionRequest(StrictModel):
+    decision: Literal["accepted", "rejected"]
+    comment: str = Field(default="", max_length=4000)
+
+
+class ChatRequest(StrictModel):
+    message: str = Field(min_length=1, max_length=8000)
+    thread_id: str | None = Field(default=None, min_length=1, max_length=128)
+
+
+class BusinessWorkflowRequest(StrictModel):
+    request_text: str | None = Field(default=None, max_length=4000)
+    request_type: Literal["factory_readiness", "stock_balance", "supplier_risk", "quality", "logistics", "inventory"] | None = None
+    plant: str | None = Field(default=None, pattern=CODE)
+    material: str | None = Field(default=None, pattern=CODE)
+    quantity: float | None = Field(default=None, gt=0, le=10_000_000)
+    need_by: date | None = None
+    horizon_days: int | None = Field(default=None, ge=1, le=120)
+    service_level: float | None = Field(default=None, ge=0.5, le=0.999)
+    supplier: str | None = Field(default=None, max_length=160)
+    warehouse: str | None = Field(default=None, pattern=CODE)
+    thread_id: str | None = Field(default=None, max_length=128)
+
+
+class ResumeRequest(StrictModel):
+    decision: Literal["submit", "discard"]
+    comment: str = Field(default="", max_length=2000)
+
+
+class SupplierResearchRequest(StrictModel):
+    supplier: str = Field(min_length=2, max_length=160)
+    material: str | None = Field(default=None, pattern=CODE)
+    question: str = Field(default="Assess supply continuity, quality, and contract risk.", max_length=2000)
+    thread_id: str | None = Field(default=None, max_length=128)
+
+
+class FlowisePredictRequest(StrictModel):
+    question: str = Field(default="", max_length=8000)
+    session_id: str | None = Field(default=None, max_length=128)
+    form: dict[str, Any] | None = None
+    human_input: dict[str, Any] | None = None
+
+    @model_validator(mode="after")
+    def question_or_resume(self) -> "FlowisePredictRequest":
+        # A Human Input resume carries no new question; every other call must ask something.
+        if not self.question and not self.human_input:
+            raise ValueError("question is required unless resuming a human input")
+        return self

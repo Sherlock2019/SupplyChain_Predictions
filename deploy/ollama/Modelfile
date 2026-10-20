@@ -1,0 +1,6 @@
+# Local workstation Qwen for GPUs that vLLM does not support (e.g. Pascal). Same model family as the cloud
+# vLLM deployment (Qwen2.5-7B-Instruct); larger context for Deep Agents planning prompts.
+#   ollama create qwen2.5-7b-scm -f deploy/ollama/Modelfile
+FROM qwen2.5:7b
+PARAMETER num_ctx 16384
+PARAMETER temperature 0

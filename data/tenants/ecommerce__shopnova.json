@@ -1,0 +1,1243 @@
+{
+ "snapshot": {
+  "id": "SAP-SN-2026-10-20T040000Z",
+  "source_system": "S4HANA-ECOMMERCE-DEMO",
+  "extracted_at": "2026-10-20T04:00:00+00:00",
+  "as_of_date": "2026-10-20",
+  "read_only": true,
+  "modules": [
+   "MM",
+   "PP",
+   "QM",
+   "SD",
+   "PUR",
+   "WM",
+   "LE"
+  ],
+  "industry": "ecommerce",
+  "customer": "ShopNova Online",
+  "synthetic": true
+ },
+ "plants": [
+  {
+   "code": "KT10",
+   "name": "Venlo Kitting Centre",
+   "type": "factory",
+   "country": "NL",
+   "lat": 51.37,
+   "lon": 6.17,
+   "city": "Venlo",
+   "zone": "Europe",
+   "address": "Venlo, NL (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Lukas Sharma",
+     "email": "lukas.sharma@shopnova-demo.example",
+     "phone": "+31 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Sofia Chen",
+     "email": "sofia.chen@shopnova-demo.example",
+     "phone": "+31 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Daniel Tanaka",
+     "email": "daniel.tanaka@shopnova-demo.example",
+     "phone": "+31 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "KT20",
+   "name": "Poznań Returns & Rework",
+   "type": "contract_manufacturer",
+   "country": "PL",
+   "lat": 52.41,
+   "lon": 16.93,
+   "city": "Poznań",
+   "zone": "Europe",
+   "address": "Poznań, PL (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Fri 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Plant manager",
+     "name": "Lena Keller",
+     "email": "lena.keller@shopnova-demo.example",
+     "phone": "+48 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Production planning lead",
+     "name": "Chloé Tanaka",
+     "email": "chloe.tanaka@shopnova-demo.example",
+     "phone": "+48 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Quality lead",
+     "name": "Chloé Novak",
+     "email": "chloe.novak@shopnova-demo.example",
+     "phone": "+48 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC01",
+   "name": "Venlo Fulfilment Centre",
+   "type": "warehouse",
+   "country": "NL",
+   "lat": 51.39,
+   "lon": 6.15,
+   "city": "Venlo",
+   "zone": "Europe",
+   "address": "Venlo, NL (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Mei Lambert",
+     "email": "mei.lambert@shopnova-demo.example",
+     "phone": "+31 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Marta Weber",
+     "email": "marta.weber@shopnova-demo.example",
+     "phone": "+31 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Lukas Lambert",
+     "email": "lukas.lambert@shopnova-demo.example",
+     "phone": "+31 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC02",
+   "name": "Dublin Fulfilment Centre",
+   "type": "warehouse",
+   "country": "IE",
+   "lat": 53.42,
+   "lon": -6.27,
+   "city": "Dublin",
+   "zone": "Europe",
+   "address": "Dublin, IE (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Lukas Sharma",
+     "email": "lukas.sharma@shopnova-demo.example",
+     "phone": "+353 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Carlos Chen",
+     "email": "carlos.chen@shopnova-demo.example",
+     "phone": "+353 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Marta Sharma",
+     "email": "marta.sharma@shopnova-demo.example",
+     "phone": "+353 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  },
+  {
+   "code": "FC03",
+   "name": "Prague Fulfilment Centre",
+   "type": "warehouse",
+   "country": "CZ",
+   "lat": 50.1,
+   "lon": 14.27,
+   "city": "Prague",
+   "zone": "Europe",
+   "address": "Prague, CZ (demo address)",
+   "timezone": "local",
+   "operating_hours": "Mon–Sat 06:00–22:00",
+   "contacts": [
+    {
+     "role": "Warehouse manager",
+     "name": "Yuki Novak",
+     "email": "yuki.novak@shopnova-demo.example",
+     "phone": "+420 555 0100",
+     "primary": true
+    },
+    {
+     "role": "Inventory control lead",
+     "name": "Marco Sharma",
+     "email": "marco.sharma@shopnova-demo.example",
+     "phone": "+420 555 0101",
+     "primary": false
+    },
+    {
+     "role": "Transport coordinator",
+     "name": "Carlos Kowalski",
+     "email": "carlos.kowalski@shopnova-demo.example",
+     "phone": "+420 555 0102",
+     "primary": false
+    }
+   ],
+   "contacts_note": "Fictional demo contacts (reserved .example domain)."
+  }
+ ],
+ "materials": [
+  {
+   "code": "FG-EARBUDS-KIT",
+   "description": "Wireless earbuds gift kit",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 21.0,
+   "safety_stock": 900
+  },
+  {
+   "code": "FG-PHONE-CASE-15",
+   "description": "Phone case 15 Pro (3-pack)",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 4.1,
+   "safety_stock": 1500
+  },
+  {
+   "code": "FG-SMART-PLUG-2",
+   "description": "Smart plug twin pack",
+   "type": "FG",
+   "uom": "EA",
+   "unit_cost": 9.8,
+   "safety_stock": 700
+  },
+  {
+   "code": "CM-EARBUDS",
+   "description": "Earbuds pair (bulk)",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 14.5,
+   "safety_stock": 3000
+  },
+  {
+   "code": "CM-USB-C-CABLE",
+   "description": "USB-C cable 1 m",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.9,
+   "safety_stock": 5000
+  },
+  {
+   "code": "PK-GIFT-BOX",
+   "description": "Printed gift box",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.45,
+   "safety_stock": 8000
+  },
+  {
+   "code": "CM-CASE-TPU",
+   "description": "TPU phone case",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.8,
+   "safety_stock": 15000
+  },
+  {
+   "code": "PK-POLYBAG",
+   "description": "Recycled polybag",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 0.03,
+   "safety_stock": 30000
+  },
+  {
+   "code": "CM-SMART-PLUG",
+   "description": "Smart plug (bulk)",
+   "type": "PACK",
+   "uom": "EA",
+   "unit_cost": 3.6,
+   "safety_stock": 4000
+  }
+ ],
+ "suppliers": [
+  {
+   "code": "V-SN001",
+   "name": "Pearl River Audio",
+   "country": "CN",
+   "materials": [
+    "CM-EARBUDS"
+   ],
+   "contract_lead_time_days": 42,
+   "otif_target_pct": 92,
+   "approved": true,
+   "secondary_source": "Hanoi Sound Works",
+   "unit_price_eur": 14.5,
+   "freight_eur_per_order": 3800,
+   "typical_order_qty": 10000,
+   "lat": 22.54,
+   "lon": 114.06,
+   "city": "Shenzhen",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "Audio OEM factory",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-SN002",
+   "name": "Dongguan Cable Co.",
+   "country": "CN",
+   "materials": [
+    "CM-USB-C-CABLE"
+   ],
+   "contract_lead_time_days": 38,
+   "otif_target_pct": 94,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.9,
+   "freight_eur_per_order": 1800,
+   "typical_order_qty": 40000,
+   "lat": 23.02,
+   "lon": 113.75,
+   "city": "Dongguan",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "Cable extrusion",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-SN003",
+   "name": "Eindhoven Print & Pack",
+   "country": "NL",
+   "materials": [
+    "PK-GIFT-BOX"
+   ],
+   "contract_lead_time_days": 7,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": "Wrocław Box",
+   "unit_price_eur": 0.45,
+   "freight_eur_per_order": 250,
+   "typical_order_qty": 20000,
+   "lat": 51.44,
+   "lon": 5.48,
+   "city": "Eindhoven",
+   "manufacturing_country": "NL",
+   "manufacturing_site": "Litho print & carton",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-SN004",
+   "name": "Ho Chi Minh Cases",
+   "country": "VN",
+   "materials": [
+    "CM-CASE-TPU"
+   ],
+   "contract_lead_time_days": 40,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.8,
+   "freight_eur_per_order": 2600,
+   "typical_order_qty": 60000,
+   "lat": 10.82,
+   "lon": 106.63,
+   "city": "Ho Chi Minh City",
+   "manufacturing_country": "VN",
+   "manufacturing_site": "Injection moulding",
+   "zone": "Asia-Pacific"
+  },
+  {
+   "code": "V-SN005",
+   "name": "GreenFilm Benelux",
+   "country": "BE",
+   "materials": [
+    "PK-POLYBAG"
+   ],
+   "contract_lead_time_days": 5,
+   "otif_target_pct": 98,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 0.03,
+   "freight_eur_per_order": 120,
+   "typical_order_qty": 100000,
+   "lat": 51.22,
+   "lon": 4.4,
+   "city": "Antwerp",
+   "manufacturing_country": "BE",
+   "manufacturing_site": "Film extrusion",
+   "zone": "Europe"
+  },
+  {
+   "code": "V-SN006",
+   "name": "Ningbo SmartHome",
+   "country": "CN",
+   "materials": [
+    "CM-SMART-PLUG"
+   ],
+   "contract_lead_time_days": 45,
+   "otif_target_pct": 90,
+   "approved": true,
+   "secondary_source": null,
+   "unit_price_eur": 3.6,
+   "freight_eur_per_order": 3000,
+   "typical_order_qty": 15000,
+   "lat": 29.87,
+   "lon": 121.55,
+   "city": "Ningbo",
+   "manufacturing_country": "CN",
+   "manufacturing_site": "IoT assembly line",
+   "zone": "Asia-Pacific"
+  }
+ ],
+ "bom": [
+  {
+   "plant": "KT10",
+   "parent": "FG-EARBUDS-KIT",
+   "component": "CM-EARBUDS",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT10",
+   "parent": "FG-EARBUDS-KIT",
+   "component": "CM-USB-C-CABLE",
+   "quantity": 1,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT10",
+   "parent": "FG-EARBUDS-KIT",
+   "component": "PK-GIFT-BOX",
+   "quantity": 1,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KT10",
+   "parent": "FG-PHONE-CASE-15",
+   "component": "CM-CASE-TPU",
+   "quantity": 3,
+   "scrap_pct": 1
+  },
+  {
+   "plant": "KT10",
+   "parent": "FG-PHONE-CASE-15",
+   "component": "PK-POLYBAG",
+   "quantity": 1,
+   "scrap_pct": 2
+  },
+  {
+   "plant": "KT20",
+   "parent": "FG-SMART-PLUG-2",
+   "component": "CM-SMART-PLUG",
+   "quantity": 2,
+   "scrap_pct": 0.5
+  },
+  {
+   "plant": "KT20",
+   "parent": "FG-SMART-PLUG-2",
+   "component": "PK-GIFT-BOX",
+   "quantity": 1,
+   "scrap_pct": 1
+  }
+ ],
+ "stock": [
+  {
+   "plant": "FC01",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC01",
+   "quantity": 3780,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC02",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC02",
+   "quantity": 540,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC03",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC03",
+   "quantity": 3360,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC01",
+   "material": "FG-PHONE-CASE-15",
+   "batch": "PHONE--FC01",
+   "quantity": 15360,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC02",
+   "material": "FG-PHONE-CASE-15",
+   "batch": "PHONE--FC02",
+   "quantity": 7200,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC03",
+   "material": "FG-PHONE-CASE-15",
+   "batch": "PHONE--FC03",
+   "quantity": 9120,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC01",
+   "material": "FG-SMART-PLUG-2",
+   "batch": "SMART--FC01",
+   "quantity": 6500,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC02",
+   "material": "FG-SMART-PLUG-2",
+   "batch": "SMART--FC02",
+   "quantity": 2880,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "FC03",
+   "material": "FG-SMART-PLUG-2",
+   "batch": "SMART--FC03",
+   "quantity": 3840,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "CM-EARBUDS",
+   "batch": "EARBUD-A",
+   "quantity": 3645,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "CM-USB-C-CABLE",
+   "batch": "USB-C--A",
+   "quantity": 3645,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "PK-GIFT-BOX",
+   "batch": "GIFT-B-A",
+   "quantity": 14580,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "CM-CASE-TPU",
+   "batch": "CASE-T-A",
+   "quantity": 77616,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "PK-POLYBAG",
+   "batch": "POLYBA-A",
+   "quantity": 33264,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT20",
+   "material": "CM-SMART-PLUG",
+   "batch": "SMART--A",
+   "quantity": 11660,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT20",
+   "material": "PK-GIFT-BOX",
+   "batch": "GIFT-B-A",
+   "quantity": 2385,
+   "status": "unrestricted",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "CM-EARBUDS",
+   "batch": "EARBUD-Q",
+   "quantity": 1093.5,
+   "status": "blocked",
+   "expiry": null
+  },
+  {
+   "plant": "KT10",
+   "material": "CM-EARBUDS",
+   "batch": "EARBUD-QI",
+   "quantity": 546.75,
+   "status": "quality_inspection",
+   "expiry": null
+  }
+ ],
+ "purchase_orders": [
+  {
+   "po": "45SN00001",
+   "supplier": "Pearl River Audio",
+   "material": "CM-EARBUDS",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-10-24",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00002",
+   "supplier": "Pearl River Audio",
+   "material": "CM-EARBUDS",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-11-13",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00003",
+   "supplier": "Dongguan Cable Co.",
+   "material": "CM-USB-C-CABLE",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00004",
+   "supplier": "Dongguan Cable Co.",
+   "material": "CM-USB-C-CABLE",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-11-11",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00005",
+   "supplier": "Eindhoven Print & Pack",
+   "material": "PK-GIFT-BOX",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-10-28",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00006",
+   "supplier": "Eindhoven Print & Pack",
+   "material": "PK-GIFT-BOX",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-11-08",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00007",
+   "supplier": "Ho Chi Minh Cases",
+   "material": "CM-CASE-TPU",
+   "plant": "KT10",
+   "quantity": 64186,
+   "delivery_date": "2026-10-27",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00008",
+   "supplier": "Ho Chi Minh Cases",
+   "material": "CM-CASE-TPU",
+   "plant": "KT10",
+   "quantity": 64186,
+   "delivery_date": "2026-11-10",
+   "status": "unconfirmed"
+  },
+  {
+   "po": "45SN00009",
+   "supplier": "GreenFilm Benelux",
+   "material": "PK-POLYBAG",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-10-23",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00010",
+   "supplier": "GreenFilm Benelux",
+   "material": "PK-POLYBAG",
+   "plant": "KT10",
+   "quantity": 21396,
+   "delivery_date": "2026-11-09",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00011",
+   "supplier": "Ningbo SmartHome",
+   "material": "CM-SMART-PLUG",
+   "plant": "KT20",
+   "quantity": 8533,
+   "delivery_date": "2026-10-26",
+   "status": "confirmed"
+  },
+  {
+   "po": "45SN00012",
+   "supplier": "Ningbo SmartHome",
+   "material": "CM-SMART-PLUG",
+   "plant": "KT20",
+   "quantity": 8533,
+   "delivery_date": "2026-11-16",
+   "status": "confirmed"
+  }
+ ],
+ "po_history": [
+  {
+   "po": "44SN00001",
+   "supplier": "Pearl River Audio",
+   "material": "CM-EARBUDS",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-28",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00002",
+   "supplier": "Pearl River Audio",
+   "material": "CM-EARBUDS",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-23",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 1711.68
+  },
+  {
+   "po": "44SN00003",
+   "supplier": "Pearl River Audio",
+   "material": "CM-EARBUDS",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-16",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00004",
+   "supplier": "Dongguan Cable Co.",
+   "material": "CM-USB-C-CABLE",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00005",
+   "supplier": "Dongguan Cable Co.",
+   "material": "CM-USB-C-CABLE",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00006",
+   "supplier": "Dongguan Cable Co.",
+   "material": "CM-USB-C-CABLE",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00007",
+   "supplier": "Eindhoven Print & Pack",
+   "material": "PK-GIFT-BOX",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00008",
+   "supplier": "Eindhoven Print & Pack",
+   "material": "PK-GIFT-BOX",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00009",
+   "supplier": "Eindhoven Print & Pack",
+   "material": "PK-GIFT-BOX",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00010",
+   "supplier": "Ho Chi Minh Cases",
+   "material": "CM-CASE-TPU",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 64186,
+   "quantity_received": 64186,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00011",
+   "supplier": "Ho Chi Minh Cases",
+   "material": "CM-CASE-TPU",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 64186,
+   "quantity_received": 64186,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00012",
+   "supplier": "Ho Chi Minh Cases",
+   "material": "CM-CASE-TPU",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 64186,
+   "quantity_received": 64186,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00013",
+   "supplier": "GreenFilm Benelux",
+   "material": "PK-POLYBAG",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00014",
+   "supplier": "GreenFilm Benelux",
+   "material": "PK-POLYBAG",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-12",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00015",
+   "supplier": "GreenFilm Benelux",
+   "material": "PK-POLYBAG",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-01",
+   "quantity_ordered": 21396,
+   "quantity_received": 21396,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00016",
+   "supplier": "Ningbo SmartHome",
+   "material": "CM-SMART-PLUG",
+   "promised_date": "2026-05-23",
+   "received_date": "2026-05-23",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00017",
+   "supplier": "Ningbo SmartHome",
+   "material": "CM-SMART-PLUG",
+   "promised_date": "2026-07-12",
+   "received_date": "2026-07-15",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  },
+  {
+   "po": "44SN00018",
+   "supplier": "Ningbo SmartHome",
+   "material": "CM-SMART-PLUG",
+   "promised_date": "2026-08-31",
+   "received_date": "2026-09-06",
+   "quantity_ordered": 8533,
+   "quantity_received": 8533,
+   "quality_rejected": 0
+  }
+ ],
+ "production_orders": [
+  {
+   "order": "1SN0001",
+   "plant": "KT10",
+   "material": "FG-EARBUDS-KIT",
+   "quantity": 8100,
+   "finish_date": "2026-10-26",
+   "status": "released"
+  },
+  {
+   "order": "1SN0002",
+   "plant": "KT10",
+   "material": "FG-EARBUDS-KIT",
+   "quantity": 10530.0,
+   "finish_date": "2026-11-05",
+   "status": "planned"
+  },
+  {
+   "order": "1SN0101",
+   "plant": "KT10",
+   "material": "FG-PHONE-CASE-15",
+   "quantity": 18480,
+   "finish_date": "2026-11-01",
+   "status": "released"
+  },
+  {
+   "order": "1SN0102",
+   "plant": "KT10",
+   "material": "FG-PHONE-CASE-15",
+   "quantity": 24020.0,
+   "finish_date": "2026-11-13",
+   "status": "planned"
+  },
+  {
+   "order": "1SN0201",
+   "plant": "KT20",
+   "material": "FG-SMART-PLUG-2",
+   "quantity": 5300,
+   "finish_date": "2026-10-26",
+   "status": "released"
+  },
+  {
+   "order": "1SN0202",
+   "plant": "KT20",
+   "material": "FG-SMART-PLUG-2",
+   "quantity": 6890.0,
+   "finish_date": "2026-11-11",
+   "status": "planned"
+  }
+ ],
+ "quality_lots": [
+  {
+   "lot": "QL-SN0001",
+   "plant": "KT10",
+   "material": "CM-EARBUDS",
+   "batch": "EARBUD-Q",
+   "quantity": 1093.5,
+   "supplier": "Pearl River Audio",
+   "status": "blocked",
+   "usage_decision": "rejected",
+   "expected_release": null,
+   "defect": "Out-of-specification on incoming inspection"
+  },
+  {
+   "lot": "QL-SN0002",
+   "plant": "KT10",
+   "material": "CM-EARBUDS",
+   "batch": "EARBUD-QI",
+   "quantity": 546.75,
+   "supplier": "Pearl River Audio",
+   "status": "inspection",
+   "usage_decision": null,
+   "expected_release": "2026-10-23",
+   "defect": null
+  }
+ ],
+ "sales_orders": [
+  {
+   "order": "SO-SN7700",
+   "customer": "Marketplace orders NL",
+   "warehouse": "FC01",
+   "material": "FG-EARBUDS-KIT",
+   "quantity": 4720.0,
+   "requested_date": "2026-10-30",
+   "priority": "high"
+  },
+  {
+   "order": "SO-SN7701",
+   "customer": "Marketplace orders IE",
+   "warehouse": "FC02",
+   "material": "FG-PHONE-CASE-15",
+   "quantity": 1800.0,
+   "requested_date": "2026-11-02",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-SN7702",
+   "customer": "Marketplace orders CZ",
+   "warehouse": "FC03",
+   "material": "FG-SMART-PLUG-2",
+   "quantity": 960.0,
+   "requested_date": "2026-10-29",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-SN7703",
+   "customer": "B2B reseller DE",
+   "warehouse": "FC01",
+   "material": "FG-EARBUDS-KIT",
+   "quantity": 570.0,
+   "requested_date": "2026-11-02",
+   "priority": "high"
+  },
+  {
+   "order": "SO-SN7704",
+   "customer": "Black Friday pre-orders",
+   "warehouse": "FC02",
+   "material": "FG-PHONE-CASE-15",
+   "quantity": 1080.0,
+   "requested_date": "2026-10-31",
+   "priority": "standard"
+  },
+  {
+   "order": "SO-SN7705",
+   "customer": "Corporate gifting",
+   "warehouse": "FC03",
+   "material": "FG-SMART-PLUG-2",
+   "quantity": 1340.0,
+   "requested_date": "2026-11-03",
+   "priority": "standard"
+  }
+ ],
+ "shipments": [
+  {
+   "shipment": "SH-SN01",
+   "type": "stock_transfer",
+   "from": "FC01",
+   "to": "FC02",
+   "material": "FG-EARBUDS-KIT",
+   "quantity": 540,
+   "carrier": "DHL Freight",
+   "mode": "road",
+   "departed": "2026-10-17",
+   "eta": "2026-10-21",
+   "status": "in_transit",
+   "delay_days": 2,
+   "delay_reason": "Border congestion"
+  },
+  {
+   "shipment": "SH-SN02",
+   "type": "stock_transfer",
+   "from": "FC01",
+   "to": "FC03",
+   "material": "FG-PHONE-CASE-15",
+   "quantity": 1520,
+   "carrier": "Maersk",
+   "mode": "sea",
+   "departed": "2026-10-08",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 6,
+   "delay_reason": "Port congestion"
+  },
+  {
+   "shipment": "SH-SN03",
+   "type": "inbound",
+   "from": "V-SN001",
+   "to": "KT10",
+   "material": "CM-EARBUDS",
+   "quantity": 21396,
+   "carrier": "DB Schenker",
+   "mode": "road",
+   "departed": "2026-10-19",
+   "eta": "2026-10-24",
+   "status": "in_transit",
+   "delay_days": 0,
+   "delay_reason": null
+  }
+ ],
+ "stocktake_counts": [
+  {
+   "count_id": "PI-SN-01",
+   "count_date": "2026-10-19",
+   "plant": "FC01",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC01",
+   "book_quantity": 3780,
+   "counted_quantity": 3740,
+   "counter": "Night shift"
+  },
+  {
+   "count_id": "PI-SN-02",
+   "count_date": "2026-10-19",
+   "plant": "FC02",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC02",
+   "book_quantity": 540,
+   "counted_quantity": 538,
+   "counter": "Cycle count A"
+  },
+  {
+   "count_id": "PI-SN-03",
+   "count_date": "2026-10-19",
+   "plant": "FC03",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC03",
+   "book_quantity": 3360,
+   "counted_quantity": 3226,
+   "counter": "Cycle count B"
+  },
+  {
+   "count_id": "PI-SN-04",
+   "count_date": "2026-10-19",
+   "plant": "FC01",
+   "material": "FG-PHONE-CASE-15",
+   "batch": "PHONE--FC01",
+   "book_quantity": 15360,
+   "counted_quantity": 15360,
+   "counter": "Cycle count C"
+  }
+ ],
+ "goods_movements": [
+  {
+   "document": "49SN0001",
+   "type": "goods_issue",
+   "plant": "FC01",
+   "material": "FG-EARBUDS-KIT",
+   "batch": "EARBUD-FC01",
+   "quantity": -40,
+   "date": "2026-10-18",
+   "posted": false,
+   "reference": "Samples issued, posting pending"
+  }
+ ],
+ "warehouse_demand_daily": {
+  "FG-EARBUDS-KIT": {
+   "FC01": 420,
+   "FC02": 180,
+   "FC03": 210
+  },
+  "FG-PHONE-CASE-15": {
+   "FC01": 640,
+   "FC02": 300,
+   "FC03": 380
+  },
+  "FG-SMART-PLUG-2": {
+   "FC01": 250,
+   "FC02": 120,
+   "FC03": 160
+  }
+ },
+ "lanes": [
+  {
+   "from": "FC01",
+   "to": "FC02",
+   "lead_days": 3,
+   "cost_per_unit": 0.43,
+   "carbon_kg_per_unit": 0.073
+  },
+  {
+   "from": "FC01",
+   "to": "FC03",
+   "lead_days": 3,
+   "cost_per_unit": 0.42,
+   "carbon_kg_per_unit": 0.063
+  },
+  {
+   "from": "FC02",
+   "to": "FC01",
+   "lead_days": 3,
+   "cost_per_unit": 0.51,
+   "carbon_kg_per_unit": 0.077
+  },
+  {
+   "from": "FC02",
+   "to": "FC03",
+   "lead_days": 3,
+   "cost_per_unit": 0.46,
+   "carbon_kg_per_unit": 0.076
+  },
+  {
+   "from": "FC03",
+   "to": "FC01",
+   "lead_days": 3,
+   "cost_per_unit": 0.51,
+   "carbon_kg_per_unit": 0.066
+  },
+  {
+   "from": "FC03",
+   "to": "FC02",
+   "lead_days": 2,
+   "cost_per_unit": 0.49,
+   "carbon_kg_per_unit": 0.074
+  }
+ ],
+ "supplier_quotes": [
+  {
+   "supplier": "Hanoi Sound Works",
+   "material": "CM-EARBUDS",
+   "unit_price_eur": 15.4,
+   "freight_eur_per_order": 3500,
+   "typical_order_qty": 10000,
+   "quoted_lead_time_days": 36,
+   "qualified": true,
+   "country": "VN",
+   "city": "Hanoi",
+   "lat": 21.03,
+   "lon": 105.85,
+   "zone": "Asia-Pacific",
+   "reference": "approved secondary source"
+  },
+  {
+   "supplier": "Wrocław Box",
+   "material": "PK-GIFT-BOX",
+   "unit_price_eur": 0.47,
+   "freight_eur_per_order": 280,
+   "typical_order_qty": 20000,
+   "quoted_lead_time_days": 6,
+   "qualified": true,
+   "country": "PL",
+   "city": "Wrocław",
+   "lat": 51.11,
+   "lon": 17.03,
+   "zone": "Europe",
+   "reference": "approved secondary source"
+  }
+ ],
+ "ingredient_origins": [
+  {
+   "ingredient": "Lithium-ion micro cells",
+   "origin": "Guangdong, China",
+   "country": "CN",
+   "lat": 23.1,
+   "lon": 113.3,
+   "feeds_supplier": "Pearl River Audio",
+   "feeds_material": "CM-EARBUDS",
+   "share_of_material_pct": 25,
+   "transit_days": 3,
+   "transit_variability_days": 1,
+   "criticality": "high",
+   "alternatives": "see sourcing plan",
+   "note": "allocation risk in peak season (Q4)"
+  }
+ ]
+}

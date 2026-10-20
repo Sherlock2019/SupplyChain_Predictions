@@ -1,0 +1,47 @@
+# HTTPS edge for the cloud POC. BASE_DOMAIN is "<public-ip-with-dashes>.sslip.io" (or a real DNS zone), so every
+# service gets a publicly trusted Let's Encrypt certificate without a registered domain.
+# Port 443 is restricted to the operator CIDR by the cloud firewall; port 80 is open only for ACME HTTP-01.
+{
+	email {$ACME_EMAIL}
+}
+
+(common) {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
+
+app.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy api:8000
+}
+
+flowise.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy flowise:3000
+}
+
+# LangGraph Server API used by LangSmith Studio (https://smith.langchain.com/studio/?baseUrl=https://studio.<domain>)
+studio.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy langgraph:8123
+}
+
+mcp.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy mcp:8000
+}
+
+grafana.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy grafana:3000
+}
+
+langfuse.{$BASE_DOMAIN} {
+	import common
+	reverse_proxy langfuse:3000
+}
