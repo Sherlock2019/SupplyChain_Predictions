@@ -330,6 +330,18 @@
   const OLD_PERSONA = { executive: 'director', inventory: 'warehouse', sales: 'demand', stocktake: 'warehouse' };
   const ROLE_SHORT = { director: 'Director', demand: 'Demand', production: 'Production', procurement: 'Procurement', warehouse: 'Warehouse',
     logistics: 'Logistics', quality: 'Quality', finance: 'Finance', mlops: 'AI / MLOps' };
+  // Business role -> API permission. Only the Supply Chain Director accepts/rejects and executes in the SAP sandbox.
+  const ROLE_ACCESS = { director: 'manager' };
+  async function choosePersona(id) {
+    state.persona = id; local.set('persona', id);
+    if ($('#role-select').value !== id) $('#role-select').value = id;
+    const access = ROLE_ACCESS[id] || 'planner';
+    const switching = state.demoKeys && access !== state.role;
+    if (switching) { state.key = state.demoKeys[access]; session.set('apiKey', state.key); setRole(access); refreshBadges(); }
+    const target = `dashboard/${id}/${state.focus || ''}`;  // keep the product focus when switching roles
+    if (location.hash.startsWith('#dashboard')) { if (location.hash !== `#${target}`) location.hash = target; else loadDashboard(); }
+    else if (switching) route();
+  }
   const SEVERITY_LABEL = { critical: 'Critical', warning: 'Warning', info: 'Info' };
   const when = (p) => (p.when ? `<span class="when"><b>${p.in_days === null || p.in_days === undefined ? '' : p.in_days < 0 ? `${-p.in_days} d ago` : p.in_days === 0 ? 'today' : `in ${p.in_days} d`}</b> · ${esc(p.when)}</span>` : '<span class="when">ongoing</span>');
   async function loadDashboard() {
@@ -337,8 +349,11 @@
       if (!state.roleCat) state.roleCat = await api('/api/v1/roles');
       state.persona = OLD_PERSONA[state.persona] || state.persona;
       if (!state.roleCat.some((r) => r.id === state.persona)) state.persona = state.role === 'manager' ? 'director' : 'demand';
+      if ($('#role-select').value !== state.persona) $('#role-select').value = state.persona;  // deep links keep the top-bar role in sync
+      const access = ROLE_ACCESS[state.persona] || 'planner';
+      if (state.demoKeys && access !== state.role) { state.key = state.demoKeys[access]; session.set('apiKey', state.key); setRole(access); refreshBadges(); }
       $('#persona-pills').innerHTML = state.roleCat.map((r) => `<button class="${r.id === state.persona ? 'on' : ''}" data-p="${r.id}" title="${esc(r.title)} · ${esc(r.agent)}">${esc(ROLE_SHORT[r.id] || r.title)}${r.mvp ? '' : ' <span class="later">later</span>'}</button>`).join('');
-      $$('#persona-pills button').forEach((b) => b.addEventListener('click', () => { state.persona = b.dataset.p; local.set('persona', b.dataset.p); loadDashboard(); }));
+      $$('#persona-pills button').forEach((b) => b.addEventListener('click', () => choosePersona(b.dataset.p)));
       if (!state.products) state.products = await api('/api/v1/products');
       $('#product-focus').innerHTML = '<option value="">All products</option>' + state.products.map((p) =>
         `<option value="${esc(p.material)}">${esc(p.description)} · ${esc(p.material)} — ${p.health === 'critical' ? '▲ critical' : p.health === 'warning' ? '◆ warning' : '✓ good'}</option>`).join('');
@@ -1273,9 +1288,13 @@
     if (state.cfg.demo_auto_login) {
       const keys = await api('/api/v1/demo/session');
       $('#login').hidden = true; $('#demo-role').hidden = false;
-      $('#role-select').value = local.get('demoRole') || 'manager';
-      $('#role-select').addEventListener('change', () => { local.set('demoRole', $('#role-select').value); signIn(keys[$('#role-select').value]); });
-      await signIn(keys[$('#role-select').value], true);
+      // The dropdown lists every business role; each maps to an API permission (director = manager, others = planner).
+      state.demoKeys = keys;
+      const persona = { executive: 'director', inventory: 'warehouse', sales: 'demand', stocktake: 'warehouse' }[local.get('persona')] || local.get('persona');
+      const start = [...$('#role-select').options].some((o) => o.value === persona) ? persona : 'director';
+      state.persona = start; $('#role-select').value = start;
+      $('#role-select').addEventListener('change', () => { const id = $('#role-select').value; choosePersona(id); if (!location.hash.startsWith('#dashboard')) location.hash = `dashboard/${id}/${state.focus || ''}`; });
+      await signIn(keys[ROLE_ACCESS[start] || 'planner'], true);
     } else if (state.key) {
       $('#demo-role').hidden = true;
       await signIn(state.key, true);

@@ -10,9 +10,10 @@ mkdir -p deploy-evidence
 exec > >(tee "deploy-evidence/aws-deploy-${STAMP}.log") 2>&1
 log() { echo "[$(date -u +%H:%M:%S)] $*"; }
 
-[ -f infra/aws/aws.tfplan ] || { echo "No approved plan (infra/aws/aws.tfplan). Run scripts/cloud-preflight.sh aws"; exit 1; }
-log "terraform apply (approved plan)"
-terraform -chdir=infra/aws apply -input=false -no-color aws.tfplan
+PLAN=${PLAN:-aws.tfplan}  # e.g. PLAN=cpu.tfplan for the approved CPU-only variant
+[ -f "infra/aws/${PLAN}" ] || { echo "No approved plan (infra/aws/${PLAN}). Run scripts/cloud-preflight.sh aws"; exit 1; }
+log "terraform apply (approved plan ${PLAN})"
+terraform -chdir=infra/aws apply -input=false -no-color "${PLAN}"
 terraform -chdir=infra/aws output -json > "deploy-evidence/aws-outputs-${STAMP}.json"
 out() { terraform -chdir=infra/aws output -raw "$1"; }
 REGION=$(grep -E '^region' infra/aws/terraform.tfvars | sed -E 's/.*"(.*)".*/\1/')

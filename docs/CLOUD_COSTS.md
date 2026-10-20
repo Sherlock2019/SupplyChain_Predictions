@@ -29,6 +29,35 @@ GCP figures are public list prices for us-central1 and must be re-checked in the
 Recommended: deploy, verify, demo, then stop the GPU VM (or destroy) the same day. Set `monthly_budget_usd` + `budget_email`
 in `terraform.tfvars` to get AWS Budget alerts at 50/80/100 %.
 
+## AWS CPU-only variant (no GPU quota needed) — `enable_gpu=false`
+
+Used because the account's G-family GPU quota is 0 vCPU (request closed without an increase). Qwen2.5-3B runs on CPU
+through Ollama inside the app VM; everything else is identical. AWS Price List API, 2026-10-20, us-east-1:
+
+| Resource | Spec | Unit price |
+| --- | --- | --- |
+| App VM | r6i.2xlarge (8 vCPU, 64 GiB) — app stack + Ollama Qwen2.5-3B on CPU | $0.504 / h |
+| RDS PostgreSQL 17 | db.t4g.small, 20 GB gp3 | $0.032 / h + $0.115 / GB-mo |
+| Public IPv4 | Elastic IP (app) | $0.005 / h |
+| EBS gp3, Secrets Manager | 80 GB, 1 secret | $0.08 / GB-mo, $0.40 / mo |
+
+| Usage pattern | Estimate (USD) |
+| --- | --- |
+| **Per running hour** | **$0.54** |
+| One 8-hour demo day | ≈ $4.63 |
+| One full 24-hour day | ≈ $13.29 |
+| Always-on month (730 h) | ≈ $404 |
+| VMs stopped | ≈ $36 / month |
+
+```bash
+terraform -chdir=infra/aws plan -out=cpu.tfplan -var enable_gpu=false -var app_instance_type=r6i.2xlarge -var cpu_llm_model=qwen2.5:3b
+PLAN=cpu.tfplan scripts/deploy-aws.sh v1
+python3 scripts/aws-cost-estimate.py --app r6i.2xlarge --gpu none
+```
+
+Trade-off: AI agent answers are slower and less precise than Qwen2.5-7B on an L4; all dashboards, roles, the moat, approvals
+and the deterministic analytics are unaffected. Approved by the user on 2026-10-20 (65 resources).
+
 ## GCP (alternative) — what `infra/gcp` creates (list prices, verify before approval)
 
 | Resource | Spec | Approx. list price |

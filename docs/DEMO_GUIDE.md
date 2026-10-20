@@ -17,6 +17,26 @@ normal login pages; the local credentials are then:
 
 Cloud deployments always keep login pages and use random passwords from Terraform.
 
+## 0a. Designed around the people who decide (7 min)
+The top bar has a **Look** switch: *Apple* or *SAP Fiori* (Horizon), each in light and dark (share `?look=sap`).
+
+1. **Today** — the **North Star** band: reliable fulfilment (projected OTIF 83.3%), supply-chain cost (30 d), inventory
+   risk; next to it the **learning KPI** (forecast error vs baseline, verified outcomes, realised impact). Below: the five
+   platform KPIs — tap any tile for its definition, formula, target and SAP source — and the industry KPIs (Cosmetics:
+   packaging readiness, promotion forecast accuracy *needs data*, batch expiry loss, ingredient availability).
+2. **My role → Director** — four answers on one screen: *what matters* (KPIs vs target), *what is likely to go wrong*
+   (Serum runs out at DC22 in 5 days; production order 10000102 will miss 27 Oct; BioActive PO likely 13 days late),
+   *what it will cost* (value at risk vs the €819 transfer) and *what to do next* (Plan transfer). **Ask the Supervisor
+   Agent** opens the role's own agent (LangGraph + Qwen, scoped tools, cosmetics rules).
+3. Switch role: **Procurement** (on-time delivery 41%, defect rate 4.4%, PPV), **Warehouse** (stock accuracy, FEFO batches,
+   *picking accuracy — needs WM data*), **AI / MLOps** (WAPE, error vs baseline, drift, verified outcomes).
+4. **Approvals** — *Approve*, *Approve with changes* or *Reject* with a reason code (this is the human-expertise label).
+   After **Execute in SAP (sandbox)** the card asks **Did it work?** — record the real outcome with an SAP document number;
+   only then does it count as a verified outcome.
+5. **Intelligence moat** — the flywheel with live counts, the five moat-strength metrics, six data moats with evidence
+   ("AirlessPack Asia: SAP promises 42 d, actually 55 d"), the model comparison (customer-only vs generic vs industry vs
+   cold start), the consent gate (*Allow Aurelia to contribute*) and the opportunity calculator ($225k illustrative).
+
 ## 0. The 5-minute business tour (new UI)
 Every screen has one filled blue button — the recommended next step. Tinted buttons are alternatives; blue text links are optional.
 The top bar holds the **industry › customer** switcher (cosmetics, e-commerce, pharmaceutical, automotive, food; synthetic demo
