@@ -102,14 +102,14 @@ class Smoke:
 
     def langgraph_agentflow(self):
         s = self.api("POST", "/api/v1/langgraph/agentflow", json={"message": "Can plant FR20 produce 6000 units of FG-SERUM-50 by 2026-10-27?"}).json()
-        assert s["route"] == "factory" and s["interrupts"], {k: s.get(k) for k in ("route", "route_reason", "status", "answer")}
+        assert s["route"] == "production" and s["interrupts"], {k: s.get(k) for k in ("route", "route_reason", "status", "answer")}
         it = s["interrupts"][0]
         done = self.api("POST", f"/api/v1/langgraph/agentflow/{s['thread_id']}/resume", json={"decision": "submit", "comment": "smoke"}).json()
         assert done["status"] == "submitted_for_manager_review", done
         boundary = self.api("POST", "/api/v1/langgraph/agentflow", json={"message": "Delete purchase order 4500001006 in SAP now."}).json()
         assert boundary["route"] == "boundary"
         research = self.api("POST", "/api/v1/langgraph/agentflow", json={"message": "Is supplier PackGlass Europe a continuity risk?"}).json()
-        assert research["route"] == "research" and research["answer"]
+        assert research["route"] == "procurement" and research["answer"]
         return {"runtime": s["runtime"], "route": s["route"], "route_reason": s["route_reason"], "tools": s["tools_used"], "analysis_id": it["analysis_id"],
                 "actions": len(it["proposed_actions"]), "after_resume": done["answer"][:200], "research_tools": research["tools_used"], "seconds": s["elapsed_seconds"]}
 

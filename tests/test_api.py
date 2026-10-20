@@ -120,7 +120,8 @@ def test_chat_and_business_workflow_through_api(client, assistant_headers):
 
 def test_langgraph_agentflow_through_api(client, assistant_headers):
     started = client.post("/api/v1/langgraph/agentflow", json={"message": "Rebalance FG-PERFUME-100 across the DCs"}, headers=assistant_headers).json()
-    assert started["route"] == "balancing" and started["interrupts"] and started["analysis_id"]
+    assert started["route"] == "warehouse" and started["interrupts"] and started["analysis_id"]
+    assert started["workflow"]["sap"]["read_only"] is True and started["workflow"]["knowledge"]  # SAP read + RAG steps
     done = client.post(f"/api/v1/langgraph/agentflow/{started['thread_id']}/resume", json={"decision": "submit"}, headers=assistant_headers).json()
     assert done["status"] == "submitted_for_manager_review"
 

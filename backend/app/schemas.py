@@ -90,7 +90,8 @@ class RecommendationFromTextRequest(StrictModel):
     """Agent hand-off (Flowise HumanInput 'proceed'): the gateway, not the LLM, picks the analysis to submit."""
 
     text: str = Field(min_length=1, max_length=40_000)
-    expected_kind: Literal["factory_readiness", "stock_balance", "supplier_risk", "quality_status", "logistics_status"]
+    expected_kind: Literal["factory_readiness", "stock_balance", "supplier_risk", "quality_status", "logistics_status",
+                           "sales_order_fulfilment", "stocktake_reconciliation"]
     source: Literal["flowise", "langgraph", "mcp", "api"] = "flowise"
     comment: str = Field(default="", max_length=2000)
 

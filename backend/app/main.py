@@ -513,6 +513,14 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         del who
         return {"query": body.query, "results": rag.search(body.query, body.top_k, body.category)}
 
+    @app.get("/api/v1/rag/search")
+    def rag_search_get(q: str = Query(min_length=2, max_length=2000), top_k: int = Query(default=3, ge=1, le=12),
+                       category: str | None = None, who: Principal = Depends(reader)) -> dict:
+        """Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escaping of the question)."""
+        del who
+        hits = rag.search(q, top_k, category)
+        return {"query": q, "results": [{k: h[k] for k in ("title", "category", "score", "text") if k in h} for h in hits]}
+
     @app.get("/api/v1/rag/stats")
     def rag_stats(who: Principal = Depends(reader)) -> dict:
         del who
@@ -574,6 +582,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
             "thread_id": result["thread_id"],
             "route": values.get("route"),
             "route_reason": values.get("route_reason"),
+            "workflow": {"sap": values.get("sap_context"), "knowledge": [{k: d.get(k) for k in ("title", "category", "score")} for d in values.get("knowledge") or []]},
             "answer": "\n\n".join(m["content"] for m in turn if m["type"] == "ai" and m["content"]),
             "tools_used": [call["name"] for m in turn for call in m.get("tool_calls", [])],
             "analysis_id": (values.get("analysis") or {}).get("analysis_id"),

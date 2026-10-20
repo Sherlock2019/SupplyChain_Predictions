@@ -29,3 +29,4 @@ node_modules/
 .localdemo-Modelfile
 .aws-launch.log
 .aws-launch.pid
+.claude/

@@ -66,28 +66,34 @@ def test_langgraph_agentflow_topology():
     from backend.app.agentflow import graph
 
     nodes = set(graph.get_graph().nodes)
-    assert {"supervisor", "factory_agent", "balancing_agent", "research_agent", "approval_gate", "boundary"} <= nodes
+    assert {"sap_read", "rag_retrieve", "supervisor", "approval_gate", "boundary"} <= nodes
+    roles = ["director", "demand", "production", "procurement", "warehouse", "logistics", "quality", "finance", "mlops"]
+    assert {f"{r}_agent" for r in roles} <= nodes  # one specialist per SPARC business role
 
 
 def test_langgraph_agentflow_routes_interrupts_and_submits(runner):
     started = runner.run("supply_chain_agentflow", {"messages": [{"role": "user", "content": "Can FR20 produce 6000 FG-SERUM-50 by 2026-10-27?"}]})
-    assert started["values"]["route"] == "factory"
+    assert started["values"]["route"] == "production"
+    assert started["values"]["sap_context"]["read_only"] is True and started["values"]["sap_context"]["plants"]  # SAP read step
+    assert started["values"]["knowledge"]  # RAG step (governed documents)
     payload = started["interrupts"][0]
     assert payload["analysis_id"] == started["values"]["analysis"]["analysis_id"]
     assert any(a.get("purchase_order") == "4500001002" for a in payload["proposed_actions"])
     finished = runner.resume("supply_chain_agentflow", started["thread_id"], {"decision": "submit", "comment": "ok"})
     assert finished["values"]["status"] == "submitted_for_manager_review"
     assert "manager review queue" in finished["values"]["messages"][-1]["content"]
-    # same thread, next turn: research route, no approval needed
+    # same thread, next turn: procurement specialist; an advisory role (finance) never asks for approval
     research = runner.run("supply_chain_agentflow", {"messages": [{"role": "user", "content": "Is supplier PackGlass a risk?"}]}, started["thread_id"])
-    assert research["values"]["route"] == "research" and not research["interrupts"]
+    assert research["values"]["route"] == "procurement"
+    finance = runner.run("supply_chain_agentflow", {"messages": [{"role": "user", "content": "What is the working capital tied up in stock?"}]})
+    assert finance["values"]["route"] == "finance" and not finance["interrupts"]
 
 
 def test_langgraph_agentflow_boundary_and_discard(runner):
     refused = runner.run("supply_chain_agentflow", {"messages": [{"role": "user", "content": "Create a purchase order in SAP for RM-ACTIVE"}]})
     assert refused["values"]["route"] == "boundary" and refused["values"]["status"] == "refused_sap_write"
     started = runner.run("supply_chain_agentflow", {"messages": [{"role": "user", "content": "Rebalance FG-PERFUME-100 stock"}]})
-    assert started["values"]["route"] == "balancing" and started["interrupts"]
+    assert started["values"]["route"] == "warehouse" and started["interrupts"]
     discarded = runner.resume("supply_chain_agentflow", started["thread_id"], {"decision": "discard"})
     assert discarded["values"]["status"] == "discarded_by_planner"
 

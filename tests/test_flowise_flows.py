@@ -29,33 +29,50 @@ def test_edges_reference_real_nodes_and_handles(kind):
     assert all(n["data"].get("version") for n in flow["nodes"])  # versions come from the installed Flowise classes
 
 
-def test_chatflow_is_tool_agent_with_mcp_and_memory():
+def test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory():
     flow = load("chatflow")
-    names = {n["data"]["name"] for n in flow["nodes"]}
-    assert names == {"chatOpenAICustom", "bufferWindowMemory", "customMCP", "toolAgent"}
+    names = [n["data"]["name"] for n in flow["nodes"]]
+    assert {"chatOpenAICustom", "bufferWindowMemory", "customMCP", "toolAgent", "requestsGet", "stickyNote"} == set(names)
     mcp = next(n for n in flow["nodes"] if n["data"]["name"] == "customMCP")
     assert set(json.loads(mcp["data"]["inputs"]["mcpActions"])) == READ_ONLY
     assert "$vars.mcp_api_key" in mcp["data"]["inputs"]["mcpServerConfig"]
+    sap = [n for n in flow["nodes"] if n["data"]["name"] == "requestsGet"]  # explicit SAP OData tools, read-only GETs
+    assert len(sap) == 3 and all("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/" in n["data"]["inputs"]["requestsGetUrl"] for n in sap)
+    assert all("$vars.copilot_tool_key" in n["data"]["inputs"]["requestsGetHeaders"] for n in sap)
+    tool_edges = [e for e in flow["edges"] if e["target"] == "toolAgent_0" and "-input-tools-" in e["targetHandle"]]
+    assert len(tool_edges) == 4  # MCP + 3 SAP OData tools
+    assert names.count("stickyNote") >= 9  # architecture panels
 
 
-def test_agentflow_supervisor_specialists_and_human_input():
+def test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input():
     flow = load("agentflow")
     by_name: dict[str, list] = {}
     for node in flow["nodes"]:
         by_name.setdefault(node["data"]["name"], []).append(node)
+    labels = {n["id"]: n["data"]["label"] for n in flow["nodes"]}
+    nxt = {e["source"]: e["target"] for e in flow["edges"]}
+    start = by_name["startAgentflow"][0]["id"]
+    # front end -> gateway -> SAP OData (read-only GET) -> RAG (pgvector) -> supervisor
+    sap, rag = nxt[start], nxt[nxt[start]]
+    assert "SAP" in labels[sap] and "RAG" in labels[rag] and labels[nxt[rag]].startswith("Supply-chain supervisor")
+    http = {n["id"]: n["data"]["inputs"] for n in by_name["httpAgentflow"]}
+    assert http[sap]["method"] == "GET" and "/sap/opu/odata/sap/ZSCM_COPILOT_SRV/" in http[sap]["url"]
+    assert http[rag]["method"] == "GET" and http[rag]["url"].endswith("/api/v1/rag/search")
     supervisor = by_name["conditionAgentAgentflow"][0]
-    assert len(supervisor["data"]["inputs"]["conditionAgentScenarios"]) == len(supervisor["data"]["outputAnchors"]) == 4
-    assert len(by_name["agentAgentflow"]) == 3 and len(by_name["humanInputAgentflow"]) == 2
-    for agent in by_name["agentAgentflow"]:
+    assert len(supervisor["data"]["inputs"]["conditionAgentScenarios"]) == len(supervisor["data"]["outputAnchors"]) == 10  # 9 roles + SAP boundary
+    agents = by_name["agentAgentflow"]
+    assert len(agents) == 9 and len(by_name["humanInputAgentflow"]) == 6
+    assert {a["data"]["label"].split(" · ")[0] for a in agents} >= {"Supervisor Agent", "Forecast Agent", "Factory Agent", "Procurement Agent", "Inventory Agent",
+                                                                    "Logistics Agent", "Quality Agent", "Cost Intelligence Agent", "Learning Agent"}
+    for agent in agents:
         tool = agent["data"]["inputs"]["agentTools"][0]
         assert tool["agentSelectedTool"] == "customMCP"
         assert set(json.loads(tool["agentSelectedToolConfig"]["mcpActions"])) <= READ_ONLY
-    for http in by_name["httpAgentflow"]:
-        assert http["data"]["inputs"]["url"].endswith("/api/v1/recommendations/from-agent")
-        assert http["data"]["inputs"]["method"] == "POST"
-    human_edges = [e for e in flow["edges"] if e["data"].get("isHumanInput")]
-    assert len(human_edges) == 4
-
+        assert f"{{{{ {rag} }}}}" in agent["data"]["inputs"]["agentMessages"][0]["content"]  # RAG context reaches every specialist
+    submits = [i for nid, i in http.items() if nid not in (sap, rag)]
+    assert len(submits) == 6 and all(i["method"] == "POST" and i["url"].endswith("/api/v1/recommendations/from-agent") for i in submits)
+    assert len([e for e in flow["edges"] if e["data"].get("isHumanInput")]) == 12
+    assert len(by_name["stickyNoteAgentflow"]) >= 11  # 9 architecture panels + workflow + governance
 
 @pytest.mark.parametrize("kind", ["chatflow", "agentflow"])
 def test_no_secrets_in_flow_json(kind):
