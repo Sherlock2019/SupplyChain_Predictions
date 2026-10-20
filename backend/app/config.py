@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     public_base_url: str = "http://localhost:8000"
     assistant_api_keys: str = "flowise:dev-assistant-key,langgraph:dev-langgraph-key,mcp:dev-mcp-key"
     manager_api_keys: str = "manager:dev-manager-key"
+    # Tenant-scoped authorization: "identity=tenant|tenant;identity=*". Identities not listed may use every tenant (demo default).
+    tenant_scopes: str = ""
 
     # Governance ledger (analyses, recommendations, audit). sqlite:///path or postgresql://...
     database_url: str = f"sqlite:///{ROOT / 'backend' / '.data' / 'copilot.sqlite'}"
@@ -75,6 +77,15 @@ class Settings(BaseSettings):
     @property
     def managers(self) -> dict[str, str]:
         return self.parse_keys(self.manager_api_keys)
+
+    def tenants_for(self, identity: str) -> set[str] | None:
+        """Tenants an identity may use; None = unrestricted."""
+        for rule in filter(None, (r.strip() for r in self.tenant_scopes.split(";"))):
+            who, _, tenants = rule.partition("=")
+            if who.strip() == identity:
+                allowed = {t.strip() for t in tenants.split("|") if t.strip()}
+                return None if "*" in allowed else allowed
+        return None
 
     @property
     def llm_enabled(self) -> bool:

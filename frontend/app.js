@@ -131,7 +131,7 @@
     inventory: ['Inventory & balancing', () => { if (!$('#balance-out').innerHTML) $('#form-balance').requestSubmit(); }],
     sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
     suppliers: ['Suppliers, quality & logistics', loadSuppliersPage], approvals: ['Approvals & execution', loadApprovals], watches: ['Watchlists', loadWatches],
-    chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', null],
+    chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', loadHarness],
     platform: ['Status & access', loadPlatform],
   };
   function route() {
@@ -1116,13 +1116,44 @@
   }
   $('#form-workflow').addEventListener('submit', (e) => { e.preventDefault(); busy($('button', e.target), async () => renderWorkflow(await api('/api/v1/workflows/business', { body: { request_text: formData(e.target).request_text } }))); });
   // deep agent
+  // Deep Agent harness settings: stored in the governance DB, edited by a manager, applied to every research run.
+  const HARNESS_LABELS = { 'contract-analyst': 'Contract analyst', 'quality-analyst': 'Quality analyst', 'logistics-analyst': 'Logistics analyst' };
+  async function loadHarness() {
+    const box = $('#harness-card');
+    try {
+      const v = await api('/api/v1/deep-agents/harness');
+      const h = v.harness, o = v.options, manager = state.role === 'manager';
+      const dis = manager ? '' : 'disabled';
+      const checks = (name, list, labels = {}) => list.map((x) => `<label class="inline check"><input type="checkbox" name="${name}" value="${esc(x)}" ${h[name].includes(x) ? 'checked' : ''} ${dis}>${esc(labels[x] || x)}</label>`).join('');
+      box.innerHTML = `<div class="chart-head"><div><h2>Harness settings</h2><p class="sub">how the Deep Agent runs — model, step budget, subagents, tools and output rules · ${v.updated_by ? `last changed by ${esc(v.updated_by)} ${esc(v.updated_at.slice(0, 16).replace('T', ' '))}` : 'defaults'}</p></div></div>
+        <form id="form-harness" class="harness">
+          <div class="row"><label>Temperature<input name="temperature" type="number" step="0.1" min="${o.ranges.temperature[0]}" max="${o.ranges.temperature[1]}" value="${h.temperature}" ${dis}></label>
+            <label>Max output tokens<input name="max_tokens" type="number" step="50" min="${o.ranges.max_tokens[0]}" max="${o.ranges.max_tokens[1]}" value="${h.max_tokens}" ${dis}></label>
+            <label>Step budget (recursion limit)<input name="max_steps" type="number" step="5" min="${o.ranges.max_steps[0]}" max="${o.ranges.max_steps[1]}" value="${h.max_steps}" ${dis}></label>
+            <label>Report style<select name="report_style" ${dis}>${o.report_style.map((s) => `<option value="${s}" ${h.report_style === s ? 'selected' : ''}>${s === 'full' ? 'Full report' : 'Executive summary'}</option>`).join('')}</select></label></div>
+          <div class="harness-group"><b>Subagents</b>${checks('subagents', o.subagents, HARNESS_LABELS)}</div>
+          <div class="harness-group"><b>Allowed tools</b>${checks('tools', o.tools)}</div>
+          <div class="harness-group"><b>Rules</b><label class="inline check"><input type="checkbox" name="require_plan" ${h.require_plan ? 'checked' : ''} ${dis}>Plan first (todo list)</label>
+            <label class="inline check"><input type="checkbox" name="require_citations" ${h.require_citations ? 'checked' : ''} ${dis}>Cite evidence for every claim</label></div>
+          <div class="row" style="margin:12px 0 0">${manager ? '<button type="submit">Save harness</button><button type="button" class="ghost" id="harness-reset">Reset to defaults</button>' : '<span class="note">Only a manager can change the harness.</span>'}
+            <span class="note">All tools stay read-only; changes are audited.</span></div></form>`;
+      const read = () => {
+        const f = $('#form-harness');
+        const list = (n) => $$(`input[name="${n}"]:checked`, f).map((i) => i.value);
+        return { temperature: Number(f.temperature.value), max_tokens: Number(f.max_tokens.value), max_steps: Number(f.max_steps.value), report_style: f.report_style.value,
+          subagents: list('subagents'), tools: list('tools'), require_plan: f.require_plan.checked, require_citations: f.require_citations.checked };
+      };
+      $('#form-harness').addEventListener('submit', (e) => { e.preventDefault(); busy(e.submitter, async () => { await api('/api/v1/deep-agents/harness', { method: 'PUT', body: read() }); toast('Harness saved — the next research run uses it'); loadHarness(); }); });
+      $('#harness-reset')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { await api('/api/v1/deep-agents/harness', { method: 'PUT', body: v.defaults }); toast('Harness reset to defaults'); loadHarness(); }));
+    } catch (e) { box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+  }
   $('#form-research').addEventListener('submit', (e) => {
     e.preventDefault();
     $('#research-out').innerHTML = '<p class="note"><span class="spinner"></span>Planning, delegating to subagents and calling tools — 1–2 minutes on a 7B model.</p>';
     busy($('button', e.target), async () => {
       const r = await api('/api/v1/deep-agents/supplier-research', { body: formData(e.target) });
       const todos = (r.todos || []).map((t) => `<li>${chip(t.status)} ${esc(t.content)}</li>`).join('');
-      $('#research-out').innerHTML = `<p class="note">${esc(r.runtime)} · ${r.elapsed_seconds}s · ${r.tools_used.length} tool calls · subagents: ${esc(r.subagents_used.join(', ') || 'none')}</p>${todos ? `<div class="panel"><b>Plan</b><ul>${todos}</ul></div>` : ''}<div class="panel">${md(r.report)}</div>`;
+      $('#research-out').innerHTML = `<p class="note">${esc(r.runtime)} · ${r.elapsed_seconds}s · ${r.tools_used.length} tool calls · subagents: ${esc(r.subagents_used.join(', ') || 'none')} · harness: ${r.harness ? `${r.harness.report_style}, ${r.harness.max_steps} steps, ${r.harness.subagents.length} subagents, T=${r.harness.temperature}` : 'default'}</p>${todos ? `<div class="panel"><b>Plan</b><ul>${todos}</ul></div>` : ''}<div class="panel">${md(r.report)}</div>`;
     });
   });
 

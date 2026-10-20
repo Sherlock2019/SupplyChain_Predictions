@@ -99,8 +99,29 @@ def test_langgraph_agentflow_boundary_and_discard(runner):
 
 
 def test_deep_agent_is_built_with_subagents_and_planning_tools():
-    from backend.app.deep_agent import SUBAGENTS, graph
+    from backend.app.deep_agent import SUBAGENTS, build_deep_agent, graph
 
     assert {s["name"] for s in SUBAGENTS} == {"contract-analyst", "quality-analyst", "logistics-analyst"}
-    nodes = set(graph.get_graph().nodes)
+    assert "deep_research" in set(graph.get_graph().nodes)  # harness wrapper served by LangGraph Server
+    nodes = set(build_deep_agent().get_graph().nodes)
     assert "tools" in nodes and "model" in nodes
+
+
+def test_deep_agent_harness_controls_tools_subagents_steps_and_prompt():
+    import pytest as _pytest
+    from pydantic import ValidationError
+
+    from backend.app.deep_agent import build_deep_agent, harness_of, system_prompt
+
+    h = harness_of({"tools": ["supplier_risk", "search_governed_knowledge"], "subagents": ["contract-analyst"], "max_steps": 30,
+                    "report_style": "executive", "require_plan": False, "temperature": 0.2})
+    agent = build_deep_agent(harness=h)
+    assert agent.config["recursion_limit"] == 30
+    prompt = system_prompt(h)
+    assert "executive summary" in prompt and "todo plan" not in prompt and "contract-analyst" in prompt and "quality-analyst" not in prompt
+    none = system_prompt(harness_of({"subagents": []}))
+    assert "no subagents are enabled" in none
+    with _pytest.raises(ValidationError):
+        harness_of({"max_steps": 5000})
+    with _pytest.raises(ValidationError):
+        harness_of({"tools": ["delete_purchase_order"]})

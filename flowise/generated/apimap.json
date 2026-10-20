@@ -1,0 +1,1358 @@
+{
+ "name": "SPARC FastAPI gateway - configuration map",
+ "type": "APIMAP",
+ "nodes": [
+  {
+   "id": "chatOpenAICustom_0",
+   "position": {
+    "x": 80,
+    "y": 820
+   },
+   "positionAbsolute": {
+    "x": 80,
+    "y": 820
+   },
+   "type": "customNode",
+   "data": {
+    "id": "chatOpenAICustom_0",
+    "label": "Qwen (OpenAI-compatible)",
+    "version": 4,
+    "name": "chatOpenAICustom",
+    "type": "ChatOpenAI-Custom",
+    "baseClasses": [
+     "ChatOpenAI-Custom",
+     "BaseChatOpenAI",
+     "BaseChatModel",
+     "BaseLanguageModel",
+     "Runnable"
+    ],
+    "category": "Chat Models",
+    "description": "Custom/FineTuned model using OpenAI Chat compatible API",
+    "inputParams": [
+     {
+      "label": "Connect Credential",
+      "name": "credential",
+      "type": "credential",
+      "credentialNames": [
+       "openAIApi"
+      ],
+      "optional": true,
+      "id": "chatOpenAICustom_0-input-credential-credential"
+     },
+     {
+      "label": "Model Name",
+      "name": "modelName",
+      "type": "string",
+      "placeholder": "ft:gpt-3.5-turbo:my-org:custom_suffix:id",
+      "id": "chatOpenAICustom_0-input-modelName-string"
+     },
+     {
+      "label": "Temperature",
+      "name": "temperature",
+      "type": "number",
+      "step": 0.1,
+      "default": 0.9,
+      "optional": true,
+      "id": "chatOpenAICustom_0-input-temperature-number"
+     },
+     {
+      "label": "Streaming",
+      "name": "streaming",
+      "type": "boolean",
+      "default": true,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-streaming-boolean"
+     },
+     {
+      "label": "Max Tokens",
+      "name": "maxTokens",
+      "type": "number",
+      "step": 1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-maxTokens-number"
+     },
+     {
+      "label": "Top Probability",
+      "name": "topP",
+      "type": "number",
+      "step": 0.1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-topP-number"
+     },
+     {
+      "label": "Frequency Penalty",
+      "name": "frequencyPenalty",
+      "type": "number",
+      "step": 0.1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-frequencyPenalty-number"
+     },
+     {
+      "label": "Presence Penalty",
+      "name": "presencePenalty",
+      "type": "number",
+      "step": 0.1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-presencePenalty-number"
+     },
+     {
+      "label": "Timeout",
+      "name": "timeout",
+      "type": "number",
+      "step": 1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-timeout-number"
+     },
+     {
+      "label": "Base Path",
+      "name": "basepath",
+      "type": "string",
+      "optional": true,
+      "description": "Override the default base URL for the API, e.g., \"https://api.example.com/v2/",
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-basepath-string"
+     },
+     {
+      "label": "Base Options",
+      "name": "baseOptions",
+      "type": "json",
+      "optional": true,
+      "description": "Default headers to include with every request to the API.",
+      "additionalParams": true,
+      "id": "chatOpenAICustom_0-input-baseOptions-json"
+     }
+    ],
+    "inputAnchors": [
+     {
+      "label": "Cache",
+      "name": "cache",
+      "type": "BaseCache",
+      "optional": true,
+      "id": "chatOpenAICustom_0-input-cache-BaseCache"
+     }
+    ],
+    "inputs": {
+     "cache": "",
+     "modelName": "qwen2.5-7b-scm",
+     "temperature": 0,
+     "streaming": false,
+     "maxTokens": 1200,
+     "topP": "",
+     "frequencyPenalty": "",
+     "presencePenalty": "",
+     "timeout": 180000,
+     "basepath": "http://host.docker.internal:11435/v1",
+     "baseOptions": "",
+     "credential": "98d24629-2fe0-43b9-a571-67aedc8f15bf",
+     "FLOWISE_CREDENTIAL_ID": "98d24629-2fe0-43b9-a571-67aedc8f15bf"
+    },
+    "outputAnchors": [
+     {
+      "id": "chatOpenAICustom_0-output-chatOpenAICustom-ChatOpenAI-Custom|BaseChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "name": "chatOpenAICustom",
+      "label": "ChatOpenAI-Custom",
+      "description": "Custom/FineTuned model using OpenAI Chat compatible API",
+      "type": "ChatOpenAI-Custom | BaseChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+     }
+    ],
+    "outputs": {},
+    "selected": false,
+    "credential": "98d24629-2fe0-43b9-a571-67aedc8f15bf"
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "bufferWindowMemory_0",
+   "position": {
+    "x": 80,
+    "y": 1400
+   },
+   "positionAbsolute": {
+    "x": 80,
+    "y": 1400
+   },
+   "type": "customNode",
+   "data": {
+    "id": "bufferWindowMemory_0",
+    "label": "Conversation memory (6 turns)",
+    "version": 2,
+    "name": "bufferWindowMemory",
+    "type": "BufferWindowMemory",
+    "baseClasses": [
+     "BufferWindowMemory",
+     "BaseChatMemory",
+     "BaseMemory"
+    ],
+    "category": "Memory",
+    "description": "Uses a window of size k to surface the last k back-and-forth to use as memory",
+    "inputParams": [
+     {
+      "label": "Size",
+      "name": "k",
+      "type": "number",
+      "default": "4",
+      "description": "Window of size k to surface the last k back-and-forth to use as memory.",
+      "id": "bufferWindowMemory_0-input-k-number"
+     },
+     {
+      "label": "Session Id",
+      "name": "sessionId",
+      "type": "string",
+      "description": "If not specified, a random id will be used. Learn <a target=\"_blank\" href=\"https://docs.flowiseai.com/memory#ui-and-embedded-chat\">more</a>",
+      "default": "",
+      "optional": true,
+      "additionalParams": true,
+      "id": "bufferWindowMemory_0-input-sessionId-string"
+     },
+     {
+      "label": "Memory Key",
+      "name": "memoryKey",
+      "type": "string",
+      "default": "chat_history",
+      "additionalParams": true,
+      "id": "bufferWindowMemory_0-input-memoryKey-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "k": "6",
+     "sessionId": "",
+     "memoryKey": "chat_history"
+    },
+    "outputAnchors": [
+     {
+      "id": "bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory",
+      "name": "bufferWindowMemory",
+      "label": "BufferWindowMemory",
+      "description": "Uses a window of size k to surface the last k back-and-forth to use as memory",
+      "type": "BufferWindowMemory | BaseChatMemory | BaseMemory"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "requestsGet_0",
+   "position": {
+    "x": 460,
+    "y": 820
+   },
+   "positionAbsolute": {
+    "x": 460,
+    "y": 820
+   },
+   "type": "customNode",
+   "data": {
+    "id": "requestsGet_0",
+    "label": "GET /sap/inventory (read-only SAP stock)",
+    "version": 2,
+    "name": "requestsGet",
+    "type": "RequestsGet",
+    "baseClasses": [
+     "RequestsGet",
+     "DynamicStructuredTool",
+     "StructuredTool",
+     "Runnable",
+     "Tool"
+    ],
+    "category": "Tools",
+    "description": "Execute HTTP GET requests",
+    "inputParams": [
+     {
+      "label": "URL",
+      "name": "requestsGetUrl",
+      "type": "string",
+      "acceptVariable": true,
+      "id": "requestsGet_0-input-requestsGetUrl-string"
+     },
+     {
+      "label": "Name",
+      "name": "requestsGetName",
+      "type": "string",
+      "default": "requests_get",
+      "description": "Name of the tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_0-input-requestsGetName-string"
+     },
+     {
+      "label": "Description",
+      "name": "requestsGetDescription",
+      "type": "string",
+      "rows": 4,
+      "default": "Use this when you need to execute a GET request to get data from a website.",
+      "description": "Describe to LLM when it should use this tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_0-input-requestsGetDescription-string"
+     },
+     {
+      "label": "Headers",
+      "name": "requestsGetHeaders",
+      "type": "string",
+      "rows": 4,
+      "acceptVariable": true,
+      "additionalParams": true,
+      "optional": true,
+      "placeholder": "{\n    \"Authorization\": \"Bearer <token>\"\n}",
+      "id": "requestsGet_0-input-requestsGetHeaders-string"
+     },
+     {
+      "label": "Query Params Schema",
+      "name": "requestsGetQueryParamsSchema",
+      "type": "code",
+      "description": "Description of the available query params to enable LLM to figure out which query params to use",
+      "placeholder": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "optional": true,
+      "hideCodeExecute": true,
+      "additionalParams": true,
+      "codeExample": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "id": "requestsGet_0-input-requestsGetQueryParamsSchema-code"
+     },
+     {
+      "label": "Max Output Length",
+      "name": "requestsGetMaxOutputLength",
+      "type": "number",
+      "description": "Max length of the output. Remove this if you want to return the entire response",
+      "default": "2000",
+      "step": 1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "requestsGet_0-input-requestsGetMaxOutputLength-number"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "requestsGetUrl": "{{$vars.copilot_api_url}}/sap/inventory",
+     "requestsGetName": "sap_inventory",
+     "requestsGetDescription": "Current SAP material stock by plant, material and batch (read-only).",
+     "requestsGetHeaders": "{\"X-API-Key\":\"{{$vars.copilot_tool_key}}\"}",
+     "requestsGetQueryParamsSchema": "",
+     "requestsGetMaxOutputLength": 6000
+    },
+    "outputAnchors": [
+     {
+      "id": "requestsGet_0-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+      "name": "requestsGet",
+      "label": "RequestsGet",
+      "description": "Execute HTTP GET requests",
+      "type": "RequestsGet | DynamicStructuredTool | StructuredTool | Runnable | Tool"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "requestsGet_1",
+   "position": {
+    "x": 460,
+    "y": 1180
+   },
+   "positionAbsolute": {
+    "x": 460,
+    "y": 1180
+   },
+   "type": "customNode",
+   "data": {
+    "id": "requestsGet_1",
+    "label": "GET /sap/production-orders (read-only SAP)",
+    "version": 2,
+    "name": "requestsGet",
+    "type": "RequestsGet",
+    "baseClasses": [
+     "RequestsGet",
+     "DynamicStructuredTool",
+     "StructuredTool",
+     "Runnable",
+     "Tool"
+    ],
+    "category": "Tools",
+    "description": "Execute HTTP GET requests",
+    "inputParams": [
+     {
+      "label": "URL",
+      "name": "requestsGetUrl",
+      "type": "string",
+      "acceptVariable": true,
+      "id": "requestsGet_1-input-requestsGetUrl-string"
+     },
+     {
+      "label": "Name",
+      "name": "requestsGetName",
+      "type": "string",
+      "default": "requests_get",
+      "description": "Name of the tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_1-input-requestsGetName-string"
+     },
+     {
+      "label": "Description",
+      "name": "requestsGetDescription",
+      "type": "string",
+      "rows": 4,
+      "default": "Use this when you need to execute a GET request to get data from a website.",
+      "description": "Describe to LLM when it should use this tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_1-input-requestsGetDescription-string"
+     },
+     {
+      "label": "Headers",
+      "name": "requestsGetHeaders",
+      "type": "string",
+      "rows": 4,
+      "acceptVariable": true,
+      "additionalParams": true,
+      "optional": true,
+      "placeholder": "{\n    \"Authorization\": \"Bearer <token>\"\n}",
+      "id": "requestsGet_1-input-requestsGetHeaders-string"
+     },
+     {
+      "label": "Query Params Schema",
+      "name": "requestsGetQueryParamsSchema",
+      "type": "code",
+      "description": "Description of the available query params to enable LLM to figure out which query params to use",
+      "placeholder": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "optional": true,
+      "hideCodeExecute": true,
+      "additionalParams": true,
+      "codeExample": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "id": "requestsGet_1-input-requestsGetQueryParamsSchema-code"
+     },
+     {
+      "label": "Max Output Length",
+      "name": "requestsGetMaxOutputLength",
+      "type": "number",
+      "description": "Max length of the output. Remove this if you want to return the entire response",
+      "default": "2000",
+      "step": 1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "requestsGet_1-input-requestsGetMaxOutputLength-number"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "requestsGetUrl": "{{$vars.copilot_api_url}}/sap/production-orders",
+     "requestsGetName": "sap_production_orders",
+     "requestsGetDescription": "SAP production orders: order, plant, material, quantity, finish date, status (read-only).",
+     "requestsGetHeaders": "{\"X-API-Key\":\"{{$vars.copilot_tool_key}}\"}",
+     "requestsGetQueryParamsSchema": "",
+     "requestsGetMaxOutputLength": 6000
+    },
+    "outputAnchors": [
+     {
+      "id": "requestsGet_1-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+      "name": "requestsGet",
+      "label": "RequestsGet",
+      "description": "Execute HTTP GET requests",
+      "type": "RequestsGet | DynamicStructuredTool | StructuredTool | Runnable | Tool"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "requestsGet_2",
+   "position": {
+    "x": 460,
+    "y": 1540
+   },
+   "positionAbsolute": {
+    "x": 460,
+    "y": 1540
+   },
+   "type": "customNode",
+   "data": {
+    "id": "requestsGet_2",
+    "label": "GET /learning/model-performance",
+    "version": 2,
+    "name": "requestsGet",
+    "type": "RequestsGet",
+    "baseClasses": [
+     "RequestsGet",
+     "DynamicStructuredTool",
+     "StructuredTool",
+     "Runnable",
+     "Tool"
+    ],
+    "category": "Tools",
+    "description": "Execute HTTP GET requests",
+    "inputParams": [
+     {
+      "label": "URL",
+      "name": "requestsGetUrl",
+      "type": "string",
+      "acceptVariable": true,
+      "id": "requestsGet_2-input-requestsGetUrl-string"
+     },
+     {
+      "label": "Name",
+      "name": "requestsGetName",
+      "type": "string",
+      "default": "requests_get",
+      "description": "Name of the tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_2-input-requestsGetName-string"
+     },
+     {
+      "label": "Description",
+      "name": "requestsGetDescription",
+      "type": "string",
+      "rows": 4,
+      "default": "Use this when you need to execute a GET request to get data from a website.",
+      "description": "Describe to LLM when it should use this tool",
+      "additionalParams": true,
+      "optional": true,
+      "id": "requestsGet_2-input-requestsGetDescription-string"
+     },
+     {
+      "label": "Headers",
+      "name": "requestsGetHeaders",
+      "type": "string",
+      "rows": 4,
+      "acceptVariable": true,
+      "additionalParams": true,
+      "optional": true,
+      "placeholder": "{\n    \"Authorization\": \"Bearer <token>\"\n}",
+      "id": "requestsGet_2-input-requestsGetHeaders-string"
+     },
+     {
+      "label": "Query Params Schema",
+      "name": "requestsGetQueryParamsSchema",
+      "type": "code",
+      "description": "Description of the available query params to enable LLM to figure out which query params to use",
+      "placeholder": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "optional": true,
+      "hideCodeExecute": true,
+      "additionalParams": true,
+      "codeExample": "{\n    \"id\": {\n        \"type\": \"string\",\n        \"required\": true,\n        \"in\": \"path\",\n        \"description\": \"ID of the item to get. /:id\"\n    },\n    \"limit\": {\n        \"type\": \"string\",\n        \"in\": \"query\",\n        \"description\": \"Limit the number of items to get. ?limit=10\"\n    }\n}",
+      "id": "requestsGet_2-input-requestsGetQueryParamsSchema-code"
+     },
+     {
+      "label": "Max Output Length",
+      "name": "requestsGetMaxOutputLength",
+      "type": "number",
+      "description": "Max length of the output. Remove this if you want to return the entire response",
+      "default": "2000",
+      "step": 1,
+      "optional": true,
+      "additionalParams": true,
+      "id": "requestsGet_2-input-requestsGetMaxOutputLength-number"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "requestsGetUrl": "{{$vars.copilot_api_url}}/learning/model-performance",
+     "requestsGetName": "model_performance",
+     "requestsGetDescription": "Forecast model accuracy (WAPE vs baseline), drift and verified decision outcomes.",
+     "requestsGetHeaders": "{\"X-API-Key\":\"{{$vars.copilot_tool_key}}\"}",
+     "requestsGetQueryParamsSchema": "",
+     "requestsGetMaxOutputLength": 6000
+    },
+    "outputAnchors": [
+     {
+      "id": "requestsGet_2-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+      "name": "requestsGet",
+      "label": "RequestsGet",
+      "description": "Execute HTTP GET requests",
+      "type": "RequestsGet | DynamicStructuredTool | StructuredTool | Runnable | Tool"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "toolAgent_0",
+   "position": {
+    "x": 860,
+    "y": 1000
+   },
+   "positionAbsolute": {
+    "x": 860,
+    "y": 1000
+   },
+   "type": "customNode",
+   "data": {
+    "id": "toolAgent_0",
+    "label": "FastAPI gateway explorer",
+    "version": 2,
+    "name": "toolAgent",
+    "type": "AgentExecutor",
+    "baseClasses": [
+     "AgentExecutor",
+     "BaseChain",
+     "Runnable"
+    ],
+    "category": "Agents",
+    "description": "Agent that uses Function Calling to pick the tools and args to call",
+    "inputParams": [
+     {
+      "label": "System Message",
+      "name": "systemMessage",
+      "type": "string",
+      "default": "You are a helpful AI assistant.",
+      "description": "If Chat Prompt Template is provided, this will be ignored",
+      "rows": 4,
+      "optional": true,
+      "additionalParams": true,
+      "id": "toolAgent_0-input-systemMessage-string"
+     },
+     {
+      "label": "Max Iterations",
+      "name": "maxIterations",
+      "type": "number",
+      "optional": true,
+      "additionalParams": true,
+      "id": "toolAgent_0-input-maxIterations-number"
+     },
+     {
+      "label": "Enable Detailed Streaming",
+      "name": "enableDetailedStreaming",
+      "type": "boolean",
+      "default": false,
+      "description": "Stream detailed intermediate steps during agent execution",
+      "optional": true,
+      "additionalParams": true,
+      "id": "toolAgent_0-input-enableDetailedStreaming-boolean"
+     }
+    ],
+    "inputAnchors": [
+     {
+      "label": "Tools",
+      "name": "tools",
+      "type": "Tool",
+      "list": true,
+      "id": "toolAgent_0-input-tools-Tool"
+     },
+     {
+      "label": "Memory",
+      "name": "memory",
+      "type": "BaseChatMemory",
+      "id": "toolAgent_0-input-memory-BaseChatMemory"
+     },
+     {
+      "label": "Tool Calling Chat Model",
+      "name": "model",
+      "type": "BaseChatModel",
+      "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat",
+      "id": "toolAgent_0-input-model-BaseChatModel"
+     },
+     {
+      "label": "Chat Prompt Template",
+      "name": "chatPromptTemplate",
+      "type": "ChatPromptTemplate",
+      "description": "Override existing prompt with Chat Prompt Template. Human Message must includes {input} variable",
+      "optional": true,
+      "id": "toolAgent_0-input-chatPromptTemplate-ChatPromptTemplate"
+     },
+     {
+      "label": "Input Moderation",
+      "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+      "name": "inputModeration",
+      "type": "Moderation",
+      "optional": true,
+      "list": true,
+      "id": "toolAgent_0-input-inputModeration-Moderation"
+     }
+    ],
+    "inputs": {
+     "tools": [
+      "{{requestsGet_0.data.instance}}",
+      "{{requestsGet_1.data.instance}}",
+      "{{requestsGet_2.data.instance}}"
+     ],
+     "memory": "{{bufferWindowMemory_0.data.instance}}",
+     "model": "{{chatOpenAICustom_0.data.instance}}",
+     "chatPromptTemplate": "",
+     "systemMessage": "You explain and demonstrate the SPARC FastAPI gateway. Use the tools to show live read-only data from the POC contract endpoints. SAP is read-only; decisions need human review by a manager. Never invent values.",
+     "inputModeration": "",
+     "maxIterations": 4,
+     "enableDetailedStreaming": false
+    },
+    "outputAnchors": [
+     {
+      "id": "toolAgent_0-output-toolAgent-AgentExecutor|BaseChain|Runnable",
+      "name": "toolAgent",
+      "label": "AgentExecutor",
+      "description": "Agent that uses Function Calling to pick the tools and args to call",
+      "type": "AgentExecutor | BaseChain | Runnable"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api0",
+   "position": {
+    "x": 80,
+    "y": -40
+   },
+   "positionAbsolute": {
+    "x": 80,
+    "y": -40
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api0",
+    "label": "FASTAPI GATEWAY \u00b7 process",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api0-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "FASTAPI GATEWAY \u00b7 process\n\nbackend.app.main:create_app (uvicorn, port 8000). Swagger UI /docs \u00b7 ReDoc /redoc \u00b7 OpenAPI /openapi.json.\nOne app serves the SPARC front end, the REST API, the SAP OData facade and the agent proxies."
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api0-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api1",
+   "position": {
+    "x": 440,
+    "y": -40
+   },
+   "positionAbsolute": {
+    "x": 440,
+    "y": -40
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api1",
+    "label": "Middleware chain (every request)",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api1-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Middleware chain (every request)\n\n1 X-Correlation-ID (generated if missing, echoed back)\n2 X-Tenant / ?tenant= \u2192 per-customer SAP snapshot + engine\n3 CORS (Content-Type, X-API-Key, X-Correlation-ID, X-Tenant)\n4 Prometheus metrics: requests, latency, denials"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api1-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api2",
+   "position": {
+    "x": 800,
+    "y": -40
+   },
+   "positionAbsolute": {
+    "x": 800,
+    "y": -40
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api2",
+    "label": "Security",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api2-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Security\n\nX-API-Key \u2192 identity + role (planner | manager).\nTENANT_SCOPES: identity=tenant|tenant \u2192 403 outside scope.\nManager-only: human-review, execute (SAP sandbox), outcomes, consent, harness, audit.\nSHA-256 hash-chained audit of every action. SAP writes \u2192 405."
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api2-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api3",
+   "position": {
+    "x": 1160,
+    "y": -40
+   },
+   "positionAbsolute": {
+    "x": 1160,
+    "y": -40
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api3",
+    "label": "POC contract routes (Flowise / LangGraph REST)",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api3-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "POC contract routes (Flowise / LangGraph REST)\n\nGET  /sap/inventory \u00b7 /sap/production-orders\nPOST /forecast/demand \u00b7 /forecast/supplier-lead-time\nPOST /optimizer/material-readiness \u00b7 /optimizer/warehouse-transfer\nPOST /decisions \u00b7 /decisions/{id}/human-review\nPOST /outcomes/reconcile \u00b7 GET /learning/model-performance"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api3-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api4",
+   "position": {
+    "x": 80,
+    "y": 250
+   },
+   "positionAbsolute": {
+    "x": 80,
+    "y": 250
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api4",
+    "label": "/api/v1 product routes",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api4-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "/api/v1 product routes\n\nroles \u00b7 northstar \u00b7 products/{m}/brief \u00b7 sales/outlook \u00b7 dashboards \u00b7 insights \u00b7 sites \u00b7 network/map \u00b7 moat (+consent) \u00b7 learning \u00b7 recommendations (+decision, execute, outcome) \u00b7 watches \u00b7 tenants \u00b7 analysis/* (readiness, balance, forecast, what-if, supplier, quality, logistics, sales orders, stocktake) \u00b7 rag/search"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api4-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api5",
+   "position": {
+    "x": 440,
+    "y": 250
+   },
+   "positionAbsolute": {
+    "x": 440,
+    "y": 250
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api5",
+    "label": "SAP adapter (read-only)",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api5-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "SAP adapter (read-only)\n\n/sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} + $metadata: A_MaterialStock, A_PurchaseOrderItem, A_PurchaseOrderHistory, A_ProductionOrder, A_BillOfMaterialItem, A_InspectionLot, A_SalesOrderItem, A_Shipment, A_TransportLane, A_PhysInventoryDocItem \u2026\nPOST/PUT/PATCH/DELETE \u2192 405. Execution \u2192 A_SandboxDocument outbox only."
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api5-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api6",
+   "position": {
+    "x": 800,
+    "y": 250
+   },
+   "positionAbsolute": {
+    "x": 800,
+    "y": 250
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api6",
+    "label": "Agent endpoints",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api6-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Agent endpoints\n\nPOST /api/v1/chat (role = specialist agent) \u00b7 /api/v1/langgraph/agentflow (+resume) \u00b7 /api/v1/workflows/business (+resume) \u00b7 /api/v1/deep-agents/supplier-research \u00b7 GET/PUT /api/v1/deep-agents/harness \u00b7 POST /api/v1/flowise/{chatflow|agentflow}/predict \u00b7 /api/v1/recommendations/from-agent"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api6-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api7",
+   "position": {
+    "x": 1160,
+    "y": 250
+   },
+   "positionAbsolute": {
+    "x": 1160,
+    "y": 250
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api7",
+    "label": "Data stores",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api7-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Data stores\n\nPostgreSQL 17: analyses, recommendations, decision_feedback, sap_document, outcome, consent, setting, watch, audit chain; LangGraph checkpoints.\npgvector: RAG chunks (bge-small, HNSW).\nSQLite + in-memory RAG for unit tests."
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api7-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api8",
+   "position": {
+    "x": 80,
+    "y": 540
+   },
+   "positionAbsolute": {
+    "x": 80,
+    "y": 540
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api8",
+    "label": "Configuration (.env)",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api8-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Configuration (.env)\n\nDATABASE_URL \u00b7 POSTGRES_URL \u00b7 RAG_BACKEND \u00b7 EMBEDDING_MODEL \u00b7 QWEN_BASE_URL / QWEN_MODEL \u00b7 LLM_MODE \u00b7 LANGGRAPH_URL \u00b7 FLOWISE_URL / FLOWISE_API_KEY \u00b7 MCP_URL \u00b7 LANGFUSE_* \u00b7 PLANNER / MANAGER API keys \u00b7 TENANT_SCOPES \u00b7 SAP_EXECUTION_MODE=sandbox \u00b7 DEMO_AUTO_LOGIN (local only)"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api8-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api9",
+   "position": {
+    "x": 440,
+    "y": 540
+   },
+   "positionAbsolute": {
+    "x": 440,
+    "y": 540
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api9",
+    "label": "Observability",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api9-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Observability\n\nGET /metrics (Prometheus) \u2192 Grafana dashboard. Langfuse traces for LangGraph and Flowise runs. GET /health (liveness) \u00b7 GET /api/v1/status (every component: SAP, store, RAG, Qwen, LangGraph, Flowise, MCP, Langfuse, Grafana)."
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api9-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  },
+  {
+   "id": "stickyNote_api10",
+   "position": {
+    "x": 800,
+    "y": 540
+   },
+   "positionAbsolute": {
+    "x": 800,
+    "y": 540
+   },
+   "type": "customNode",
+   "data": {
+    "id": "stickyNote_api10",
+    "label": "Flowise HTTP node examples",
+    "version": 2,
+    "name": "stickyNote",
+    "type": "StickyNote",
+    "baseClasses": [
+     "StickyNote"
+    ],
+    "category": "Utilities",
+    "description": "Add a sticky note",
+    "inputParams": [
+     {
+      "label": "",
+      "name": "note",
+      "type": "string",
+      "rows": 1,
+      "placeholder": "Type something here",
+      "optional": true,
+      "id": "stickyNote_api10-input-note-string"
+     }
+    ],
+    "inputAnchors": [],
+    "inputs": {
+     "note": "Flowise HTTP node examples\n\nPOST {{$vars.copilot_api_url}}/optimizer/warehouse-transfer\n  headers: X-API-Key = {{$vars.copilot_tool_key}}\n  body: {\"material\":\"FG-PERFUME-100\",\"horizon_days\":14}\nPOST \u2026/decisions  {\"analysis_id\":\"AN-\u2026\",\"explanation\":\"\u2026\"}\nPOST \u2026/forecast/supplier-lead-time  {\"supplier\":\"AirlessPack Asia\"}\nMore: docs/FLOWISE_API_EXAMPLES.md"
+    },
+    "outputAnchors": [
+     {
+      "id": "stickyNote_api10-output-stickyNote-StickyNote",
+      "name": "stickyNote",
+      "label": "StickyNote",
+      "description": "Add a sticky note",
+      "type": "StickyNote"
+     }
+    ],
+    "outputs": {},
+    "selected": false
+   },
+   "width": 300,
+   "height": 500,
+   "selected": false,
+   "dragging": false
+  }
+ ],
+ "edges": [
+  {
+   "source": "chatOpenAICustom_0",
+   "sourceHandle": "chatOpenAICustom_0-output-chatOpenAICustom-ChatOpenAI-Custom|BaseChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+   "target": "toolAgent_0",
+   "targetHandle": "toolAgent_0-input-model-BaseChatModel",
+   "type": "buttonedge",
+   "id": "chatOpenAICustom_0-chatOpenAICustom_0-output-chatOpenAICustom-ChatOpenAI-Custom|BaseChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable-toolAgent_0-toolAgent_0-input-model-BaseChatModel"
+  },
+  {
+   "source": "bufferWindowMemory_0",
+   "sourceHandle": "bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory",
+   "target": "toolAgent_0",
+   "targetHandle": "toolAgent_0-input-memory-BaseChatMemory",
+   "type": "buttonedge",
+   "id": "bufferWindowMemory_0-bufferWindowMemory_0-output-bufferWindowMemory-BufferWindowMemory|BaseChatMemory|BaseMemory-toolAgent_0-toolAgent_0-input-memory-BaseChatMemory"
+  },
+  {
+   "source": "requestsGet_0",
+   "sourceHandle": "requestsGet_0-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+   "target": "toolAgent_0",
+   "targetHandle": "toolAgent_0-input-tools-Tool",
+   "type": "buttonedge",
+   "id": "requestsGet_0-requestsGet_0-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool-toolAgent_0-toolAgent_0-input-tools-Tool"
+  },
+  {
+   "source": "requestsGet_1",
+   "sourceHandle": "requestsGet_1-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+   "target": "toolAgent_0",
+   "targetHandle": "toolAgent_0-input-tools-Tool",
+   "type": "buttonedge",
+   "id": "requestsGet_1-requestsGet_1-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool-toolAgent_0-toolAgent_0-input-tools-Tool"
+  },
+  {
+   "source": "requestsGet_2",
+   "sourceHandle": "requestsGet_2-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool",
+   "target": "toolAgent_0",
+   "targetHandle": "toolAgent_0-input-tools-Tool",
+   "type": "buttonedge",
+   "id": "requestsGet_2-requestsGet_2-output-requestsGet-RequestsGet|DynamicStructuredTool|StructuredTool|Runnable|Tool-toolAgent_0-toolAgent_0-input-tools-Tool"
+  }
+ ]
+}

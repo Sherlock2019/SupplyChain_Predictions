@@ -5,7 +5,7 @@ import os
 import re
 import time
 import uuid
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 import httpx
@@ -26,10 +26,13 @@ from backend.app.rag import create_rag
 from backend.app.roles import ROLES
 from backend.app.runner import GraphRunner
 from backend.app.schemas import (
+    DEEP_SUBAGENTS,
+    DEEP_TOOLS,
     BusinessWorkflowRequest,
     ChatRequest,
     ConsentRequest,
     DecisionRequest,
+    DeepAgentHarness,
     FactoryReadinessRequest,
     FlowisePredictRequest,
     ForecastRequest,
@@ -40,10 +43,12 @@ from backend.app.schemas import (
     RagQuery,
     RecommendationFromTextRequest,
     RecommendationRequest,
+    ReconcileRequest,
     ResumeRequest,
     SalesOrderRequest,
     StockBalanceRequest,
     StocktakeRequest,
+    SupplierLeadTimeRequest,
     SupplierResearchRequest,
     SupplierRiskRequest,
     WatchRequest,
@@ -121,11 +126,18 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     def principal(request: Request, x_api_key: str | None = Header(default=None)) -> Principal:
         try:
-            return auth.authenticate(request, x_api_key)
+            who = auth.authenticate(request, x_api_key)
         except HTTPException:
             DENIALS.labels("invalid_key").inc()
             store.audit("anonymous", "none", "auth.denied", {"path": request.url.path}, request.state.correlation_id)
             raise
+        allowed = settings.tenants_for(who.identity)  # tenant-scoped authorization
+        tenant = TenantRegistry.current_id()
+        if allowed is not None and tenant not in allowed:
+            DENIALS.labels("tenant").inc()
+            store.audit(who.identity, who.role, "auth.tenant_forbidden", {"path": request.url.path, "tenant": tenant}, request.state.correlation_id)
+            raise HTTPException(status_code=403, detail=f"{who.identity} is not authorized for tenant {tenant}")
+        return who
 
     def manager(request: Request, who: Principal = Depends(principal)) -> Principal:
         try:
@@ -618,10 +630,33 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, f"agent.business_workflow.{body.decision}", {"thread_id": thread_id, "status": result["values"].get("status")}, request.state.correlation_id)
         return {"graph": "supply_chain_business", **result}
 
+    # ------------------------------------------------ Deep Agent harness settings (governed, audited)
+    HARNESS_KEY = "deep_agent_harness"
+
+    def current_harness() -> dict:
+        row = store.get_setting(HARNESS_KEY)
+        return DeepAgentHarness(**(row["value"] if row else {})).model_dump()
+
+    @app.get("/api/v1/deep-agents/harness")
+    def deep_harness(who: Principal = Depends(reader)) -> dict:
+        del who
+        row = store.get_setting(HARNESS_KEY)
+        return {"harness": current_harness(), "defaults": DeepAgentHarness().model_dump(), "updated_by": row["updated_by"] if row else None,
+                "updated_at": row["updated_at"] if row else None,
+                "options": {"subagents": list(DEEP_SUBAGENTS), "tools": list(DEEP_TOOLS), "report_style": ["full", "executive"],
+                            "ranges": {"temperature": [0, 1], "max_tokens": [256, 4000], "max_steps": [20, 200]}}}
+
+    @app.put("/api/v1/deep-agents/harness")
+    def set_deep_harness(body: DeepAgentHarness, request: Request, who: Principal = Depends(manager)) -> dict:
+        saved = store.set_setting(HARNESS_KEY, body.model_dump(), who.identity)
+        store.audit(who.identity, who.role, "agent.deep_research.harness_updated", body.model_dump(), request.state.correlation_id)
+        return {"harness": saved["value"], "updated_by": saved["updated_by"], "updated_at": saved["updated_at"]}
+
     @app.post("/api/v1/deep-agents/supplier-research")
     def supplier_research(body: SupplierResearchRequest, request: Request, who: Principal = Depends(reader)) -> dict:
         prompt = f"Supplier: {body.supplier}." + (f" Material: {body.material}." if body.material else "") + f" Task: {body.question}"
-        result = _graph_call(runner.run, "supplier_deep_agent", {"messages": [{"role": "user", "content": prompt}]}, body.thread_id)
+        harness = current_harness()
+        result = _graph_call(runner.run, "supplier_deep_agent", {"messages": [{"role": "user", "content": prompt}], "harness": harness}, body.thread_id)
         messages = result["values"].get("messages", [])
         report = next((m["content"] for m in reversed(messages) if m["type"] == "ai" and m["content"]), "")
         tools_used = [call["name"] for m in messages for call in m.get("tool_calls", [])]
@@ -635,6 +670,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
             "tools_used": tools_used,
             "subagents_used": [call["args"].get("subagent_type") for m in messages for call in m.get("tool_calls", []) if call["name"] == "task"],
             "files": list((result["values"].get("files") or {}).keys()),
+            "harness": result["values"].get("harness_used") or harness,
             "elapsed_seconds": result.get("elapsed_seconds"),
             "actor": who.identity,
         }
@@ -771,6 +807,79 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     def audit(limit: int = Query(default=100, ge=1, le=1000), who: Principal = Depends(manager)) -> dict:
         del who
         return {"chain_valid": store.verify_chain(), "events": store.audit_events(limit)}
+
+    # ------------------------------------------------ POC contract: short REST paths for Flowise / LangGraph HTTP nodes
+    # Thin, documented wrappers over the same engine, ledger and governance as /api/v1 — same auth, tenant scope and audit.
+    poc = ["POC contract (Flowise / LangGraph REST)"]
+
+    @app.get("/sap/inventory", tags=poc, summary="SAP material stock (read-only)")
+    def poc_sap_inventory(plant: str | None = None, material: str | None = None, who: Principal = Depends(reader)) -> dict:
+        del who
+        data = sap.odata("A_MaterialStock", top=1000, plant=plant, material=material)
+        return {"source": "SAP S/4HANA OData A_MaterialStock (read-only)", "snapshot": sap.snapshot["id"], "count": len(data["value"]), "items": data["value"]}
+
+    @app.get("/sap/production-orders", tags=poc, summary="SAP production orders (read-only)")
+    def poc_sap_production_orders(plant: str | None = None, material: str | None = None, who: Principal = Depends(reader)) -> dict:
+        del who
+        data = sap.odata("A_ProductionOrder", top=1000, plant=plant, material=material)
+        return {"source": "SAP S/4HANA OData A_ProductionOrder (read-only)", "snapshot": sap.snapshot["id"], "count": len(data["value"]), "items": data["value"]}
+
+    @app.post("/forecast/demand", tags=poc, summary="XGBoost demand forecast")
+    def poc_forecast_demand(body: ForecastRequest, request: Request, who: Principal = Depends(reader)) -> dict:
+        return save("forecast", body.model_dump(), engine.demand_forecast(body.material, body.warehouse, body.horizon_days), who, request)
+
+    @app.post("/forecast/supplier-lead-time", tags=poc, summary="Empirical supplier lead-time forecast from SAP receipts")
+    def poc_forecast_lead_time(body: SupplierLeadTimeRequest, request: Request, who: Principal = Depends(reader)) -> dict:
+        return save("supplier_lead_time", body.model_dump(), engine.supplier_lead_time(body.supplier, body.material), who, request)
+
+    @app.post("/optimizer/material-readiness", tags=poc, summary="BOM material readiness (deterministic netting)")
+    def poc_material_readiness(body: FactoryReadinessRequest, request: Request, who: Principal = Depends(reader)) -> dict:
+        result = engine.factory_readiness(body.plant, body.material, body.quantity, body.need_by)
+        return save("factory_readiness", body.model_dump(mode="json"), result, who, request)
+
+    @app.post("/optimizer/warehouse-transfer", tags=poc, summary="Warehouse transfer optimisation (XGBoost + OR-Tools)")
+    def poc_warehouse_transfer(body: StockBalanceRequest, request: Request, who: Principal = Depends(reader)) -> dict:
+        return save("stock_balance", body.model_dump(), engine.stock_balance(body.material, body.horizon_days, body.service_level), who, request)
+
+    @app.post("/decisions", tags=poc, status_code=201, summary="Submit a decision (recommendation) for human review")
+    def poc_decisions(body: RecommendationRequest, request: Request, who: Principal = Depends(reader)) -> dict:
+        return submit_recommendation(body, request, who)
+
+    @app.post("/decisions/{decision_id}/human-review", tags=poc, summary="Manager accepts / modifies / rejects a decision")
+    def poc_human_review(decision_id: int, body: DecisionRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        return decide(decision_id, body, request, who)
+
+    @app.post("/outcomes/reconcile", tags=poc, summary="Reconcile an executed decision with what SAP shows happened")
+    def poc_reconcile(body: ReconcileRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        rec = store.get_recommendation(body.decision_id)
+        if rec is None or rec["status"] != "executed":
+            raise HTTPException(status_code=409, detail="Only an executed decision can be reconciled")
+        expected_qty = sum(float(a.get("quantity") or 0) for a in rec["actions"] if isinstance(a.get("quantity"), (int, float))) or None
+        dates = [a[k] for a in rec["actions"] for k in ("arrives", "new_delivery_date", "need_by") if isinstance(a.get(k), str)]
+        # transfers carry a lane lead time instead of a date: expected arrival = SAP business date + lead days
+        dates += [(sap.as_of + timedelta(days=int(a["lead_days"]))).isoformat() for a in rec["actions"] if isinstance(a.get("lead_days"), (int, float))]
+        expected_date = max(dates) if dates else None
+        qty_ok = body.actual_quantity is None or expected_qty is None or body.actual_quantity >= 0.95 * expected_qty
+        date_ok = body.actual_date is None or expected_date is None or body.actual_date.isoformat() <= expected_date
+        observed = {"sap_document": body.sap_document, "expected_quantity": expected_qty, "actual_quantity": body.actual_quantity,
+                    "quantity_variance": None if body.actual_quantity is None or expected_qty is None else round(body.actual_quantity - expected_qty, 3),
+                    "expected_by": expected_date, "actual_date": body.actual_date.isoformat() if body.actual_date else None,
+                    "days_late": None if not (body.actual_date and expected_date) else (body.actual_date - date.fromisoformat(expected_date)).days,
+                    "checks": {"quantity_in_full": qty_ok, "on_time": date_ok}}
+        if not any(o["recommendation_id"] == body.decision_id for o in store.list_outcomes()):
+            store.create_outcome(body.decision_id, sap.snapshot["id"], rec["kind"], {"actions": len(rec["actions"]), "summary": "; ".join(_expectation(a) for a in rec["actions"])[:600]}, expected_date)
+        result = store.record_outcome(body.decision_id, qty_ok and date_ok, observed, body.realized_impact_eur, body.sap_document, body.note, who.identity)
+        if result is None:
+            raise HTTPException(status_code=409, detail="This decision's outcome was already reconciled")
+        store.audit(who.identity, who.role, "outcome.reconciled", {"decision_id": body.decision_id, "achieved": result["achieved"], "sap_document": body.sap_document},
+                    request.state.correlation_id)
+        return {"decision_id": body.decision_id, "achieved": result["achieved"], "status": result["status"], "reconciliation": observed, "outcome": result}
+
+    @app.get("/learning/model-performance", tags=poc, summary="Model accuracy, drift and verified decision outcomes")
+    def poc_model_performance(who: Principal = Depends(reader)) -> dict:
+        del who
+        view = roles.learning()
+        return {"as_of": view["as_of"], "models": view["models"], "summary": view["summary"], "note": view["note"]}
 
     frontend = Path(ROOT / "frontend")
     if frontend.exists():

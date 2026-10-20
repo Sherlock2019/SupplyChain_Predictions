@@ -145,6 +145,44 @@ class ResumeRequest(StrictModel):
     comment: str = Field(default="", max_length=2000)
 
 
+class SupplierLeadTimeRequest(StrictModel):
+    supplier: str = Field(min_length=2, max_length=160, description="supplier name or vendor code")
+    material: str | None = Field(default=None, pattern=CODE)
+
+
+class ReconcileRequest(StrictModel):
+    """What SAP shows actually happened after an executed decision (goods receipt, delivery or posting)."""
+    decision_id: int = Field(ge=1)
+    sap_document: str = Field(min_length=3, max_length=64, pattern=r"^[A-Za-z0-9\-_/.]+$")
+    actual_quantity: float | None = Field(default=None, ge=0)
+    actual_date: date | None = None
+    realized_impact_eur: float | None = Field(default=None, ge=-10_000_000, le=10_000_000)
+    note: str = Field(default="", max_length=2000)
+
+
+DEEP_SUBAGENTS = ("contract-analyst", "quality-analyst", "logistics-analyst")
+DEEP_TOOLS = ("supplier_risk", "sap_snapshot", "search_governed_knowledge", "quality_status", "logistics_status", "factory_material_readiness")
+
+
+class DeepAgentHarness(StrictModel):
+    """Harness settings of the Deep Agents supplier-research agent (model, step budget, subagents, tools, output rules)."""
+    temperature: float = Field(default=0.0, ge=0.0, le=1.0)
+    max_tokens: int = Field(default=1500, ge=256, le=4000)
+    max_steps: int = Field(default=60, ge=20, le=200, description="LangGraph recursion limit: total model + tool steps per run")
+    subagents: list[Literal["contract-analyst", "quality-analyst", "logistics-analyst"]] = Field(default_factory=lambda: list(DEEP_SUBAGENTS))
+    tools: list[Literal["supplier_risk", "sap_snapshot", "search_governed_knowledge", "quality_status", "logistics_status", "factory_material_readiness"]] = Field(
+        default_factory=lambda: list(DEEP_TOOLS), min_length=1)
+    require_plan: bool = True
+    require_citations: bool = True
+    report_style: Literal["full", "executive"] = "full"
+
+    @model_validator(mode="after")
+    def _unique(self) -> DeepAgentHarness:
+        self.subagents = list(dict.fromkeys(self.subagents))
+        self.tools = list(dict.fromkeys(self.tools))
+        return self
+
+
 class SupplierResearchRequest(StrictModel):
     supplier: str = Field(min_length=2, max_length=160)
     material: str | None = Field(default=None, pattern=CODE)

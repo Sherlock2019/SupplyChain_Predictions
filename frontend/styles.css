@@ -508,3 +508,4 @@ table.calc tfoot td { border-top: 2px solid var(--line); } table.calc .total { f
 :root[data-look="sap"] .msg { border-radius: 8px; }
 :root[data-look="sap"] .modal { border-radius: 12px; }
 :root[data-look="sap"] button.icon { padding: 7px; width: 36px; height: 36px; }
+.harness-group { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; margin-top: 10px; } .harness-group b { min-width: 110px; font-size: 13px; } label.check { font-size: 13px; color: var(--ink); font-weight: 400; }

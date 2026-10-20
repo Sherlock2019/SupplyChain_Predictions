@@ -966,6 +966,33 @@ class SupplyChainEngine:
                               for o in sorted(recommended.values(), key=lambda o: o["time_to_deliver_days"])],
         }
 
+    def supplier_lead_time(self, supplier: str, material: str | None = None) -> dict:
+        """Empirical lead-time forecast from SAP receipt history (promised vs received dates), never from an LLM.
+        predicted = contract lead time + mean observed delay; p90 = contract + 90th-percentile delay."""
+        master = self.sap.supplier(supplier)
+        if material:
+            self.sap.validate_codes(material=material)
+        receipts = [h for h in self.sap.section("po_history") if h["supplier"] == master["name"] and (not material or h["material"] == material)]
+        delays = sorted((date.fromisoformat(h["received_date"]) - date.fromisoformat(h["promised_date"])).days for h in receipts)
+        contract = float(master["contract_lead_time_days"])
+        if delays:
+            mean = sum(delays) / len(delays)
+            p90 = delays[min(len(delays) - 1, math.ceil(0.9 * len(delays)) - 1)]
+            on_time = 100 * sum(d <= 0 for d in delays) / len(delays)
+        else:
+            mean = p90 = 0.0
+            on_time = None
+        confidence = "low" if len(delays) < 3 else "medium" if len(delays) < 8 else "high"
+        return {
+            "use_case": "supplier_lead_time", "as_of": self.sap.as_of.isoformat(), "supplier": master["name"], "code": master["code"],
+            "material": material, "contract_lead_time_days": contract, "receipts": len(delays),
+            "mean_delay_days": round(mean, 1), "predicted_lead_time_days": round(contract + max(mean, 0.0), 1),
+            "p90_lead_time_days": round(contract + max(p90, 0), 1), "on_time_pct": None if on_time is None else round(on_time, 1),
+            "delays_days": delays, "confidence": confidence,
+            "method": "empirical: contract lead time + observed delay distribution from SAP receipts (po_history)",
+            "proposed_actions": [],
+        }
+
     def sales_outlook(self, material: str | None = None, horizon_days: int = 60) -> dict:
         """Current sales rates per product and DC (last 7 / 28 days vs the 14-day forecast) and a calendar of predicted
         stock-out and below-safety dates, with the resupply arrivals that should prevent them."""

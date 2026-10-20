@@ -69,9 +69,9 @@ class LocalRunner:
         with self._lock:
             if graph_id not in self._graphs:
                 if graph_id == "supplier_deep_agent":
-                    from backend.app.deep_agent import build_deep_agent
+                    from backend.app.deep_agent import build_graph
 
-                    self._graphs[graph_id] = build_deep_agent(self.checkpointer)
+                    self._graphs[graph_id] = build_graph(self.checkpointer)
                 elif graph_id == "supply_chain_agentflow":
                     from backend.app.agentflow import builder
 

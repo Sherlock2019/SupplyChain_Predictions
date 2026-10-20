@@ -158,6 +158,51 @@ function buildChatflow() {
     return { nodes: b.nodes, edges: b.edges }
 }
 
+
+// ----------------------------------------------------------------------------- FastAPI gateway configuration map
+const API_PANELS = [
+    ['FASTAPI GATEWAY · process', 'backend.app.main:create_app (uvicorn, port 8000). Swagger UI /docs · ReDoc /redoc · OpenAPI /openapi.json.\nOne app serves the SPARC front end, the REST API, the SAP OData facade and the agent proxies.'],
+    ['Middleware chain (every request)', '1 X-Correlation-ID (generated if missing, echoed back)\n2 X-Tenant / ?tenant= → per-customer SAP snapshot + engine\n3 CORS (Content-Type, X-API-Key, X-Correlation-ID, X-Tenant)\n4 Prometheus metrics: requests, latency, denials'],
+    ['Security', 'X-API-Key → identity + role (planner | manager).\nTENANT_SCOPES: identity=tenant|tenant → 403 outside scope.\nManager-only: human-review, execute (SAP sandbox), outcomes, consent, harness, audit.\nSHA-256 hash-chained audit of every action. SAP writes → 405.'],
+    ['POC contract routes (Flowise / LangGraph REST)', 'GET  /sap/inventory · /sap/production-orders\nPOST /forecast/demand · /forecast/supplier-lead-time\nPOST /optimizer/material-readiness · /optimizer/warehouse-transfer\nPOST /decisions · /decisions/{id}/human-review\nPOST /outcomes/reconcile · GET /learning/model-performance'],
+    ['/api/v1 product routes', 'roles · northstar · products/{m}/brief · sales/outlook · dashboards · insights · sites · network/map · moat (+consent) · learning · recommendations (+decision, execute, outcome) · watches · tenants · analysis/* (readiness, balance, forecast, what-if, supplier, quality, logistics, sales orders, stocktake) · rag/search'],
+    ['SAP adapter (read-only)', '/sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} + $metadata: A_MaterialStock, A_PurchaseOrderItem, A_PurchaseOrderHistory, A_ProductionOrder, A_BillOfMaterialItem, A_InspectionLot, A_SalesOrderItem, A_Shipment, A_TransportLane, A_PhysInventoryDocItem …\nPOST/PUT/PATCH/DELETE → 405. Execution → A_SandboxDocument outbox only.'],
+    ['Agent endpoints', 'POST /api/v1/chat (role = specialist agent) · /api/v1/langgraph/agentflow (+resume) · /api/v1/workflows/business (+resume) · /api/v1/deep-agents/supplier-research · GET/PUT /api/v1/deep-agents/harness · POST /api/v1/flowise/{chatflow|agentflow}/predict · /api/v1/recommendations/from-agent'],
+    ['Data stores', 'PostgreSQL 17: analyses, recommendations, decision_feedback, sap_document, outcome, consent, setting, watch, audit chain; LangGraph checkpoints.\npgvector: RAG chunks (bge-small, HNSW).\nSQLite + in-memory RAG for unit tests.'],
+    ['Configuration (.env)', 'DATABASE_URL · POSTGRES_URL · RAG_BACKEND · EMBEDDING_MODEL · QWEN_BASE_URL / QWEN_MODEL · LLM_MODE · LANGGRAPH_URL · FLOWISE_URL / FLOWISE_API_KEY · MCP_URL · LANGFUSE_* · PLANNER / MANAGER API keys · TENANT_SCOPES · SAP_EXECUTION_MODE=sandbox · DEMO_AUTO_LOGIN (local only)'],
+    ['Observability', 'GET /metrics (Prometheus) → Grafana dashboard. Langfuse traces for LangGraph and Flowise runs. GET /health (liveness) · GET /api/v1/status (every component: SAP, store, RAG, Qwen, LangGraph, Flowise, MCP, Langfuse, Grafana).'],
+    ['Flowise HTTP node examples', 'POST {{$vars.copilot_api_url}}/optimizer/warehouse-transfer\n  headers: X-API-Key = {{$vars.copilot_tool_key}}\n  body: {"material":"FG-PERFUME-100","horizon_days":14}\nPOST …/decisions  {"analysis_id":"AN-…","explanation":"…"}\nPOST …/forecast/supplier-lead-time  {"supplier":"AirlessPack Asia"}\nMore: docs/FLOWISE_API_EXAMPLES.md'],
+]
+
+function buildApiMap() {
+    const b = new ChatflowBuilder()
+    b.add('chatmodels/ChatOpenAICustom/ChatOpenAICustom.js', 'chatOpenAICustom_0', 'Qwen (OpenAI-compatible)', {
+        modelName: QWEN_MODEL, temperature: 0, streaming: false, maxTokens: 1200, timeout: 180000, basepath: QWEN_BASE_URL
+    }, { x: 80, y: 820 })
+    b.add('memory/BufferWindowMemory/BufferWindowMemory.js', 'bufferWindowMemory_0', 'Conversation memory (6 turns)', { k: '6', memoryKey: 'chat_history' }, { x: 80, y: 1400 })
+    const gets = [
+        ['requestsGet_0', 'sap_inventory', 'GET /sap/inventory (read-only SAP stock)', '/sap/inventory', 'Current SAP material stock by plant, material and batch (read-only).'],
+        ['requestsGet_1', 'sap_production_orders', 'GET /sap/production-orders (read-only SAP)', '/sap/production-orders', 'SAP production orders: order, plant, material, quantity, finish date, status (read-only).'],
+        ['requestsGet_2', 'model_performance', 'GET /learning/model-performance', '/learning/model-performance', 'Forecast model accuracy (WAPE vs baseline), drift and verified decision outcomes.'],
+    ]
+    gets.forEach(([id, name, label, path, description], i) => b.add('tools/RequestsGet/RequestsGet.js', id, label, {
+        requestsGetUrl: `{{$vars.copilot_api_url}}${path}`, requestsGetName: name, requestsGetDescription: description,
+        requestsGetHeaders: GATEWAY_HEADERS, requestsGetMaxOutputLength: 6000
+    }, { x: 460, y: 820 + i * 360 }))
+    b.add('agents/ToolAgent/ToolAgent.js', 'toolAgent_0', 'FastAPI gateway explorer', {
+        tools: gets.map(([id]) => `{{${id}.data.instance}}`), memory: '{{bufferWindowMemory_0.data.instance}}', model: '{{chatOpenAICustom_0.data.instance}}',
+        systemMessage: 'You explain and demonstrate the SPARC FastAPI gateway. Use the tools to show live read-only data from the POC contract endpoints. ' +
+            'SAP is read-only; decisions need human review by a manager. Never invent values.',
+        maxIterations: 4
+    }, { x: 860, y: 1000 })
+    API_PANELS.forEach(([title, body], i) => b.add('utilities/StickyNote/StickyNote.js', `stickyNote_api${i}`, title,
+        { note: `${title}\n\n${body}` }, { x: 80 + (i % 4) * 360, y: -40 + Math.floor(i / 4) * 290 }))
+    b.connect('chatOpenAICustom_0', 'toolAgent_0', 'model')
+    b.connect('bufferWindowMemory_0', 'toolAgent_0', 'memory')
+    gets.forEach(([id]) => b.connect(id, 'toolAgent_0', 'tools'))
+    return { nodes: b.nodes, edges: b.edges }
+}
+
 // ----------------------------------------------------------------------------- AgentFlow V2
 const AGENTFLOW_DIRS = {
     startAgentflow: 'Start', agentAgentflow: 'Agent', conditionAgentAgentflow: 'ConditionAgent', humanInputAgentflow: 'HumanInput',
@@ -385,4 +430,4 @@ function buildAgentflow() {
     return { nodes: b.nodes, edges: b.edges }
 }
 
-process.stdout.write(JSON.stringify({ chatflow: buildChatflow(), agentflow: buildAgentflow() }))
+process.stdout.write(JSON.stringify({ chatflow: buildChatflow(), agentflow: buildAgentflow(), apimap: buildApiMap() }))

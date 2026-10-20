@@ -148,3 +148,18 @@ def test_metrics_exposed(client, assistant_headers):
     client.get("/api/v1/kpis", headers=assistant_headers)
     body = client.get("/metrics").text
     assert "copilot_http_requests_total" in body
+
+
+def test_deep_agent_harness_settings_are_governed(client, assistant_headers, manager_headers):
+    view = client.get("/api/v1/deep-agents/harness", headers=assistant_headers).json()
+    assert view["harness"]["max_steps"] == 60 and set(view["options"]["subagents"]) == {"contract-analyst", "quality-analyst", "logistics-analyst"}
+    change = {**view["harness"], "max_steps": 40, "subagents": ["contract-analyst", "quality-analyst"], "report_style": "executive"}
+    assert client.put("/api/v1/deep-agents/harness", json=change, headers=assistant_headers).status_code == 403  # managers only
+    assert client.put("/api/v1/deep-agents/harness", json={**change, "max_steps": 9999}, headers=manager_headers).status_code == 422
+    saved = client.put("/api/v1/deep-agents/harness", json=change, headers=manager_headers).json()
+    assert saved["harness"]["max_steps"] == 40 and saved["updated_by"]
+    again = client.get("/api/v1/deep-agents/harness", headers=assistant_headers).json()
+    assert again["harness"]["report_style"] == "executive" and again["harness"]["subagents"] == ["contract-analyst", "quality-analyst"]
+    audit = client.get("/api/v1/audit?limit=20", headers=manager_headers).json()["events"]
+    assert any(e["action"] == "agent.deep_research.harness_updated" for e in audit)
+    client.put("/api/v1/deep-agents/harness", json=view["defaults"], headers=manager_headers).raise_for_status()

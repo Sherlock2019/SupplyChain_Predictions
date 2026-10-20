@@ -48,6 +48,9 @@ create table if not exists decision_feedback (
 );
 create table if not exists consent (
   tenant_id text primary key, industry_learning integer not null, updated_by text not null, updated_at text not null
+);
+create table if not exists setting (
+  key text primary key, value text not null, updated_by text not null, updated_at text not null
 );"""
 
 POSTGRES_SCHEMA = """
@@ -84,6 +87,9 @@ create table if not exists decision_feedback (
 );
 create table if not exists consent (
   tenant_id text primary key, industry_learning integer not null, updated_by text not null, updated_at text not null
+);
+create table if not exists setting (
+  key text primary key, value text not null, updated_by text not null, updated_at text not null
 );"""
 
 
@@ -389,6 +395,16 @@ class Store:
         self._db.run([("delete from consent where tenant_id=?", (tenant_id,)),
                       ("insert into consent(tenant_id,industry_learning,updated_by,updated_at) values(?,?,?,?)", (tenant_id, int(industry_learning), actor, _now()))])
         return self.consent(tenant_id)  # type: ignore[return-value]
+
+    # --------------------------------------------------------- settings (e.g. the Deep Agent harness)
+    def get_setting(self, key: str) -> dict | None:
+        row = self._db.query("select * from setting where key=?", (key,), fetch="one")
+        return None if row is None else {**row, "value": json.loads(row["value"])}
+
+    def set_setting(self, key: str, value: dict, actor: str) -> dict:
+        self._db.run([("delete from setting where key=?", (key,)),
+                      ("insert into setting(key,value,updated_by,updated_at) values(?,?,?,?)", (key, json.dumps(value), actor, _now()))])
+        return self.get_setting(key)  # type: ignore[return-value]
 
     def decision_stats(self, snapshot_id: str | None = None) -> dict:
         """Acceptance and override (rejection) rates with the reasons experts gave."""

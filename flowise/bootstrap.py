@@ -23,6 +23,7 @@ from pathlib import Path
 
 CHATFLOW_NAME = "Aurelia Supply Chain Copilot - Chatflow"
 AGENTFLOW_NAME = "Aurelia Supply Chain Supervisor - AgentFlow V2"
+APIMAP_NAME = "SPARC FastAPI gateway - configuration map"
 KEY_NAME = "aurelia-gateway"
 CREDENTIAL_NAME = "qwen-openai-compatible"
 
@@ -177,14 +178,14 @@ def main() -> int:
     generated = Path(__file__).resolve().parent / "generated"
     try:
         generated.mkdir(exist_ok=True)
-        for kind, name in (("chatflow", CHATFLOW_NAME), ("agentflow", AGENTFLOW_NAME)):
+        for kind, name in (("chatflow", CHATFLOW_NAME), ("agentflow", AGENTFLOW_NAME), ("apimap", APIMAP_NAME)):
             (generated / f"{kind}.json").write_text(json.dumps({"name": name, "type": kind.upper(), **flows[kind]}, indent=1))
     except OSError:
         pass
 
     existing = {row["name"]: row for row in flowise.call("GET", "/api/v1/chatflows", auth="key")}
     ids = {}
-    for kind, name, flow_type in (("chatflow", CHATFLOW_NAME, "CHATFLOW"), ("agentflow", AGENTFLOW_NAME, "AGENTFLOW")):
+    for kind, name, flow_type in (("chatflow", CHATFLOW_NAME, "CHATFLOW"), ("agentflow", AGENTFLOW_NAME, "AGENTFLOW"), ("apimap", APIMAP_NAME, "CHATFLOW")):
         body = {"name": name, "flowData": json.dumps(flows[kind]), "deployed": True, "isPublic": False, "type": flow_type, "category": "Supply Chain"}
         if name in existing:
             row = flowise.call("PUT", f"/api/v1/chatflows/{existing[name]['id']}", body, auth="key")
