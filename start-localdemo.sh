@@ -52,8 +52,13 @@ die() { printf '  \033[31m✘ %s\033[0m\n' "$*"; exit 1; }
 
 step "Checking prerequisites"
 command -v docker >/dev/null || die "docker is required"
-docker compose version >/dev/null 2>&1 || die "docker compose v2 is required"
-docker info >/dev/null 2>&1 || die "docker daemon is not running"
+timeout 30 docker compose version >/dev/null 2>&1 || die "docker compose v2 is required"
+# A busy or stuck daemon (e.g. after an interrupted build, or a machine out of memory) must not hang the launcher.
+timeout 30 docker info >/dev/null 2>&1 || die "Docker is not responding within 30 s — try: sudo systemctl restart docker (check memory: free -h)"
+MEM_GB=$(awk '/MemTotal/ {printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null || echo 0)
+if [ "$NOLLM" = 0 ] && [ "${MEM_GB:-0}" -gt 0 ] && [ "$MEM_GB" -lt 15 ] && [ "${QWEN_MODEL:-qwen2.5-7b-scm}" = qwen2.5-7b-scm ]; then
+  c_warn "only ${MEM_GB} GB RAM: Qwen 7B + the full stack may run out of memory — use --no-llm or --lite, or QWEN_MODEL=qwen2.5-3b-scm in .env"
+fi
 command -v python3 >/dev/null || die "python3 is required"
 command -v curl >/dev/null || die "curl is required"
 c_ok "docker, compose, python3, curl"
