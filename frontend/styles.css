@@ -342,3 +342,169 @@ pre { white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace
   .askbar kbd { display: none; }
 }
 @media print { .sidebar, .topbar, .drawer, .page-actions { display: none; } .app { display: block; } }
+
+/* ---- KPI extras: target, unavailable data, definition on tap ---- */
+.kpi .target { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.kpi.explain { cursor: pointer; transition: box-shadow .15s; }
+.kpi.explain:hover, .kpi.explain:focus-visible { box-shadow: var(--shadow-lift); }
+.kpi.na { background: var(--surface-2); box-shadow: none; }
+.kpi.na .value { font-size: 15px; font-weight: 600; color: var(--muted); margin-top: 8px; }
+.kpis.compact { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin: 0; }
+.kpis.compact .kpi { box-shadow: none; background: var(--surface-2); padding: 12px 14px; }
+.kpis.compact .kpi .value { font-size: 22px; }
+dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13.5px; margin: 12px 0; }
+dl.kv dt { color: var(--muted); } dl.kv dd { margin: 0; }
+
+/* ---- role-first dashboard ---- */
+.role-pills button .later { font-size: 10px; font-weight: 600; color: var(--muted); margin-left: 3px; }
+.role-head { display: grid; grid-template-columns: 1fr auto; gap: 16px 28px; align-items: center; background: var(--surface); border-radius: 22px; padding: 22px 26px; margin-bottom: 16px; box-shadow: var(--shadow-lift); }
+.role-head .eyebrow { font-size: 12px; font-weight: 600; color: var(--accent-text); margin-bottom: 4px; }
+.role-head h2 { font-size: 24px; letter-spacing: -.02em; margin: 0 0 4px; } .role-head p { margin: 0; color: var(--ink-2); }
+.role-head .cta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; max-width: 360px; text-align: right; }
+.role-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 20px; }
+.predictions { display: flex; flex-direction: column; }
+.prediction { display: grid; grid-template-columns: 110px minmax(0, 1fr) 150px 90px; gap: 6px 14px; align-items: center; padding: 11px 4px 11px 14px; border-bottom: 1px solid var(--line); position: relative; }
+.prediction::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 3px; border-radius: 3px; background: var(--tone); }
+.prediction:last-child { border-bottom: 0; }
+.prediction .what b { display: block; font-weight: 600; font-size: 13.5px; } .prediction .what span { color: var(--muted); font-size: 12px; }
+.prediction .when { font-size: 12.5px; color: var(--ink-2); } .prediction .risk { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-big { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.cost-big span { color: var(--muted); font-size: 12.5px; font-weight: 500; } .cost-big b { font-size: 30px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.cost-big.fix b { color: var(--good-text); } .cost-big em { font-style: normal; color: var(--muted); font-size: 12px; }
+.ratio { margin: 12px 0 6px; font-size: 14px; }
+.agent-card .agent-top { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+.agent-avatar { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(145deg, #2997ff, #0058b9); color: #fff; flex: none; }
+.agent-avatar .ico { width: 22px; height: 22px; }
+.agent-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.starters { display: flex; flex-wrap: wrap; gap: 8px; } .starters button { white-space: normal; text-align: left; }
+@media (max-width: 960px) { .role-head { grid-template-columns: 1fr; } .role-head .cta { align-items: flex-start; text-align: left; } .role-grid { grid-template-columns: minmax(0, 1fr); }
+  .prediction { grid-template-columns: 1fr; } .prediction .risk { text-align: left; } }
+
+/* ---- north star ---- */
+.northstar { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+.ns-col { padding: 22px 24px; } .ns-col.learn { background: color-mix(in srgb, var(--accent) 5%, var(--surface)); border-left: 1px solid var(--line); }
+.northstar .eyebrow { font-size: 12px; font-weight: 600; color: var(--accent-text); margin-bottom: 6px; }
+.northstar h2 { font-size: 17px; line-height: 1.35; letter-spacing: -.01em; margin: 0 0 14px; }
+.ns-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 8px; }
+.ns-value { font-size: 24px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ns-label { font-size: 12.5px; font-weight: 600; } .ns-hint { font-size: 11.5px; color: var(--muted); }
+@media (max-width: 960px) { .northstar { grid-template-columns: 1fr; } .ns-col.learn { border-left: 0; border-top: 1px solid var(--line); } .ns-row { grid-template-columns: 1fr 1fr; } }
+
+/* ---- intelligence moat ---- */
+.moat-hero .moat-line { margin-top: 10px; font-weight: 600; color: var(--ink); }
+.flywheel { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.fw-stage { flex: 1 1 170px; background: var(--surface); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); position: relative; }
+.fw-n { position: absolute; top: 12px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.fw-count { font-size: 28px; font-weight: 600; letter-spacing: -.02em; } .fw-unit { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.fw-stage h3 { font-size: 14px; margin: 0 0 3px; } .fw-stage p { font-size: 12.5px; color: var(--ink-2); margin: 0; }
+.fw-arrow { align-self: center; color: var(--muted); font-size: 20px; }
+.fw-loop { flex-basis: 100%; text-align: center; color: var(--accent-text); font-weight: 500; font-size: 13px; padding: 8px; background: var(--accent-soft); border-radius: 12px; }
+.moat-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.moat-metric { background: var(--surface); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); }
+.mm-n { font-size: 11px; font-weight: 700; color: var(--accent-text); } .moat-metric h3 { font-size: 14px; margin: 2px 0 6px; }
+.mm-value { font-size: 16px; font-weight: 600; margin-bottom: 6px; } .moat-metric p { font-size: 12px; color: var(--muted); margin: 0; }
+.chip.pot-very-high, .chip.pot-potentially-very-high { background: var(--good-soft); color: var(--good-text); } .chip.pot-high { background: var(--accent-soft); color: var(--accent-text); }
+.gate { display: flex; flex-direction: column; gap: 8px; }
+.gate-row { display: grid; grid-template-columns: 120px 1fr; gap: 2px 12px; align-items: center; padding: 8px 12px; background: var(--surface-2); border-radius: 12px; }
+.gate-row .note { grid-column: 2; margin: 0; font-size: 12px; }
+.gate-arrow { text-align: center; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.gate-model { display: flex; flex-direction: column; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); }
+.gate-model .note { margin: 2px 0 0; }
+table.calc input { width: 120px; text-align: right; } table.calc td input[data-cr] { width: 64px; }
+table.calc tfoot td { border-top: 2px solid var(--line); } table.calc .total { font-size: 20px; }
+
+/* ---- approvals: expertise + outcome capture ---- */
+.decision-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+.decision-row select { min-width: 190px; }
+.outcome-box { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); }
+.outcome-box.done { background: var(--surface-2); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.outcome-box input[data-doc] { width: 150px; } .outcome-box input[data-impact] { width: 150px; }
+
+/* ---- look switch ---- */
+.look-switch { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--hair); }
+.look-switch button { background: transparent; color: var(--ink-2); padding: 4px 10px; font-size: 12.5px; border-radius: 7px; }
+.look-switch button:hover { background: color-mix(in srgb, var(--surface) 60%, transparent); }
+.look-switch button.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); font-weight: 600; }
+
+/* ===================================================================================================
+   SAP Fiori look (Horizon theme): denser, squarer, "72"-style type, shell bar, side navigation.
+   Toggle: <html data-look="sap">. Works with light and dark.
+   =================================================================================================== */
+:root[data-look="sap"] {
+  --page: #f5f6f7; --surface: #ffffff; --surface-2: #f5f6f7; --raised: #ffffff; --sidebar: #ffffff;
+  --ink: #1d2d3e; --ink-2: #475e75; --muted: #556b82; --line: #e5e5e5; --hair: rgba(34, 53, 72, .08); --axis: #bcc3ca;
+  --accent: #0070f2; --accent-hover: #0064d9; --accent-soft: #ebf8ff; --accent-text: #0064d9;
+  --good-text: #256f3a; --critical-text: #aa0808; --good-soft: #f5fae5; --critical-soft: #ffeaf4;
+  --shadow: 0 0 .125rem rgba(34, 53, 72, .15), 0 .125rem .5rem rgba(34, 53, 72, .15);
+  --shadow-lift: 0 0 .125rem rgba(34, 53, 72, .15), 0 .5rem 1.25rem rgba(34, 53, 72, .18);
+  --radius: 12px; --radius-sm: 8px;
+  font-family: "72", "72full", Arial, Helvetica, sans-serif; letter-spacing: 0;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-look="sap"]:not([data-theme="light"]) {
+    --page: #12171c; --surface: #1d232a; --surface-2: #232a31; --raised: #232a31; --sidebar: #1d232a;
+    --ink: #eaecee; --ink-2: #c3cad1; --muted: #a9b4be; --line: #333c45; --hair: rgba(255, 255, 255, .08); --axis: #4d5a66;
+    --accent: #0070f2; --accent-hover: #1a7ef3; --accent-soft: rgba(77, 177, 255, .14); --accent-text: #4db1ff;
+    --good-text: #6cd28a; --critical-text: #ff8888; --good-soft: rgba(108, 210, 138, .12); --critical-soft: rgba(255, 136, 136, .12);
+    --shadow: 0 0 0 1px #333c45; --shadow-lift: 0 0 0 1px #3d4752, 0 .5rem 1.25rem rgba(0, 0, 0, .45);
+  }
+}
+:root[data-look="sap"][data-theme="dark"] {
+  --page: #12171c; --surface: #1d232a; --surface-2: #232a31; --raised: #232a31; --sidebar: #1d232a;
+  --ink: #eaecee; --ink-2: #c3cad1; --muted: #a9b4be; --line: #333c45; --hair: rgba(255, 255, 255, .08); --axis: #4d5a66;
+  --accent: #0070f2; --accent-hover: #1a7ef3; --accent-soft: rgba(77, 177, 255, .14); --accent-text: #4db1ff;
+  --good-text: #6cd28a; --critical-text: #ff8888; --good-soft: rgba(108, 210, 138, .12); --critical-soft: rgba(255, 136, 136, .12);
+  --shadow: 0 0 0 1px #333c45; --shadow-lift: 0 0 0 1px #3d4752, 0 .5rem 1.25rem rgba(0, 0, 0, .45);
+}
+:root[data-look="sap"] body { font-size: 14px; letter-spacing: 0; }
+/* shell bar + side navigation */
+:root[data-look="sap"] .topbar { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: 0 1px 0 var(--line), 0 .125rem .25rem rgba(34, 53, 72, .08); border-bottom: 0; min-height: 52px; padding: 8px 24px; }
+:root[data-look="sap"] .sidebar { backdrop-filter: none; -webkit-backdrop-filter: none; border-right: 1px solid var(--line); padding: 12px 8px; }
+:root[data-look="sap"] .brand .logo { border-radius: 6px; background: var(--accent); box-shadow: none; }
+:root[data-look="sap"] .nav-group { text-transform: none; font-size: 12px; font-weight: 700; color: var(--ink-2); margin-top: 16px; }
+:root[data-look="sap"] .nav a { border-radius: 8px; padding: 8px 10px; font-size: 14px; position: relative; }
+:root[data-look="sap"] .nav a.active { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
+:root[data-look="sap"] .nav a.active::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: var(--accent); }
+:root[data-look="sap"] .nav a.active .ico { color: var(--accent-text); }
+:root[data-look="sap"] .nav a.active .badge { background: var(--critical); }
+/* object-page header */
+:root[data-look="sap"] .page-head { background: var(--surface); margin: -28px -32px 20px; padding: 18px 32px 16px; box-shadow: 0 1px 0 var(--line); }
+:root[data-look="sap"] .page-head h1 { font-size: 24px; font-weight: 700; letter-spacing: 0; }
+:root[data-look="sap"] .page.active { animation: none; }
+/* buttons: emphasized / default / transparent */
+:root[data-look="sap"] button { border-radius: 8px; padding: 6px 14px; font-weight: 600; min-height: 36px; }
+:root[data-look="sap"] button.small { min-height: 26px; padding: 3px 10px; font-size: 13px; }
+:root[data-look="sap"] button.large { min-height: 44px; font-size: 15px; }
+:root[data-look="sap"] button.ghost { background: transparent; color: var(--accent-text); box-shadow: inset 0 0 0 1px var(--axis); }
+:root[data-look="sap"] button.ghost:hover { background: var(--accent-soft); }
+:root[data-look="sap"] button.link { min-height: 0; font-weight: 400; }
+:root[data-look="sap"] button.icon { min-height: 0; }
+:root[data-look="sap"] .arrow::after { content: ""; }
+/* inputs */
+:root[data-look="sap"] input, :root[data-look="sap"] select { border-radius: 8px; border-color: var(--axis); min-height: 36px; padding: 6px 10px; }
+:root[data-look="sap"] select { padding-right: 30px; }
+:root[data-look="sap"] .askbar input { background: var(--surface-2); border-color: var(--axis); padding-left: 36px; }
+/* cards / tiles: Fiori cards with header line */
+:root[data-look="sap"] .card, :root[data-look="sap"] .kpi, :root[data-look="sap"] .insight, :root[data-look="sap"] .dc, :root[data-look="sap"] .product,
+:root[data-look="sap"] .brief-stat, :root[data-look="sap"] .moat-metric, :root[data-look="sap"] .fw-stage { border-radius: 12px; }
+:root[data-look="sap"] .card > h2:first-child, :root[data-look="sap"] .card .chart-head h2 { font-size: 16px; font-weight: 700; }
+:root[data-look="sap"] .spotlight, :root[data-look="sap"] .role-head, :root[data-look="sap"] .northstar { border-radius: 12px; }
+:root[data-look="sap"] .spotlight h2, :root[data-look="sap"] .role-head h2 { letter-spacing: 0; }
+:root[data-look="sap"] .kpi .value, :root[data-look="sap"] .brief-stat .value, :root[data-look="sap"] .cost-big b, :root[data-look="sap"] .ns-value { letter-spacing: 0; font-weight: 400; }
+:root[data-look="sap"] .kpi .label { color: var(--ink-2); font-weight: 400; }
+/* segmented buttons */
+:root[data-look="sap"] .pills, :root[data-look="sap"] .look-switch { background: transparent; padding: 0; gap: 0; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--axis); }
+:root[data-look="sap"] .pills button, :root[data-look="sap"] .look-switch button { border-radius: 0; min-height: 32px; color: var(--accent-text); font-weight: 400; box-shadow: none; }
+:root[data-look="sap"] .pills button:first-child, :root[data-look="sap"] .look-switch button:first-child { border-radius: 8px 0 0 8px; }
+:root[data-look="sap"] .pills button:last-child, :root[data-look="sap"] .look-switch button:last-child { border-radius: 0 8px 8px 0; }
+:root[data-look="sap"] .pills button.on, :root[data-look="sap"] .look-switch button.on { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; box-shadow: inset 0 0 0 1px var(--accent); }
+:root[data-look="sap"] #suggestions, :root[data-look="sap"] #compare-suggestions { box-shadow: none; }
+:root[data-look="sap"] #suggestions button, :root[data-look="sap"] #compare-suggestions button { border-radius: 8px; box-shadow: inset 0 0 0 1px var(--axis); background: transparent; }
+:root[data-look="sap"] .tenant-bar { background: transparent; box-shadow: inset 0 0 0 1px var(--axis); border-radius: 8px; }
+/* tables: Fiori list header */
+:root[data-look="sap"] th { background: var(--surface-2); color: var(--ink-2); font-weight: 700; font-size: 12.5px; }
+:root[data-look="sap"] .status, :root[data-look="sap"] .chip { border-radius: 4px; }
+:root[data-look="sap"] .drawer { border-radius: 12px; }
+:root[data-look="sap"] .msg { border-radius: 8px; }
+:root[data-look="sap"] .modal { border-radius: 12px; }
+:root[data-look="sap"] button.icon { padding: 7px; width: 36px; height: 36px; }

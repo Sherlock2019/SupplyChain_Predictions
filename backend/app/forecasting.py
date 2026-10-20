@@ -59,6 +59,73 @@ def backtest(base_daily_demand: float, holdout_days: int = 14, horizon_days: int
     }
 
 
+def _errors(actual: np.ndarray, predicted: np.ndarray) -> dict:
+    err = predicted - actual
+    total = float(np.sum(actual)) or 1e-6
+    return {"wape_pct": round(float(np.sum(np.abs(err)) / total * 100), 2), "bias_pct": round(float(np.sum(err) / total * 100), 2),
+            "mae": round(float(np.mean(np.abs(err))), 2)}
+
+
+@lru_cache(maxsize=64)
+def evaluate_models(base_daily_demand: float, holdout_days: int = 14) -> dict:
+    """Model quality on the same holdout: XGBoost vs a seasonal-naive baseline (same weekday last week).
+    Drift = error on the most recent 7 days vs the 7 days before (both out of sample)."""
+    history = _history(base_daily_demand)
+    n = history.size
+    days = np.arange(n - holdout_days, n, dtype=float)
+    xgb, engine = _fit_predict(history, np.arange(n - holdout_days, dtype=float), days)
+    actual = history[n - holdout_days:]
+    naive = history[n - holdout_days - 7:n - 7]
+    model, baseline = _errors(actual, xgb), _errors(actual, naive)
+    half = holdout_days // 2
+    earlier, recent = _errors(actual[:half], xgb[:half]), _errors(actual[half:], xgb[half:])
+    return {
+        "engine": engine, "holdout_days": holdout_days, "model": model, "baseline": {"name": "seasonal naive (same weekday last week)", **baseline},
+        "error_reduction_pct": round(100 * (1 - model["wape_pct"] / baseline["wape_pct"]), 1) if baseline["wape_pct"] else None,
+        "drift": {"earlier_wape_pct": earlier["wape_pct"], "recent_wape_pct": recent["wape_pct"],
+                  "change_pts": round(recent["wape_pct"] - earlier["wape_pct"], 2)},
+        "demand_cv_pct": round(float(np.std(history[-28:]) / np.mean(history[-28:]) * 100), 1),
+    }
+
+
+@lru_cache(maxsize=256)
+def pooled_evaluation(target_bases: tuple[float, ...], donor_bases: tuple[float, ...], include_target: bool,
+                      scale_by_history: bool = True, holdout_days: int = 14) -> dict | None:
+    """Train one model on demand-normalised series from several customers and score it on the target customer's holdout.
+
+    include_target=False: the target's history is not used for training. scale_by_history=False is a cold start: the
+    forecast is scaled by the planned daily demand level only (what a newly onboarded customer has on day one).
+    Returns None without training data."""
+    n = _history(1.0).size
+    xs, ys = [], []
+    for base in donor_bases:  # other (consenting) customers: their full history
+        history = _history(base)
+        xs.append(_features(np.arange(n, dtype=float)))
+        ys.append(history / history[:n - holdout_days].mean())
+    if include_target:
+        for base in target_bases:  # the target's own history, never its holdout
+            history = _history(base)
+            days = np.arange(n - holdout_days, dtype=float)
+            xs.append(_features(days))
+            ys.append(history[: n - holdout_days] / history[: n - holdout_days].mean())
+    if not xs or not target_bases:
+        return None
+    from xgboost import XGBRegressor
+
+    model = XGBRegressor(n_estimators=100, max_depth=3, learning_rate=0.06, subsample=0.9, random_state=42, n_jobs=1)
+    model.fit(np.vstack(xs), np.concatenate(ys))
+    holdout = np.arange(n - holdout_days, n, dtype=float)
+    abs_err = total = 0.0
+    for base in target_bases:
+        history = _history(base)
+        scale = history[: n - holdout_days].mean() if scale_by_history else base
+        predicted = model.predict(_features(holdout)) * scale
+        actual = history[n - holdout_days:]
+        abs_err += float(np.sum(np.abs(predicted - actual)))
+        total += float(np.sum(actual))
+    return {"wape_pct": round(100 * abs_err / total, 2), "series": len(target_bases), "training_series": len(donor_bases) + (len(target_bases) if include_target else 0)}
+
+
 @lru_cache(maxsize=64)
 def forecast(base_daily_demand: float, horizon_days: int) -> dict:
     history = _history(base_daily_demand)

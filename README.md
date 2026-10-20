@@ -25,8 +25,20 @@ by a person and recorded in a tamper-evident audit chain.
 
 ## So what
 
-What a user gets on day one:
+What a user gets on day one — the product is designed around the people who make supply-chain decisions, not around the
+AI agents:
 
+* **My role** — one screen per role (Supply Chain Director, Demand Planner, Production Planner, Procurement Manager,
+  Warehouse Manager; then Logistics, Quality, Finance and AI/MLOps) answering four questions: **what matters** (KPIs with
+  agreed definitions, formulas, targets and SAP sources), **what is likely to go wrong** (dated predictions with their
+  basis), **what it will cost** (value at risk vs cost of the fixes) and **what to do next** (actions with buttons) — plus
+  the role's own specialised agent (e.g. *Procurement Agent*) with scoped tools and industry rules.
+* **North Star** — *maximise reliable customer fulfilment at the lowest sustainable supply-chain cost and inventory risk*,
+  next to the learning KPI (*improve verified outcomes over time vs the business baseline*) and the five platform KPIs
+  (OTIF, material readiness, inventory turnover, forecast WAPE, supply-chain cost) plus industry-specific KPIs.
+* **Intelligence moat** — the customer data intelligence flywheel (data → prediction → human decision → verified outcome →
+  validated labels), the six data moats with live evidence, the five moat-strength metrics, a consent / privacy gate for
+  industry learning, a customer-only vs generic vs industry vs cold-start model comparison and an opportunity calculator.
 * **Today** — the single most urgent issue with one button to fix it (e.g. *"Dubai runs out of Eau de Parfum in 8 days →
   transfer 1,170 units from Paris, arrives 23 Oct, €819"*), followed by every other open insight with its evidence.
 * **Product brief** — supply now, reserve above safety stock, time to out-of-stock, and every issue paired with a proposed fix.
@@ -79,6 +91,10 @@ can be explained line by line because every number traces back to SAP data.
 
 | Screen | What it answers | API |
 | --- | --- | --- |
+| My role | What matters, what will go wrong, what it costs, what to do next — for one role, with its agent | `GET /api/v1/roles`, `GET /api/v1/roles/{role}?material=` |
+| North Star | Business North Star, learning KPI, five platform KPIs, industry KPIs | `GET /api/v1/northstar` |
+| Intelligence moat | Flywheel, six data moats, five moat metrics, consent gate, model comparison, value | `GET /api/v1/moat`, `POST /api/v1/moat/consent` |
+| Decision outcome learning | Approve / modify / reject with a reason; record the real outcome against an SAP document | `POST /api/v1/recommendations/{id}/decision`, `POST /api/v1/recommendations/{id}/outcome`, `GET /api/v1/learning` |
 | Today | What is most urgent right now, and the one-click fix | `GET /api/v1/insights` |
 | Dashboards | Role KPIs and top-10 charts; with a product picked, the product brief leads | `GET /api/v1/dashboards/{persona}?material=` |
 | Product brief | Supply now, reserve, time to out-of-stock, every issue paired with a proposed fix | `GET /api/v1/products/{material}/brief` |
@@ -122,7 +138,8 @@ Open http://localhost:8000 and sign in with `PLANNER_API_KEY` (or `MANAGER_API_K
 
 | Capability | Implementation |
 | --- | --- |
-| Frontend | Calm, Apple-HIG-inspired UI with one primary call to action per screen; light/dark; copilot drawer on every page |
+| Frontend | Calm UI with one primary call to action per screen; two looks switchable in the top bar — **Apple** and **SAP Fiori (Horizon)** (`?look=sap`) — each in light and dark; copilot drawer on every page |
+| Roles & learning | `roles.py` (9 roles, KPI catalogue with definitions/formulas/targets/sources, predictions, € impact, actions, agents), `moat.py` (flywheel, consent gate, pooled industry models), outcome + decision-feedback ledger |
 | FastAPI gateway | Typed APIs, Swagger, API-key roles, correlation IDs, Prometheus metrics, review queue, SHA-256 audit chain, Flowise proxy, LangGraph runner, `X-Tenant` customer selection |
 | SAP S/4HANA mock | OData-shaped MM/PP/QM/SD/PUR/WM/LE entity sets + `$metadata`; write verbs → 405 |
 | Analytics | XGBoost demand forecast · OR-Tools (GLOP) transfer optimisation · MRP-style component netting · supplier scorecard · QM impact |

@@ -37,8 +37,18 @@ create table if not exists watch (
 create table if not exists sap_document (
   id integer primary key autoincrement, doc_number text unique not null, doc_type text not null, recommendation_id integer not null,
   payload text not null, created_by text not null, created_at text not null, status text not null
+);create table if not exists outcome (
+  id integer primary key autoincrement, recommendation_id integer unique not null, snapshot_id text not null, kind text not null,
+  expected text not null, due_date text, status text not null, achieved integer, observed text, realized_impact_eur real,
+  source_document text, note text, observed_by text, observed_at text, created_at text not null
 );
-"""
+create table if not exists decision_feedback (
+  id integer primary key autoincrement, recommendation_id integer not null, decision text not null, reason_code text,
+  modified integer not null default 0, comment text, actor text not null, created_at text not null
+);
+create table if not exists consent (
+  tenant_id text primary key, industry_learning integer not null, updated_by text not null, updated_at text not null
+);"""
 
 POSTGRES_SCHEMA = """
 create table if not exists analysis (
@@ -63,8 +73,18 @@ create table if not exists watch (
 create table if not exists sap_document (
   id bigint generated always as identity primary key, doc_number text unique not null, doc_type text not null, recommendation_id bigint not null,
   payload text not null, created_by text not null, created_at text not null, status text not null
+);create table if not exists outcome (
+  id bigint generated always as identity primary key, recommendation_id bigint unique not null, snapshot_id text not null, kind text not null,
+  expected text not null, due_date text, status text not null, achieved integer, observed text, realized_impact_eur double precision,
+  source_document text, note text, observed_by text, observed_at text, created_at text not null
 );
-"""
+create table if not exists decision_feedback (
+  id bigint generated always as identity primary key, recommendation_id bigint not null, decision text not null, reason_code text,
+  modified integer not null default 0, comment text, actor text not null, created_at text not null
+);
+create table if not exists consent (
+  tenant_id text primary key, industry_learning integer not null, updated_by text not null, updated_at text not null
+);"""
 
 
 def _now() -> str:
@@ -319,6 +339,75 @@ class Store:
         row = self._db.query("select count(*) as n from sap_document where doc_type=?", (prefix,), fetch="one")
         base = {"STO": 4500900000, "PR": 1000900000, "POCHG": 4500800000, "INVADJ": 4900900000, "RECOUNT": 9900000, "TASK": 8800000, "DLV": 8000900000}[prefix]
         return str(base + int(row["n"]) + 1)
+
+    # ------------------------------------------------ decision outcome learning
+    # An approval is not proof that a recommendation was right: every executed recommendation gets an outcome record that
+    # stays "awaiting_observation" until the real result is recorded against an SAP document.
+    def create_outcome(self, rec_id: int, snapshot_id: str, kind: str, expected: dict, due_date: str | None) -> None:
+        self._db.query(
+            "insert into outcome(recommendation_id,snapshot_id,kind,expected,due_date,status,created_at) values(?,?,?,?,?,'awaiting_observation',?)",
+            (rec_id, snapshot_id, kind, json.dumps(expected), due_date, _now()), fetch="none")
+
+    @staticmethod
+    def _outcome(row: dict) -> dict:
+        return {**row, "expected": json.loads(row["expected"]), "observed": json.loads(row["observed"]) if row.get("observed") else None,
+                "achieved": None if row.get("achieved") is None else bool(row["achieved"])}
+
+    def list_outcomes(self, snapshot_id: str | None = None) -> list[dict]:
+        rows = (self._db.query("select * from outcome where snapshot_id=? order by id desc", (snapshot_id,)) if snapshot_id
+                else self._db.query("select * from outcome order by id desc"))
+        return [self._outcome(r) for r in rows]
+
+    def record_outcome(self, rec_id: int, achieved: bool, observed: dict, realized_impact_eur: float | None,
+                       source_document: str, note: str, actor: str) -> dict | None:
+        changed = self._db.query(
+            "update outcome set status=?,achieved=?,observed=?,realized_impact_eur=?,source_document=?,note=?,observed_by=?,observed_at=? "
+            "where recommendation_id=? and status='awaiting_observation'",
+            ("verified" if achieved else "not_achieved", int(achieved), json.dumps(observed), realized_impact_eur, source_document, note, actor, _now(), rec_id),
+            fetch="rowcount")
+        if not changed:
+            return None
+        row = self._db.query("select * from outcome where recommendation_id=?", (rec_id,), fetch="one")
+        return self._outcome(row)
+
+    # ------------------------------------------ human expertise + consent (the data-moat inputs)
+    def record_feedback(self, rec_id: int, decision: str, reason_code: str | None, modified: bool, comment: str, actor: str) -> None:
+        """Why an expert approved, modified or rejected a recommendation — a training label once the outcome is known."""
+        self._db.query("insert into decision_feedback(recommendation_id,decision,reason_code,modified,comment,actor,created_at) values(?,?,?,?,?,?,?)",
+                       (rec_id, decision, reason_code, int(modified), comment, actor, _now()), fetch="none")
+
+    def feedback(self, rec_ids: list[int] | None = None) -> list[dict]:
+        rows = self._db.query("select * from decision_feedback order by id desc")
+        rows = [{**r, "modified": bool(r["modified"])} for r in rows]
+        return [r for r in rows if rec_ids is None or r["recommendation_id"] in rec_ids]
+
+    def consent(self, tenant_id: str) -> dict | None:
+        row = self._db.query("select * from consent where tenant_id=?", (tenant_id,), fetch="one")
+        return None if row is None else {**row, "industry_learning": bool(row["industry_learning"])}
+
+    def set_consent(self, tenant_id: str, industry_learning: bool, actor: str) -> dict:
+        self._db.run([("delete from consent where tenant_id=?", (tenant_id,)),
+                      ("insert into consent(tenant_id,industry_learning,updated_by,updated_at) values(?,?,?,?)", (tenant_id, int(industry_learning), actor, _now()))])
+        return self.consent(tenant_id)  # type: ignore[return-value]
+
+    def decision_stats(self, snapshot_id: str | None = None) -> dict:
+        """Acceptance and override (rejection) rates with the reasons experts gave."""
+        recs = self.list_recommendations(snapshot_id=snapshot_id)
+        decided = [r for r in recs if r["status"] in ("accepted", "executed", "rejected")]
+        rejected = [r for r in decided if r["status"] == "rejected"]
+        fb = {f["recommendation_id"]: f for f in reversed(self.feedback([r["id"] for r in decided]))}  # latest feedback per recommendation
+        modified = [r for r in decided if r["status"] != "rejected" and fb.get(r["id"], {}).get("modified")]
+        overridden = rejected + modified
+        codes: dict[str, int] = {}
+        for r in overridden:
+            code = fb.get(r["id"], {}).get("reason_code") or "unspecified"
+            codes[code] = codes.get(code, 0) + 1
+        return {"submitted": len(recs), "decided": len(decided), "accepted": len(decided) - len(rejected), "rejected": len(rejected), "modified": len(modified),
+                "acceptance_pct": round(100 * (len(decided) - len(rejected)) / len(decided), 1) if decided else None,
+                "override_pct": round(100 * len(overridden) / len(decided), 1) if decided else None, "reason_codes": codes,
+                "override_reasons": [{"recommendation_id": r["id"], "kind": r["kind"], "decision": "modified" if r in modified else "rejected",
+                                      "reason_code": fb.get(r["id"], {}).get("reason_code"),
+                                      "reason": r.get("decision_comment") or "(no reason given)"} for r in overridden][:10]}
 
     def counts(self, snapshot_id: str | None = None) -> dict:
         """Recommendation counts by status; optionally only for one SAP snapshot (one customer)."""

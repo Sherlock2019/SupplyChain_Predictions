@@ -16,6 +16,7 @@ from backend.app.config import ROOT
 from backend.app.dashboards import Dashboards
 from backend.app.engine import SupplyChainEngine
 from backend.app.insights import InsightEngine
+from backend.app.roles import RoleCenter
 from backend.app.sap import SapRepository
 from backend.app.store import Store
 
@@ -33,6 +34,7 @@ class TenantContext:
     engine: SupplyChainEngine
     insights: InsightEngine
     dashboards: Dashboards
+    roles: RoleCenter
 
 
 class TenantRegistry:
@@ -64,7 +66,9 @@ class TenantRegistry:
                 engine = SupplyChainEngine(sap)
                 insights = InsightEngine(engine)
                 industry, label, customer = self.labels[tid]
-                self._cache[tid] = TenantContext(tid, industry, label, customer, sap, engine, insights, Dashboards(engine, insights, self.store))
+                dashboards = Dashboards(engine, insights, self.store)
+                self._cache[tid] = TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards,
+                                                 RoleCenter(engine, insights, self.store, dashboards, industry))
             return self._cache[tid]
 
     def catalogue(self) -> dict:
@@ -87,7 +91,7 @@ class TenantRegistry:
 
 
 class TenantProxy:
-    """Attribute access is forwarded to the active tenant's object (sap / engine / insights / dashboards)."""
+    """Attribute access is forwarded to the active tenant's object (sap / engine / insights / dashboards / roles)."""
 
     def __init__(self, registry: TenantRegistry, attribute: str):
         object.__setattr__(self, "_registry", registry)

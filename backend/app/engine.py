@@ -825,8 +825,13 @@ class SupplyChainEngine:
         rank = {"critical": 0, "warning": 1, "info": 2}
         issues: list[dict] = []
 
-        def add(severity, area, issue, impact, fix, kind, label, **params):
+        unit_cost = float(p["unit_cost"])
+        exposure = {s["supplier"]: s["open_po_exposure_eur"] for s in self.supplier_scorecard()["suppliers"]}
+
+        def add(severity, area, issue, impact, fix, kind, label, at_risk=None, fix_cost=None, **params):
+            # at_risk_eur: value (at standard cost) of demand or supply that is not covered; fix_cost_eur: direct cost of the proposed fix
             issues.append({"severity": severity, "area": area, "issue": issue, "impact": impact, "fix": fix,
+                           "at_risk_eur": round(at_risk, 0) if at_risk is not None else None, "fix_cost_eur": round(fix_cost, 0) if fix_cost is not None else None,
                            "action": {"kind": kind, "label": label, "params": {"material": material, **params}}})
 
         # 1. Warehouses running out or dropping below safety stock
@@ -845,7 +850,8 @@ class SupplyChainEngine:
             else:
                 fix = "No warehouse has spare stock within 14 days — pull planned production forward for this DC"
             add(severity, "Stock", what, f"{d['on_hand']:,.0f} on hand · {d['daily_demand']:,.0f}/day demand · {d['open_sales_orders']:,.0f} on open orders",
-                fix, "stock_balance", "Plan transfer" if donor else "Rebalance stock", warehouse=d["warehouse"])
+                fix, "stock_balance", "Plan transfer" if donor else "Rebalance stock", at_risk=max(0.0, -d["surplus_14d"]) * unit_cost,
+                fix_cost=donor["estimated_cost"] if donor else None, warehouse=d["warehouse"])
 
         # 2. Customer orders that cannot be served in full
         for o in self.sales_order_fulfilment()["orders"]:
@@ -856,7 +862,8 @@ class SupplyChainEngine:
                 fix = (f"Transfer {res['quantity']:,.0f} from {res['from']} (arrives {res['arrives']}, €{res['estimated_cost']:,.0f})" if res.get("action") == "stock_transfer"
                        else f"Agree a partial delivery of {res.get('deliverable_now', 0):,.0f} now with {o['customer']}; the rest from the next production")
                 add("critical" if o["priority"] == "high" else "warning", "Sales orders", f"Order {o['order']} for {o['customer']} is short by {o['shortfall']:,.0f} units",
-                    f"{float(o['quantity']):,.0f} ordered at {o['warehouse']} · due {o['requested_date']}", fix, "sales_orders", "Open order")
+                    f"{float(o['quantity']):,.0f} ordered at {o['warehouse']} · due {o['requested_date']}", fix, "sales_orders", "Open order",
+                    at_risk=float(o["shortfall"]) * unit_cost, fix_cost=res.get("estimated_cost"))
             else:
                 add("info", "Sales orders", f"Order {o['order']} for {o['customer']} depends on stock in transit",
                     f"{float(o['quantity']):,.0f} at {o['warehouse']} · due {o['requested_date']}", "Track the inbound shipment; no action unless it slips", "sales_orders", "Open order")
@@ -893,10 +900,12 @@ class SupplyChainEngine:
                 fix = f"Reorder {qty(c['shortfall'], c['uom'])} from {best}" + (f" {by(c['order_by'])}" if c["order_by"] else "")
             impact = f"{c['component']} · need {qty(c['requirement_total'], c['uom'])} · on hand {qty(c['on_hand'], c['uom'])} · confirmed inbound {qty(c['confirmed_inbound'], c['uom'])}"
             if first_build:
-                add(severity, "Components", what, impact, fix, "factory_readiness", "Check readiness", plant=p["producing_plant"],
+                add(severity, "Components", what, impact, fix, "factory_readiness", "Check readiness", at_risk=c["shortfall"] * float(self.sap.material(c["component"])["unit_cost"]),
+                    plant=p["producing_plant"],
                     quantity=int(first_build["quantity"]), need_by=first_build["finish_date"])
             else:
-                add(severity, "Components", what, impact, fix, "supplier", "Review supplier", supplier=best)
+                add(severity, "Components", what, impact, fix, "supplier", "Review supplier", at_risk=c["shortfall"] * float(self.sap.material(c["component"])["unit_cost"]),
+                    supplier=best)
 
         # 4. Production capacity vs the 30-day network need
         if resupply["additional_production_needed"]:
@@ -904,7 +913,8 @@ class SupplyChainEngine:
             add("warning", "Production", f"Planned production covers {resupply['planned_quantity']:,.0f} of the {resupply['network_need_30d']:,.0f}-unit 30-day need",
                 f"gap {resupply['additional_production_needed']:,.0f} units across the network",
                 f"Add a production order of {proposed['quantity']:,.0f} at {p['producing_plant']}, finishing by {proposed['finish_date']}",
-                "factory_readiness", "Check readiness", plant=p["producing_plant"], quantity=int(proposed["quantity"]), need_by=proposed["finish_date"])
+                "factory_readiness", "Check readiness", at_risk=resupply["additional_production_needed"] * unit_cost,
+                plant=p["producing_plant"], quantity=int(proposed["quantity"]), need_by=proposed["finish_date"])
 
         # 5. High-risk component suppliers, with the recommended source for the same component
         recommended = {o["material"]: o for o in p["supply_options"] if o["recommended"]}
@@ -919,7 +929,7 @@ class SupplyChainEngine:
                        if rec and rec["supplier"] != s["supplier"] else "Hold extra safety stock and qualify a second source")
                 add("warning", "Suppliers", f"{s['supplier']} is a high continuity risk for {c['description']}",
                     f"OTIF {s['otif_pct']}% · effective lead time {s['effective_lead_time_days']} d vs {s['contract_lead_time_days']} d contract", fix,
-                    "supplier", "Review supplier", supplier=s["supplier"])
+                    "supplier", "Review supplier", at_risk=exposure.get(s["supplier"]), supplier=s["supplier"])
 
         issues.sort(key=lambda i: rank[i["severity"]])
         counts = {k: sum(i["severity"] == k for i in issues) for k in rank}

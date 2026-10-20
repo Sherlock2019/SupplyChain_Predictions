@@ -5,6 +5,7 @@ import os
 import re
 import time
 import uuid
+from datetime import timedelta
 from pathlib import Path
 
 import httpx
@@ -19,17 +20,21 @@ from backend.app.config import ROOT, Settings, get_settings
 from backend.app.dashboards import PERSONAS
 from backend.app.insights import WATCH_KINDS
 from backend.app.llm import llm_health
+from backend.app.moat import MoatEngine
 from backend.app.observability import ANALYSES, DENIALS, LATENCY, REQUESTS
 from backend.app.rag import create_rag
+from backend.app.roles import ROLES
 from backend.app.runner import GraphRunner
 from backend.app.schemas import (
     BusinessWorkflowRequest,
     ChatRequest,
+    ConsentRequest,
     DecisionRequest,
     FactoryReadinessRequest,
     FlowisePredictRequest,
     ForecastRequest,
     LogisticsRequest,
+    OutcomeRequest,
     QualityRequest,
     RagDocument,
     RagQuery,
@@ -53,6 +58,16 @@ FLOW_NAMES = {
 }
 
 
+def _expectation(action: dict) -> str:
+    """Plain-language expected result of one executed action (what the outcome check will look for in SAP)."""
+    kind = action.get("action", "action")
+    if kind == "stock_transfer":
+        return f"{action.get('quantity', 0):,.0f} {action.get('material', '')} from {action.get('from')} to {action.get('to')} by {action.get('arrives', 'the planned date')}"
+    if kind == "expedite_purchase_order":
+        return f"PO {action.get('po', '')} delivered by {action.get('new_delivery_date') or action.get('need_by', 'the need date')}"
+    return kind.replace("_", " ") + (f" for {action['material']}" if action.get("material") else "")
+
+
 def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None) -> FastAPI:
     settings = settings or get_settings()
     store = store or Store(settings.database_url)
@@ -63,6 +78,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     engine = TenantProxy(tenants, "engine")
     insight_engine = TenantProxy(tenants, "insights")
     dashboards = TenantProxy(tenants, "dashboards")
+    roles = TenantProxy(tenants, "roles")
+    moat = MoatEngine(tenants, store)
     rag = create_rag(settings.rag_backend, settings.postgres_url, settings.knowledge_dir, settings.embedding_backend, settings.embedding_model)
     auth = ApiKeyAuth(settings)
     runner = runner or GraphRunner(settings)
@@ -345,6 +362,57 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         del who
         return engine.product_360(material.upper())
 
+    # ------------------------------------------------ role-centred decision views
+    @app.get("/api/v1/roles")
+    def role_catalogue(who: Principal = Depends(reader)) -> list[dict]:
+        del who
+        return roles.catalogue()
+
+    @app.get("/api/v1/roles/{role}")
+    def role_view(role: str, material: str | None = None, who: Principal = Depends(reader)) -> dict:
+        del who
+        if role not in ROLES:
+            raise HTTPException(status_code=404, detail=f"Unknown role {role}. Options: {', '.join(ROLES)}")
+        return roles.build(role, material.upper() if material else None)
+
+    @app.get("/api/v1/northstar")
+    def north_star(material: str | None = None, who: Principal = Depends(reader)) -> dict:
+        del who
+        return roles.north_star(material.upper() if material else None)
+
+    @app.get("/api/v1/learning")
+    def learning(who: Principal = Depends(reader)) -> dict:
+        del who
+        return roles.learning()
+
+    @app.get("/api/v1/moat")
+    def moat_view(who: Principal = Depends(reader)) -> dict:
+        """Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strength metrics."""
+        del who
+        return moat.view(TenantRegistry.current_id())
+
+    @app.post("/api/v1/moat/consent")
+    def moat_consent(body: ConsentRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        """The customer decides whether its data may contribute to industry learning (manager only, audited)."""
+        tid = TenantRegistry.current_id()
+        store.set_consent(tid, body.industry_learning, who.identity)
+        store.audit(who.identity, who.role, "moat.consent", {"tenant": tid, "industry_learning": body.industry_learning}, request.state.correlation_id)
+        return moat.consent(tid)
+
+    @app.post("/api/v1/recommendations/{recommendation_id}/outcome")
+    def record_outcome(recommendation_id: int, body: OutcomeRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        """Record the real result of an executed recommendation against an SAP document (decision outcome learning)."""
+        rec = store.get_recommendation(recommendation_id)
+        if rec and rec["status"] == "executed" and not any(o["recommendation_id"] == recommendation_id for o in store.list_outcomes()):
+            # executed before outcome tracking existed: open its outcome record now
+            store.create_outcome(recommendation_id, sap.snapshot["id"], rec["kind"], {"actions": len(rec["actions"]), "summary": "; ".join(_expectation(a) for a in rec["actions"])[:600]}, None)
+        result = store.record_outcome(recommendation_id, body.achieved, body.observed, body.realized_impact_eur, body.source_document, body.note, who.identity)
+        if result is None:
+            raise HTTPException(status_code=409, detail="No executed recommendation awaiting an outcome with this id")
+        store.audit(who.identity, who.role, "outcome.recorded", {"recommendation_id": recommendation_id, "achieved": body.achieved,
+                                                                  "source_document": body.source_document}, request.state.correlation_id)
+        return result
+
     @app.get("/api/v1/sales/outlook")
     def sales_outlook(material: str | None = None, who: Principal = Depends(reader)) -> dict:
         del who
@@ -467,7 +535,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     @app.post("/api/v1/chat")
     def chat(body: ChatRequest, request: Request, who: Principal = Depends(reader)) -> dict:
-        result = _graph_call(runner.run, "supply_chain_chat", {"messages": [{"role": "user", "content": body.message}]}, body.thread_id)
+        payload: dict = {"messages": [{"role": "user", "content": body.message}]}
+        if body.role:  # specialised role agent: role mission, scoped tools and industry rules
+            payload["role"] = body.role
+        result = _graph_call(runner.run, "supply_chain_chat", payload, body.thread_id)
         messages = result["values"].get("messages", [])
         turn: list[dict] = []
         for message in reversed(messages):
@@ -646,6 +717,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         result = store.decide(recommendation_id, body.decision, who.identity, body.comment)
         if result is None:
             raise HTTPException(status_code=409, detail="Recommendation does not exist or was already decided")
+        store.record_feedback(recommendation_id, body.decision, body.reason_code, body.modified and body.decision == "accepted", body.comment, who.identity)
         store.audit(who.identity, who.role, f"recommendation.{body.decision}", {"recommendation_id": recommendation_id}, request.state.correlation_id)
         return {**result, "sap_written": False, "next_step": "Authorized planner executes an accepted action manually in SAP."}
 
@@ -670,6 +742,12 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         result = store.execute_recommendation(recommendation_id, documents, who.identity)
         if result is None:
             raise HTTPException(status_code=409, detail="Recommendation was executed concurrently")
+        # Decision outcome learning: what this decision is expected to achieve, to be checked against real SAP results later.
+        dates = [a[k] for a in rec["actions"] for k in ("arrives", "new_delivery_date", "need_by") if isinstance(a.get(k), str)]
+        due = max(dates) if dates else (sap.as_of + timedelta(days=14)).isoformat()
+        expected = {"actions": len(rec["actions"]), "summary": "; ".join(_expectation(a) for a in rec["actions"])[:600],
+                    "documents": [d["doc_number"] for d in documents]}
+        store.create_outcome(recommendation_id, sap.snapshot["id"], rec["kind"], expected, due)
         store.audit(who.identity, who.role, "recommendation.executed_sandbox",
                     {"recommendation_id": recommendation_id, "documents": [d["doc_number"] for d in documents]}, request.state.correlation_id)
         return {**result, "sap_written": "sandbox", "documents": store.sap_documents(recommendation_id),

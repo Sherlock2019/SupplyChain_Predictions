@@ -71,11 +71,31 @@
     document.body.appendChild(back);
     return back;
   }
+  const fmtValue = (v, unit) => (v === null || v === undefined ? '—' : unit === '€' ? `€${num(v)}` : `${num(v, 1)}${unit ? esc(unit) : ''}`);
   function kpiTiles(target, kpis) {
     const colors = { critical: 'var(--critical)', warning: 'var(--warning)', good: 'var(--good)', info: 'var(--info)' };
     const flags = { critical: ['Act now', 'var(--critical-text)', 'var(--critical-soft)'], warning: ['Watch', 'var(--ink)', 'color-mix(in srgb, var(--warning) 22%, transparent)'] };
-    (typeof target === 'string' ? $(target) : target).innerHTML = kpis.map((k) => `<div class="kpi" style="--kpi-color:${colors[k.status] || 'var(--axis)'}"><div class="label"><i></i>${esc(k.label)}${flags[k.status] ? `<span class="flag" style="--flag-text:${flags[k.status][1]};--flag-bg:${flags[k.status][2]}">${flags[k.status][0]}</span>` : ''}</div>
-      <div class="value">${k.value === null || k.value === undefined ? '—' : k.unit === '€' ? '€' + num(k.value) : num(k.value, 1) + (k.unit ? esc(k.unit) : '')}</div>${k.hint ? `<div class="hint">${esc(k.hint)}</div>` : ''}</div>`).join('');
+    const host = typeof target === 'string' ? $(target) : target;
+    host.innerHTML = kpis.map((k, i) => {
+      const na = k.available === false;
+      const flag = !na && flags[k.status] ? `<span class="flag" style="--flag-text:${flags[k.status][1]};--flag-bg:${flags[k.status][2]}">${flags[k.status][0]}</span>` : '';
+      return `<div class="kpi${na ? ' na' : ''}${k.definition ? ' explain' : ''}" data-k="${i}" style="--kpi-color:${na ? 'var(--axis)' : colors[k.status] || 'var(--axis)'}">
+        <div class="label"><i></i>${esc(k.label)}${flag}</div>
+        <div class="value">${na ? '<span class="na-text">needs data</span>' : fmtValue(k.value, k.unit)}</div>
+        ${k.target !== null && k.target !== undefined && !na ? `<div class="target">target ${k.direction === 'down' ? '≤' : '≥'} ${fmtValue(k.target, k.unit)}</div>` : ''}
+        ${k.hint ? `<div class="hint">${esc(k.hint)}</div>` : ''}</div>`;
+    }).join('');
+    $$('[data-k]', host).forEach((el) => {
+      const k = kpis[Number(el.dataset.k)];
+      if (!k.definition) return;
+      el.tabIndex = 0; el.setAttribute('role', 'button'); el.setAttribute('aria-label', `${k.label}: definition`);
+      const show = () => modal(k.label, `<p>${esc(k.definition)}</p><dl class="kv"><dt>Formula</dt><dd>${esc(k.formula)}</dd><dt>SAP source</dt><dd>${esc(k.source)}</dd>
+        <dt>Target</dt><dd>${k.target === null || k.target === undefined ? 'to be agreed' : `${k.direction === 'down' ? '≤' : '≥'} ${fmtValue(k.target, k.unit)} (${k.direction === 'down' ? 'lower' : 'higher'} is better)`}</dd>
+        <dt>Now</dt><dd>${k.available === false ? `not in this SAP snapshot — needs ${esc(k.source)}` : `${fmtValue(k.value, k.unit)} ${pill(k.status)}`}</dd></dl>
+        <p class="note">Targets are demo targets until the customer agrees its own definitions, reporting periods and source records.</p>`);
+      el.addEventListener('click', show);
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
+    });
   }
   function renderChart(spec) {
     const card = document.createElement('div');
@@ -91,6 +111,14 @@
   // ------------------------------------------------------------------ theme, nav, auth
   const applyTheme = (t) => { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
   applyTheme(local.get('theme'));
+  const applyLook = (look) => {
+    document.documentElement.dataset.look = look === 'sap' ? 'sap' : 'apple';
+    $$('.look-switch button').forEach((b) => { b.classList.toggle('on', b.dataset.look === document.documentElement.dataset.look); b.setAttribute('aria-pressed', String(b.dataset.look === document.documentElement.dataset.look)); });
+  };
+  const lookParam = new URLSearchParams(location.search).get('look');  // shareable: /?look=sap
+  if (lookParam) local.set('look', lookParam);
+  applyLook(lookParam || local.get('look'));
+  $$('.look-switch button').forEach((b) => b.addEventListener('click', () => { local.set('look', b.dataset.look); applyLook(b.dataset.look); }));
   $('#theme-toggle').addEventListener('click', () => {
     const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     const next = dark ? 'light' : 'dark'; local.set('theme', next); applyTheme(next);
@@ -98,7 +126,7 @@
   $('#menu-toggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
 
   const PAGES = {
-    command: ['Command center', loadCommand], dashboard: ['My dashboard', loadDashboard], products: ['Product 360', loadProducts], sites: ['Warehouse 360', loadSites],
+    command: ['Command center', loadCommand], dashboard: ['My role', loadDashboard], moat: ['Intelligence moat', loadMoat], products: ['Product 360', loadProducts], sites: ['Warehouse 360', loadSites],
     map: ['Network map', loadMap],
     inventory: ['Inventory & balancing', () => { if (!$('#balance-out').innerHTML) $('#form-balance').requestSubmit(); }],
     sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
@@ -124,8 +152,9 @@
   // One clear primary call to action per page (filled), plus at most one secondary (tinted).
   const PAGE_ACTIONS = {
     command: () => [['Refresh', 'link', loadCommand], ['Review approvals', 'ghost', () => go('approvals')]],  // the spotlight owns the primary CTA
-    dashboard: () => [['Ask about this view', 'ghost', () => openDrawer(`Summarise the ${state.persona} dashboard${state.focus ? ` for ${state.focus}` : ''} and tell me the first thing to do`)],
-      ['Open product detail', 'arrow', () => go(state.focus ? `products/${state.focus}` : 'products')]],
+    dashboard: () => [['Open product detail', 'ghost', () => go(state.focus ? `products/${state.focus}` : 'products')],
+      [`Ask the ${state.roleView?.agent?.name || 'role agent'}`, 'arrow', () => openDrawer(state.roleView?.agent?.starters?.[0], state.persona)]],
+    moat: () => [['Refresh', 'ghost', loadMoat]],
     products: () => [['Ask about this product', 'ghost', () => openDrawer(`What should I do about ${state.product} this week?`)],
       ['Plan stock transfer', 'arrow', () => act({ kind: 'stock_balance', params: { material: state.product } })]],
     sites: () => [['See on map', 'ghost', () => go('map')], ['Ask about this site', 'arrow', () => openDrawer(`What needs attention at ${state.site} this week?`)]],
@@ -166,18 +195,29 @@
     const hour = new Date().getHours();
     $('#page-title').textContent = `${hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'}`;
     try {
-      const [ins, exec] = await Promise.all([api('/api/v1/insights'), api('/api/v1/dashboards/executive')]);
+      const [ins, ns] = await Promise.all([api('/api/v1/insights'), api('/api/v1/northstar')]);
       state.insights = ins.insights;
       const c = ins.counts;
       $('#hero-line').innerHTML = c.critical || c.warning
         ? `<b>${c.critical} critical</b> and <b>${c.warning} warning${c.warning === 1 ? '' : 's'}</b> today. Start with the one below.`
         : 'Everything is on track today.';
       renderSpotlight();
-      kpiTiles('#cc-kpis', exec.kpis);
+      kpiTiles('#cc-kpis', ns.platform_kpis);
+      renderNorthStar(ns);
       renderFilters(); renderFeed();
       ccWatches(); ccApprovals(); ccForecast();
       refreshBadges();
     } catch (e) { toast(e.message); }
+  }
+  function renderNorthStar(ns) {
+    const comp = (c) => `<div class="ns-item"><div class="ns-value">${fmtValue(c.value, c.unit)}</div><div class="ns-label">${esc(c.label)}</div><div class="ns-hint">${esc(c.hint)}</div></div>`;
+    $('#northstar').innerHTML = `<section class="northstar">
+      <div class="ns-col"><div class="eyebrow">North Star · how well the business operates</div><h2>${esc(ns.statement)}</h2><div class="ns-row">${ns.components.map(comp).join('')}</div></div>
+      <div class="ns-col learn"><div class="eyebrow">Learning KPI · how much better the AI is getting</div><h2>${esc(ns.learning)}</h2><div class="ns-row">${ns.learning_components.map(comp).join('')}</div>
+        <button class="link small arrow" onclick="location.hash='moat'">Open the intelligence moat</button></div></section>`;
+    const ind = ns.industry;
+    $('#cc-industry').innerHTML = `<h2>${esc(state.snapshot?.tenant?.industry_label || ind.industry)} KPIs</h2><p class="sub">${esc(ind.rules)}</p><div class="kpis compact" id="cc-ind-kpis"></div>`;
+    kpiTiles('#cc-ind-kpis', ind.kpis);
   }
   // The single most urgent insight, with one big primary button.
   function renderSpotlight() {
@@ -234,6 +274,8 @@
   }
   function act(action) {
     const p = action.params || {};
+    if (action.kind === 'go') { go(p.page); return; }
+    if (action.kind === 'ask') { openDrawer(p.question, state.persona); return; }
     if (action.kind === 'stock_balance') { go('inventory'); $('#form-balance [name=material]').value = p.material; $('#form-balance').requestSubmit(); }
     else if (action.kind === 'factory_readiness') {
       go('production'); const f = $('#form-readiness');
@@ -285,42 +327,79 @@
   }
 
   // ================================================================ ROLE DASHBOARDS
+  const OLD_PERSONA = { executive: 'director', inventory: 'warehouse', sales: 'demand', stocktake: 'warehouse' };
+  const ROLE_SHORT = { director: 'Director', demand: 'Demand', production: 'Production', procurement: 'Procurement', warehouse: 'Warehouse',
+    logistics: 'Logistics', quality: 'Quality', finance: 'Finance', mlops: 'AI / MLOps' };
+  const SEVERITY_LABEL = { critical: 'Critical', warning: 'Warning', info: 'Info' };
+  const when = (p) => (p.when ? `<span class="when"><b>${p.in_days === null || p.in_days === undefined ? '' : p.in_days < 0 ? `${-p.in_days} d ago` : p.in_days === 0 ? 'today' : `in ${p.in_days} d`}</b> · ${esc(p.when)}</span>` : '<span class="when">ongoing</span>');
   async function loadDashboard() {
     try {
-      const personas = await api('/api/v1/dashboards');
-      if (!personas[state.persona]) state.persona = 'executive';
-      $('#persona-pills').innerHTML = Object.entries(personas).map(([k, p]) => `<button class="${k === state.persona ? 'on' : ''}" data-p="${k}">${esc(p.title)}</button>`).join('');
+      if (!state.roleCat) state.roleCat = await api('/api/v1/roles');
+      state.persona = OLD_PERSONA[state.persona] || state.persona;
+      if (!state.roleCat.some((r) => r.id === state.persona)) state.persona = state.role === 'manager' ? 'director' : 'demand';
+      $('#persona-pills').innerHTML = state.roleCat.map((r) => `<button class="${r.id === state.persona ? 'on' : ''}" data-p="${r.id}" title="${esc(r.title)} · ${esc(r.agent)}">${esc(ROLE_SHORT[r.id] || r.title)}${r.mvp ? '' : ' <span class="later">later</span>'}</button>`).join('');
       $$('#persona-pills button').forEach((b) => b.addEventListener('click', () => { state.persona = b.dataset.p; local.set('persona', b.dataset.p); loadDashboard(); }));
-      // Product focus dropdown: filters every role dashboard to one product and adds its detailed view below.
       if (!state.products) state.products = await api('/api/v1/products');
       $('#product-focus').innerHTML = '<option value="">All products</option>' + state.products.map((p) =>
         `<option value="${esc(p.material)}">${esc(p.description)} · ${esc(p.material)} — ${p.health === 'critical' ? '▲ critical' : p.health === 'warning' ? '◆ warning' : '✓ good'}</option>`).join('');
       if (state.focus && !state.products.some((p) => p.material === state.focus)) state.focus = '';
       $('#product-focus').value = state.focus || '';
-      const d = await api(`/api/v1/dashboards/${state.persona}${state.focus ? `?material=${encodeURIComponent(state.focus)}` : ''}`);
-      $('#persona-task').textContent = `${d.title}: ${d.task}${d.product ? ` · focus: ${d.product.description} (${d.product.scope.length - 1} components in scope)` : ' · whole network'} · as of ${d.as_of}`;
-      kpiTiles('#dash-kpis', d.kpis);
-      renderOutlook($('#dash-outlook'), state.focus).catch((e) => { $('#dash-outlook').innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
+      $('#role-head').innerHTML = '<p class="note"><span class="spinner"></span>Building your view…</p>';
+      const v = await api(`/api/v1/roles/${state.persona}${state.focus ? `?material=${encodeURIComponent(state.focus)}` : ''}`);
+      state.roleView = v;
+      renderPageActions('dashboard');
+      $('#persona-task').textContent = `${v.focus}${v.product ? ` · focus: ${v.product.description}` : ' · whole network'} · as of ${v.as_of}`;
+      // header: who this is for and the agent working for them
+      const top = v.actions[0];
+      $('#role-head').innerHTML = `<section class="role-head"><div><div class="eyebrow">${v.mvp ? `MVP role ${v.priority} of 5` : 'Integrates as data becomes available'} · ${esc(v.agent.name)}</div>
+        <h2>${esc(v.title)}</h2><p>${esc(v.agent.mission)}.</p></div>
+        <div class="cta">${top ? `<button class="large arrow" data-top>${esc(top.action.label)}</button><span class="note">${esc(top.title)}</span>` : '<span class="note">No action needed right now.</span>'}</div></section>`;
+      $('[data-top]', $('#role-head'))?.addEventListener('click', () => act(top.action));
+      // 1. what matters
+      kpiTiles('#dash-kpis', v.kpis);
+      // 2. what is likely to go wrong
+      $('#role-predictions').innerHTML = v.predictions.length ? `<div class="predictions">${v.predictions.map((p) => `<div class="prediction" style="--tone:var(--${p.severity === 'critical' ? 'critical' : p.severity === 'warning' ? 'warning' : 'info'})">
+        ${statusBadge(p.severity)}<div class="what"><b>${esc(p.what)}</b><span>${esc(p.basis)}</span></div>${when(p)}${p.at_risk_eur ? `<span class="risk">€${num(p.at_risk_eur)}</span>` : '<span class="risk"></span>'}</div>`).join('')}</div>`
+        : '<div class="empty">Nothing is predicted to go wrong in the next 60 days.</div>';
+      // 3. what it will cost
+      const c = v.cost;
+      $('#role-cost').innerHTML = `<h2>What it will cost</h2><p class="sub">if nothing is done vs the fixes proposed</p>
+        <div class="cost-big"><span>Value at risk</span><b>€${num(c.at_risk_eur)}</b></div>
+        <div class="cost-big fix"><span>Known cost of the fixes</span><b>€${num(c.fix_cost_eur)}</b><em>${c.fixes_with_cost} of ${c.fixes} fixes priced</em></div>
+        ${c.at_risk_eur && c.fix_cost_eur ? `<p class="ratio">Every €1 spent on the priced fixes protects about <b>€${num(c.at_risk_eur / c.fix_cost_eur)}</b> at risk.</p>` : ''}
+        <p class="note">${esc(c.note)}</p>`;
+      // 4. what to do next
+      $('#role-actions').innerHTML = v.actions.length ? `<div class="issues">${v.actions.map((a, n) => `<div class="issue-row" style="--tone:var(--${a.severity === 'critical' ? 'critical' : a.severity === 'warning' ? 'warning' : 'info'})">
+        <div class="sev">${statusBadge(a.severity)}${a.area ? `<span class="chip">${esc(a.area)}</span>` : ''}</div>
+        <div class="what"><b>${esc(a.title)}</b><span>${esc(a.why)}</span></div>
+        <div class="fix"><span class="fix-label">Impact</span>${a.at_risk_eur ? `protects €${num(a.at_risk_eur)}` : 'risk not priced'}${a.fix_cost_eur ? ` · costs €${num(a.fix_cost_eur)}` : ''}</div>
+        <div class="go"><button class="${n === 0 ? '' : 'ghost'} small arrow" data-ra="${n}">${esc(a.action.label)}</button></div></div>`).join('')}</div>`
+        : '<div class="empty">Nothing to do right now — the agent keeps watching.</div>';
+      $$('[data-ra]').forEach((b) => b.addEventListener('click', () => act(v.actions[Number(b.dataset.ra)].action)));
+      // your agent
+      const tools = Array.isArray(v.agent.tools) ? v.agent.tools : [v.agent.tools];
+      $('#role-agent').innerHTML = `<div class="agent-top"><div class="agent-avatar"><svg class="ico"><use href="#i-spark"/></svg></div><div><h2>${esc(v.agent.name)}</h2>
+        <p class="sub" style="margin:0">Works for the ${esc(v.title)} · ${esc(v.agent.mission)} · LangGraph + Qwen, read-only tools</p></div></div>
+        <div class="agent-tools">${tools.map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
+        <div class="starters">${v.agent.starters.map((q, i) => `<button class="ghost" data-sq="${i}">${esc(q)}</button>`).join('')}</div>`;
+      $$('[data-sq]').forEach((b) => b.addEventListener('click', () => openDrawer(v.agent.starters[Number(b.dataset.sq)], state.persona)));
+      // details: product brief, sales outlook, charts
+      const brief = $('#dash-brief');
+      $('#dash-role-title').hidden = false;
+      $('#dash-role-title').innerHTML = `<h2>Details</h2><span class="note">${v.product ? 'product brief, sales rates, calendar and charts' : 'charts and tables for this role'}</span>`;
+      if (v.product) await renderBrief(v.product.material, brief); else brief.innerHTML = '';
+      if (v.product || ['director', 'demand', 'warehouse', 'logistics'].includes(v.role)) {
+        renderOutlook($('#dash-outlook'), state.focus).catch((e) => { $('#dash-outlook').innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
+      } else $('#dash-outlook').innerHTML = '';
       const charts = $('#dash-charts'); charts.innerHTML = '';
-      d.charts.forEach((c) => charts.appendChild(renderChart(c)));
-      if (d.forecast) {
-        const f = await api(`/api/v1/analysis/forecast-vs-actuals?material=${d.forecast.material}&warehouse=${d.forecast.warehouse}`);
-        charts.appendChild(renderChart({ type: 'line', title: `Forecast vs actuals — ${d.forecast.material} @ ${d.forecast.warehouse}`, subtitle: `back-test MAPE ${f.holdout_mape_pct}%`, today: state.cfg.as_of,
+      v.charts.forEach((ch) => charts.appendChild(renderChart(ch)));
+      if (v.forecast) {
+        const f = await api(`/api/v1/analysis/forecast-vs-actuals?material=${v.forecast.material}&warehouse=${v.forecast.warehouse}`);
+        charts.appendChild(renderChart({ type: 'line', title: `Forecast vs actuals — ${v.forecast.material} @ ${v.forecast.warehouse}`, subtitle: `back-test MAPE ${f.holdout_mape_pct}%`, today: state.cfg.as_of,
           series: [{ name: 'Actual', label: 'actual', points: f.actual }, { name: 'Back-test', label: 'back-test', points: f.backtest }, { name: 'Forecast', label: 'forecast', points: f.forecast, color: 'var(--s3)' }] }));
       }
-      $('#dash-tables').innerHTML = (d.tables || []).map((t) => `<div class="card"><h2>${esc(t.title)}</h2>${table(t.columns.map((c, i) => [c, (r) => (STATUS_OF[r[i]] ? badge(r[i]) : esc(typeof r[i] === 'number' ? num(r[i], 2) : r[i] ?? '—'))]), t.rows)}</div>`).join('') +
-        (d.analysis ? `<div class="row"><button onclick="location.hash='${d.analysis}'">Open ${d.analysis === 'sales' ? 'sales order' : 'stocktake'} workspace</button></div>` : '');
-      // Product picked: the one-screen product brief leads the page; the role view follows; full analysis is one click away.
-      const brief = $('#dash-brief'), detail = $('#dash-product');
-      $('#dash-role-title').hidden = !d.product;
-      $('#dash-role-title').innerHTML = d.product ? `<h2>${esc(d.title)} view</h2><span class="note">${esc(d.task)}</span>` : '';
-      if (d.product) {
-        await renderBrief(d.product.material, brief);
-        detail.innerHTML = `<div class="row" style="justify-content:center;margin-top:8px"><button class="ghost arrow" onclick="location.hash='products/${esc(d.product.material)}'">Open the full analysis for ${esc(d.product.description)}</button></div>`;
-      } else {
-        brief.innerHTML = '';
-        detail.innerHTML = '<div class="empty">Pick a product in the <b>Product</b> menu above for its brief: supply status, reserve, time to out-of-stock, issues with proposed fixes, top suppliers and warehouses.</div>';
-      }
+      $('#dash-tables').innerHTML = (v.tables || []).map((tb) => `<div class="card"><h2>${esc(tb.title)}</h2>${table(tb.columns.map((col, i) => [col, (r) => (STATUS_OF[r[i]] ? badge(r[i]) : esc(typeof r[i] === 'number' ? num(r[i], 2) : r[i] ?? '—'))]), tb.rows)}</div>`).join('');
+      $('#dash-product').innerHTML = v.product ? `<div class="row" style="justify-content:center;margin-top:8px"><button class="ghost arrow" onclick="location.hash='products/${esc(v.product.material)}'">Open the full analysis for ${esc(v.product.description)}</button></div>` : '';
     } catch (e) { toast(e.message); }
   }
 
@@ -744,6 +823,8 @@
   });
 
   // ================================================================ APPROVALS & EXECUTION
+  const REASONS = [['', 'Reason (if you change or reject)'], ['supplier_risk', 'Supplier risk'], ['capacity', 'Capacity'], ['cost', 'Cost'], ['timing', 'Timing'],
+    ['customer_priority', 'Customer priority'], ['quality', 'Quality'], ['data_quality', 'Data quality'], ['other', 'Other']];
   async function loadApprovals() {
     const filters = [['pending_review', 'Pending review'], ['accepted', 'Accepted · ready to execute'], ['executed', 'Executed'], ['rejected', 'Rejected'], ['', 'All']];
     $('#rec-filters').innerHTML = filters.map(([k, l]) => `<button class="${state.recFilter === k ? 'on' : ''}" data-r="${k}">${esc(l)}</button>`).join('');
@@ -755,14 +836,17 @@
         <div class="row" style="justify-content:space-between;margin:0 0 6px"><div><b>#${r.id} · ${esc(r.kind.replaceAll('_', ' '))}</b> ${badge(r.status)}</div><span class="note">${esc(r.analysis_id)} · by ${esc(r.submitted_by)} via ${esc(r.source)} · ${esc(r.submitted_at.slice(0, 16).replace('T', ' '))}</span></div>
         ${table([['Action', (a) => `<b>${esc(a.action.replaceAll('_', ' '))}</b>`], ['Detail', (a) => esc(Object.entries(a).filter(([k]) => k !== 'action').map(([k, v]) => `${k.replaceAll('_', ' ')}: ${Array.isArray(v) ? v.join(', ') : v}`).join(' · '))]], r.actions)}
         <details><summary class="note">Explanation</summary>${md(r.explanation.slice(0, 3000))}</details>
-        ${r.status === 'pending_review' ? (manager ? `<div class="row" style="margin-top:10px"><input class="grow" placeholder="Decision comment"><button class="good" data-d="accepted">Accept</button><button class="bad" data-d="rejected">Reject</button></div>` : '<p class="note">Awaiting a manager decision.</p>')
+        ${r.status === 'pending_review' ? (manager ? `<div class="decision-row"><select data-reason aria-label="Reason">${REASONS.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join('')}</select><input class="grow" placeholder="Why? Your reasoning teaches the AI"><button class="good" data-d="accepted">Approve</button><button class="ghost" data-d="modified">Approve with changes</button><button class="bad" data-d="rejected">Reject</button></div>` : '<p class="note">Awaiting a manager decision.</p>')
           : r.status === 'accepted' ? (manager ? `<div class="row" style="margin-top:10px"><button data-exec>⚡ Execute in SAP (sandbox)</button><span class="note">Creates the documents in the SAP mock sandbox outbox — 1 click, audited.</span></div>` : '<p class="note">Accepted — a manager executes it.</p>')
             : `<p class="note">${esc(r.decided_by ? `Decided by ${r.decided_by}: ${r.decision_comment || ''}` : '')}</p>`}
-        <div data-docs></div></div>`).join('') : '<div class="empty">Nothing here.</div>';
+        <div data-docs></div><div data-outcome></div></div>`).join('') : '<div class="empty">Nothing here.</div>';
       $$('[data-d]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
         const card = b.closest('[data-rec]');
-        await api(`/api/v1/recommendations/${card.dataset.rec}/decision`, { body: { decision: b.dataset.d, comment: $('input', card).value } });
-        toast(`Recommendation #${card.dataset.rec} ${b.dataset.d}`); loadApprovals(); refreshBadges();
+        const reason = $('[data-reason]', card).value || null;
+        if (b.dataset.d !== 'accepted' && !reason) { toast('Pick a reason — it is how SPARC learns from your expertise'); return; }
+        await api(`/api/v1/recommendations/${card.dataset.rec}/decision`, { body: { decision: b.dataset.d === 'rejected' ? 'rejected' : 'accepted', modified: b.dataset.d === 'modified',
+          reason_code: reason, comment: $('input', card).value } });
+        toast(`Recommendation #${card.dataset.rec} ${b.dataset.d === 'modified' ? 'approved with changes' : b.dataset.d}`); loadApprovals(); refreshBadges();
       })));
       $$('[data-exec]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
         const card = b.closest('[data-rec]');
@@ -770,12 +854,107 @@
         toast(`Executed: ${r.documents.map((d) => `${d.doc_type} ${d.doc_number}`).join(', ')}`); loadApprovals();
       })));
       const docs = await api('/api/v1/sap/documents');
+      // Did it work? Approval is not proof: executed recommendations wait for their real outcome from SAP.
+      const learn = await api('/api/v1/learning');
+      const byRec = Object.fromEntries(learn.outcomes.map((o) => [o.recommendation_id, o]));
+      recs.filter((r) => r.status === 'executed').forEach((r) => {
+        const slot = $(`[data-rec="${r.id}"] [data-outcome]`); if (!slot) return;
+        const o = byRec[r.id];
+        if (o && o.status !== 'awaiting_observation') {
+          slot.innerHTML = `<div class="outcome-box done">${pill(o.achieved ? 'good' : 'critical', o.achieved ? 'Outcome verified' : 'Not achieved')} <span>${esc(o.note || '')} · SAP ${esc(o.source_document)}${o.realized_impact_eur ? ` · €${num(o.realized_impact_eur)} realised` : ''} · by ${esc(o.observed_by)}</span></div>`;
+          return;
+        }
+        const doc = docs.find((d) => d.recommendation_id === r.id)?.doc_number || '';
+        slot.innerHTML = `<div class="outcome-box"><div><b>Did it work?</b> <span class="note">Record what actually happened in SAP${o?.due_date ? ` (due ${esc(o.due_date)})` : ''} — approval alone is not proof.</span></div>
+          ${manager ? `<div class="decision-row"><select data-ach aria-label="Result"><option value="true">Achieved</option><option value="false">Not achieved</option></select>
+          <input data-doc placeholder="SAP document" value="${esc(doc)}" aria-label="SAP document"><input data-impact type="number" step="any" placeholder="Realised impact €" aria-label="Realised impact in euros">
+          <input data-note class="grow" placeholder="What happened (e.g. DC21 did not stock out)"><button data-out>Record outcome</button></div>` : '<p class="note">A manager records the outcome.</p>'}</div>`;
+      });
+      $$('[data-out]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+        const card = b.closest('[data-rec]'); const box = b.closest('.outcome-box');
+        const impact = $('[data-impact]', box).value;
+        await api(`/api/v1/recommendations/${card.dataset.rec}/outcome`, { body: { achieved: $('[data-ach]', box).value === 'true', source_document: $('[data-doc]', box).value.trim(),
+          realized_impact_eur: impact === '' ? null : Number(impact), note: $('[data-note]', box).value, observed: {} } });
+        toast(`Outcome recorded for #${card.dataset.rec} — it is now a verified learning label`); loadApprovals();
+      })));
       $('#sap-docs').innerHTML = table([['Document', (d) => `<b>${esc(d.doc_number)}</b>`], ['Type', (d) => chip(d.doc_type)], ['Recommendation', (d) => `#${d.recommendation_id}`], ['Payload', (d) => esc(Object.entries(d.payload).map(([k, v]) => `${k}: ${v}`).join(' · '))], ['By', (d) => esc(d.created_by)], ['Status', (d) => esc(d.status.replaceAll('_', ' '))]], docs);
       if (manager) {
         const a = await api('/api/v1/audit?limit=60');
         $('#chain').innerHTML = pill(a.chain_valid ? 'good' : 'critical', a.chain_valid ? 'hash chain valid' : 'hash chain BROKEN');
         $('#audit').innerHTML = table([['Time', (x) => esc(x.ts.slice(0, 19).replace('T', ' '))], ['Actor', (x) => esc(`${x.actor} (${x.role})`)], ['Action', (x) => esc(x.action)], ['Details', (x) => `<code>${esc(JSON.stringify(x.details).slice(0, 140))}</code>`], ['Hash', (x) => `<code>${esc(x.hash.slice(0, 10))}</code>`]], a.events);
       } else { $('#audit').innerHTML = '<p class="note">The audit log is visible to managers.</p>'; }
+    } catch (e) { toast(e.message); }
+  }
+
+  // ================================================================ INTELLIGENCE MOAT
+  const CALC_LINES = [
+    ['freight', 'Avoidable emergency freight', 200000, 25, 'Improved supplier predictions'],
+    ['expiry', 'Expiry and stock write-offs', 300000, 20, 'Reduced expiry-related waste'],
+    ['disruption', 'Production disruption costs', 500000, 15, 'Fewer material shortages'],
+    ['labour', 'Manual planning labour', 160000, 25, 'Faster planning'],
+    ['balancing', 'Stock-outs, transfers and overstock', 0, 10, 'Better warehouse stock balancing'],
+  ];
+  function calcState() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(`moatCalc:${state.tenant}`) || '{}'); } catch { /* storage unavailable */ }
+    return { currency: saved.currency || '$', lines: CALC_LINES.map(([id, , base, red]) => ({ id, base: saved[id]?.base ?? base, red: saved[id]?.red ?? red })) };
+  }
+  function renderCalc(m) {
+    const s = calcState();
+    const cur = s.currency;
+    const money = (v) => `${cur}${num(v)}`;
+    const rows = CALC_LINES.map(([id, label, , , line], i) => {
+      const l = s.lines[i]; const benefit = l.base * l.red / 100; const verified = m.realised_by_line[line] || 0;
+      return `<tr><td><b>${esc(label)}</b><br><span class="note">${esc(line)}</span></td>
+        <td class="num"><input type="number" min="0" step="1000" data-cb="${id}" value="${l.base}" aria-label="${esc(label)} baseline"></td>
+        <td class="num"><input type="number" min="0" max="100" step="1" data-cr="${id}" value="${l.red}" aria-label="${esc(label)} reduction %"> %</td>
+        <td class="num"><b>${money(benefit)}</b></td><td class="num">${verified ? `€${num(verified)}` : '—'}</td></tr>`;
+    }).join('');
+    const total = s.lines.reduce((a, l) => a + l.base * l.red / 100, 0);
+    $('#moat-value').innerHTML = `<div class="chart-head"><div><h2>Financial value of the moat</h2><p class="sub">Annual opportunity calculator — replace the illustrative baselines with measured ones; the right column shows only value verified against SAP outcomes</p></div>
+      <label class="inline">Currency <select id="calc-cur">${['$', '€', '£'].map((c) => `<option ${c === cur ? 'selected' : ''}>${c}</option>`).join('')}</select></label></div>
+      <div class="scroll"><table class="calc"><thead><tr><th>Business benefit</th><th class="num">Annual baseline</th><th class="num">Reduction</th><th class="num">Potential benefit</th><th class="num">Verified so far</th></tr></thead>
+      <tbody>${rows}</tbody><tfoot><tr><td><b>Potential annual gross benefit</b></td><td></td><td></td><td class="num"><b class="total">${money(total)}</b></td><td class="num">€${num(Object.values(m.realised_by_line).reduce((a, b) => a + b, 0))}</td></tr></tfoot></table></div>
+      <p class="note">Before platform, implementation and attribution adjustments. The calculator does not prove the AI will achieve these reductions; it builds the business case from measured baselines. Example values are illustrative, not customer data.</p>`;
+    const save = () => {
+      const next = { currency: $('#calc-cur').value };
+      CALC_LINES.forEach(([id]) => { next[id] = { base: Number($(`[data-cb="${id}"]`).value) || 0, red: Math.min(100, Number($(`[data-cr="${id}"]`).value) || 0) }; });
+      try { localStorage.setItem(`moatCalc:${state.tenant}`, JSON.stringify(next)); } catch { /* storage unavailable */ }
+      renderCalc(m);
+    };
+    $$('#moat-value input').forEach((el) => el.addEventListener('change', save));
+    $('#calc-cur').addEventListener('change', save);
+  }
+  async function loadMoat() {
+    try {
+      const m = await api('/api/v1/moat');
+      const vp = m.value_proposition;
+      $('#moat-hero').innerHTML = `<section class="spotlight calm moat-hero"><div><div class="eyebrow">${esc(m.customer)} · ${esc(m.industry_label)}</div><h2>${esc(vp.title)}</h2><p>${esc(vp.text)}</p><p class="moat-line">${esc(vp.moat)}</p></div>
+        <div class="cta"><span class="status"><i style="background:var(--${m.consent.industry_learning ? 'good' : 'axis'})"></i>Industry learning ${m.consent.industry_learning ? 'on' : 'off'}</span><span class="note">${esc(m.consent.source)}</span></div></section>`;
+      $('#moat-flywheel').innerHTML = m.flywheel.map((s, i) => `<div class="fw-stage"><div class="fw-n">${i + 1}</div><div class="fw-count">${num(s.count)}</div><div class="fw-unit">${esc(s.unit)}</div>
+        <h3>${esc(s.stage)}</h3><p>${esc(s.detail)}</p>${s.extra ? `<p class="note">${esc(s.extra)}</p>` : ''}</div>`).join('<div class="fw-arrow" aria-hidden="true">→</div>') +
+        '<div class="fw-loop">↺ Better predictions feed back into the AI — valuable only when they measurably improve unseen future decisions</div>';
+      $('#moat-metrics').innerHTML = m.metrics.map((x, i) => `<div class="moat-metric"><div class="mm-n">${i + 1}</div><h3>${esc(x.name)}</h3><div class="mm-value">${esc(x.display)}</div><p>${esc(x.question)}</p></div>`).join('');
+      $('#moat-sources').innerHTML = table([['Customer data', (x) => `<b>${esc(x.name)}</b><br><span class="note">${esc(x.learns)}</span>`], ['Moat potential', (x) => `<span class="chip pot-${x.potential.replace(/\s+/g, '-').toLowerCase()}">${esc(x.potential)}</span>`],
+        ['Evidence in this customer', (x) => esc(x.value)], ['What SPARC has learned', (x) => esc(x.learned)]], m.moats) +
+        '<p class="note">The most defensible information is human judgment combined with what actually happened afterwards — for example a supplier that promises 42 days but takes 55, and the planners who switch suppliers when that matters.</p>';
+      const mc = m.models;
+      $('#moat-models').innerHTML = '<div data-chart></div>' + `<ul class="note">${mc.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>`;
+      $('[data-chart]', $('#moat-models')).appendChild(window.Charts.bar({ title: 'Which model predicts this customer best?', subtitle: 'forecast error (WAPE %) on this customer’s 14-day holdout — lower is better', unit: '%',
+        rows: [['Customer-only model', mc.customer_only_wape, 'good'], ['Simple baseline (last week)', mc.baseline_wape, 'info'], ['Generic model (all consenting)', mc.generic_wape, 'info'],
+          ['Industry model', mc.industry_wape, 'info'], ['Cold start (new customer)', mc.cold_start_wape, 'warning']].filter((r) => r[1] !== null).map(([label, value, status]) => ({ label, value, status })) }));
+      const manager = state.role === 'manager';
+      $('#moat-consent').innerHTML = `<h2>Consent, privacy and quality gate</h2><p class="sub">Industry learning uses a customer's data only with its recorded consent; only authorised features or protected model contributions pass the gate</p>
+        <div class="gate">${m.industry_customers.map((c) => `<div class="gate-row"><span class="status"><i style="background:var(--${c.industry_learning ? 'good' : 'axis'})"></i>${c.industry_learning ? 'contributes' : 'private only'}</span>
+          <b>${esc(c.customer)}</b><span class="note">${esc(c.source)}</span></div>`).join('')}
+          <div class="gate-arrow">↓ consent · privacy · quality gate ↓</div><div class="gate-model"><b>${esc(m.industry_label)} industry intelligence model</b><span class="note">tested against each customer-only model before improvements return to customer agents</span></div></div>
+        ${manager ? `<div class="row" style="margin-top:12px"><button class="${m.consent.industry_learning ? 'bad' : ''}" id="consent-toggle">${m.consent.industry_learning ? 'Stop sharing with industry learning' : `Allow ${esc(m.customer)} to contribute`}</button><span class="note">recorded and audited; the customer keeps control</span></div>` : '<p class="note">A manager of this customer controls consent.</p>'}`;
+      $('#consent-toggle')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { await api('/api/v1/moat/consent', { body: { industry_learning: !m.consent.industry_learning } }); toast('Consent updated'); loadMoat(); }));
+      renderCalc(m);
+      $('#moat-learning').innerHTML = `<h2>Learning evidence</h2><p class="sub">what the data proves today — and what still needs real data</p>${table([['Learning metric', (x) => `<b>${esc(x.metric)}</b><br><span class="note">${esc(x.proves)}</span>`],
+        ['Status', (x) => pill(x.status === 'measured' ? 'good' : x.status === 'awaiting data' ? 'warning' : 'info', x.status)], ['Now', (x) => esc(x.value)]], m.data_moat)}`;
+      $('#moat-ownership').innerHTML = `<h2>Customer moat vs platform moat</h2><p class="sub">Customers keep their contractual rights and control of their data</p>${table([['', (x) => `<b>${esc(x.aspect)}</b>`], ['Customer’s moat', (x) => esc(x.customer)], ['SPARC’s moat', (x) => esc(x.platform)]], m.ownership)}
+        <p class="note">SPARC's moat comes from technology, trusted integration, reusable expertise and explicitly authorised cross-customer learning — never from owning customer data. Industry models are always tested against customer-only models: more customers do not automatically mean better predictions.</p>`;
     } catch (e) { toast(e.message); }
   }
 
@@ -826,7 +1005,7 @@
   };
   async function callEngine(engine, conv, text, resume) {
     if (engine === 'lg-chat') {
-      const r = await api('/api/v1/chat', { body: { message: text, thread_id: conv.thread } });
+      const r = await api('/api/v1/chat', { body: { message: text, thread_id: conv.thread, ...(conv.role ? { role: conv.role } : {}) } });
       conv.thread = r.thread_id;
       return { html: md(r.answer), meta: `${r.runtime} · tools: ${r.tools_used.join(', ') || 'none'} · ${r.elapsed_seconds}s` };
     }
@@ -883,9 +1062,19 @@
   $('#form-chat').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#chat-input').value.trim(); if (t) { $('#chat-input').value = ''; chat.send(t); } });
   // drawer (copilot on every page)
   const drawer = new Conversation($('#drawer-log'), $('#drawer-engine').value);
-  function openDrawer(question) { $('#drawer').classList.add('open'); if (question) drawer.send(question); $('#drawer-input').focus(); }
+  function openDrawer(question, role = null) {
+    // A role opens that role's specialised agent (LangGraph chat with the role's mission and tools); otherwise the general copilot.
+    if (role !== (drawer.role || null)) {
+      drawer.role = role;
+      drawer.reset(role ? 'lg-chat' : $('#drawer-engine').value);
+      $('#drawer-engine').value = drawer.engine;
+    }
+    const spec = role && state.roleCat?.find((r) => r.id === role);
+    $('#drawer-title').textContent = spec ? spec.agent : 'Copilot';
+    $('#drawer').classList.add('open'); if (question) drawer.send(question); $('#drawer-input').focus();
+  }
   $('#drawer-close').addEventListener('click', () => $('#drawer').classList.remove('open'));
-  $('#drawer-engine').addEventListener('change', () => drawer.reset($('#drawer-engine').value));
+  $('#drawer-engine').addEventListener('change', () => { drawer.role = null; $('#drawer-title').textContent = 'Copilot'; drawer.reset($('#drawer-engine').value); });
   $('#drawer-form').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#drawer-input').value.trim(); if (t) { $('#drawer-input').value = ''; drawer.send(t); } });
   $('#askbar').addEventListener('submit', (e) => { e.preventDefault(); const t = $('#ask-input').value.trim(); if (t) { $('#ask-input').value = ''; openDrawer(t); } });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('#drawer').classList.remove('open'); if ((e.key === '/' && document.activeElement === document.body) || (e.key === 'k' && (e.metaKey || e.ctrlKey))) { e.preventDefault(); $('#ask-input').focus(); } });

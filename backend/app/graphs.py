@@ -76,13 +76,30 @@ def _tool_rounds(messages: list) -> int:
     return rounds
 
 
-def agent(state: MessagesState) -> dict:
+class ChatState(MessagesState, total=False):
+    role: str  # optional: specialised role agent (director, demand, production, procurement, warehouse, ...)
+
+
+def _role_setup(role: str | None) -> tuple[str, list]:
+    """System prompt and tool set for the role's specialised agent; no role = the general copilot with every tool."""
+    from backend.app.roles import ROLES, agent_system_prompt
+
+    if not role or role not in ROLES:
+        return CHAT_SYSTEM, READ_ONLY_TOOLS
+    allowed = ROLES[role]["tools"]
+    tools = [t for t in READ_ONLY_TOOLS if allowed is None or t.name in allowed]
+    # The tools read the Aurelia (cosmetics) tenant, so the agent applies cosmetics industry rules.
+    return CHAT_SYSTEM + "\n" + agent_system_prompt(role, "cosmetics"), tools
+
+
+def agent(state: ChatState) -> dict:
     settings = get_settings()
     model = chat_model(settings)
+    system, tools = _role_setup(state.get("role"))
     exhausted = _tool_rounds(state["messages"]) >= MAX_TOOL_ROUNDS
-    runnable = model if exhausted else model.bind_tools(READ_ONLY_TOOLS)
+    runnable = model if exhausted else model.bind_tools(tools)
     try:
-        response = runnable.invoke([SystemMessage(content=CHAT_SYSTEM), *state["messages"][-24:]])
+        response = runnable.invoke([SystemMessage(content=system), *state["messages"][-24:]])
     except Exception as exc:  # noqa: BLE001 - LLM outage falls back to deterministic routing
         LLM_ERRORS.labels("langgraph_chat").inc()
         return {"messages": [AIMessage(content=f"{fallback_answer(_first_human(state))}\n\n(LLM unavailable: {str(exc)[:120]})", name="fallback")]}
@@ -133,7 +150,7 @@ def fallback(state: MessagesState) -> dict:
     return {"messages": [AIMessage(content=fallback_answer(_last_text(state)), name="deterministic")]}
 
 
-chat_builder = StateGraph(MessagesState)
+chat_builder = StateGraph(ChatState)
 chat_builder.add_node("guard", guard)
 chat_builder.add_node("refuse", refuse)
 chat_builder.add_node("agent", agent)

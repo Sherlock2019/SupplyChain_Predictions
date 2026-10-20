@@ -27,6 +27,9 @@
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/></symbol>
   <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></symbol>
+  <symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-13.7 5.6M4 12a8 8 0 0113.7-5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
+  <symbol id="i-look" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9h17M8 4.5V9"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></symbol>
 </svg>
 <div class="app">
@@ -36,7 +39,7 @@
       <a href="#command" data-page="command"><svg class="ico"><use href="#i-today"/></svg>Today<span class="badge" id="badge-critical" hidden></span></a>
       <a href="#approvals" data-page="approvals"><svg class="ico"><use href="#i-check"/></svg>Approvals<span class="badge" id="badge-approvals" hidden></span></a>
       <div class="nav-group">Insights</div>
-      <a href="#dashboard" data-page="dashboard"><svg class="ico"><use href="#i-dash"/></svg>Dashboards</a>
+      <a href="#dashboard" data-page="dashboard"><svg class="ico"><use href="#i-person"/></svg>My role</a>
       <a href="#products" data-page="products"><svg class="ico"><use href="#i-product"/></svg>Products</a>
       <a href="#sites" data-page="sites"><svg class="ico"><use href="#i-site"/></svg>Warehouses</a>
       <a href="#map" data-page="map"><svg class="ico"><use href="#i-map"/></svg>Network map</a>
@@ -52,6 +55,7 @@
       <a href="#compare" data-page="compare"><svg class="ico"><use href="#i-compare"/></svg>Flowise ⇄ LangGraph</a>
       <a href="#workflow" data-page="workflow"><svg class="ico"><use href="#i-flow"/></svg>Business workflow</a>
       <a href="#research" data-page="research"><svg class="ico"><use href="#i-search"/></svg>Deep research</a>
+      <a href="#moat" data-page="moat"><svg class="ico"><use href="#i-loop"/></svg>Intelligence moat</a>
       <div class="nav-group">System</div>
       <a href="#platform" data-page="platform"><svg class="ico"><use href="#i-pulse"/></svg>Status &amp; access</a>
     </nav>
@@ -70,6 +74,7 @@
         <span id="demo-role" class="role-switch" hidden><select id="role-select" aria-label="Acting as"><option value="manager">Manager view</option><option value="planner">Planner view</option></select></span>
         <form id="login" class="controls" autocomplete="off"><input id="api-key" type="password" placeholder="API key" aria-label="API key"><button type="submit" class="small">Sign in</button></form>
         <span id="role-chip" class="chip" hidden>signed out</span>
+        <div class="look-switch" role="group" aria-label="Interface look"><button type="button" data-look="apple" title="Apple-style look">Apple</button><button type="button" data-look="sap" title="SAP Fiori Horizon look">SAP Fiori</button></div>
         <button class="icon" id="theme-toggle" type="button" aria-label="Toggle light or dark appearance"><svg class="ico"><use href="#i-moon"/></svg></button>
       </div>
     </header>
@@ -80,8 +85,10 @@
       <!-- COMMAND CENTER -->
       <section class="page" id="page-command">
         <p class="note" id="hero-line" style="font-size:15px;color:var(--ink-2);margin:-12px 0 20px">Loading insights…</p>
+        <div id="northstar"></div>
         <div id="spotlight"></div>
         <div class="next-up" id="next-up"></div>
+        <div class="section-title"><h2>The five platform KPIs</h2><span class="note">agreed definitions · tap a tile for the formula and SAP source</span></div>
         <div class="kpis" id="cc-kpis"></div>
         <div class="split">
           <div>
@@ -91,6 +98,7 @@
           <div>
             <div class="card"><h2>Watchlist</h2><p class="sub">Your subscriptions, re-checked against the latest snapshot</p><div id="cc-watches"></div></div>
             <div class="card"><h2>Waiting for a decision</h2><div id="cc-approvals"></div></div>
+            <div class="card" id="cc-industry"></div>
             <div class="card" id="cc-forecast"></div>
           </div>
         </div>
@@ -98,14 +106,22 @@
 
       <!-- ROLE DASHBOARDS -->
       <section class="page" id="page-dashboard">
-        <div class="pills" id="persona-pills"></div>
+        <div class="pills role-pills" id="persona-pills"></div>
+        <div id="role-head"></div>
         <div class="row focus-bar">
           <label class="inline">Product <select id="product-focus" aria-label="Product focus"><option value="">All products</option></select></label>
           <span class="note" id="persona-task" style="margin:0"></span>
         </div>
+        <div class="section-title"><h2>What matters</h2><span class="note" id="role-kpi-note">your KPIs against target · tap a tile for its definition</span></div>
+        <div class="kpis" id="dash-kpis"></div>
+        <div class="role-grid">
+          <div class="card"><h2>What is likely to go wrong</h2><p class="sub">dated predictions and the basis for each</p><div id="role-predictions"></div></div>
+          <div class="card" id="role-cost"></div>
+        </div>
+        <div class="card"><h2>What to do next</h2><p class="sub">recommended actions, most urgent first — each opens the screen that does it</p><div id="role-actions"></div></div>
+        <div class="card agent-card" id="role-agent"></div>
         <div id="dash-brief"></div>
         <div class="section-title" id="dash-role-title" hidden></div>
-        <div class="kpis" id="dash-kpis"></div>
         <div id="dash-outlook"></div>
         <div class="grid g2" id="dash-charts"></div>
         <div id="dash-tables"></div>
@@ -279,6 +295,25 @@
         </div>
       </section>
 
+      <!-- INTELLIGENCE MOAT -->
+      <section class="page" id="page-moat">
+        <div id="moat-hero"></div>
+        <div class="section-title"><h2>Customer Data Intelligence Flywheel</h2><span class="note">live counts for this customer</span></div>
+        <div class="flywheel" id="moat-flywheel"></div>
+        <div class="section-title"><h2>Five metrics of moat strength</h2><span class="note">accumulating data is not the same as building an advantage</span></div>
+        <div class="moat-metrics" id="moat-metrics"></div>
+        <div class="card"><h2>Six customer data moats — and what SPARC has learned from each</h2><div id="moat-sources"></div></div>
+        <div class="grid g2">
+          <div class="card" id="moat-models"></div>
+          <div class="card" id="moat-consent"></div>
+        </div>
+        <div class="card" id="moat-value"></div>
+        <div class="grid g2">
+          <div class="card" id="moat-learning"></div>
+          <div class="card" id="moat-ownership"></div>
+        </div>
+      </section>
+
       <!-- PLATFORM -->
       <section class="page" id="page-platform">
         <div class="card"><h2>Platform status <span class="note" id="runtime"></span></h2><div id="status"></div></div>
@@ -290,7 +325,7 @@
 
 <aside class="drawer" id="drawer" aria-label="Copilot">
   <header>
-    <h2><svg class="ico" style="color:var(--accent)"><use href="#i-spark"/></svg>Copilot</h2>
+    <h2><svg class="ico" style="color:var(--accent)"><use href="#i-spark"/></svg><span id="drawer-title">Copilot</span></h2>
     <select id="drawer-engine" aria-label="Runtime">
       <option value="lg-chat">LangGraph Chat</option><option value="lg-agentflow">LangGraph AgentFlow</option>
       <option value="fw-chatflow">Flowise Chatflow</option><option value="fw-agentflow">Flowise AgentFlow V2</option>

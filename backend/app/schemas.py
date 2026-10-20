@@ -95,14 +95,34 @@ class RecommendationFromTextRequest(StrictModel):
     comment: str = Field(default="", max_length=2000)
 
 
+REASON_CODES = ("supplier_risk", "capacity", "cost", "timing", "customer_priority", "data_quality", "quality", "other")
+
+
 class DecisionRequest(StrictModel):
     decision: Literal["accepted", "rejected"]
     comment: str = Field(default="", max_length=4000)
+    # Human expertise capture: "modified" = accepted with changes; reason_code explains why the expert deviated.
+    modified: bool = False
+    reason_code: Literal["supplier_risk", "capacity", "cost", "timing", "customer_priority", "data_quality", "quality", "other"] | None = None
+
+
+class ConsentRequest(StrictModel):
+    industry_learning: bool
 
 
 class ChatRequest(StrictModel):
     message: str = Field(min_length=1, max_length=8000)
     thread_id: str | None = Field(default=None, min_length=1, max_length=128)
+    role: Literal["director", "demand", "production", "procurement", "warehouse", "logistics", "quality", "finance", "mlops"] | None = None
+
+
+class OutcomeRequest(StrictModel):
+    """The real result of an executed recommendation, observed in SAP (approval alone is never proof)."""
+    achieved: bool
+    observed: dict = Field(default_factory=dict)
+    realized_impact_eur: float | None = Field(default=None, ge=-10_000_000, le=10_000_000)
+    source_document: str = Field(min_length=3, max_length=64, pattern=r"^[A-Za-z0-9\-_/.]+$")
+    note: str = Field(default="", max_length=2000)
 
 
 class BusinessWorkflowRequest(StrictModel):
