@@ -64,8 +64,14 @@ echo "${PROFILES[*]}" > .localdemo-profiles
 
 step "Starting containers"
 if [ "$REBUILD" = 1 ] || ! docker image inspect aurelia-scm-app:local >/dev/null 2>&1; then
-  c_warn "building application image (first build takes a few minutes)"
-  docker compose build api >/dev/null
+  c_warn "building application image (first build takes a few minutes; log: .localdemo-build.log)"
+  # Plain progress: BuildKit's interactive display fails with "failed to get console" when output is not a terminal
+  # (fresh Docker installs, SSH sessions, CI). Older Compose versions without --progress fall back to the env variable.
+  export BUILDKIT_PROGRESS=plain
+  if ! { docker compose --progress plain build api >.localdemo-build.log 2>&1 || docker compose build api >>.localdemo-build.log 2>&1; }; then
+    tail -n 25 .localdemo-build.log
+    die "application image build failed — full log: .localdemo-build.log"
+  fi
 fi
 docker compose "${PROFILES[@]}" up -d --no-build --remove-orphans >/dev/null 2>&1 || docker compose "${PROFILES[@]}" up -d --no-build
 c_ok "containers started"
