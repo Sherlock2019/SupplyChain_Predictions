@@ -2,8 +2,95 @@
 
 *Smart supply chain **P**erformer — **A**I **R**esilience **C**opilot.* Demo customer: Aurelia Cosmetics (fictional).
 
-> **SupplyChain Insight AI POC.** Flowise Chatflow, supervisor Agentflow and 7 specialist Agentflows on the SCInsight FastAPI
-> service (port 8100, synthetic SAP, pgvector RAG, human approval, outcome learning). See [docs/scinsight/README.md](docs/scinsight/README.md).
+This repository holds two systems that run side by side in the same Docker stack:
+
+| System | What it is | Entry points |
+| --- | --- | --- |
+| **SupplyChain Insight AI (SCInsight)**, the current POC | Flowise chat bot + SC Agent Manager + 7 specialist agents on a governed FastAPI service: synthetic SAP, deterministic calculations, policy RAG, human approval, outcome learning | Flowise `SCInsight-Cosmetics-*` flows · Swagger http://localhost:8100/docs |
+| **SPARC** (earlier copilot, described from *What* onwards) | Role dashboards, analytics engine, Flowise + LangGraph copilots for the fictional Aurelia Cosmetics | Dashboard http://localhost:8000 |
+
+## SupplyChain Insight AI (SCInsight)
+
+A planning assistant for a fictional cosmetics company (Belleva Cosmetics: 1 factory, warehouses A/B/C, 20 products,
+10 materials, synthetic SAP data). You ask in plain language; an AI manager sends the question to the right specialist;
+the specialist reads SAP data and **code calculates every number**; the AI only explains the result and cites company rules;
+any proposed action waits for a **human manager's approval**; and the real outcome from SAP is later checked against the
+prediction so the system learns.
+
+**Rules enforced in code, not in prompts:** the LLM never invents numbers (every number is checked against a stored
+calculation) · SAP is read-only (writes return 405; the service refuses to start with `SAP_WRITE_ENABLED=true`) · tenant
+and roles come from the API key on the server · the Flowise agent can never approve: only a manager with their own key ·
+approval is not proof: outcomes are verified against SAP goods receipts · models are promoted only by a director, and only
+when they beat the baseline.
+
+**Run it**
+
+```bash
+python3 scripts/gen-env.py --add-missing    # adds the SCI_* user keys to an existing .env (new install: python3 scripts/gen-env.py)
+./start-localdemo.sh                        # whole stack; also imports the SCInsight flows into Flowise
+# or only what SCInsight needs:
+docker compose --profile core up -d postgres flowise scinsight-api
+python3 flowise/scinsight/deploy.py import  # 14 tools + 9 flows, bound to your Flowise; writes FLOWISE_SCI_* to .env
+```
+
+Open Flowise at http://localhost:3000 and the SCInsight API at http://localhost:8100/docs. In Swagger, use *Authorize* with a
+user key from `.env`, e.g. `SCI_WAREHOUSE_KEY`.
+
+**The Flowise flows**
+
+| Flow | What it is for |
+| --- | --- |
+| `SCInsight-Cosmetics-Chatflow-v1` | **Chat front door**: guardrail → memory → Qwen → one of two tools (*Ask the SC Agent Manager* or *company RAG search*) → every number checked → answer with sources |
+| `SCInsight-Cosmetics-Supervisor-Agentflow-v1` | **SC Agent Manager**: check access → understand the request → safety guard → route to ONE specialist → save recommendation → **human approval (pause)** → show the verified decision. Use this one for the full demo |
+| `…-Factory-Planning-Agentflow-v1` | Can we produce on time? BOM, usable stock, purchase orders → shortages and options |
+| `…-Procurement-Agentflow-v1` | Which supplier? Real lead time from goods receipts, cost, arrival vs need |
+| `…-Warehouse-Agentflow-v1` | Move stock between warehouses A/B/C? Days of cover and the best transfer |
+| `…-Inventory-Optimizer-Agentflow-v1` | How long will stock last? Cover, replenishment, demand forecast |
+| `…-Logistics-Agentflow-v1` | How to ship it? Lane, transit time, freight cost |
+| `…-Quality-Agentflow-v1` | Which batches are usable vs expired, blocked, reserved or in inspection |
+| `…-Decision-Outcome-Learning-Agentflow-v1` | Was a past recommendation right? Predicted vs actual, learning metrics |
+
+Every canvas reads left to right in numbered steps, with a panel under each node: what it does, input, output. Each
+specialist: check access → read the request → calculate with SAP data → policy search → write the answer → check every number.
+
+**Try it** (chat with the Supervisor Agentflow):
+
+| Ask | Expected (from the calculation) |
+| --- | --- |
+| *Can we produce production order PRD-1001 on time?* | No: 20,000 pumps missing; make 30,000 now; buy 20,000 from Supplier A (9-day real lead time, €8,400). Pauses for production-planner approval |
+| *Warehouse B is low on SPF50 sunscreen. Should we transfer stock?* | Move 2,004 units from Warehouse C, arriving 23 Oct, €821.40 |
+| *Which SPF50 batches at Warehouse C are usable?* | 4,500 of 7,500; expired, QA-blocked, reserved and in-inspection batches excluded |
+| *Was the lead time prediction of REC-HIST-0001 right?* | Predicted 5 days, actually 9: +4 days, verified |
+| *Create a purchase order in SAP* | Refused: SAP is read-only |
+
+Approve a paused recommendation as the responsible manager in Swagger (`POST /api/v1/decisions/{id}/review`, authorised
+with that manager's key: `SCI_PLANNER_KEY` for production (PRD-1001), `SCI_WAREHOUSE_KEY` for transfers,
+`SCI_PROCUREMENT_KEY` for purchases, `SCI_QUALITY_KEY` for quality), then click *Proceed* in Flowise to see the verified decision.
+More: [docs/scinsight/DEMO_SCENARIOS.md](docs/scinsight/DEMO_SCENARIOS.md).
+
+**Where things are**
+
+| Path | Contents |
+| --- | --- |
+| `backend/scinsight/` | SCInsight FastAPI service: synthetic SAP, business rules, decisions, learning, RAG, security, migrations |
+| `data/scinsight/knowledge/` | Synthetic policies, SOPs and supplier agreements for the RAG knowledge base |
+| `flowise/chatflows/`, `flowise/agentflows/`, `flowise/tools/`, `flowise/prompts/` | Flowise exports (placeholders only, no keys or credential ids) |
+| `flowise/scinsight/` | `build-scinsight.cjs` generates the exports from the installed Flowise; `deploy.py build / import` |
+| `tests/scinsight/` | Business rules, API scenarios, security, Flowise end-to-end (opt-in, real LLM) |
+| `docs/scinsight/` | [Overview](docs/scinsight/README.md) · [architecture](docs/scinsight/ARCHITECTURE.md) · [chatflow](docs/scinsight/FLOWISE_CHATFLOW.md) · [agentflows](docs/scinsight/FLOWISE_AGENTFLOWS.md) · [permissions](docs/scinsight/AGENT_TOOL_PERMISSIONS.md) · [API](docs/scinsight/FASTAPI_CONTRACTS.md) · [synthetic SAP](docs/scinsight/SAP_SYNTHETIC_DATA.md) · [approval](docs/scinsight/HUMAN_APPROVAL.md) · [learning](docs/scinsight/OUTCOME_LEARNING.md) · [import guide](docs/scinsight/FLOWISE_IMPORT_GUIDE.md) · [test results](docs/scinsight/TEST_RESULTS.md) |
+
+**How it is verified**
+
+* `pytest tests`: 122 passed, 11 skipped (9 of the skips are the opt-in Flowise end-to-end tests).
+* `SCI_E2E=1 pytest tests/scinsight/test_flowise_e2e.py`: 9/9 against the stack's Flowise (real Qwen runs: scenarios, approval pause and resume, security).
+* `bash scripts/scinsight-clean-flowise-test.sh`: a brand-new empty Flowise imports only the committed exports and passes the same 9 tests.
+* Completeness audit of all 9 flows (wiring, branches, panels, credentials, API key) plus every route executed: 0 problems.
+
+**Limits (POC):** synthetic SAP data only (no live SAP connection); users are API keys, not SSO; Qwen 2.5 7B can still word
+an answer wrongly when every number in it is correct, so a stronger model is a pilot prerequisite (details in
+[TEST_RESULTS.md](docs/scinsight/TEST_RESULTS.md)).
+
+---
 
 ## What
 
@@ -74,7 +161,8 @@ can be explained line by line because every number traces back to SAP data.
 | Environment | Status |
 | --- | --- |
 | Workstation (Docker Compose, Qwen via Ollama) | Running and verified — see *How* |
-| AWS (primary): app VM + GPU VM (vLLM, NVIDIA L4) + RDS PostgreSQL/pgvector, behind Caddy HTTPS | Terraform ready (`infra/aws`, plan: 67 resources, ~$1.10/h). **Not deployed** — the account's GPU quota is 0 vCPU |
+| Any Linux VM, e.g. your own EC2 instance (`./start-aws.sh`) | Same Docker Compose stack, started in the background |
+| AWS (primary): app VM + GPU VM (vLLM, NVIDIA L4) + RDS PostgreSQL/pgvector, behind Caddy HTTPS | Terraform ready (`infra/aws`, plan: 67 resources, ~$1.10/h). **Not deployed**: the stack was destroyed on 2026-10-20 and the account's GPU quota is 0 vCPU |
 | GCP (alternative): same layout on Compute Engine + Cloud SQL | Terraform ready (`infra/gcp`). Not deployed |
 
 **Where things are in this repository**
@@ -82,6 +170,7 @@ can be explained line by line because every number traces back to SAP data.
 | Path | Contents |
 | --- | --- |
 | `backend/app/` | FastAPI gateway, SAP mock repository, deterministic engine, insights, dashboards, tenants, LangGraph graphs, Deep Agent, MCP server, RAG |
+| `backend/scinsight/`, `flowise/scinsight/`, `docs/scinsight/` | SupplyChain Insight AI (see the section at the top) |
 | `frontend/` | The web app (vanilla JS, no build step): `index.html`, `app.js`, `charts.js`, `styles.css` |
 | `flowise/` | Headless Flowise provisioning and the generated Chatflow / AgentFlow V2 — see [flowise/README.md](flowise/README.md) |
 | `data/` | SAP snapshot for Aurelia (`sap_mock.json`) and synthetic customers per industry (`tenants/`) |
@@ -192,8 +281,9 @@ GCP: `scripts/cloud-preflight.sh gcp <project-id>` then `scripts/deploy-gcp.sh v
 
 **How it is verified**
 
-* `pytest`: 65 passed, 2 opt-in integration tests skipped (engine, product brief and sales outlook, tenants and map, API
-  governance, graphs incl. interrupt/resume, RAG, MCP, Postgres store + pgvector, Flowise flow integrity).
+* `pytest`: 122 passed, 11 opt-in tests skipped, for SPARC and SCInsight together (engine, product brief and sales outlook,
+  tenants and map, API governance, graphs incl. interrupt/resume, RAG, MCP, Postgres store + pgvector, Flowise flow
+  integrity, SCInsight business rules / API / security).
 * `scripts/smoke.py` against the local stack: 15/15 checks through real HTTP calls (Qwen, LangGraph Server, Flowise, MCP,
   Langfuse, Grafana). Evidence is written to `deploy-evidence/` locally and is not committed (it holds machine-specific IDs).
 * `terraform validate` passes for AWS and GCP; AWS `terraform plan`: 67 resources.
