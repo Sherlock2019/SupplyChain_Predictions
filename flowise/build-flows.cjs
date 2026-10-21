@@ -16,6 +16,14 @@ const COMPONENTS = process.env.FLOWISE_COMPONENTS_DIR || '/usr/local/lib/node_mo
 const QWEN_MODEL = process.env.QWEN_MODEL || 'qwen2.5-7b-scm'
 const QWEN_BASE_URL = process.env.QWEN_BASE_URL || 'http://host.docker.internal:11435/v1'
 const CRED = process.env.QWEN_CREDENTIAL_ID || ''
+const PG_CRED = process.env.PG_CREDENTIAL_ID || ''          // Flowise PostgresApi credential (RAG vector store + record manager)
+const EMB_CRED = process.env.EMB_CREDENTIAL_ID || ''        // openAIApi credential holding a gateway planner key (embeddings)
+const PG_HOST = process.env.PG_HOST || 'postgres'
+const PG_PORT = Number(process.env.PG_PORT || 5432)
+const PG_DATABASE = process.env.PG_DATABASE || 'supplychain'
+const PG_SSL = process.env.PG_SSL === 'true'
+const PG_CA = process.env.PG_CA || ''                       // managed PostgreSQL CA (RDS / Cloud SQL), PEM
+const KNOWLEDGE_DIR = process.env.KNOWLEDGE_DIR || '/opt/knowledge'
 
 const MCP_CONFIG = JSON.stringify({ url: '{{$vars.mcp_url}}', headers: { 'X-API-Key': '{{$vars.mcp_api_key}}' } }, null, 2)
 const ALL_TOOLS = [
@@ -50,7 +58,7 @@ function isShown(param, inputs) {
 class ChatflowBuilder {
     constructor() { this.nodes = []; this.edges = []; this.byId = {} }
 
-    add(rel, id, label, values, position) {
+    add(rel, id, label, values, position, opts = {}) {
         const cls = load(rel)
         const inputs = {}
         const inputParams = []
@@ -63,20 +71,34 @@ class ChatflowBuilder {
             else inputAnchors.push(entry)
         }
         for (const [k, v] of Object.entries(values)) if (!(k in inputs)) inputs[k] = v
+        let outputAnchors
+        let outputs = {}
+        if (cls.outputs && cls.outputs.length) {  // node with several outputs: Flowise stores an "options" anchor + the chosen one
+            const options = cls.outputs.map((o) => ({
+                id: `${id}-output-${o.name}-${(o.baseClasses || []).join('|')}`, name: o.name, label: o.label,
+                description: o.description || '', type: (o.baseClasses || []).join(' | ')
+            }))
+            const chosen = opts.output || options[0].name
+            if (!options.some((o) => o.name === chosen)) throw new Error(`${id}: no output ${chosen}`)
+            outputAnchors = [{ name: 'output', label: 'Output', type: 'options', description: '', options, default: chosen }]
+            outputs = { output: chosen }
+        } else {
+            outputAnchors = [{
+                id: `${id}-output-${cls.name}-${cls.baseClasses.join('|')}`, name: cls.name, label: cls.type,
+                description: cls.description, type: cls.baseClasses.join(' | ')
+            }]
+        }
         const data = {
             id, label, version: cls.version, name: cls.name, type: cls.type, baseClasses: cls.baseClasses,
             category: cls.category, description: cls.description, inputParams, inputAnchors, inputs,
-            outputAnchors: [{
-                id: `${id}-output-${cls.name}-${cls.baseClasses.join('|')}`, name: cls.name, label: cls.type,
-                description: cls.description, type: cls.baseClasses.join(' | ')
-            }],
-            outputs: {}, selected: false
+            outputAnchors, outputs, selected: false
         }
         if (cls.credential) {
             inputParams.unshift({ ...cls.credential, id: `${id}-input-credential-credential` })
-            if (CRED) { data.credential = CRED; inputs.credential = CRED; inputs.FLOWISE_CREDENTIAL_ID = CRED }
+            const cred = opts.credential !== undefined ? opts.credential : CRED
+            if (cred) { data.credential = cred; inputs.credential = cred; inputs.FLOWISE_CREDENTIAL_ID = cred }
         }
-        const node = { id, position, positionAbsolute: position, type: 'customNode', data, width: 300, height: 500, selected: false, dragging: false }
+        const node = { id, position, positionAbsolute: position, type: cls.name === 'stickyNote' ? 'stickyNote' : 'customNode', data, width: 300, height: 500, selected: false, dragging: false }
         this.nodes.push(node)
         this.byId[id] = node
         return id
@@ -87,9 +109,15 @@ class ChatflowBuilder {
         const tgt = this.byId[target]
         const anchor = tgt.data.inputAnchors.find((a) => a.name === inputName)
         if (!anchor) throw new Error(`No input anchor ${inputName} on ${target}`)
-        const sourceHandle = src.data.outputAnchors[0].id
-        const ok = anchor.type.split('|').some((t) => src.data.baseClasses.includes(t.trim()))
-        if (!ok) throw new Error(`${source} (${src.data.baseClasses}) cannot feed ${target}.${inputName} (${anchor.type})`)
+        let sourceHandle = src.data.outputAnchors[0].id
+        let provides = src.data.baseClasses
+        if (src.data.outputAnchors[0].type === 'options') {
+            const option = src.data.outputAnchors[0].options.find((o) => o.name === src.data.outputs.output)
+            sourceHandle = option.id
+            provides = option.type.split(' | ')
+        }
+        const ok = anchor.type.split('|').some((t) => provides.includes(t.trim()))
+        if (!ok) throw new Error(`${source} (${provides}) cannot feed ${target}.${inputName} (${anchor.type})`)
         this.edges.push({ source, sourceHandle, target, targetHandle: anchor.id, type: 'buttonedge', id: `${source}-${sourceHandle}-${target}-${anchor.id}` })
     }
 }
@@ -116,17 +144,62 @@ const ARCH_PANELS = [
 ]
 const archPositions = (x0, y0) => ARCH_PANELS.map((_, i) => ({ x: x0 + (i % 4) * 340, y: y0 + Math.floor(i / 4) * 260 }))  // 4 panels per row
 
+const RAG_NOTE = 'RAG PIPELINE (native Flowise)\n' +
+    '1 Folder loader: the governed documents (contracts, SOPs, quality, product specs, logistics policies) mounted read-only at ' + KNOWLEDGE_DIR + '\n' +
+    '2 Markdown text splitter: chunks of 800 characters, 100 overlap, split on markdown structure (same corpus as the backend RAG)\n' +
+    '3 Embeddings: BAAI/bge-small-en-v1.5 served by the FastAPI gateway /v1/embeddings (one embedding model for both RAG paths)\n' +
+    '4 Postgres pgvector store: table flowise_knowledge (cosine, top 4) + record manager (full cleanup: re-indexing never duplicates)\n' +
+    '5 Retriever tool -> Tool Agent. Indexing: flowise/bootstrap.py calls the Flowise upsert API.'
+const DENY_LIST = [
+    'ignore previous instructions', 'ignore all previous', 'disregard the system prompt', 'reveal your system prompt', 'print your instructions',
+    'you are now in developer mode', 'approve it yourself', 'execute it in sap', 'post it in sap', 'delete purchase order', 'cancel the purchase order in sap',
+    'create a purchase order in sap', 'post a goods receipt', 'release the batch in sap'
+].join('\n')
+
 function buildChatflow() {
     const b = new ChatflowBuilder()
+    // ---- RAG pipeline: load -> chunk -> embed -> store (pgvector, record manager) -> retrieve
+    b.add('textsplitters/MarkdownTextSplitter/MarkdownTextSplitter.js', 'markdownTextSplitter_0', 'Chunking · Markdown text splitter (800 / 100)', {
+        chunkSize: 800, chunkOverlap: 100
+    }, { x: -1240, y: 100 })
+    b.add('documentloaders/Folder/Folder.js', 'folderFiles_0', 'Governed documents · contracts, SOPs, policies', {
+        folderPath: KNOWLEDGE_DIR, recursive: false, textSplitter: '{{markdownTextSplitter_0.data.instance}}',
+        metadata: JSON.stringify({ corpus: 'governed_knowledge', tenant: 'cosmetics/aurelia', access: 'read-only' })
+    }, { x: -880, y: 60 }, { output: 'document' })
+    b.add('embeddings/OpenAIEmbeddingCustom/OpenAIEmbeddingCustom.js', 'openAIEmbeddingsCustom_0', 'Embeddings · bge-small via FastAPI /v1/embeddings', {
+        basepath: '{{$vars.copilot_api_url}}/v1', modelName: 'BAAI/bge-small-en-v1.5', stripNewLines: false, batchSize: 64, timeout: 60000, encodingFormat: 'float'
+    }, { x: -880, y: 640 }, { credential: EMB_CRED })
+    const pg = { host: PG_HOST, database: PG_DATABASE, port: PG_PORT, ssl: PG_SSL, additionalConfig: PG_SSL && PG_CA ? JSON.stringify({ ssl: { ca: PG_CA } }) : '' }
+    b.add('recordmanager/PostgresRecordManager/PostgresRecordManager.js', 'postgresRecordManager_0', 'Record manager · de-duplicated indexing', {
+        ...pg, tableName: 'flowise_upsertion_records', namespace: 'aurelia-governed-knowledge', cleanup: 'full', sourceIdKey: 'source'
+    }, { x: -880, y: 1180 }, { credential: PG_CRED })
+    b.add('vectorstores/Postgres/Postgres.js', 'postgres_0', 'RAG DB · PostgreSQL + pgvector', {
+        ...pg, tableName: 'flowise_knowledge', distanceStrategy: 'cosine', topK: 4, batchSize: 64,
+        document: ['{{folderFiles_0.data.instance}}'], embeddings: '{{openAIEmbeddingsCustom_0.data.instance}}', recordManager: '{{postgresRecordManager_0.data.instance}}'
+    }, { x: -500, y: 420 }, { credential: PG_CRED, output: 'retriever' })
+    b.add('tools/RetrieverTool/RetrieverTool.js', 'retrieverTool_0', 'Retriever tool · governed policy documents', {
+        name: 'governed_policy_documents',
+        description: 'Searches Aurelia\'s governed documents (supplier contracts, SOPs, quality and product-spec policies, logistics policies) and returns ' +
+            'the matching chunks with their source file. Use it for clauses, rules, thresholds and approval policies; cite the source.',
+        retriever: '{{postgres_0.data.instance}}', returnSourceDocuments: true
+    }, { x: -120, y: 420 })
+    // ---- guardrail on the chat input
+    b.add('moderation/SimplePromptModeration/SimplePromptModeration.js', 'inputModerationSimple_0', 'Input guardrail · prompt-injection + SAP-write deny list', {
+        denyList: DENY_LIST,
+        moderationErrorMessage: 'Blocked by the SPARC input guardrail: SAP is read-only and instructions that override the copilot are not accepted. ' +
+            'Ask for an analysis or a recommendation instead; a manager approves actions in SPARC.'
+    }, { x: -120, y: 1000 })
+    // ---- model + memory
     b.add('chatmodels/ChatOpenAICustom/ChatOpenAICustom.js', 'chatOpenAICustom_0', 'Qwen (OpenAI-compatible)', {
         modelName: QWEN_MODEL, temperature: 0, streaming: false, maxTokens: 1500, timeout: 180000, basepath: QWEN_BASE_URL
-    }, { x: 80, y: 60 })
+    }, { x: 260, y: 60 })
     b.add('memory/BufferWindowMemory/BufferWindowMemory.js', 'bufferWindowMemory_0', 'Conversation memory (8 turns)', {
         k: '8', memoryKey: 'chat_history'
-    }, { x: 80, y: 640 })
-    b.add('tools/MCP/CustomMCP/CustomMCP.js', 'customMCP_0', 'SPARC MCP · analytics engine + RAG (pgvector) · 10 read-only tools', {
+    }, { x: 260, y: 640 })
+    // ---- analytics engine (MCP) + SAP source records (OData)
+    b.add('tools/MCP/CustomMCP/CustomMCP.js', 'customMCP_0', 'SPARC MCP · analytics engine · 10 read-only tools', {
         mcpServerConfig: MCP_CONFIG, mcpActions: JSON.stringify(ALL_TOOLS)
-    }, { x: 460, y: 60 })
+    }, { x: 640, y: 60 })
     const sapTools = [
         ['requestsGet_0', 'sap_odata_stock', 'SAP S/4HANA OData · material stock (read-only)', 'A_MaterialStock',
             'Read raw SAP material stock records (plant, material, batch, quantity, status, expiry) from the read-only SAP OData API.'],
@@ -134,30 +207,43 @@ function buildChatflow() {
             'Read raw SAP purchase order items (PO, supplier, material, plant, quantity, delivery date, status) from the read-only SAP OData API.'],
         ['requestsGet_2', 'sap_odata_sales_orders', 'SAP S/4HANA OData · sales orders (read-only)', 'A_SalesOrderItem',
             'Read raw SAP sales order items (order, customer, warehouse, material, quantity, requested date, priority) from the read-only SAP OData API.'],
+        ['requestsGet_3', 'sap_odata_production_orders', 'SAP S/4HANA OData · production orders (read-only)', 'A_ProductionOrder',
+            'Read raw SAP production orders (order, plant, material, quantity, finish date, status) from the read-only SAP OData API.'],
     ]
     sapTools.forEach(([id, name, label, entity, description], i) => b.add('tools/RequestsGet/RequestsGet.js', id, label, {
         requestsGetUrl: `${SAP_ODATA}/${entity}?$top=100`, requestsGetName: name, requestsGetDescription: description + ' Use only to show source records; use the MCP analytics tools for every calculation.',
         requestsGetHeaders: GATEWAY_HEADERS, requestsGetMaxOutputLength: 6000
-    }, { x: 460, y: 700 + i * 360 }))
+    }, { x: 640, y: 700 + i * 360 }))
+    // ---- the agent
     b.add('agents/ToolAgent/ToolAgent.js', 'toolAgent_0', 'Aurelia Supply Chain Copilot', {
-        tools: ['{{customMCP_0.data.instance}}', ...sapTools.map(([id]) => `{{${id}.data.instance}}`)],
+        tools: ['{{customMCP_0.data.instance}}', '{{retrieverTool_0.data.instance}}', ...sapTools.map(([id]) => `{{${id}.data.instance}}`)],
         memory: '{{bufferWindowMemory_0.data.instance}}',
         model: '{{chatOpenAICustom_0.data.instance}}',
-        systemMessage: GUARDRAILS + ' Call sap_snapshot when you need valid codes. Use the MCP analytics tools for every number and ' +
-            'search_governed_knowledge (RAG over pgvector) for contracts, SOPs and policies; the sap_odata_* tools show raw SAP source records. ' +
-            'Answer with: status, key numbers, proposed actions, evidence.',
+        inputModeration: ['{{inputModerationSimple_0.data.instance}}'],
+        systemMessage: GUARDRAILS + ' Call sap_snapshot when you need valid codes. Use the MCP analytics tools for every number; ' +
+            'use governed_policy_documents (or search_governed_knowledge) for contracts, SOPs and policies and cite the source document; ' +
+            'the sap_odata_* tools show raw SAP source records. Answer with: status, key numbers, proposed actions, evidence. ' +
+            'For approvals use the SPARC Approvals page or the AgentFlow (planner Human Input); this chat never submits or executes anything.',
         maxIterations: 6
-    }, { x: 860, y: 300 })
-    b.add('utilities/StickyNote/StickyNote.js', 'stickyNote_0', 'How a question flows', { note: PATH_NOTE }, { x: 860, y: 900 })
-    archPositions(80, -860).forEach((pos, i) => b.add('utilities/StickyNote/StickyNote.js', `stickyNote_arch${i}`, ARCH_PANELS[i][0],
+    }, { x: 1040, y: 300 })
+    b.add('utilities/StickyNote/StickyNote.js', 'stickyNote_0', 'How a question flows', { note: PATH_NOTE }, { x: 1040, y: 900 })
+    b.add('utilities/StickyNote/StickyNote.js', 'stickyNote_rag', 'RAG pipeline', { note: RAG_NOTE }, { x: -1240, y: 640 })
+    archPositions(-1240, -900).forEach((pos, i) => b.add('utilities/StickyNote/StickyNote.js', `stickyNote_arch${i}`, ARCH_PANELS[i][0],
         { note: `${ARCH_PANELS[i][0]}\n\n${ARCH_PANELS[i][1]}` }, pos))
+    // ---- wiring
+    b.connect('markdownTextSplitter_0', 'folderFiles_0', 'textSplitter')
+    b.connect('folderFiles_0', 'postgres_0', 'document')
+    b.connect('openAIEmbeddingsCustom_0', 'postgres_0', 'embeddings')
+    b.connect('postgresRecordManager_0', 'postgres_0', 'recordManager')
+    b.connect('postgres_0', 'retrieverTool_0', 'retriever')
+    b.connect('inputModerationSimple_0', 'toolAgent_0', 'inputModeration')
     b.connect('chatOpenAICustom_0', 'toolAgent_0', 'model')
     b.connect('bufferWindowMemory_0', 'toolAgent_0', 'memory')
     b.connect('customMCP_0', 'toolAgent_0', 'tools')
+    b.connect('retrieverTool_0', 'toolAgent_0', 'tools')
     sapTools.forEach(([id]) => b.connect(id, 'toolAgent_0', 'tools'))
     return { nodes: b.nodes, edges: b.edges }
 }
-
 
 // ----------------------------------------------------------------------------- FastAPI gateway configuration map
 const API_PANELS = [
@@ -206,7 +292,8 @@ function buildApiMap() {
 // ----------------------------------------------------------------------------- AgentFlow V2
 const AGENTFLOW_DIRS = {
     startAgentflow: 'Start', agentAgentflow: 'Agent', conditionAgentAgentflow: 'ConditionAgent', humanInputAgentflow: 'HumanInput',
-    customFunctionAgentflow: 'CustomFunction', httpAgentflow: 'HTTP', directReplyAgentflow: 'DirectReply', stickyNoteAgentflow: 'StickyNote'
+    customFunctionAgentflow: 'CustomFunction', httpAgentflow: 'HTTP', directReplyAgentflow: 'DirectReply', stickyNoteAgentflow: 'StickyNote',
+    llmAgentflow: 'LLM', conditionAgentflow: 'Condition', executeFlowAgentflow: 'ExecuteFlow'
 }
 
 class AgentflowBuilder {
@@ -430,4 +517,8 @@ function buildAgentflow() {
     return { nodes: b.nodes, edges: b.edges }
 }
 
-process.stdout.write(JSON.stringify({ chatflow: buildChatflow(), agentflow: buildAgentflow(), apimap: buildApiMap() }))
+module.exports = { ChatflowBuilder, AgentflowBuilder, load, isShown }  // reused by flowise/scinsight/build-scinsight.cjs
+
+if (require.main === module) {
+    process.stdout.write(JSON.stringify({ chatflow: buildChatflow(), agentflow: buildAgentflow(), apimap: buildApiMap() }))
+}

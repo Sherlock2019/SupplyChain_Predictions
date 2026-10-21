@@ -55,6 +55,9 @@ def secret_map() -> dict[str, str]:
         "CLICKHOUSE_PASSWORD": token(24),
         "REDIS_PASSWORD": token(24),
         "MINIO_PASSWORD": token(24),
+        # SupplyChain Insight AI service users (hashed in its database; the Flowise flows get only the agent key)
+        **{f"SCI_{slot}_KEY": f"sci-{slot.lower()}-" + token(32) for slot in ("AGENT", "PLANNER", "PROCUREMENT", "WAREHOUSE", "LOGISTICS",
+                                                                             "QUALITY", "DIRECTOR", "SAP_EXECUTOR", "MLOPS", "OTHER_TENANT")},
     }
 
 
@@ -89,8 +92,18 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--add-missing", action="store_true", help="append newly introduced keys to an existing .env, keep all current values")
     args = parser.parse_args()
     values = secret_map()
+    if args.add_missing:
+        target = ROOT / ".env"
+        current = {line.split("=", 1)[0] for line in target.read_text().splitlines() if "=" in line} if target.exists() else set()
+        new = {k: v for k, v in {**values, **LOCAL_SETTINGS}.items() if k not in current}
+        if target.exists() and new:
+            with target.open("a") as handle:
+                handle.write("".join(f"{k}={v}\n" for k, v in new.items()))
+        print(f"added {len(new)} new setting(s) to {target}" if new else "no new settings")
+        return 0
     if args.json:
         print(json.dumps(values))
         return 0

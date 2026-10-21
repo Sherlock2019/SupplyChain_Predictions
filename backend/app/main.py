@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import os
 import re
+import struct
 import time
 import uuid
 from datetime import date, timedelta
@@ -33,6 +35,7 @@ from backend.app.schemas import (
     ConsentRequest,
     DecisionRequest,
     DeepAgentHarness,
+    EmbeddingsRequest,
     FactoryReadinessRequest,
     FlowisePredictRequest,
     ForecastRequest,
@@ -532,6 +535,23 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         del who
         hits = rag.search(q, top_k, category)
         return {"query": q, "results": [{k: h[k] for k in ("title", "category", "score", "text") if k in h} for h in hits]}
+
+    @app.post("/v1/embeddings", tags=["RAG"], summary="OpenAI-compatible embeddings (same bge-small model as the governed RAG)")
+    def embeddings(body: EmbeddingsRequest, request: Request, authorization: str | None = Header(default=None),
+                   x_api_key: str | None = Header(default=None)) -> dict:
+        """Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding model of the backend RAG,
+        so one model serves both RAG paths. Auth: `Authorization: Bearer <key>` (OpenAI clients) or `X-API-Key`."""
+        bearer = authorization[7:].strip() if authorization and authorization.lower().startswith("bearer ") else None
+        principal(request, x_api_key or bearer)
+        texts = [body.input] if isinstance(body.input, str) else list(body.input)
+        vectors = rag.embedder.embed(texts)
+        def encode(vector: list[float]):
+            if body.encoding_format == "base64":  # openai-node asks for base64 by default and decodes it client-side
+                return base64.b64encode(struct.pack(f"<{len(vector)}f", *vector)).decode()
+            return vector
+        tokens = sum(len(t.split()) for t in texts)
+        return {"object": "list", "model": rag.embedder.name, "usage": {"prompt_tokens": tokens, "total_tokens": tokens},
+                "data": [{"object": "embedding", "index": i, "embedding": encode(v)} for i, v in enumerate(vectors)]}
 
     @app.get("/api/v1/rag/stats")
     def rag_stats(who: Principal = Depends(reader)) -> dict:

@@ -21,9 +21,13 @@ def load(kind: str) -> dict:
 def test_edges_reference_real_nodes_and_handles(kind):
     flow = load(kind)
     nodes = {n["id"]: n for n in flow["nodes"]}
+
+    def handles(node):  # a node with several outputs stores one "options" anchor listing them
+        for anchor in node["data"]["outputAnchors"]:
+            yield from (o["id"] for o in anchor["options"]) if anchor.get("type") == "options" else (anchor["id"],)
     for edge in flow["edges"]:
         assert edge["source"] in nodes and edge["target"] in nodes
-        assert any(a["id"] == edge["sourceHandle"] for a in nodes[edge["source"]]["data"]["outputAnchors"])
+        assert edge["sourceHandle"] in set(handles(nodes[edge["source"]]))
         if kind == "chatflow":
             assert any(a["id"] == edge["targetHandle"] for a in nodes[edge["target"]]["data"]["inputAnchors"])
     assert all(n["data"].get("version") for n in flow["nodes"])  # versions come from the installed Flowise classes
@@ -32,15 +36,17 @@ def test_edges_reference_real_nodes_and_handles(kind):
 def test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory():
     flow = load("chatflow")
     names = [n["data"]["name"] for n in flow["nodes"]]
-    assert {"chatOpenAICustom", "bufferWindowMemory", "customMCP", "toolAgent", "requestsGet", "stickyNote"} == set(names)
+    assert {"chatOpenAICustom", "bufferWindowMemory", "customMCP", "toolAgent", "requestsGet", "stickyNote", "inputModerationSimple",
+            # RAG pipeline: load -> chunk -> embed -> pgvector store (record manager) -> retriever tool
+            "folderFiles", "markdownTextSplitter", "openAIEmbeddingsCustom", "postgres", "postgresRecordManager", "retrieverTool"} == set(names)
     mcp = next(n for n in flow["nodes"] if n["data"]["name"] == "customMCP")
     assert set(json.loads(mcp["data"]["inputs"]["mcpActions"])) == READ_ONLY
     assert "$vars.mcp_api_key" in mcp["data"]["inputs"]["mcpServerConfig"]
     sap = [n for n in flow["nodes"] if n["data"]["name"] == "requestsGet"]  # explicit SAP OData tools, read-only GETs
-    assert len(sap) == 3 and all("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/" in n["data"]["inputs"]["requestsGetUrl"] for n in sap)
+    assert len(sap) == 4 and all("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/" in n["data"]["inputs"]["requestsGetUrl"] for n in sap)
     assert all("$vars.copilot_tool_key" in n["data"]["inputs"]["requestsGetHeaders"] for n in sap)
     tool_edges = [e for e in flow["edges"] if e["target"] == "toolAgent_0" and "-input-tools-" in e["targetHandle"]]
-    assert len(tool_edges) == 4  # MCP + 3 SAP OData tools
+    assert len(tool_edges) == 6  # MCP + 4 SAP OData tools + RAG retriever tool
     assert names.count("stickyNote") >= 9  # architecture panels
 
 

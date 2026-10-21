@@ -3,8 +3,10 @@
 
 1. Register the admin account on a fresh Flowise database (no manual sign-up page).
 2. Log in and mint an API key with the permissions the gateway and this script need.
-3. Upsert Flowise Variables (gateway URL, tool keys, MCP URL/key) and a Qwen "openAIApi" credential.
-4. Build the Chatflow and AgentFlow V2 inside the Flowise container (flowise/build-flows.cjs) and upsert them.
+3. Upsert Flowise Variables (gateway URL, tool keys, MCP URL/key) and the credentials the flows use: Qwen ("openAIApi"),
+   gateway embeddings ("openAIApi" holding a planner key), PostgreSQL ("PostgresApi") and Langfuse ("langfuseApi").
+4. Build the Chatflow, AgentFlow V2 and FastAPI map inside the Flowise container (flowise/build-flows.cjs), save them with
+   Langfuse tracing switched on, and index the governed documents into pgvector through the Chatflow RAG pipeline.
 5. Record FLOWISE_API_KEY / FLOWISE_CHATFLOW_ID / FLOWISE_AGENTFLOW_ID in .env for the FastAPI Flowise proxy.
 
     python3 flowise/bootstrap.py --env-file .env [--compose-dir .] [--flowise-url http://127.0.0.1:3000]
@@ -12,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import subprocess
@@ -26,6 +29,9 @@ AGENTFLOW_NAME = "Aurelia Supply Chain Supervisor - AgentFlow V2"
 APIMAP_NAME = "SPARC FastAPI gateway - configuration map"
 KEY_NAME = "aurelia-gateway"
 CREDENTIAL_NAME = "qwen-openai-compatible"
+EMB_CREDENTIAL_NAME = "sparc-gateway-embeddings"
+PG_CREDENTIAL_NAME = "sparc-postgres-rag"
+LANGFUSE_CREDENTIAL_NAME = "sparc-langfuse"
 
 
 def log(message: str) -> None:
@@ -97,12 +103,20 @@ class Flowise:
         raise RuntimeError("Flowise did not become ready")
 
 
-def build_flows(compose_dir: Path, env: dict[str, str], credential_id: str) -> dict:
+def build_flows(compose_dir: Path, env: dict[str, str], credential_id: str, pg_credential_id: str = "", emb_credential_id: str = "") -> dict:
+    ca = base64.b64decode(env["FLOWISE_DB_CA_B64"]).decode() if env.get("FLOWISE_DB_CA_B64") else ""
     command = [
         "docker", "compose", "exec", "-T",
         "-e", f"QWEN_MODEL={env.get('QWEN_MODEL', '')}",
         "-e", f"QWEN_BASE_URL={env.get('QWEN_BASE_URL', '')}",
         "-e", f"QWEN_CREDENTIAL_ID={credential_id}",
+        "-e", f"PG_CREDENTIAL_ID={pg_credential_id}",
+        "-e", f"EMB_CREDENTIAL_ID={emb_credential_id}",
+        "-e", f"PG_HOST={env.get('POSTGRES_HOST', 'postgres')}",
+        "-e", f"PG_PORT={env.get('POSTGRES_PORT', '5432')}",
+        "-e", "PG_DATABASE=supplychain",
+        "-e", f"PG_SSL={'true' if env.get('FLOWISE_DATABASE_SSL', 'false') == 'true' else 'false'}",
+        "-e", f"PG_CA={ca}",
         "-w", "/usr/local/lib/node_modules/flowise",
         "flowise", "node", "/opt/flows/build-flows.cjs",
     ]
@@ -165,16 +179,33 @@ def main() -> int:
     log(f"variables set: {', '.join(variables)}")
 
     credentials = flowise.call("GET", "/api/v1/credentials", auth="key")
-    credential = next((c for c in credentials if c.get("name") == CREDENTIAL_NAME), None)
-    cred_body = {"name": CREDENTIAL_NAME, "credentialName": "openAIApi", "plainDataObj": {"openAIApiKey": env.get("QWEN_API_KEY", "local-qwen")}}
-    if credential:
-        flowise.call("PUT", f"/api/v1/credentials/{credential['id']}", cred_body, auth="key")
-        credential_id = credential["id"]
-    else:
-        credential_id = flowise.call("POST", "/api/v1/credentials", cred_body, auth="key")["id"]
-    log(f"Qwen credential {credential_id}")
 
-    flows = build_flows(Path(args.compose_dir).resolve(), env, credential_id)
+    def upsert_credential(name: str, kind: str, data: dict) -> str:
+        found = next((c for c in credentials if c.get("name") == name), None)
+        body = {"name": name, "credentialName": kind, "plainDataObj": data}
+        if found:
+            flowise.call("PUT", f"/api/v1/credentials/{found['id']}", body, auth="key")
+            return found["id"]
+        return flowise.call("POST", "/api/v1/credentials", body, auth="key")["id"]
+
+    credential_id = upsert_credential(CREDENTIAL_NAME, "openAIApi", {"openAIApiKey": env.get("QWEN_API_KEY", "local-qwen")})
+    # RAG pipeline: embeddings through the FastAPI gateway (planner key) and the pgvector store / record manager.
+    emb_credential_id = upsert_credential(EMB_CREDENTIAL_NAME, "openAIApi", {"openAIApiKey": env["FLOWISE_TOOL_KEY"]})
+    pg_credential_id = upsert_credential(PG_CREDENTIAL_NAME, "PostgresApi", {"user": env.get("POSTGRES_USER", "supplychain"), "password": env["POSTGRES_PASSWORD"]})
+    log(f"credentials: Qwen {credential_id}, embeddings {emb_credential_id}, PostgreSQL {pg_credential_id}")
+    analytic = ""
+    compose_dir = Path(args.compose_dir).resolve()
+    running = subprocess.run(["docker", "compose", "ps", "--status", "running", "--services"], cwd=compose_dir, capture_output=True, text=True, check=False).stdout.split()
+    if env.get("LANGFUSE_PUBLIC_KEY") and env.get("LANGFUSE_SECRET_KEY") and "langfuse" in running:
+        lf_id = upsert_credential(LANGFUSE_CREDENTIAL_NAME, "langfuseApi", {
+            "langFusePublicKey": env["LANGFUSE_PUBLIC_KEY"], "langFuseSecretKey": env["LANGFUSE_SECRET_KEY"],
+            "langFuseEndpoint": env.get("LANGFUSE_INTERNAL_URL", "http://langfuse:3000")})
+        analytic = json.dumps({"langFuse": {"credentialId": lf_id, "release": "", "status": True}})
+        log(f"Langfuse tracing on for every flow (credential {lf_id})")
+    else:
+        log("Langfuse not running: flows saved without tracing")
+
+    flows = build_flows(compose_dir, env, credential_id, pg_credential_id, emb_credential_id)
     generated = Path(__file__).resolve().parent / "generated"
     try:
         generated.mkdir(exist_ok=True)
@@ -186,13 +217,25 @@ def main() -> int:
     existing = {row["name"]: row for row in flowise.call("GET", "/api/v1/chatflows", auth="key")}
     ids = {}
     for kind, name, flow_type in (("chatflow", CHATFLOW_NAME, "CHATFLOW"), ("agentflow", AGENTFLOW_NAME, "AGENTFLOW"), ("apimap", APIMAP_NAME, "CHATFLOW")):
-        body = {"name": name, "flowData": json.dumps(flows[kind]), "deployed": True, "isPublic": False, "type": flow_type, "category": "Supply Chain"}
+        body = {"name": name, "flowData": json.dumps(flows[kind]), "deployed": True, "isPublic": False, "type": flow_type, "category": "Supply Chain",
+                "analytic": analytic}
         if name in existing:
             row = flowise.call("PUT", f"/api/v1/chatflows/{existing[name]['id']}", body, auth="key")
         else:
             row = flowise.call("POST", "/api/v1/chatflows", body, auth="key")
         ids[kind] = row["id"]
         log(f"{flow_type} '{name}' -> {row['id']} ({len(flows[kind]['nodes'])} nodes, {len(flows[kind]['edges'])} edges)")
+
+    # Index the governed documents: Folder loader -> Markdown splitter -> gateway embeddings -> pgvector (record manager: no duplicates).
+    try:
+        try:
+            result = flowise.call("POST", f"/api/v1/vector/upsert/{ids['chatflow']}", {}, auth="key")
+        except RuntimeError:
+            result = flowise.call("POST", f"/api/v1/vector/internal-upsert/{ids['chatflow']}", {})
+        log(f"RAG index (pgvector flowise_knowledge): added {result.get('numAdded', 0)}, updated {result.get('numUpdated', 0)}, "
+            f"skipped {result.get('numSkipped', 0)}, deleted {result.get('numDeleted', 0)}")
+    except RuntimeError as exc:
+        log(f"WARNING: RAG indexing failed — the retriever tool will return nothing until it succeeds: {str(exc)[:300]}")
 
     write_env(env_path, {"FLOWISE_API_KEY": flowise.api_key, "FLOWISE_CHATFLOW_ID": ids["chatflow"], "FLOWISE_AGENTFLOW_ID": ids["agentflow"]})
     log(f"updated {env_path}")

@@ -1,0 +1,112 @@
+{
+  "generated_by": "flowise/scinsight/build-scinsight.cjs",
+  "tools": [
+    "flowise/tools/get_sap_inventory.json",
+    "flowise/tools/get_production_orders.json",
+    "flowise/tools/get_material_bom.json",
+    "flowise/tools/get_open_purchase_orders.json",
+    "flowise/tools/check_material_readiness.json",
+    "flowise/tools/calculate_stock_cover.json",
+    "flowise/tools/optimize_warehouse_transfer.json",
+    "flowise/tools/check_batch_quality.json",
+    "flowise/tools/forecast_demand.json",
+    "flowise/tools/get_supplier_reliability.json",
+    "flowise/tools/search_supply_chain_policy.json",
+    "flowise/tools/save_recommendation.json",
+    "flowise/tools/get_decision_status.json",
+    "flowise/tools/get_verified_outcomes.json"
+  ],
+  "flows": [
+    {
+      "name": "SCInsight-Cosmetics-Factory-Planning-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "factory_planning",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Factory-Planning-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Procurement-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "procurement",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Procurement-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Warehouse-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "warehouse",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Warehouse-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "inventory_optimizer",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Logistics-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "logistics",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Logistics-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Quality-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "quality",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Quality-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "specialist",
+      "intent": "outcome_learning",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Supervisor-Agentflow-v1",
+      "type": "AGENTFLOW",
+      "role": "supervisor",
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Supervisor-Agentflow-v1.json"
+    },
+    {
+      "name": "SCInsight-Cosmetics-Chatflow-v1",
+      "type": "CHATFLOW",
+      "role": "chat",
+      "file": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.json",
+      "chatbotConfig": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.chatbotConfig.json",
+      "postProcessing": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.postprocessing.js"
+    }
+  ],
+  "prompts": [
+    "flowise/prompts/chatflow_system.md",
+    "flowise/prompts/supervisor_classifier.md",
+    "flowise/prompts/shared_rules.md",
+    "flowise/prompts/factory_extract.md",
+    "flowise/prompts/factory_explain.md",
+    "flowise/prompts/procurement_extract.md",
+    "flowise/prompts/procurement_explain.md",
+    "flowise/prompts/warehouse_extract.md",
+    "flowise/prompts/warehouse_explain.md",
+    "flowise/prompts/inventory_extract.md",
+    "flowise/prompts/inventory_explain.md",
+    "flowise/prompts/logistics_extract.md",
+    "flowise/prompts/logistics_explain.md",
+    "flowise/prompts/quality_extract.md",
+    "flowise/prompts/quality_explain.md",
+    "flowise/prompts/learning_explain.md"
+  ],
+  "import_order": "tools -> specialist agentflows -> supervisor agentflow -> chatflow",
+  "placeholders": {
+    "__QWEN_CREDENTIAL__": "Flowise credential (openAIApi) for the Qwen OpenAI-compatible endpoint",
+    "__QWEN_MODEL__": "model name, e.g. qwen2.5-7b-scm",
+    "__QWEN_BASE_URL__": "OpenAI-compatible base URL",
+    "__FLOWISE_API_CREDENTIAL__": "Flowise credential (chatflowApi) holding the Flowise API key used by Execute Flow",
+    "__FLOWISE_INTERNAL_URL__": "Flowise URL reachable from inside the Flowise container, e.g. http://flowise:3000",
+    "__TOOL:<name>__": "id of the imported Custom Tool <name>",
+    "__FLOW:<name>__": "id of the imported flow <name>"
+  }
+}

@@ -728,7 +728,7 @@
     "x": 80,
     "y": -40
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api0",
     "label": "FASTAPI GATEWAY \u00b7 process",
@@ -782,7 +782,7 @@
     "x": 440,
     "y": -40
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api1",
     "label": "Middleware chain (every request)",
@@ -836,7 +836,7 @@
     "x": 800,
     "y": -40
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api2",
     "label": "Security",
@@ -890,7 +890,7 @@
     "x": 1160,
     "y": -40
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api3",
     "label": "POC contract routes (Flowise / LangGraph REST)",
@@ -944,7 +944,7 @@
     "x": 80,
     "y": 250
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api4",
     "label": "/api/v1 product routes",
@@ -998,7 +998,7 @@
     "x": 440,
     "y": 250
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api5",
     "label": "SAP adapter (read-only)",
@@ -1052,7 +1052,7 @@
     "x": 800,
     "y": 250
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api6",
     "label": "Agent endpoints",
@@ -1106,7 +1106,7 @@
     "x": 1160,
     "y": 250
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api7",
     "label": "Data stores",
@@ -1160,7 +1160,7 @@
     "x": 80,
     "y": 540
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api8",
     "label": "Configuration (.env)",
@@ -1214,7 +1214,7 @@
     "x": 440,
     "y": 540
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api9",
     "label": "Observability",
@@ -1268,7 +1268,7 @@
     "x": 800,
     "y": 540
    },
-   "type": "customNode",
+   "type": "stickyNote",
    "data": {
     "id": "stickyNote_api10",
     "label": "Flowise HTTP node examples",

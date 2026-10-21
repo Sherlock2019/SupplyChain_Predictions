@@ -3,3 +3,4 @@
 CREATE EXTENSION IF NOT EXISTS vector;
 SELECT 'CREATE DATABASE flowise' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'flowise')\gexec
 SELECT 'CREATE DATABASE langfuse' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'langfuse')\gexec
+SELECT 'CREATE DATABASE scinsight' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'scinsight')\gexec

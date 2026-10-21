@@ -72,6 +72,7 @@ c_ok "docker, compose, python3, curl"
 
 step "Environment"
 if [ ! -f .env ]; then python3 scripts/gen-env.py >/dev/null; c_ok "generated .env with random secrets"; else c_ok "using existing .env"; fi
+python3 scripts/gen-env.py --add-missing | grep -v "no new settings" | sed "s/^/  /" || true  # keys introduced by newer releases
 set -a; source .env; set +a
 
 PROFILES=(--profile core --profile localdb)
@@ -129,6 +130,7 @@ step "Waiting for services"
 wait_for api http://localhost:8000/health 240
 wait_for langgraph http://localhost:8123/ok 240
 wait_for mcp http://localhost:8002/health 120
+wait_for scinsight-api http://localhost:8100/health 240
 wait_for flowise http://localhost:3000/api/v1/ping 240
 [ "$LITE" = 0 ] && { wait_for grafana http://localhost:3002/api/health 180; wait_for langfuse http://localhost:3003/api/public/health 300; }
 
@@ -140,6 +142,8 @@ fi
 
 step "Provisioning Flowise (account, API key, variables, Chatflow + AgentFlow V2)"
 python3 flowise/bootstrap.py --env-file .env --compose-dir . | sed 's/^/  /'
+step "Importing SupplyChain Insight AI flows (14 tools, 7 specialist Agentflows, supervisor, Chatflow)"
+python3 flowise/scinsight/deploy.py import --env-file .env | grep -v '^{' | sed 's/^/  /'
 set -a; source .env; set +a
 docker compose "${PROFILES[@]}" up -d --no-build api >/dev/null 2>&1
 wait_for api http://localhost:8000/health 120
@@ -175,6 +179,7 @@ $(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — local demo 
   Dashboard          http://localhost:8000          opens signed in (switch Manager / Planner in the header)
   API docs           http://localhost:8000/docs
   Flowise            http://localhost:3000          opens signed in (Chatflow + AgentFlow V2 canvases)
+  SCInsight API      http://localhost:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
   LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://localhost:8123   (LangSmith account required by LangChain)
   MCP server         http://localhost:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF
@@ -195,6 +200,7 @@ $(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — local demo 
                                                     manager key : ${MANAGER_API_KEY}
   API docs           http://localhost:8000/docs
   Flowise            http://localhost:3000          ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local} / ${FLOWISE_ADMIN_PASSWORD}
+  SCInsight API      http://localhost:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
   LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://localhost:8123
   MCP server         http://localhost:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF

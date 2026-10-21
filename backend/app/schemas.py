@@ -145,6 +145,21 @@ class ResumeRequest(StrictModel):
     comment: str = Field(default="", max_length=2000)
 
 
+class EmbeddingsRequest(BaseModel):
+    """OpenAI-compatible embeddings request (extra fields such as `user` are ignored, as OpenAI clients send them)."""
+    model_config = ConfigDict(extra="ignore")
+    input: str | list[str] = Field(description="text or list of texts (max 256 items, 8000 characters each)")
+    model: str | None = None
+    encoding_format: Literal["float", "base64"] | None = None
+
+    @model_validator(mode="after")
+    def _limits(self) -> EmbeddingsRequest:
+        items = [self.input] if isinstance(self.input, str) else self.input
+        if not items or len(items) > 256 or any(len(t) > 8000 for t in items):
+            raise ValueError("input must be 1-256 texts of at most 8000 characters")
+        return self
+
+
 class SupplierLeadTimeRequest(StrictModel):
     supplier: str = Field(min_length=2, max_length=160, description="supplier name or vendor code")
     material: str | None = Field(default=None, pattern=CODE)

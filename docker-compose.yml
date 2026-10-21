@@ -72,6 +72,38 @@ services:
     extra_hosts: ["host.docker.internal:host-gateway"]
     restart: unless-stopped
 
+  scinsight-api:
+    # SupplyChain Insight AI business tools (FastAPI, Swagger /docs): synthetic SAP, deterministic calculations, human approval,
+    # outcome learning. Used by the SCInsight Flowise Chatflow / Agentflows at http://scinsight-api:8100 (Docker network).
+    image: ${APP_IMAGE:-aurelia-scm-app:local}
+    profiles: [core]
+    command: ["uvicorn", "backend.scinsight.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8100"]
+    environment:
+      SCI_DATABASE_URL: postgresql://${POSTGRES_USER:-supplychain}:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/scinsight${POSTGRES_SSL_SUFFIX:-}
+      SAP_MODE: synthetic
+      SAP_WRITE_ENABLED: "false"
+      HUMAN_APPROVAL_REQUIRED: "true"
+      INDUSTRY_SHARING_ENABLED: "false"
+      RAG_ENABLED: "true"
+      SCI_EMBEDDING_BACKEND: fastembed
+      SCI_AGENT_KEY: ${SCI_AGENT_KEY:?run scripts/gen-env.py --add-missing}
+      SCI_PLANNER_KEY: ${SCI_PLANNER_KEY:?}
+      SCI_PROCUREMENT_KEY: ${SCI_PROCUREMENT_KEY:?}
+      SCI_WAREHOUSE_KEY: ${SCI_WAREHOUSE_KEY:?}
+      SCI_LOGISTICS_KEY: ${SCI_LOGISTICS_KEY:?}
+      SCI_QUALITY_KEY: ${SCI_QUALITY_KEY:?}
+      SCI_DIRECTOR_KEY: ${SCI_DIRECTOR_KEY:?}
+      SCI_SAP_EXECUTOR_KEY: ${SCI_SAP_EXECUTOR_KEY:?}
+      SCI_MLOPS_KEY: ${SCI_MLOPS_KEY:?}
+      SCI_OTHER_TENANT_KEY: ${SCI_OTHER_TENANT_KEY:?}
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:8100:8100"]
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:8100/health]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   mcp:
     image: ${APP_IMAGE:-aurelia-scm-app:local}
     profiles: [core]
@@ -143,7 +175,8 @@ services:
       HTTP_SECURITY_CHECK: "false"
       HTTP_DENY_LIST: 0.0.0.0,10.0.0.0/8,127.0.0.0/8,169.254.0.0/16,192.168.0.0/16,224.0.0.0/4,240.0.0.0/4,255.255.255.255/32,::1,fc00::/7,fe80::/10,fd00:ec2::254,ff00::/8
     ports: ["${BIND_ADDRESS:-0.0.0.0}:${FLOWISE_HOST_PORT:-3000}:3000"]
-    volumes: ["flowise-data:/root/.flowise", "./flowise:/opt/flows:ro"]
+    # ./data/knowledge = the governed RAG documents, read-only: the Chatflow RAG pipeline (Folder loader) indexes them.
+    volumes: ["flowise-data:/root/.flowise", "./flowise:/opt/flows:ro", "./data/knowledge:/opt/knowledge:ro"]
     extra_hosts: ["host.docker.internal:host-gateway"]
     healthcheck:
       test: [CMD-SHELL, "wget -qO- http://127.0.0.1:3000/api/v1/ping || exit 1"]

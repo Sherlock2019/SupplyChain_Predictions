@@ -2,6 +2,9 @@
 
 *Smart supply chain **P**erformer — **A**I **R**esilience **C**opilot.* Demo customer: Aurelia Cosmetics (fictional).
 
+> **SupplyChain Insight AI POC.** Flowise Chatflow, supervisor Agentflow and 7 specialist Agentflows on the SCInsight FastAPI
+> service (port 8100, synthetic SAP, pgvector RAG, human approval, outcome learning). See [docs/scinsight/README.md](docs/scinsight/README.md).
+
 ## What
 
 SPARC is an SAP-first supply-chain copilot. It reads SAP data (stock, sales orders, purchase orders, production orders,
