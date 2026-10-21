@@ -422,13 +422,20 @@
   async function loadProducts() {
     try {
       const products = await api('/api/v1/products');
-      if (!state.product) state.product = products[0].material;
-      $('#product-cards').innerHTML = products.map((p) => `<button class="product ${p.material === state.product ? 'on' : ''}" data-m="${p.material}">
+      if (!products.some((p) => p.material === state.product)) state.product = products[0].material;
+      // Product picker: a dropdown (scales to any number of products) + one summary card for the selected product
+      const select = $('#product-select');
+      select.innerHTML = products.map((p) => `<option value="${esc(p.material)}" ${p.material === state.product ? 'selected' : ''}>` +
+        `${esc(p.description)} · ${esc(p.material)} · ${esc(p.health)} · ${num(p.network_days_of_cover, 1)} days of cover</option>`).join('');
+      select.onchange = () => { location.hash = `products/${select.value}`; };  // the router reloads this page (and the link is shareable)
+      const critical = products.filter((p) => p.health === 'critical').length;
+      $('#product-count').textContent = `${products.length} product${products.length === 1 ? '' : 's'}${critical ? ` · ${critical} critical` : ''}`;
+      const p = products.find((x) => x.material === state.product);
+      $('#product-cards').innerHTML = `<div class="product on" style="cursor:default">
         <div class="row" style="justify-content:space-between;margin:0"><h3>${esc(p.description)}</h3>${statusBadge(p.health)}</div>
         <div class="note" style="margin:0">${esc(p.material)} · made at ${esc(p.producing_plant)}</div>
         <div class="big">${num(p.network_on_hand)} <span class="note">units · ${num(p.network_days_of_cover, 1)} days of cover</span></div>
-        <div class="note" style="margin:0">${p.first_stockout ? `First stock-out <b>${esc(p.first_stockout)}</b>` : 'No stock-out in 60 days'}</div></button>`).join('');
-      $$('#product-cards .product').forEach((b) => b.addEventListener('click', () => { state.product = b.dataset.m; loadProducts(); }));
+        <div class="note" style="margin:0">${p.first_stockout ? `First stock-out <b>${esc(p.first_stockout)}</b>` : 'No stock-out in 60 days'}</div></div>`;
       await renderBrief(state.product, $('#product-brief'));
       await renderProduct(state.product);
     } catch (e) { toast(e.message); }
