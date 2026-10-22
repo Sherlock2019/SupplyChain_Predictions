@@ -233,11 +233,14 @@ git clone https://github.com/Sherlock2019/SupplyChain_Predictions.git && cd Supp
 ./start-aws.sh                  # login pages ON, public URLs http://<public-ip>:8000 …, returns immediately
 ./start-aws.sh --small-llm      # Qwen2.5-3B: much faster on CPU-only instances (add --no-llm for no LLM at all)
 ./start-aws.sh status           # progress, health and URLs with logins  ·  ./start-aws.sh logs  ·  ./start-aws.sh stop
+./start-demo.sh                 # mock-up demo: no LLM, no Grafana/Langfuse — fits a 4 GB t3.medium (= start-aws.sh --lite --no-llm)
 ```
 
 Allow **your IP only** in the instance's security group on TCP 8000 (dashboard), 3000 (Flowise), 8100 (SCInsight API / Swagger),
-3002 (Grafana) and 3003 (Langfuse), plus 8123 if you use LangGraph Studio. Prerequisites: Docker (`curl -fsSL https://get.docker.com | sh`),
-and Ollama for Qwen (`curl -fsSL https://ollama.com/install.sh | sh`). Suggested size: 4 vCPU / 16 GB with `--small-llm`, 8 vCPU / 32 GB for 7B.
+3002 (Grafana) and 3003 (Langfuse), plus 8123 if you use LangGraph Studio. The launcher installs what is missing (Docker + compose,
+python3, git, Ollama unless `--no-llm`) and adds swap on small machines. The dashboard opens signed in on AWS (`--dashboard-login`
+asks for keys). Sizes, measured: `./start-demo.sh` 4 GB RAM / 20 GB disk (t3.medium); `--small-llm` 16 GB / 30 GB (t3.xlarge);
+Qwen 7B 16 GB / 40 GB, a GPU (g4dn.xlarge) for usable speed.
 
 On EC2 use `./start-aws.sh` (login pages on, public URLs), not `./start-localdemo.sh` directly. After `git pull`, just run it again: the
 launcher fingerprints the source and **rebuilds the app image automatically when the code changed**, then re-imports the Flowise flows
