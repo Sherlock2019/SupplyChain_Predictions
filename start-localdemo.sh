@@ -227,23 +227,28 @@ EOF
   Demo script: docs/DEMO_GUIDE.md   ·   verify everything: .venv/bin/python scripts/smoke.py   ·   stop: ./stop-localdemo.sh
 EOF
 else
+H=${PUBLIC_IP:-localhost}  # start-aws.sh writes PUBLIC_IP: show the addresses that work from your browser
+if [ "$DEMO_AUTO_LOGIN" = true ]; then DASH="opens signed in, no keys (switch role in the header)"
+else DASH="planner key : ${PLANNER_API_KEY}
+                                                    manager key : ${MANAGER_API_KEY}"; fi
+OFF=""; [ "$LITE" = 1 ] && OFF="Grafana, Langfuse"; [ "$NOLLM" = 1 ] && OFF="${OFF:+$OFF, }Qwen LLM"
 cat <<EOF
 
-$(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — local demo is running$(printf '\033[0m')
+$(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — demo is running$(printf '\033[0m')
 
-  Dashboard          http://localhost:8000          planner key : ${PLANNER_API_KEY}
-                                                    manager key : ${MANAGER_API_KEY}
-  API docs           http://localhost:8000/docs
-  Flowise            http://localhost:3000          ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local} / ${FLOWISE_ADMIN_PASSWORD}
-  SCInsight API      http://localhost:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
-  LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://localhost:8123
-  MCP server         http://localhost:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
+  Dashboard          http://${H}:8000          ${DASH}
+  API docs           http://${H}:8000/docs
+  Flowise            http://${H}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local} / ${FLOWISE_ADMIN_PASSWORD}
+  SCInsight API      http://${H}:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
+  LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://${H}:8123
+  MCP server         http://${H}:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF
 if [ "$LITE" = 0 ]; then cat <<EOF
-  Grafana            http://localhost:3002          admin / ${GRAFANA_ADMIN_PASSWORD}
-  Langfuse           http://localhost:3003          ${LANGFUSE_ADMIN_EMAIL:-admin@aurelia.local} / ${LANGFUSE_ADMIN_PASSWORD}
+  Grafana            http://${H}:3002          admin / ${GRAFANA_ADMIN_PASSWORD}
+  Langfuse           http://${H}:3003          ${LANGFUSE_ADMIN_EMAIL:-admin@aurelia.local} / ${LANGFUSE_ADMIN_PASSWORD}
 EOF
 fi
+[ -n "$OFF" ] && printf '\n  Not started in this mode (shown as down above): %s\n' "$OFF"
 cat <<EOF
 
   Demo script: docs/DEMO_GUIDE.md   ·   verify everything: .venv/bin/python scripts/smoke.py   ·   stop: ./stop-localdemo.sh
