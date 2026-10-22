@@ -181,8 +181,8 @@ DEEP_TOOLS = ("supplier_risk", "sap_snapshot", "search_governed_knowledge", "qua
 
 class DeepAgentHarness(StrictModel):
     """Harness settings of the Deep Agents supplier-research agent (model, step budget, subagents, tools, output rules)."""
-    temperature: float = Field(default=0.0, ge=0.0, le=1.0)
-    max_tokens: int = Field(default=1500, ge=256, le=4000)
+    temperature: float = Field(default=0.0, ge=0.0, le=1.0, description="Randomness of the model: 0 = same answer every time")
+    max_tokens: int = Field(default=1500, ge=256, le=4000, description="Longest answer of one model call")
     max_steps: int = Field(default=60, ge=20, le=200, description="LangGraph recursion limit: total model + tool steps per run")
     # loop controls (enforced by HarnessGuard in deep_agent.py; reaching one ends the run gracefully, with the work done so far)
     max_model_calls: int = Field(default=15, ge=3, le=50, description="Thinking turns: model calls of the main agent per run")
@@ -193,12 +193,13 @@ class DeepAgentHarness(StrictModel):
     model_timeout_seconds: int = Field(default=120, ge=15, le=600, description="Give up on one model call after this long")
     model_retries: int = Field(default=1, ge=0, le=5, description="Retries of a failed model call")
     tool_retries: int = Field(default=1, ge=0, le=3, description="Retries of a failed tool call")
-    subagents: list[Literal["contract-analyst", "quality-analyst", "logistics-analyst"]] = Field(default_factory=lambda: list(DEEP_SUBAGENTS))
+    subagents: list[Literal["contract-analyst", "quality-analyst", "logistics-analyst"]] = Field(
+        default_factory=lambda: list(DEEP_SUBAGENTS), description="Specialist subagents the agent may delegate to")
     tools: list[Literal["supplier_risk", "sap_snapshot", "search_governed_knowledge", "quality_status", "logistics_status", "factory_material_readiness"]] = Field(
-        default_factory=lambda: list(DEEP_TOOLS), min_length=1)
-    require_plan: bool = True
-    require_citations: bool = True
-    report_style: Literal["full", "executive"] = "full"
+        default_factory=lambda: list(DEEP_TOOLS), min_length=1, description="Read-only data tools the agent may call")
+    require_plan: bool = Field(default=True, description="Write a to-do plan before researching")
+    require_citations: bool = Field(default=True, description="Cite the evidence id for every claim")
+    report_style: Literal["full", "executive"] = Field(default="full", description="full report, or executive summary of at most 8 bullets")
 
     @model_validator(mode="after")
     def _unique(self) -> DeepAgentHarness:

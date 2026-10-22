@@ -20,6 +20,9 @@ assistant dropdown next to the graph name, or under *Manage Assistants*.
 
 Harness precedence for `supplier_deep_agent`: code defaults < the assistant's configuration < the *Harness* box of the run.
 An empty Harness box `{}` therefore uses the selected assistant's settings.
+The current settings, with every value and a one-line explanation, are shown under **Default Configuration** (the assistant's
+context). The Input form only takes *Messages* and *Harness*; Studio's raw editor expects JSON. After a run, `harness_used` shows
+the settings actually applied.
 
 ## Files to paste
 

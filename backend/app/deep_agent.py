@@ -17,6 +17,8 @@ from langchain.agents.middleware import AgentMiddleware, ToolRetryMiddleware
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import START, MessagesState, StateGraph
+from langgraph.runtime import Runtime
+from pydantic import BaseModel, Field
 
 from backend.app.config import get_settings
 from backend.app.llm import GROUNDING_RULES, chat_model
@@ -189,12 +191,31 @@ class ResearchState(MessagesState, total=False):
     files: dict
 
 
-def deep_research(state: ResearchState, config: RunnableConfig) -> dict:
+class ResearchInput(MessagesState, total=False):
+    """What a run takes (Studio's Input form): the question, and optionally harness overrides for this run only."""
+    harness: dict
+
+
+class HarnessConfig(BaseModel):
+    """Assistant context: Studio's configuration panel shows every harness setting with its current value."""
+    harness: DeepAgentHarness = Field(default=DeepAgentHarness(), description="Harness settings for every run of this assistant")
+
+
+def _context_harness(context) -> dict:
+    """Harness settings given in the run/assistant context (only the ones actually set, so defaults never mask a preset)."""
+    if isinstance(context, HarnessConfig):
+        return context.harness.model_dump(include=context.harness.model_fields_set) if "harness" in context.model_fields_set else {}
+    return (context or {}).get("harness") or {} if isinstance(context, dict) else {}
+
+
+def deep_research(state: ResearchState, config: RunnableConfig, runtime: Runtime[HarnessConfig]) -> dict:
     """Run the Deep Agent configured by this run's harness settings.
 
-    Precedence: code defaults < the LangGraph assistant's configuration (configurable.harness, e.g. the presets created by
-    scripts/langgraph_assistants.py and chosen in Studio) < the harness passed in this run's input (what SPARC sends)."""
-    h = harness_of({**((config.get("configurable") or {}).get("harness") or {}), **(state.get("harness") or {})})
+    Precedence: code defaults < the assistant's configurable.harness (older assistants) < the assistant's context.harness
+    (Studio's configuration panel; the presets created by scripts/langgraph_assistants.py) < the harness in this run's input
+    (what SPARC sends)."""
+    h = harness_of({**((config.get("configurable") or {}).get("harness") or {}), **_context_harness(runtime.context),
+                    **(state.get("harness") or {})})
     run_config = {**config, "recursion_limit": h["max_steps"]}
     out = _agent_for(h).invoke({"messages": state["messages"], "todos": state.get("todos") or [], "files": state.get("files") or {}}, run_config)
     produced = out["messages"][len(state["messages"]):]
@@ -202,7 +223,7 @@ def deep_research(state: ResearchState, config: RunnableConfig) -> dict:
 
 
 def build_graph(checkpointer=None):
-    builder = StateGraph(ResearchState)
+    builder = StateGraph(ResearchState, context_schema=HarnessConfig, input_schema=ResearchInput)
     builder.add_node("deep_research", deep_research)
     builder.add_edge(START, "deep_research")
     compiled = builder.compile(checkpointer=checkpointer, name="supplier_deep_agent")

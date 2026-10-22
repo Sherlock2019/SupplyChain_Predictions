@@ -90,6 +90,8 @@ def create_assistants(base: str) -> list[str]:
     existing = {a.get("name"): a for a in _call(base, "POST", "/assistants/search", {"limit": 100})}
     for graph_id, name, why, configurable in wanted:
         body = {"graph_id": graph_id, "name": name, "description": why, "config": {"configurable": configurable}, "metadata": {"source": "scripts/langgraph_assistants.py"}}
+        if graph_id == "supplier_deep_agent":  # context, shown with every value in Studio's configuration panel (the server takes one or the other)
+            body["context"] = body.pop("config")["configurable"]
         if name in existing:
             _call(base, "PATCH", f"/assistants/{existing[name]['assistant_id']}", body)
             done.append(f"updated  {name}")
