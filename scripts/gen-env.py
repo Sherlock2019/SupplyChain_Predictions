@@ -97,11 +97,18 @@ def main() -> int:
     values = secret_map()
     if args.add_missing:
         target = ROOT / ".env"
-        current = {line.split("=", 1)[0] for line in target.read_text().splitlines() if "=" in line} if target.exists() else set()
+        lines = target.read_text().splitlines() if target.exists() else []
+        current = {line.split("=", 1)[0] for line in lines if "=" in line}
         new = {k: v for k, v in {**values, **LOCAL_SETTINGS}.items() if k not in current}
-        if target.exists() and new:
-            with target.open("a") as handle:
-                handle.write("".join(f"{k}={v}\n" for k, v in new.items()))
+        damaged = any(line.strip() and "=" not in line and not line.lstrip().startswith("#") for line in lines)
+        if target.exists() and (new or damaged):
+            # A write cut short (e.g. full disk) leaves a half line with no "=": drop it, or `source .env` fails on it.
+            kept = [line for line in target.read_text().splitlines() if "=" in line or not line.strip() or line.lstrip().startswith("#")]
+            text = "\n".join(kept) + "\n" if kept else ""
+            tmp = target.with_suffix(".tmp")  # write then rename: a full disk can never leave a half-written .env
+            tmp.write_text(text + "".join(f"{k}={v}\n" for k, v in new.items()))
+            tmp.chmod(0o600)
+            tmp.replace(target)
         print(f"added {len(new)} new setting(s) to {target}" if new else "no new settings")
         return 0
     if args.json:

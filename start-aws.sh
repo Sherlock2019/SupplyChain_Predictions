@@ -45,7 +45,10 @@ for line in lines:
         out.append(line)
 if not done:
     out.append(f"{key}={value}")
-p.write_text("\n".join(out) + "\n")
+tmp = p.with_suffix(".tmp")  # write then rename: a full disk can never leave a half-written .env
+tmp.write_text("\n".join(out) + "\n")
+tmp.chmod(0o600)
+tmp.replace(p)
 PY
 }
 
@@ -57,25 +60,26 @@ print_urls() {  # print_urls IP LITE(0|1)
   if [ "${DEMO_AUTO_LOGIN:-}" = true ]; then
     printf '\n  Dashboard          http://%s:8000          opens signed in, no keys (switch role in the header)\n' "$ip"
   else
-    printf '\n  Dashboard          http://%s:8000          planner key : %s\n%49s manager key : %s\n' "$ip" "$PLANNER_API_KEY" "" "$MANAGER_API_KEY"
+    printf '\n  Dashboard          http://%s:8000          planner key : %s\n%49s manager key : %s\n' "$ip" "${PLANNER_API_KEY:-?}" "" "${MANAGER_API_KEY:-?}"
   fi
   cat <<EOF
   API docs           http://${ip}:8000/docs
-  Flowise            http://${ip}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@admin.com} / ${FLOWISE_ADMIN_PASSWORD}
+  Flowise            http://${ip}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@admin.com} / ${FLOWISE_ADMIN_PASSWORD:-?}
                                                  SCInsight flows: SCInsight-Cosmetics-* (chat bot, SC Agent Manager, 7 specialists)
   SCInsight API      http://${ip}:8100/docs     Swagger; user keys SCI_*_KEY in .env (e.g. SCI_WAREHOUSE_KEY approves transfers)
   LangGraph API      http://${ip}:8123          (LangSmith Studio: https://smith.langchain.com/studio/?baseUrl=http://${ip}:8123)
                                                  SCInsight mirror: scinsight_chat, scinsight_supervisor, scinsight_<specialist>
-  MCP server         http://${ip}:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
+  MCP server         http://${ip}:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY:-?}
 EOF
   if [ "$lite" = 0 ]; then cat <<EOF
-  Grafana            http://${ip}:3002          admin / ${GRAFANA_ADMIN_PASSWORD}
-  Langfuse           http://${ip}:3003          ${LANGFUSE_ADMIN_EMAIL:-admin@admin.com} / ${LANGFUSE_ADMIN_PASSWORD}
+  Grafana            http://${ip}:3002          admin / ${GRAFANA_ADMIN_PASSWORD:-?}
+  Langfuse           http://${ip}:3003          ${LANGFUSE_ADMIN_EMAIL:-admin@admin.com} / ${LANGFUSE_ADMIN_PASSWORD:-?}
 EOF
   fi
+  local ports="8000, 3000, 8100"; [ "$lite" = 0 ] && ports="$ports, 3002, 3003"
   cat <<EOF
 
-  Security group: allow your IP only on TCP 8000, 3000, 8100, 3002, 3003 (and 8123/8002 if you use Studio or MCP).
+  Security group: allow your IP only on TCP ${ports} (and 8123/8002 if you use Studio or MCP).
   Studio note: Studio runs in your browser and calls http://${ip}:8123 directly — open 8123 to your IP to use it.
 EOF
 }
@@ -117,6 +121,8 @@ for arg in "$@"; do
 done
 
 bold "SPARC · AWS launcher"
+# On a PC (WSL) the "public IP" is the home router's, unreachable from outside: the local launcher is the right one.
+grep -qi microsoft /proc/version 2>/dev/null && die "this is WSL on your PC, not a cloud VM — use ./start-localdemo.sh (links http://localhost:…)"
 if launcher_running; then warn "already starting (pid $(cat "$PIDFILE"))"; status; exit 0; fi
 # Check the requirements and install what is missing (Docker + compose, python3, curl, git, Ollama), then start Docker on boot.
 # Small instance (under 8 GB, e.g. t3.medium) and no mode chosen: the light demo (no Grafana/Langfuse, no LLM).
@@ -137,7 +143,12 @@ command -v ollama >/dev/null || [[ " ${PASS[*]} " == *" --no-llm "* ]] || warn "
 IP=$(public_ip)
 [ -n "$IP" ] || die "could not find this instance's public IP (is a public IPv4 / Elastic IP attached?)"
 ok "public IP ${IP}"
-[ -f .env ] || { python3 scripts/gen-env.py >/dev/null; ok "generated .env with random secrets"; }
+if [ -f .env ]; then  # fill settings that are missing (newer release, or a .env damaged by a full disk)
+  added=$(python3 scripts/gen-env.py --add-missing)
+  [ "$added" = "no new settings" ] || ok "$added"
+else
+  python3 scripts/gen-env.py >/dev/null; ok "generated .env with random secrets"
+fi
 # Every tool must know its public address, or logins and links redirect to localhost.
 for kv in "PUBLIC_IP=${IP}" "PUBLIC_BASE_URL=http://${IP}:8000" "PUBLIC_FLOWISE_URL=http://${IP}:3000" "PUBLIC_LANGGRAPH_URL=http://${IP}:8123" \
           "PUBLIC_MCP_URL=http://${IP}:8002" "PUBLIC_GRAFANA_URL=http://${IP}:3002" "PUBLIC_LANGFUSE_URL=http://${IP}:3003"; do
