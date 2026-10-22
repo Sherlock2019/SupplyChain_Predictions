@@ -103,6 +103,11 @@ fi
 mem=$(awk '/MemTotal/ {printf "%d", $2/1048576}' /proc/meminfo)
 disk=$(df -Pk . | awk 'NR==2 {printf "%d", $4/1048576}')
 cpus=$(nproc)
+# Too small to ever finish: stop here instead of failing 15 minutes into the build (SKIP_RESOURCE_CHECK=1 to try anyway).
+if [ "${SKIP_RESOURCE_CHECK:-0}" != 1 ]; then
+  [ "$disk" -ge 15 ] || die "only ${disk} GB free disk — the images alone need about 15 GB (30 GB with the LLM). Enlarge the EBS volume to 40 GB+"
+  [ "$mem" -ge 7 ] || die "only ${mem} GB RAM — the stack needs 8 GB at least (16 GB with the LLM). Use t3.large (8 GB) with --no-llm --lite, or t3.xlarge (16 GB)"
+fi
 [ "$mem" -ge 15 ] && ok "${mem} GB RAM, ${cpus} CPUs" || warn "${mem} GB RAM: use --lite and --small-llm (or --no-llm); 16 GB recommended"
 [ "$disk" -ge 30 ] && ok "${disk} GB free disk" || warn "only ${disk} GB free disk: images + model need about 30 GB"
 
