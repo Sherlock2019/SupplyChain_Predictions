@@ -99,7 +99,7 @@ status() {
 case "${1:-}" in
   status) status; exit 0 ;;
   logs) [ -f "$LOG" ] || die "no start-up log yet — run ./start-aws.sh"; exec tail -n 50 -f "$LOG" ;;
-  stop) launcher_running && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"; exec ./stop-localdemo.sh ;;
+  stop) launcher_running && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"; exec bash ./stop-localdemo.sh ;;
   -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
 esac
 
@@ -118,7 +118,7 @@ if launcher_running; then warn "already starting (pid $(cat "$PIDFILE"))"; statu
 rc=0; if [[ " ${PASS[*]} " == *" --no-llm "* ]]; then bash scripts/ensure-prereqs.sh --no-llm || rc=$?; else bash scripts/ensure-prereqs.sh || rc=$?; fi
 if [ "$rc" = 3 ]; then  # just added to the docker group: continue in a shell that has it (no log-out needed)
   command -v sg >/dev/null || die "log out and back in (docker group), then re-run ./start-aws.sh"
-  exec sg docker -c "$(printf '%q ' "$0" "$@")"
+  exec sg docker -c "$(printf '%q ' bash "$0" "$@")"
 fi
 [ "$rc" = 0 ] || exit "$rc"
 command -v ollama >/dev/null || [[ " ${PASS[*]} " == *" --no-llm "* ]] || warn "no Ollama — starting without an LLM (deterministic fallback)"
@@ -136,7 +136,7 @@ if [ "$SMALL" = 1 ]; then set_env QWEN_MODEL qwen2.5-3b-scm; ok "Qwen2.5-3B (CPU
 ok "public URLs written to .env"
 
 # Run the full start-up detached from this terminal: closing SSH does not stop it.
-nohup setsid ./start-localdemo.sh --foreground "${PASS[@]}" >"$LOG" 2>&1 </dev/null &
+nohup setsid bash ./start-localdemo.sh --foreground "${PASS[@]}" >"$LOG" 2>&1 </dev/null &
 echo $! > "$PIDFILE"
 ok "starting in the background (pid $(cat "$PIDFILE")) — first start 10–20 min, later starts 2–3 min"
 cat <<EOF

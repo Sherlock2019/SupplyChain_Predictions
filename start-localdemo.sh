@@ -40,11 +40,11 @@ if [ "$FOREGROUND" = 0 ]; then
   rc=0; if [ "$NOLLM" = 1 ]; then bash scripts/ensure-prereqs.sh --no-llm || rc=$?; else bash scripts/ensure-prereqs.sh || rc=$?; fi
   if [ "$rc" = 3 ]; then  # just added to the docker group: continue in a shell that has it (no log-out needed)
     command -v sg >/dev/null || { echo "log out and back in (docker group), then re-run $0"; exit 1; }
-    exec sg docker -c "$(printf '%q ' "$0" "$@")"
+    exec sg docker -c "$(printf '%q ' bash "$0" "$@")"
   fi
   [ "$rc" = 0 ] || exit "$rc"
   # Detach the whole start-up from this terminal (own session, no stdin): SSH logout or Ctrl-C cannot interrupt it.
-  nohup setsid "$0" "$@" --foreground >"$BGLOG" 2>&1 </dev/null &
+  nohup setsid bash "$0" "$@" --foreground >"$BGLOG" 2>&1 </dev/null &
   echo $! > "$BGPID"
   printf '\033[1mSPARC start-up runs in the background\033[0m (pid %s) — log: %s\n' "$(cat "$BGPID")" "$BGLOG"
   printf '  Ctrl-C only stops this progress view · later: ./start-localdemo.sh status · ./start-localdemo.sh logs · stop: ./stop-localdemo.sh\n'
