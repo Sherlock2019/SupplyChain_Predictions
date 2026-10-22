@@ -25,10 +25,11 @@ case "${1:-}" in
     exit 0 ;;
 esac
 
-LITE=0; NOLLM=0; REBUILD=0; OPEN=0; NOLOGIN=1; FOREGROUND=0
+LITE=0; NOLLM=0; REBUILD=0; OPEN=0; NOLOGIN=1; FOREGROUND=0; OPENDASH=0
 for arg in "$@"; do
   case "$arg" in
     --lite) LITE=1 ;; --no-llm) NOLLM=1 ;; --rebuild) REBUILD=1 ;; --open) OPEN=1 ;; --with-login) NOLOGIN=0 ;; --foreground) FOREGROUND=1 ;;
+    --open-dashboard) OPENDASH=1 ;;  # with --with-login: the dashboard still signs in by itself (start-aws.sh default)
     -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown option $arg"; exit 2 ;;
   esac
@@ -121,7 +122,8 @@ if [ "$NOLOGIN" = 1 ]; then
   c_ok "no-login mode: dashboard, Flowise, Grafana and Langfuse open without a login page (local only)"
 else
   export DEMO_AUTO_LOGIN=false GRAFANA_ANONYMOUS=false FLOWISE_HOST_PORT=3000 LANGFUSE_HOST_PORT=3003
-  c_ok "login pages enabled"
+  [ "$OPENDASH" = 1 ] && export DEMO_AUTO_LOGIN=true
+  if [ "$OPENDASH" = 1 ]; then c_ok "dashboard opens signed in (no keys); Flowise, Grafana and Langfuse keep their login"; else c_ok "login pages enabled"; fi
 fi
 echo "${PROFILES[*]}" > .localdemo-profiles
 

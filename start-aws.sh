@@ -6,6 +6,7 @@
 #   ./start-aws.sh --no-llm        no LLM: agents use the deterministic fallback; dashboards, roles and moat work fully
 #   ./start-aws.sh --lite          skip Grafana and Langfuse (less RAM)
 #   ./start-aws.sh --rebuild       rebuild the application image first
+#   ./start-aws.sh --dashboard-login  ask for the planner / manager key (default: the dashboard opens signed in, demo)
 #   ./start-aws.sh status          start-up progress, container health and the URLs with logins
 #   ./start-aws.sh logs            follow the start-up log (Ctrl-C stops following, not the app)
 #   ./start-aws.sh stop            stop everything (data is kept; ./stop-localdemo.sh --reset wipes it)
@@ -53,10 +54,12 @@ launcher_running() { [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/nul
 print_urls() {  # print_urls IP LITE(0|1)
   local ip=$1 lite=${2:-0}
   set -a; source .env; set +a
+  if [ "${DEMO_AUTO_LOGIN:-}" = true ]; then
+    printf '\n  Dashboard          http://%s:8000          opens signed in, no keys (switch role in the header)\n' "$ip"
+  else
+    printf '\n  Dashboard          http://%s:8000          planner key : %s\n%49s manager key : %s\n' "$ip" "$PLANNER_API_KEY" "" "$MANAGER_API_KEY"
+  fi
   cat <<EOF
-
-  Dashboard          http://${ip}:8000          planner key : ${PLANNER_API_KEY}
-                                                 manager key : ${MANAGER_API_KEY}
   API docs           http://${ip}:8000/docs
   Flowise            http://${ip}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@admin.com} / ${FLOWISE_ADMIN_PASSWORD}
                                                  SCInsight flows: SCInsight-Cosmetics-* (chat bot, SC Agent Manager, 7 specialists)
@@ -103,10 +106,11 @@ case "${1:-}" in
   -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
 esac
 
-PASS=(--with-login); SMALL=0
+PASS=(--with-login --open-dashboard); SMALL=0
 for arg in "$@"; do
   case "$arg" in
     --small-llm) SMALL=1 ;;
+    --dashboard-login) PASS=("${PASS[@]/--open-dashboard}") ;;
     --no-llm|--lite|--rebuild) PASS+=("$arg") ;;
     *) die "unknown option $arg (see ./start-aws.sh --help)" ;;
   esac
@@ -132,6 +136,7 @@ for kv in "PUBLIC_IP=${IP}" "PUBLIC_BASE_URL=http://${IP}:8000" "PUBLIC_FLOWISE_
           "PUBLIC_MCP_URL=http://${IP}:8002" "PUBLIC_GRAFANA_URL=http://${IP}:3002" "PUBLIC_LANGFUSE_URL=http://${IP}:3003"; do
   set_env "${kv%%=*}" "${kv#*=}"
 done
+if [[ " ${PASS[*]} " == *" --open-dashboard "* ]]; then set_env DEMO_AUTO_LOGIN true; else set_env DEMO_AUTO_LOGIN false; fi  # read by print_urls
 if [ "$SMALL" = 1 ]; then set_env QWEN_MODEL qwen2.5-3b-scm; ok "Qwen2.5-3B (CPU-friendly)"; fi
 ok "public URLs written to .env"
 
