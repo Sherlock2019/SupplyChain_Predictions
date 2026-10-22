@@ -114,13 +114,14 @@ done
 
 bold "SPARC · AWS launcher"
 if launcher_running; then warn "already starting (pid $(cat "$PIDFILE"))"; status; exit 0; fi
-command -v docker >/dev/null || die "docker is required: curl -fsSL https://get.docker.com | sh && sudo usermod -aG docker \$USER (then log in again)"
-docker info >/dev/null 2>&1 || die "cannot talk to Docker — add yourself to the docker group: sudo usermod -aG docker \$USER, then log out and in"
-command -v python3 >/dev/null || die "python3 is required"
-sudo -n systemctl enable docker >/dev/null 2>&1 && ok "Docker starts on boot (the app comes back after a reboot)" || warn "could not enable Docker on boot (no passwordless sudo)"
-if [[ " ${PASS[*]} " != *" --no-llm "* ]] && ! command -v ollama >/dev/null; then
-  warn "Ollama is not installed — starting without an LLM. For Qwen: curl -fsSL https://ollama.com/install.sh | sh, then re-run."
+# Check the requirements and install what is missing (Docker + compose, python3, curl, git, Ollama), then start Docker on boot.
+rc=0; if [[ " ${PASS[*]} " == *" --no-llm "* ]]; then bash scripts/ensure-prereqs.sh --no-llm || rc=$?; else bash scripts/ensure-prereqs.sh || rc=$?; fi
+if [ "$rc" = 3 ]; then  # just added to the docker group: continue in a shell that has it (no log-out needed)
+  command -v sg >/dev/null || die "log out and back in (docker group), then re-run ./start-aws.sh"
+  exec sg docker -c "$(printf '%q ' "$0" "$@")"
 fi
+[ "$rc" = 0 ] || exit "$rc"
+command -v ollama >/dev/null || [[ " ${PASS[*]} " == *" --no-llm "* ]] || warn "no Ollama — starting without an LLM (deterministic fallback)"
 
 IP=$(public_ip)
 [ -n "$IP" ] || die "could not find this instance's public IP (is a public IPv4 / Elastic IP attached?)"

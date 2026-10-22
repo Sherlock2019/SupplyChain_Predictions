@@ -36,6 +36,13 @@ done
 
 if [ "$FOREGROUND" = 0 ]; then
   if bg_running; then echo "already starting (pid $(cat "$BGPID")) — following its log (Ctrl-C stops following only)"; exec tail -n 30 -f --pid="$(cat "$BGPID")" "$BGLOG"; fi
+  # Requirements are checked and installed here, in the foreground, because installing may ask for sudo.
+  rc=0; if [ "$NOLLM" = 1 ]; then bash scripts/ensure-prereqs.sh --no-llm || rc=$?; else bash scripts/ensure-prereqs.sh || rc=$?; fi
+  if [ "$rc" = 3 ]; then  # just added to the docker group: continue in a shell that has it (no log-out needed)
+    command -v sg >/dev/null || { echo "log out and back in (docker group), then re-run $0"; exit 1; }
+    exec sg docker -c "$(printf '%q ' "$0" "$@")"
+  fi
+  [ "$rc" = 0 ] || exit "$rc"
   # Detach the whole start-up from this terminal (own session, no stdin): SSH logout or Ctrl-C cannot interrupt it.
   nohup setsid "$0" "$@" --foreground >"$BGLOG" 2>&1 </dev/null &
   echo $! > "$BGPID"
