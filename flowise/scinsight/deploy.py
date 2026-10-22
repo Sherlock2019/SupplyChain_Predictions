@@ -69,6 +69,18 @@ def build(compose_dir: Path) -> int:
     manifest["flows"].append({"name": chat["name"], "type": "CHATFLOW", "role": "chat", "file": dump(FLOWISE_DIR / "chatflows" / f"{chat['name']}.json", chat["flow"]),
                               "chatbotConfig": dump(FLOWISE_DIR / "chatflows" / f"{chat['name']}.chatbotConfig.json", chat["chatbotConfig"]),
                               "postProcessing": str(post.relative_to(ROOT)).replace("\\", "/")})
+    # Conversation starters: the 5 most-used questions of each role (data/scinsight/role_questions.json, shared with LangGraph + tests)
+    roles = json.loads((ROOT / "data" / "scinsight" / "role_questions.json").read_text(encoding="utf-8"))["roles"]
+    by_intent = {"factory": "factory_planning", "procurement": "procurement", "warehouse": "warehouse", "inventory": "inventory_optimizer",
+                 "logistics": "logistics", "quality": "quality", "learning": "outcome_learning"}
+    director = next(r for r in roles if r["role"] == "supply_chain_director")
+    starters = lambda role: {"starterPrompts": {str(i): {"prompt": q["q"]} for i, q in enumerate(role["questions"])}}  # noqa: E731 - Flowise format
+    for flow in manifest["flows"]:
+        role = director if flow["role"] in ("supervisor", "chat") else next(r for r in roles if by_intent.get(r["specialist"]) == flow.get("intent"))
+        config = {**(chat["chatbotConfig"] if flow["role"] == "chat" else {}), **starters(role)}
+        folder = "chatflows" if flow["type"] == "CHATFLOW" else "agentflows"
+        flow["chatbotConfig"] = dump(FLOWISE_DIR / folder / f"{flow['name']}.chatbotConfig.json", config)
+        flow["starters_role"] = role["title"]
     for name, text in bundle["prompts"].items():
         path = FLOWISE_DIR / "prompts" / name
         path.write_text(text.rstrip() + "\n", encoding="utf-8")

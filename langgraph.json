@@ -5,7 +5,16 @@
     "supply_chain_chat": "./backend/app/graphs.py:chat_graph",
     "supply_chain_agentflow": "./backend/app/agentflow.py:graph",
     "supply_chain_business": "./backend/app/graphs.py:business_graph",
-    "supplier_deep_agent": "./backend/app/deep_agent.py:graph"
+    "supplier_deep_agent": "./backend/app/deep_agent.py:graph",
+    "scinsight_chat": "./backend/scinsight/lg/chat.py:graph",
+    "scinsight_supervisor": "./backend/scinsight/lg/supervisor.py:graph",
+    "scinsight_factory_planning": "./backend/scinsight/lg/specialists.py:factory_planning",
+    "scinsight_procurement": "./backend/scinsight/lg/specialists.py:procurement",
+    "scinsight_warehouse": "./backend/scinsight/lg/specialists.py:warehouse",
+    "scinsight_inventory_optimizer": "./backend/scinsight/lg/specialists.py:inventory_optimizer",
+    "scinsight_logistics": "./backend/scinsight/lg/specialists.py:logistics",
+    "scinsight_quality": "./backend/scinsight/lg/specialists.py:quality",
+    "scinsight_outcome_learning": "./backend/scinsight/lg/specialists.py:outcome_learning"
   },
   "env": ".env"
 }

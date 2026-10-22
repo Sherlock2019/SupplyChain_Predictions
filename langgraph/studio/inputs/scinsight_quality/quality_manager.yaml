@@ -1,0 +1,21 @@
+# Quality manager: 5 ready-to-paste inputs for scinsight_quality.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: Which SPF50 sunscreen batches at Warehouse C are usable, and why are the others excluded?
+---
+messages:
+- type: human
+  content: Which SUN-SPF50-100 batches at WH-C are expired or close to expiry?
+---
+messages:
+- type: human
+  content: Are any pump dispenser PUMP-DISP-24 batches at the factory FAC-1 blocked by quality?
+---
+messages:
+- type: human
+  content: How much vitamin C serum base SER-BASE-VC is usable at FAC-1, and what is excluded?
+---
+messages:
+- type: human
+  content: In which order should we ship the SPF50 sunscreen batches from Warehouse C (FEFO)?

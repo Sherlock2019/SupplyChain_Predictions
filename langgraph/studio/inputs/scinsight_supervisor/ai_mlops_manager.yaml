@@ -1,0 +1,21 @@
+# AI / MLOps manager: 5 ready-to-paste inputs for scinsight_supervisor (also work for scinsight_chat).
+# Studio > Input > View Raw: paste ONE block (between the --- lines), then Submit.
+messages:
+- type: human
+  content: What was the outcome of recommendation REC-HIST-0001? Was the supplier lead time prediction right?
+---
+messages:
+- type: human
+  content: Was the lead time prediction of recommendation REC-HIST-0001 right?
+---
+messages:
+- type: human
+  content: What is the status of recommendation REC-HIST-0001?
+---
+messages:
+- type: human
+  content: Show the learning metrics from verified outcomes.
+---
+messages:
+- type: human
+  content: How accurate are our supplier lead-time predictions so far?

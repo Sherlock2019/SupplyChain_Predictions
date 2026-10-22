@@ -1,0 +1,21 @@
+# Supply chain director: 5 ready-to-paste inputs for scinsight_supervisor (also work for scinsight_chat).
+# Studio > Input > View Raw: paste ONE block (between the --- lines), then Submit.
+messages:
+- type: human
+  content: What is the biggest supply risk for the vitamin C serum production order PRD-1001?
+---
+messages:
+- type: human
+  content: Is SPF50 sunscreen going to run out in Warehouse B, and how do we prevent it?
+---
+messages:
+- type: human
+  content: Which supplier should we use for 20000 pump dispensers PUMP-DISP-24 needed at FAC-1 by 2026-10-27?
+---
+messages:
+- type: human
+  content: Are expired or blocked SPF50 sunscreen batches sitting in Warehouse C?
+---
+messages:
+- type: human
+  content: Was our last supplier lead-time prediction right (REC-HIST-0001)?

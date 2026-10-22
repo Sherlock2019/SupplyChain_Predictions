@@ -96,6 +96,13 @@ flowchart TB
 All of these are reads. The transport lanes are a synthetic table in Phase 1; SAP TM would supply them in production. Nothing
 is ever written to SAP.
 
+**Identifiers: code first, model second.** Before calculating, code reads the identifiers from the question: exact codes found in
+the SAP catalog (`PUMP-DISP-24`, `SUP-A`, `WH-B`, `PRD-1001`), plain names ("Warehouse B" → WH-B, "Supplier A" → SUP-A, "SPF50 sunscreen"
+→ SUN-SPF50-100, "Lyon factory" → FAC-1), the target warehouse ("… to / reach / resupply / cover Warehouse B"), quantities and ISO dates.
+The model's extraction only fills what code did not find. This was added after Qwen 7B returned `{}` or `NONE NONE NONE` for questions
+that contained the codes. The same function exists in JavaScript (Flowise) and Python (LangGraph); a parity check showed identical
+results on all 40 role questions plus edge cases.
+
 **Evidence gate.** It extracts every number from the explanation and compares it with the numbers in the calculation JSON,
 the deterministic summary, the policy excerpts and the question. If any number is unsupported, the narrative is withheld and
 the deterministic summary is returned. The footer is always added:

@@ -15,6 +15,8 @@ COPY backend ./backend
 RUN pip install --no-deps .
 COPY frontend ./frontend
 COPY data ./data
+# the LangGraph mirror of the SCInsight Flowise flows reads the same prompt files
+COPY flowise/prompts ./flowise/prompts
 COPY langgraph.json ./langgraph.json
 RUN useradd --create-home --uid 10001 appuser && mkdir -p /app/backend/.data /app/.langgraph_api && chown -R appuser:appuser /app
 USER appuser

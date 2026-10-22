@@ -1,0 +1,21 @@
+# Inventory planner: 5 ready-to-paste inputs for scinsight_inventory_optimizer.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: How many days of cover do we have for SPF50 sunscreen in Warehouse B and what is the demand forecast?
+---
+messages:
+- type: human
+  content: What is the 14-day demand forecast for sunscreen SUN-SPF50-100 at WH-B?
+---
+messages:
+- type: human
+  content: When will Warehouse B run out of SPF50 sunscreen?
+---
+messages:
+- type: human
+  content: How long will our vitamin C serum SER-VITC-30 stock last in Warehouse A?
+---
+messages:
+- type: human
+  content: Do we need to replenish SPF50 sunscreen at Warehouse C?

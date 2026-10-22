@@ -53,15 +53,29 @@ die() { printf '  \033[31m✘ %s\033[0m\n' "$*"; exit 1; }
 step "Checking prerequisites"
 command -v docker >/dev/null || die "docker is required"
 # A busy or stuck machine (interrupted build, out of memory) must not hang the launcher — and say which problem it is.
-check() {  # check SECONDS "what failed" command...
+diagnose() {  # why a Docker command hangs: memory, load, another start-up or build still running
+  local mem load others
+  mem=$(awk '/MemAvailable/ {printf "%.1f", $2/1048576}' /proc/meminfo 2>/dev/null || echo "?")
+  load=$(cut -d' ' -f1 /proc/loadavg 2>/dev/null || echo "?")
+  others=$(pgrep -fa 'docker(-compose| compose| buildx)|start-localdemo|ollama runner' 2>/dev/null | grep -v "$$" | head -4 || true)
+  printf '    free memory: %s GB · load: %s (%s CPUs)\n' "$mem" "$load" "$(nproc 2>/dev/null || echo ?)"
+  [ -n "$others" ] && printf '    still running:\n%s\n' "$(echo "$others" | sed 's/^/      /')"
+  printf '    fix: wait for a running build to finish (./start-localdemo.sh logs), or stop it: ./stop-localdemo.sh; sudo systemctl restart docker\n'
+  printf '         low memory: start with --lite, --no-llm, or QWEN_MODEL=qwen2.5-3b-scm (./start-aws.sh --small-llm)\n'
+}
+check() {  # check SECONDS "what failed" command... — retried once, because a just-booted or busy VM can answer slowly
   local secs=$1 what=$2 rc=0; shift 2
   timeout "$secs" "$@" >/dev/null 2>&1 || rc=$?
+  if [ "$rc" = 124 ]; then
+    c_warn "$what is slow to answer — retrying for ${secs}s more"
+    rc=0; timeout "$secs" "$@" >/dev/null 2>&1 || rc=$?
+  fi
   [ "$rc" = 0 ] && return 0
-  [ "$rc" = 124 ] && die "$what did not answer within ${secs}s — the machine is overloaded or Docker is stuck. Check: uptime; free -h; then sudo systemctl restart docker"
+  if [ "$rc" = 124 ]; then printf '  \033[31m✘ %s did not answer within %ss (twice) — the machine is overloaded or Docker is stuck\033[0m\n' "$what" "$((secs * 2))"; diagnose; exit 1; fi
   die "$what failed (exit $rc)"
 }
-check 30 "docker compose (v2 plugin)" docker compose version
-check 45 "the Docker daemon" docker info
+check 45 "docker compose (v2 plugin)" docker compose version
+check 60 "the Docker daemon" docker info
 MEM_GB=$(awk '/MemTotal/ {printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null || echo 0)
 if [ "$NOLLM" = 0 ] && [ "${MEM_GB:-0}" -gt 0 ] && [ "$MEM_GB" -lt 15 ] && [ "${QWEN_MODEL:-qwen2.5-7b-scm}" = qwen2.5-7b-scm ]; then
   c_warn "only ${MEM_GB} GB RAM: Qwen 7B + the full stack may run out of memory — use --no-llm or --lite, or QWEN_MODEL=qwen2.5-3b-scm in .env"
@@ -105,7 +119,16 @@ fi
 echo "${PROFILES[*]}" > .localdemo-profiles
 
 step "Starting containers"
-if [ "$REBUILD" = 1 ] || ! docker image inspect aurelia-scm-app:local >/dev/null 2>&1; then
+# Fingerprint of everything baked into the app image: after a git pull the image is rebuilt, never reused stale.
+APP_SOURCE_HASH=$(find backend frontend data flowise/prompts Dockerfile pyproject.toml README.md langgraph.json -type f \
+  -not -path '*/__pycache__/*' -not -path 'backend/.data/*' -not -name '*.pyc' 2>/dev/null | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -c1-16)
+export APP_SOURCE_HASH
+IMAGE_HASH=$(docker image inspect -f '{{ index .Config.Labels "scm.source-hash" }}' aurelia-scm-app:local 2>/dev/null || true)
+if [ -n "$IMAGE_HASH" ] && [ "$IMAGE_HASH" != "$APP_SOURCE_HASH" ] && [ "$REBUILD" = 0 ]; then
+  c_warn "the code changed since the application image was built (e.g. git pull) — rebuilding it"
+  REBUILD=1
+fi
+if [ "$REBUILD" = 1 ] || [ -z "$IMAGE_HASH" ]; then
   c_warn "building application image (first build takes a few minutes; log: .localdemo-build.log)"
   # Plain progress: BuildKit's interactive display fails with "failed to get console" when output is not a terminal
   # (fresh Docker installs, SSH sessions, CI). Older Compose versions without --progress fall back to the env variable.
@@ -144,6 +167,8 @@ step "Provisioning Flowise (account, API key, variables, Chatflow + AgentFlow V2
 python3 flowise/bootstrap.py --env-file .env --compose-dir . | sed 's/^/  /'
 step "Importing SupplyChain Insight AI flows (14 tools, 7 specialist Agentflows, supervisor, Chatflow)"
 python3 flowise/scinsight/deploy.py import --env-file .env | grep -v '^{' | sed 's/^/  /'
+step "LangGraph Studio presets (assistants for supplier_deep_agent and the SCInsight supervisor)"
+python3 scripts/langgraph_assistants.py --assistants-only | sed 's/^/  /' || c_warn "could not create the LangGraph assistants (Studio presets) — LangGraph not ready?"
 set -a; source .env; set +a
 docker compose "${PROFILES[@]}" up -d --no-build api >/dev/null 2>&1
 wait_for api http://localhost:8000/health 120

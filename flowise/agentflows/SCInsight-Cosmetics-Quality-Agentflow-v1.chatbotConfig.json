@@ -1,0 +1,19 @@
+{
+  "starterPrompts": {
+    "0": {
+      "prompt": "Which SPF50 sunscreen batches at Warehouse C are usable, and why are the others excluded?"
+    },
+    "1": {
+      "prompt": "Which SUN-SPF50-100 batches at WH-C are expired or close to expiry?"
+    },
+    "2": {
+      "prompt": "Are any pump dispenser PUMP-DISP-24 batches at the factory FAC-1 blocked by quality?"
+    },
+    "3": {
+      "prompt": "How much vitamin C serum base SER-BASE-VC is usable at FAC-1, and what is excluded?"
+    },
+    "4": {
+      "prompt": "In which order should we ship the SPF50 sunscreen batches from Warehouse C (FEFO)?"
+    }
+  }
+}

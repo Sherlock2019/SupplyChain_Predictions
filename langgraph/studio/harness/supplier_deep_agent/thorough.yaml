@@ -1,0 +1,26 @@
+# supplier_deep_agent harness preset 'thorough': Full due diligence: all analysts, larger budgets, longer report.
+# Paste into Studio > Input > Harness (YAML), or pick the assistant 'Deep agent · thorough'.
+temperature: 0.1
+max_tokens: 3000
+max_steps: 100
+max_model_calls: 25
+max_tool_calls: 35
+max_calls_per_tool: 8
+max_subagent_calls: 6
+model_timeout_seconds: 240
+model_retries: 1
+tool_retries: 1
+subagents:
+- contract-analyst
+- quality-analyst
+- logistics-analyst
+tools:
+- supplier_risk
+- sap_snapshot
+- search_governed_knowledge
+- quality_status
+- logistics_status
+- factory_material_readiness
+require_plan: true
+require_citations: true
+report_style: full

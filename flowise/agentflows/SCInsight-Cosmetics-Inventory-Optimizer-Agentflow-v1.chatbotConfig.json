@@ -1,0 +1,19 @@
+{
+  "starterPrompts": {
+    "0": {
+      "prompt": "How many days of cover do we have for SPF50 sunscreen in Warehouse B and what is the demand forecast?"
+    },
+    "1": {
+      "prompt": "What is the 14-day demand forecast for sunscreen SUN-SPF50-100 at WH-B?"
+    },
+    "2": {
+      "prompt": "When will Warehouse B run out of SPF50 sunscreen?"
+    },
+    "3": {
+      "prompt": "How long will our vitamin C serum SER-VITC-30 stock last in Warehouse A?"
+    },
+    "4": {
+      "prompt": "Do we need to replenish SPF50 sunscreen at Warehouse C?"
+    }
+  }
+}

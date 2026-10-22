@@ -1,0 +1,19 @@
+{
+  "starterPrompts": {
+    "0": {
+      "prompt": "We need 20000 pump dispensers PUMP-DISP-24 at the Lyon factory by 2026-10-27. Which supplier should we order from?"
+    },
+    "1": {
+      "prompt": "How reliable is Supplier A (SUP-A) on lead time for pump dispensers PUMP-DISP-24?"
+    },
+    "2": {
+      "prompt": "Compare our suppliers for 20000 pump dispensers PUMP-DISP-24 needed at FAC-1 by 2026-10-27."
+    },
+    "3": {
+      "prompt": "What is the real lead time of Supplier C (SUP-C) for 30 ml glass bottles BTL-GLS-30?"
+    },
+    "4": {
+      "prompt": "Can we buy 20000 PUMP-DISP-24 from Unvetted Pumps (SUP-X) to get them by 2026-10-27?"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Procurement manager: 5 ready-to-paste inputs for scinsight_procurement.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: We need 20000 pump dispensers PUMP-DISP-24 at the Lyon factory by 2026-10-27. Which supplier should we order from?
+---
+messages:
+- type: human
+  content: How reliable is Supplier A (SUP-A) on lead time for pump dispensers PUMP-DISP-24?
+---
+messages:
+- type: human
+  content: Compare our suppliers for 20000 pump dispensers PUMP-DISP-24 needed at FAC-1 by 2026-10-27.
+---
+messages:
+- type: human
+  content: What is the real lead time of Supplier C (SUP-C) for 30 ml glass bottles BTL-GLS-30?
+---
+messages:
+- type: human
+  content: Can we buy 20000 PUMP-DISP-24 from Unvetted Pumps (SUP-X) to get them by 2026-10-27?

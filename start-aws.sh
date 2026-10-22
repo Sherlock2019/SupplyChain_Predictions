@@ -11,7 +11,7 @@
 #   ./start-aws.sh stop            stop everything (data is kept; ./stop-localdemo.sh --reset wipes it)
 #
 # The app keeps running after you log out of SSH, and Docker restarts it after a reboot.
-# Security group: allow YOUR IP only on TCP 8000 (dashboard), 3000 (Flowise), 3002 (Grafana), 3003 (Langfuse).
+# Security group: allow YOUR IP only on TCP 8000 (dashboard), 3000 (Flowise), 8100 (SCInsight API), 3002 (Grafana), 3003 (Langfuse).
 set -euo pipefail
 cd "$(dirname "$0")"
 LOG=.aws-launch.log
@@ -59,7 +59,10 @@ print_urls() {  # print_urls IP LITE(0|1)
                                                  manager key : ${MANAGER_API_KEY}
   API docs           http://${ip}:8000/docs
   Flowise            http://${ip}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@admin.com} / ${FLOWISE_ADMIN_PASSWORD}
+                                                 SCInsight flows: SCInsight-Cosmetics-* (chat bot, SC Agent Manager, 7 specialists)
+  SCInsight API      http://${ip}:8100/docs     Swagger; user keys SCI_*_KEY in .env (e.g. SCI_WAREHOUSE_KEY approves transfers)
   LangGraph API      http://${ip}:8123          (LangSmith Studio: https://smith.langchain.com/studio/?baseUrl=http://${ip}:8123)
+                                                 SCInsight mirror: scinsight_chat, scinsight_supervisor, scinsight_<specialist>
   MCP server         http://${ip}:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF
   if [ "$lite" = 0 ]; then cat <<EOF
@@ -69,7 +72,8 @@ EOF
   fi
   cat <<EOF
 
-  Security group: allow your IP only on TCP 8000, 3000, 3002, 3003 (and 8123/8002 if you use Studio or MCP).
+  Security group: allow your IP only on TCP 8000, 3000, 8100, 3002, 3003 (and 8123/8002 if you use Studio or MCP).
+  Studio note: Studio runs in your browser and calls http://${ip}:8123 directly — open 8123 to your IP to use it.
 EOF
 }
 
@@ -83,7 +87,7 @@ status() {
   elif [ -f "$LOG" ]; then warn "start-up did not finish — last lines of $LOG:"; tail -n 15 "$LOG" | sed 's/^/    /'
   fi
   echo
-  for svc in "dashboard/API|http://localhost:8000/health" "LangGraph|http://localhost:8123/ok" "MCP|http://localhost:8002/health" \
+  for svc in "dashboard/API|http://localhost:8000/health" "SCInsight API|http://localhost:8100/health" "LangGraph|http://localhost:8123/ok" "MCP|http://localhost:8002/health" \
              "Flowise|http://localhost:3000/api/v1/ping" "Grafana|http://localhost:3002/api/health" "Langfuse|http://localhost:3003/api/public/health"; do
     name=${svc%%|*}; url=${svc#*|}
     if curl -fs -m 3 -o /dev/null "$url"; then ok "$name"; else warn "$name not answering yet"; fi

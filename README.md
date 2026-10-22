@@ -68,11 +68,22 @@ with that manager's key: `SCI_PLANNER_KEY` for production (PRD-1001), `SCI_WAREH
 `SCI_PROCUREMENT_KEY` for purchases, `SCI_QUALITY_KEY` for quality), then click *Proceed* in Flowise to see the verified decision.
 More: [docs/scinsight/DEMO_SCENARIOS.md](docs/scinsight/DEMO_SCENARIOS.md).
 
+**The same agents in LangGraph (for a Flowise-vs-LangGraph comparison).** `backend/scinsight/lg/` mirrors the chat bot,
+SC Agent Manager and 7 specialists as LangGraph graphs (`scinsight_chat`, `scinsight_supervisor`, `scinsight_<specialist>` on the
+LangGraph server, :8123). They use the same API, the same prompts and real `interrupt()` approval. `python3 scripts/scinsight_compare.py` runs the 40
+role questions on both runtimes. Result: identical accuracy (41/43 routes, 42/43 facts, same speed), so the recommended hybrid is
+Flowise for the chat front door and LangGraph for the tested agent logic. See [FLOWISE_VS_LANGGRAPH.md](docs/scinsight/FLOWISE_VS_LANGGRAPH.md),
+[LANGGRAPH_MIRROR.md](docs/scinsight/LANGGRAPH_MIRROR.md) and [the per-question results](docs/scinsight/FLOWISE_VS_LANGGRAPH_RESULTS.md). Studio presets and the 5 questions per role are in
+[langgraph/studio/](langgraph/studio/README.md).
+
 **Where things are**
 
 | Path | Contents |
 | --- | --- |
 | `backend/scinsight/` | SCInsight FastAPI service: synthetic SAP, business rules, decisions, learning, RAG, security, migrations |
+| `backend/scinsight/lg/` | LangGraph mirror of the Flowise flows (chat, supervisor, 7 specialist subgraphs) |
+| `data/scinsight/role_questions.json` | 5 most-used questions per role: Flowise conversation starters, Studio inputs, comparison test set |
+| `langgraph/studio/` | Studio presets: harness YAML, ready-to-paste inputs per role (assistants created by `scripts/langgraph_assistants.py`) |
 | `data/scinsight/knowledge/` | Synthetic policies, SOPs and supplier agreements for the RAG knowledge base |
 | `flowise/chatflows/`, `flowise/agentflows/`, `flowise/tools/`, `flowise/prompts/` | Flowise exports (placeholders only, no keys or credential ids) |
 | `flowise/scinsight/` | `build-scinsight.cjs` generates the exports from the installed Flowise; `deploy.py build / import` |
@@ -224,9 +235,15 @@ git clone https://github.com/Sherlock2019/SupplyChain_Predictions.git && cd Supp
 ./start-aws.sh status           # progress, health and URLs with logins  ·  ./start-aws.sh logs  ·  ./start-aws.sh stop
 ```
 
-Allow **your IP only** in the instance's security group on TCP 8000 (dashboard), 3000 (Flowise), 3002 (Grafana) and 3003
-(Langfuse). Prerequisites: Docker (`curl -fsSL https://get.docker.com | sh`), and Ollama for Qwen
-(`curl -fsSL https://ollama.com/install.sh | sh`). Suggested size: 4 vCPU / 16 GB with `--small-llm`, 8 vCPU / 32 GB for 7B.
+Allow **your IP only** in the instance's security group on TCP 8000 (dashboard), 3000 (Flowise), 8100 (SCInsight API / Swagger),
+3002 (Grafana) and 3003 (Langfuse), plus 8123 if you use LangGraph Studio. Prerequisites: Docker (`curl -fsSL https://get.docker.com | sh`),
+and Ollama for Qwen (`curl -fsSL https://ollama.com/install.sh | sh`). Suggested size: 4 vCPU / 16 GB with `--small-llm`, 8 vCPU / 32 GB for 7B.
+
+On EC2 use `./start-aws.sh` (login pages on, public URLs), not `./start-localdemo.sh` directly. After `git pull`, just run it again: the
+launcher fingerprints the source and **rebuilds the app image automatically when the code changed**, then re-imports the Flowise flows
+and the LangGraph Studio presets. If it stops with *"docker compose … did not answer"*, the machine is out of memory or Docker is
+busy: it prints free memory, load and what is still running. Wait for a running build to finish (`./start-aws.sh logs`) or
+`./stop-localdemo.sh && sudo systemctl restart docker`, and on small instances use `--small-llm` or `--lite`.
 
 **Or step by step** — prerequisites: Docker, Python 3.12, an NVIDIA GPU with Ollama (or set `LLM_MODE=deterministic`).
 

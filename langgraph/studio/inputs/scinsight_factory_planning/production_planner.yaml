@@ -1,0 +1,21 @@
+# Production planner: 5 ready-to-paste inputs for scinsight_factory_planning.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: Can we produce production order PRD-1001 on time?
+---
+messages:
+- type: human
+  content: Which material is short for production order PRD-1001, and by how much?
+---
+messages:
+- type: human
+  content: How many vitamin C serum bottles can we make right now for production order PRD-1001?
+---
+messages:
+- type: human
+  content: Can production order PRD-1003 for the hydrating cream start on time?
+---
+messages:
+- type: human
+  content: Are all components available for the sunscreen production order PRD-1002?

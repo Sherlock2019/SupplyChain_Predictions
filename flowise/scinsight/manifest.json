@@ -22,55 +22,71 @@
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "factory_planning",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Factory-Planning-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Factory-Planning-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Factory-Planning-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Production planner"
     },
     {
       "name": "SCInsight-Cosmetics-Procurement-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "procurement",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Procurement-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Procurement-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Procurement-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Procurement manager"
     },
     {
       "name": "SCInsight-Cosmetics-Warehouse-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "warehouse",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Warehouse-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Warehouse-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Warehouse-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Warehouse manager"
     },
     {
       "name": "SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "inventory_optimizer",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Inventory-Optimizer-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Inventory planner"
     },
     {
       "name": "SCInsight-Cosmetics-Logistics-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "logistics",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Logistics-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Logistics-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Logistics-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Logistics manager"
     },
     {
       "name": "SCInsight-Cosmetics-Quality-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "quality",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Quality-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Quality-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Quality-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Quality manager"
     },
     {
       "name": "SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "specialist",
       "intent": "outcome_learning",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Decision-Outcome-Learning-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "AI / MLOps manager"
     },
     {
       "name": "SCInsight-Cosmetics-Supervisor-Agentflow-v1",
       "type": "AGENTFLOW",
       "role": "supervisor",
-      "file": "flowise/agentflows/SCInsight-Cosmetics-Supervisor-Agentflow-v1.json"
+      "file": "flowise/agentflows/SCInsight-Cosmetics-Supervisor-Agentflow-v1.json",
+      "chatbotConfig": "flowise/agentflows/SCInsight-Cosmetics-Supervisor-Agentflow-v1.chatbotConfig.json",
+      "starters_role": "Supply chain director"
     },
     {
       "name": "SCInsight-Cosmetics-Chatflow-v1",
@@ -78,7 +94,8 @@
       "role": "chat",
       "file": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.json",
       "chatbotConfig": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.chatbotConfig.json",
-      "postProcessing": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.postprocessing.js"
+      "postProcessing": "flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.postprocessing.js",
+      "starters_role": "Supply chain director"
     }
   ],
   "prompts": [

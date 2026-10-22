@@ -1,0 +1,21 @@
+# Logistics manager: 5 ready-to-paste inputs for scinsight_logistics.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: What is the transport lead time and freight cost to move SPF50 sunscreen from Warehouse C to Warehouse B?
+---
+messages:
+- type: human
+  content: If we ship SPF50 sunscreen from Warehouse A to Warehouse B, when does it arrive and what does it cost?
+---
+messages:
+- type: human
+  content: Which lane is fastest to resupply Warehouse B with SPF50 sunscreen?
+---
+messages:
+- type: human
+  content: Will a sunscreen transfer from Warehouse C reach Warehouse B before it runs out?
+---
+messages:
+- type: human
+  content: What does it cost to ship the recommended SPF50 sunscreen transfer to Warehouse B?

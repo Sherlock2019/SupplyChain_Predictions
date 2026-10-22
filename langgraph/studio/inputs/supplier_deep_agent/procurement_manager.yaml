@@ -1,0 +1,20 @@
+# supplier_deep_agent (SPARC data): 5 ready-to-paste research inputs. Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: 'Supplier: BioActive Labs. Task: Assess supply continuity, quality and contract risk, and list the contract levers available.'
+---
+messages:
+- type: human
+  content: 'Supplier: PackGlass Europe. Task: Is this supplier a single-source risk, and what are our contract levers?'
+---
+messages:
+- type: human
+  content: 'Supplier: BioActive Labs. Task: Summarise quality issues and open inspection lots for the materials it supplies.'
+---
+messages:
+- type: human
+  content: 'Supplier: AirlessPack Asia. Task: Are there shipment delays that threaten production, and what can we do?'
+---
+messages:
+- type: human
+  content: 'Supplier: PackGlass Europe. Task: Give an executive risk rating with the three key facts.'

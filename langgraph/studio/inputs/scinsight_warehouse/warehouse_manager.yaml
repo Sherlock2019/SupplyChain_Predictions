@@ -1,0 +1,21 @@
+# Warehouse manager: 5 ready-to-paste inputs for scinsight_warehouse.
+# Studio > Input > View Raw: paste ONE block, then Submit.
+messages:
+- type: human
+  content: Warehouse B is low on SPF50 sunscreen. Should we transfer stock from another warehouse?
+---
+messages:
+- type: human
+  content: How many days of cover does each warehouse have for sunscreen SUN-SPF50-100?
+---
+messages:
+- type: human
+  content: Which warehouse can send SPF50 sunscreen to Warehouse B without dropping below its own target?
+---
+messages:
+- type: human
+  content: Can Warehouse A alone cover Warehouse B's SPF50 sunscreen shortage?
+---
+messages:
+- type: human
+  content: Should we rebalance the hydrating cream CRM-HYDR-50 across warehouses A, B and C?

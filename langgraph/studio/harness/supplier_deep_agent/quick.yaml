@@ -1,0 +1,24 @@
+# supplier_deep_agent harness preset 'quick': Fast first look: one contract check, few tool calls, executive summary (about 30 s on this machine).
+# Paste into Studio > Input > Harness (YAML), or pick the assistant 'Deep agent · quick'.
+temperature: 0
+max_tokens: 1200
+max_steps: 40
+max_model_calls: 6
+max_tool_calls: 6
+max_calls_per_tool: 2
+max_subagent_calls: 1
+model_timeout_seconds: 120
+model_retries: 1
+tool_retries: 1
+subagents:
+- contract-analyst
+tools:
+- supplier_risk
+- sap_snapshot
+- search_governed_knowledge
+- quality_status
+- logistics_status
+- factory_material_readiness
+require_plan: true
+require_citations: true
+report_style: executive

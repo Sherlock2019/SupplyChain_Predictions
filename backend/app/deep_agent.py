@@ -190,8 +190,11 @@ class ResearchState(MessagesState, total=False):
 
 
 def deep_research(state: ResearchState, config: RunnableConfig) -> dict:
-    """Run the Deep Agent configured by this run's harness settings."""
-    h = harness_of(state.get("harness"))
+    """Run the Deep Agent configured by this run's harness settings.
+
+    Precedence: code defaults < the LangGraph assistant's configuration (configurable.harness, e.g. the presets created by
+    scripts/langgraph_assistants.py and chosen in Studio) < the harness passed in this run's input (what SPARC sends)."""
+    h = harness_of({**((config.get("configurable") or {}).get("harness") or {}), **(state.get("harness") or {})})
     run_config = {**config, "recursion_limit": h["max_steps"]}
     out = _agent_for(h).invoke({"messages": state["messages"], "todos": state.get("todos") or [], "files": state.get("files") or {}}, run_config)
     produced = out["messages"][len(state["messages"]):]

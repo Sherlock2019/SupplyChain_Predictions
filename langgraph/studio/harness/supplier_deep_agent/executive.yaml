@@ -1,0 +1,26 @@
+# supplier_deep_agent harness preset 'executive': Same research as standard, written as at most 8 bullet points for leadership.
+# Paste into Studio > Input > Harness (YAML), or pick the assistant 'Deep agent · executive'.
+temperature: 0
+max_tokens: 1200
+max_steps: 60
+max_model_calls: 15
+max_tool_calls: 20
+max_calls_per_tool: 6
+max_subagent_calls: 4
+model_timeout_seconds: 120
+model_retries: 1
+tool_retries: 1
+subagents:
+- contract-analyst
+- quality-analyst
+- logistics-analyst
+tools:
+- supplier_risk
+- sap_snapshot
+- search_governed_knowledge
+- quality_status
+- logistics_status
+- factory_material_readiness
+require_plan: true
+require_citations: true
+report_style: executive

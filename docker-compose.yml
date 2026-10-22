@@ -55,7 +55,10 @@ services:
 
   api:
     image: ${APP_IMAGE:-aurelia-scm-app:local}
-    build: .
+    build:
+      context: .
+      # fingerprint of the source the image was built from: start-localdemo.sh rebuilds when the code changed (e.g. after git pull)
+      labels: {scm.source-hash: "${APP_SOURCE_HASH:-unknown}"}
     profiles: [core]
     environment:
       <<: *app-env
@@ -131,6 +134,9 @@ services:
       <<: *app-env
       COPILOT_API_URL: http://api:8000
       COPILOT_API_KEY: ${LANGGRAPH_TOOL_KEY}
+      # SCInsight LangGraph mirror: same API and agent key as the Flowise flows (agent_service: never reviews)
+      SCI_API_URL: http://scinsight-api:8100
+      SCI_AGENT_KEY: ${SCI_AGENT_KEY:-}
       LANGSMITH_TRACING: "false"
       LANGGRAPH_CLI_NO_ANALYTICS: "1"
     extra_hosts: ["host.docker.internal:host-gateway"]

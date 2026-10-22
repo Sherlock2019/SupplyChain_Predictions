@@ -1,0 +1,19 @@
+{
+  "starterPrompts": {
+    "0": {
+      "prompt": "Can we produce production order PRD-1001 on time?"
+    },
+    "1": {
+      "prompt": "Which material is short for production order PRD-1001, and by how much?"
+    },
+    "2": {
+      "prompt": "How many vitamin C serum bottles can we make right now for production order PRD-1001?"
+    },
+    "3": {
+      "prompt": "Can production order PRD-1003 for the hydrating cream start on time?"
+    },
+    "4": {
+      "prompt": "Are all components available for the sunscreen production order PRD-1002?"
+    }
+  }
+}

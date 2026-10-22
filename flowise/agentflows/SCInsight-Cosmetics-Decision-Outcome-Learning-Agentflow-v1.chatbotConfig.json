@@ -1,0 +1,19 @@
+{
+  "starterPrompts": {
+    "0": {
+      "prompt": "What was the outcome of recommendation REC-HIST-0001? Was the supplier lead time prediction right?"
+    },
+    "1": {
+      "prompt": "Was the lead time prediction of recommendation REC-HIST-0001 right?"
+    },
+    "2": {
+      "prompt": "What is the status of recommendation REC-HIST-0001?"
+    },
+    "3": {
+      "prompt": "Show the learning metrics from verified outcomes."
+    },
+    "4": {
+      "prompt": "How accurate are our supplier lead-time predictions so far?"
+    }
+  }
+}
