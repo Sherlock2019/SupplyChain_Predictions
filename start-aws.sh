@@ -119,7 +119,14 @@ done
 bold "SPARC · AWS launcher"
 if launcher_running; then warn "already starting (pid $(cat "$PIDFILE"))"; status; exit 0; fi
 # Check the requirements and install what is missing (Docker + compose, python3, curl, git, Ollama), then start Docker on boot.
-rc=0; if [[ " ${PASS[*]} " == *" --no-llm "* ]]; then bash scripts/ensure-prereqs.sh --no-llm || rc=$?; else bash scripts/ensure-prereqs.sh || rc=$?; fi
+# Small instance (under 8 GB, e.g. t3.medium) and no mode chosen: the light demo (no Grafana/Langfuse, no LLM).
+MEM_GB=$(awk '/MemTotal/ {printf "%.0f", $2/1048576}' /proc/meminfo)
+if [ "$MEM_GB" -lt 8 ] && [ "$#" = 0 ]; then
+  PASS+=(--lite --no-llm)
+  warn "${MEM_GB} GB RAM: starting the light demo (--lite --no-llm). Options: --small-llm --lite to try Qwen 3B (slow), or 16 GB for everything"
+fi
+PRE=(); for a in --no-llm --lite; do [[ " ${PASS[*]} " == *" $a "* ]] && PRE+=("$a"); done
+rc=0; bash scripts/ensure-prereqs.sh "${PRE[@]}" || rc=$?
 if [ "$rc" = 3 ]; then  # just added to the docker group: continue in a shell that has it (no log-out needed)
   command -v sg >/dev/null || die "log out and back in (docker group), then re-run ./start-aws.sh"
   exec sg docker -c "$(printf '%q ' bash "$0" "$@")"

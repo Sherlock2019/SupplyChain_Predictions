@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Check the launcher's requirements and install what is missing (Linux: Ubuntu/Debian with apt, Amazon Linux/RHEL with dnf).
 #
-#   scripts/ensure-prereqs.sh [--no-llm]
+#   scripts/ensure-prereqs.sh [--no-llm] [--lite]
 #
 # Installs: curl, python3, git, Docker Engine + compose v2 plugin, Ollama (skipped with --no-llm). Starts Docker, enables it on
 # boot and adds you to the docker group. Runs in the foreground before the launcher detaches, because installing needs sudo.
 # Exit 0: ready. Exit 3: ready, but this shell is not yet in the docker group (the launcher re-runs itself with `sg docker`).
 set -euo pipefail
 
-NOLLM=0
-for arg in "$@"; do [ "$arg" = --no-llm ] && NOLLM=1; done
+NOLLM=0; LITE=0
+for arg in "$@"; do
+  case "$arg" in --no-llm) NOLLM=1 ;; --lite) LITE=1 ;; esac
+done
 
 ok() { printf '  \033[32m✔\033[0m %s\n' "$*"; }
 info() { printf '  \033[36m→\033[0m %s\n' "$*"; }
@@ -99,16 +101,29 @@ if have ollama && ! curl -fs -m 3 http://127.0.0.1:11434/api/tags >/dev/null; th
   curl -fs -m 2 http://127.0.0.1:11434/api/tags >/dev/null && ok "Ollama running" || warn "Ollama is not answering on :11434"
 fi
 
-# Resources (warnings only)
-mem=$(awk '/MemTotal/ {printf "%d", $2/1048576}' /proc/meminfo)
+# Resources
+mem=$(awk '/MemTotal/ {printf "%.0f", $2/1048576}' /proc/meminfo)  # rounded: a 4 GB instance reports ~3.8
 disk=$(df -Pk . | awk 'NR==2 {printf "%d", $4/1048576}')
 cpus=$(nproc)
+# Swap on small machines: the image build and the model load peak above the steady state.
+swap=$(awk '/SwapTotal/ {printf "%d", $2/1048576}' /proc/meminfo)
+if [ "$mem" -lt 15 ] && [ "$swap" -lt 2 ] && [ "$disk" -ge 30 ]; then
+  info "adding 8 GB of swap (${mem} GB RAM)"
+  { $SUDO fallocate -l 8G /swapfile || $SUDO dd if=/dev/zero of=/swapfile bs=1M count=8192 status=none; } \
+    && $SUDO chmod 600 /swapfile && $SUDO mkswap /swapfile >/dev/null && $SUDO swapon /swapfile \
+    && { grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' | $SUDO tee -a /etc/fstab >/dev/null; } \
+    && ok "8 GB swap on (kept after reboot)" || warn "could not add swap"
+  disk=$(df -Pk . | awk 'NR==2 {printf "%d", $4/1048576}')
+fi
 # Too small to ever finish: stop here instead of failing 15 minutes into the build (SKIP_RESOURCE_CHECK=1 to try anyway).
+need=7; [ "$LITE" = 1 ] && need=4   # measured: core stack ~1.8 GB, observability ~3 GB more, Qwen 3B ~2.5 GB more
 if [ "${SKIP_RESOURCE_CHECK:-0}" != 1 ]; then
   [ "$disk" -ge 15 ] || die "only ${disk} GB free disk — the images alone need about 15 GB (30 GB with the LLM). Enlarge the EBS volume to 40 GB+"
-  [ "$mem" -ge 7 ] || die "only ${mem} GB RAM — the stack needs 8 GB at least (16 GB with the LLM). Use t3.large (8 GB) with --no-llm --lite, or t3.xlarge (16 GB)"
+  [ "$mem" -ge "$need" ] || die "only ${mem} GB RAM — needs ${need} GB with these options. On 4 GB use --lite --no-llm; 16 GB (t3.xlarge) runs everything"
 fi
-[ "$mem" -ge 15 ] && ok "${mem} GB RAM, ${cpus} CPUs" || warn "${mem} GB RAM: use --lite and --small-llm (or --no-llm); 16 GB recommended"
+if [ "$mem" -ge 15 ]; then ok "${mem} GB RAM, ${cpus} CPUs"
+elif [ "$NOLLM" = 0 ]; then warn "${mem} GB RAM: the LLM will be slow and may swap — --no-llm is safer, 16 GB recommended for Qwen"
+else ok "${mem} GB RAM, ${cpus} CPUs (enough without the LLM)"; fi
 [ "$disk" -ge 30 ] && ok "${disk} GB free disk" || warn "only ${disk} GB free disk: images + model need about 30 GB"
 
 # Docker access for this user
