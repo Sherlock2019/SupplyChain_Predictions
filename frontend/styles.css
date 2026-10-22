@@ -509,3 +509,20 @@ table.calc tfoot td { border-top: 2px solid var(--line); } table.calc .total { f
 :root[data-look="sap"] .modal { border-radius: 12px; }
 :root[data-look="sap"] button.icon { padding: 7px; width: 36px; height: 36px; }
 .harness-group { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; margin-top: 10px; } .harness-group b { min-width: 110px; font-size: 13px; } label.check { font-size: 13px; color: var(--ink); font-weight: 400; }
+/* Harness settings: every field carries a plain-language explanation underneath */
+.harness-hint { display: block; font-size: 12px; line-height: 1.45; color: var(--muted); font-weight: 400; margin-top: 2px; }
+.harness-loop { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; padding: 10px 12px; margin: 4px 0 14px; border-radius: 10px; background: var(--surface-2, rgba(127,127,127,.08)); font-size: 13px; }
+.harness-loop b { width: 100%; font-size: 13px; } .harness-loop .harness-hint { width: 100%; }
+.harness-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 18px; }
+.harness-fields input, .harness-fields select { max-width: 220px; }
+.harness-section { margin-top: 16px; } .harness-section > b { font-size: 13px; }
+.harness-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 18px; margin-top: 8px; }
+.harness-option .harness-hint { margin-left: 24px; }
+/* Harness guide: explanatory tables and small flow diagrams */
+.harness-guide h3 { font-size: 14px; margin: 20px 0 8px; } .harness-guide p { font-size: 13px; line-height: 1.55; }
+.guide-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; margin: 10px 0; }
+.guide-arrow { align-self: center; color: var(--muted); }
+.guide-box { display: flex; flex-direction: column; gap: 2px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 12.5px; min-width: 130px; max-width: 230px; }
+.guide-box span { color: var(--muted); font-size: 12px; }
+.guide-tree { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 8px 0 10px; }
+.guide-children { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 22px; border-left: 2px solid var(--line); }

@@ -652,6 +652,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ------------------------------------------------ Deep Agent harness settings (governed, audited)
     HARNESS_KEY = "deep_agent_harness"
+    # allowed range of every numeric harness setting, read from the schema so the UI never drifts from the validation
+    HARNESS_RANGES = {name: [next(m.ge for m in f.metadata if hasattr(m, "ge")), next(m.le for m in f.metadata if hasattr(m, "le"))]
+                      for name, f in DeepAgentHarness.model_fields.items()
+                      if any(hasattr(m, "ge") for m in f.metadata) and any(hasattr(m, "le") for m in f.metadata)}
 
     def current_harness() -> dict:
         row = store.get_setting(HARNESS_KEY)
@@ -664,7 +668,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         return {"harness": current_harness(), "defaults": DeepAgentHarness().model_dump(), "updated_by": row["updated_by"] if row else None,
                 "updated_at": row["updated_at"] if row else None,
                 "options": {"subagents": list(DEEP_SUBAGENTS), "tools": list(DEEP_TOOLS), "report_style": ["full", "executive"],
-                            "ranges": {"temperature": [0, 1], "max_tokens": [256, 4000], "max_steps": [20, 200]}}}
+                            "ranges": HARNESS_RANGES}}
 
     @app.put("/api/v1/deep-agents/harness")
     def set_deep_harness(body: DeepAgentHarness, request: Request, who: Principal = Depends(manager)) -> dict:

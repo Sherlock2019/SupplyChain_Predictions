@@ -156,6 +156,8 @@ def test_deep_agent_harness_settings_are_governed(client, assistant_headers, man
     change = {**view["harness"], "max_steps": 40, "subagents": ["contract-analyst", "quality-analyst"], "report_style": "executive"}
     assert client.put("/api/v1/deep-agents/harness", json=change, headers=assistant_headers).status_code == 403  # managers only
     assert client.put("/api/v1/deep-agents/harness", json={**change, "max_steps": 9999}, headers=manager_headers).status_code == 422
+    assert client.put("/api/v1/deep-agents/harness", json={**change, "max_model_calls": 1}, headers=manager_headers).status_code == 422
+    assert view["options"]["ranges"]["max_subagent_calls"] == [0, 10] and view["harness"]["max_model_calls"] == 15
     saved = client.put("/api/v1/deep-agents/harness", json=change, headers=manager_headers).json()
     assert saved["harness"]["max_steps"] == 40 and saved["updated_by"]
     again = client.get("/api/v1/deep-agents/harness", headers=assistant_headers).json()

@@ -125,3 +125,33 @@ def test_deep_agent_harness_controls_tools_subagents_steps_and_prompt():
         harness_of({"max_steps": 5000})
     with _pytest.raises(ValidationError):
         harness_of({"tools": ["delete_purchase_order"]})
+
+
+def test_harness_guard_enforces_loop_controls_per_run():
+    from types import SimpleNamespace
+
+    from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+
+    from backend.app.deep_agent import HarnessGuard, build_deep_agent, harness_of, system_prompt
+
+    h = harness_of({"max_model_calls": 3, "max_tool_calls": 4, "max_calls_per_tool": 2, "max_subagent_calls": 0, "tool_retries": 2})
+    guard = HarnessGuard(h)
+    call = lambda name, i: {"name": name, "id": f"c{i}", "args": {}}  # noqa: E731
+    history = [HumanMessage("old question"), AIMessage("", tool_calls=[call("supplier_risk", 0)] * 1), ToolMessage("x", tool_call_id="c0"),
+               HumanMessage("Assess BioActive Labs"),  # limits count from here (new run)
+               AIMessage("", tool_calls=[call("supplier_risk", 1), call("supplier_risk", 2), call("supplier_risk", 3), call("task", 4), call("write_todos", 5)])]
+    tool_req = lambda c: SimpleNamespace(tool_call=c, state={"messages": history})  # noqa: E731
+    executed = lambda req: "ran"  # noqa: E731
+    assert guard.wrap_tool_call(tool_req(call("supplier_risk", 1)), executed) == "ran"
+    assert guard.wrap_tool_call(tool_req(call("supplier_risk", 2)), executed) == "ran"
+    third = guard.wrap_tool_call(tool_req(call("supplier_risk", 3)), executed)      # repeat guard: 2 per tool
+    assert isinstance(third, ToolMessage) and "2 calls of supplier_risk" in third.content and third.status == "error"
+    assert "subagent delegations" in guard.wrap_tool_call(tool_req(call("task", 4)), executed).content  # 0 = no delegation
+    assert guard.wrap_tool_call(tool_req(call("write_todos", 5)), executed) == "ran"  # planning tools are not limited
+    model_req = lambda msgs: SimpleNamespace(state={"messages": msgs})  # noqa: E731
+    assert guard.wrap_model_call(model_req(history), lambda r: "model") == "model"   # 1 turn so far in this run
+    stopped = guard.wrap_model_call(model_req(history + [AIMessage("a"), AIMessage("b")]), lambda r: "model")
+    assert isinstance(stopped, AIMessage) and "3 model calls" in stopped.content          # graceful end, no exception
+    assert "Do the research yourself" in system_prompt(h)                                # 0 delegations -> instructions say so
+    agent = build_deep_agent(harness=h)
+    assert agent.config["recursion_limit"] == h["max_steps"]

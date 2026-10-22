@@ -184,6 +184,15 @@ class DeepAgentHarness(StrictModel):
     temperature: float = Field(default=0.0, ge=0.0, le=1.0)
     max_tokens: int = Field(default=1500, ge=256, le=4000)
     max_steps: int = Field(default=60, ge=20, le=200, description="LangGraph recursion limit: total model + tool steps per run")
+    # loop controls (enforced by HarnessGuard in deep_agent.py; reaching one ends the run gracefully, with the work done so far)
+    max_model_calls: int = Field(default=15, ge=3, le=50, description="Thinking turns: model calls of the main agent per run")
+    max_tool_calls: int = Field(default=20, ge=1, le=60, description="Data-tool and subagent calls per run, all together")
+    max_calls_per_tool: int = Field(default=6, ge=1, le=20, description="Repeat guard: calls of any single data tool per run")
+    max_subagent_calls: int = Field(default=4, ge=0, le=10, description="Delegations to subagents per run; 0 = no delegation at all")
+    # reliability
+    model_timeout_seconds: int = Field(default=120, ge=15, le=600, description="Give up on one model call after this long")
+    model_retries: int = Field(default=1, ge=0, le=5, description="Retries of a failed model call")
+    tool_retries: int = Field(default=1, ge=0, le=3, description="Retries of a failed tool call")
     subagents: list[Literal["contract-analyst", "quality-analyst", "logistics-analyst"]] = Field(default_factory=lambda: list(DEEP_SUBAGENTS))
     tools: list[Literal["supplier_risk", "sap_snapshot", "search_governed_knowledge", "quality_status", "logistics_status", "factory_material_readiness"]] = Field(
         default_factory=lambda: list(DEEP_TOOLS), min_length=1)

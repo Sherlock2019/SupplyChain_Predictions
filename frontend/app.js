@@ -1125,31 +1125,163 @@
   // deep agent
   // Deep Agent harness settings: stored in the governance DB, edited by a manager, applied to every research run.
   const HARNESS_LABELS = { 'contract-analyst': 'Contract analyst', 'quality-analyst': 'Quality analyst', 'logistics-analyst': 'Logistics analyst' };
+  // Plain-language help shown under each harness setting: what it means and what changes when you change it.
+  const HARNESS_HELP = {
+    temperature: 'How much randomness the model uses when writing. 0 = the same, most factual answer every time (recommended). Higher (0.3–0.7) = more varied wording, but more risk of invented details. Range 0–1.',
+    max_tokens: 'The longest text the model may write in one step (1 token ≈ ¾ word, so 1,500 ≈ 1,100 words). Lower = shorter, faster replies, but long reports can be cut off. Higher = longer reports, slower. Range 256–4,000.',
+    max_steps: 'The limit of the agent loop: every model call and every tool or subagent call is one step. When the budget is used up the run stops with an error instead of looping forever. Lower = faster and cheaper, but deep research may stop early. Higher = more thorough, slower. Range 20–200.',
+    report_style: 'Full report = sections: risk rating, evidence, contract levers, recommended actions, approvals required. Executive summary = at most 8 bullet points: risk rating, the 3 key facts, recommended actions.',
+    subagents: 'Helper agents the main agent can hand a sub-task to. Untick one and the main agent does that part itself (or skips it). Each subagent always keeps its own tools, listed below.',
+    'contract-analyst': 'Reads supplier contracts: lead time, OTIF target, expedite clause, penalties, second source. Tool: search_governed_knowledge.',
+    'quality-analyst': 'Checks inspection lots, rejected or blocked batches and quality policy. Tools: quality_status, search_governed_knowledge.',
+    'logistics-analyst': 'Checks inbound shipments, delays and carrier SLAs. Tools: logistics_status, search_governed_knowledge.',
+    tools: 'The read-only data sources the main agent may call. Untick a tool and the agent can no longer use that data. At least one must stay ticked. No tool can change SAP or anything else.',
+    supplier_risk: 'Supplier scorecard: on-time delivery, delays, rejected lots, open-order exposure (calculated, not AI).',
+    sap_snapshot: 'Valid SAP codes and master data: plants, materials, suppliers.',
+    search_governed_knowledge: 'Searches contracts, SOPs and policies and returns cited excerpts.',
+    quality_status: 'Inspection lots, blocked stock and the production orders they affect.',
+    logistics_status: 'Shipments, delays and escalations.',
+    factory_material_readiness: 'Whether a production order has all its components on time.',
+    max_model_calls: 'Thinking turns: how many times the main agent may call the model in one run (each turn it decides the next step). When reached, the run ends gracefully with what it found so far. Lower = faster, shorter research; higher = more thorough. Range 3–50.',
+    max_tool_calls: 'Total data look-ups and subagent delegations per run. When reached, further calls are refused and the agent must finish with the evidence it has. Lower = cheaper and faster; higher = broader research. Range 1–60.',
+    max_calls_per_tool: 'Repeat guard: the most times any single tool (e.g. supplier_risk) may be called in one run. Stops the agent asking the same question again and again. Range 1–20.',
+    max_subagent_calls: 'How many times the agent may hand a sub-task to a subagent. 0 = no delegation at all, including Deep Agents\' built-in general-purpose helper. Each delegation runs a whole helper agent, so it is the most expensive step. Range 0–10.',
+    model_timeout_seconds: 'How long to wait for one model answer before giving up. Lower = fails faster when the model server is slow or stuck; too low cuts off long answers on a slow GPU / CPU. Range 15–600 s.',
+    model_retries: 'How many times a failed or timed-out model call is retried before the run fails. More retries = more resilient, but a stuck model server makes the run take longer. Range 0–5.',
+    tool_retries: 'How many times a failed data tool call (e.g. a gateway timeout) is retried, with a short back-off, before the error is shown to the agent. Range 0–3.',
+    require_plan: 'Tells the agent to write a short to-do plan before researching (shown in the result). Off = it starts researching straight away. An instruction to the model, not a hard check.',
+    require_citations: 'Tells the agent to quote analysis ids, PO numbers, inspection lots and document titles for every claim. Off = shorter text with fewer references. An instruction to the model, not a hard check.',
+  };
+  // ---------------------------------------------------------------- harness guide (explains every setting with the live values)
+  const SUBAGENT_GUIDE = [
+    ['contract-analyst', 'Contract analyst', 'Investigates the supplier contract: lead time, OTIF target, expedite clause, penalties, second-source rights — the contract levers.', 'No dedicated contract investigation; the supervisor reads contracts itself if search_governed_knowledge is allowed.', 'search_governed_knowledge'],
+    ['quality-analyst', 'Quality analyst', 'Examines inspection lots, rejected or blocked batches, quality holds and quality policy.', 'No dedicated quality investigation.', 'quality_status, search_governed_knowledge'],
+    ['logistics-analyst', 'Logistics analyst', 'Examines inbound shipments, delays, revised ETAs and carrier SLAs (only when they matter for the request).', 'No dedicated logistics investigation.', 'logistics_status, search_governed_knowledge'],
+  ];
+  const TOOL_GUIDE = [
+    ['supplier_risk', 'Supplier scorecard: on-time delivery, average delay, reject rate, open-order exposure, single-source risk (calculated, not AI).', 'Is BioActive Labs a high-risk supplier?'],
+    ['sap_snapshot', 'Valid SAP codes and master data from the read-only SAP snapshot: plants, materials, suppliers.', 'Which materials does BioActive Labs supply, to which plant?'],
+    ['search_governed_knowledge', 'Searches the approved contracts, SOPs and policies (RAG, PostgreSQL + pgvector) and returns cited excerpts.', 'What does the contract say about late deliveries?'],
+    ['quality_status', 'Inspection lots, blocked stock and the production orders they affect.', 'Are any BioActive Labs batches on hold?'],
+    ['logistics_status', 'Shipments, delays and escalations.', 'When is the next shipment expected?'],
+    ['factory_material_readiness', 'Whether a production order has all its components on time (BOM netting).', 'Can we produce 6,000 serums with the material available?'],
+  ];
+  function renderHarnessGuide(v) {
+    const h = v.harness, on = (b) => (b ? pill('good', 'on') : pill('warning', 'off'));
+    const rows = (list) => table(list[0].map((head, i) => [head, (r) => r[i]]), list.slice(1));
+    const box = (title, text) => `<div class="guide-box"><b>${title}</b>${text ? `<span>${text}</span>` : ''}</div>`;
+    const flow = (...items) => `<div class="guide-flow">${items.join('<span class="guide-arrow">→</span>')}</div>`;
+    $('#harness-guide').innerHTML = `<details class="more harness-guide" open><summary><b>Understanding the harness</b> — what each setting does, with the values in force now</summary>
+      <p>Think of the Deep Agent as an employee and the <b>harness</b> as its operating procedures: which helpers it may call, which tools it may use,
+        how much effort it may spend and what its report must look like. The language model (${esc(state.cfg.llm_model || 'Qwen')}) provides the reasoning;
+        the harness controls how that reasoning is used. A manager saves it, every change is audited, and the next research run uses it.</p>
+
+      <h3>1 · Model and execution</h3>
+      ${rows([['Setting', 'Now', 'What it does', 'Guidance'],
+        ['Temperature', num(h.temperature, 2), 'Randomness of the model\'s wording. 0 = the same, most deterministic answer every time; higher = more variety and more risk of invented detail.', '0–0.3 for evidence-based supplier analysis'],
+        ['Max output tokens', num(h.max_tokens), 'Longest text the model may write <b>in one model call</b> (1 token ≈ ¾ word). It limits each answer, not the whole research.', '2,500–4,000 for a detailed report that merges three analysts (the model reads at most 16k tokens in total)'],
+        ['Step budget', num(h.max_steps), 'Hard stop for the whole LangGraph run. Every graph step counts (model calls, tool calls, internal steps), so 60 steps is <b>not</b> 60 model calls. When it is exceeded the run fails with an error.', 'Keep it above the loop controls below (60–80) so they end the run first, gracefully'],
+        ['Report style', h.report_style === 'full' ? 'Full report' : 'Executive summary', 'Full = risk rating, evidence, contract levers, recommended advisory actions, approvals required. Executive = at most 8 bullets.', 'Full for buyers; executive for leadership']])}
+
+      <h3>2 · Loop controls and reliability — how much effort, and what happens on failure</h3>
+      <p class="note">The agent works in a loop: think → call a tool or a subagent → read the result → think again … until it writes the report. These limits are enforced in code around every model and tool call (not just requested in the prompt). Reaching one ends the run <b>gracefully</b>: the agent is told to finish with the evidence it has.</p>
+      ${rows([['Setting', 'Now', 'What it does'],
+        ['Max model calls', num(h.max_model_calls), 'Thinking turns of the supervisor per run.'],
+        ['Max tool calls', num(h.max_tool_calls), 'All data look-ups and delegations together per run; further calls are refused.'],
+        ['Max calls of one tool', num(h.max_calls_per_tool), 'Repeat guard: stops the agent asking the same tool again and again.'],
+        ['Max subagent delegations', num(h.max_subagent_calls), 'How often it may hand work to a subagent. 0 = none at all, including Deep Agents\' built-in general-purpose helper.'],
+        ['Model timeout', `${num(h.model_timeout_seconds)} s`, 'Give up on one model answer after this long (a slow CPU needs more).'],
+        ['Model retries · tool retries', `${num(h.model_retries)} · ${num(h.tool_retries)}`, 'Retries of a failed model call / a failed tool call (with a short back-off) before the error counts.']])}
+
+      <h3>3 · Subagents — who does the work</h3>
+      <div class="guide-tree">${box('Deep Agent supervisor', 'plans the research, delegates, consolidates the evidence')}
+        <div class="guide-children">${SUBAGENT_GUIDE.map(([id, label]) => box(`${label} ${h.subagents.includes(id) ? '✓' : '✗'}`, '')).join('')}${box('General-purpose helper', 'built into Deep Agents')}</div></div>
+      ${rows([['Subagent', 'Now', 'When enabled', 'When disabled', 'Its own tools'],
+        ...SUBAGENT_GUIDE.map(([id, label, yes, no, tools]) => [label, on(h.subagents.includes(id)), yes, no, `<code>${tools}</code>`])])}
+      <p class="note">Enabling a subagent makes it <b>available</b>; the supervisor decides whether to call it (its instructions ask for contract terms → contract analyst, quality evidence → quality analyst, shipments → logistics analyst only when they matter). Subagents keep their own tools listed above even if you untick them under Allowed tools.</p>
+
+      <h3>4 · Allowed tools — what the supervisor may read</h3>
+      ${rows([['Tool', 'Now', 'Purpose', 'Example question'], ...TOOL_GUIDE.map(([t, purpose, ex]) => [`<code>${t}</code>`, on(h.tools.includes(t)), purpose, esc(ex)])])}
+      ${flow(box('Deep Agent (LangGraph)', 'gets only the allowed tools'), box('SPARC tool functions', 'Python, read-only'), box('FastAPI gateway', 'API key, audit, metrics'),
+        box('SAP snapshot', 'read-only OData · writes → 405') + box('RAG knowledge', 'contracts, SOPs, policies') + box('Quality · logistics', 'lots, shipments'))}
+      <p class="note"><b>Security:</b> unticking a tool removes it from the supervisor's tool list in code, so it cannot be called. Separately, every tool is read-only and the gateway enforces it (SAP writes return 405) — the UI is not the protection.</p>
+
+      <h3>5 · Rules — how the report must be written</h3>
+      ${rows([['Rule', 'Now', 'What it means', 'Why it matters'],
+        ['Plan first (todo list)', on(h.require_plan), 'The agent writes a research plan before investigating.', 'Structured, traceable multi-step work'],
+        ['Cite evidence for every claim', on(h.require_citations), 'Conclusions must name their source: analysis id, PO number, inspection lot, document title.', 'Fewer unsupported statements; auditable reports']])}
+      <p class="note">Not this: <i>"BioActive Labs is a high supply risk."</i> — but this: <i>"BioActive Labs is a high supply risk: average delay 12.7 days against a 95 % OTIF target, single source for RM-ACTIVE (source: supplier_risk scorecard; supply agreement)."</i>
+        Both rules are <b>instructions to the model</b>; they are not checked in code yet, so a citation can still be wrong. Programmatic citation checking is the next step for production.</p>
+
+      <h3>6 · Save, reset and audit</h3>
+      ${rows([['Control', 'What it does'],
+        ['Save harness', 'Stores the settings; the next research run uses them. Only a manager key can save (others get 403); out-of-range values are refused (422).'],
+        ['Reset to defaults', 'Restores the built-in defaults (see the line under the form).'],
+        ['Last changed by', v.updated_by ? `${esc(v.updated_by)} on ${esc(v.updated_at.slice(0, 16).replace('T', ' '))}` : 'Not changed yet — defaults in force.'],
+        ['Audit', 'Every save is written to the tamper-evident audit chain (action agent.deep_research.harness_updated).'],
+        ['Read-only', 'This agent can only read and recommend; it never changes SAP or executes anything.'],
+        ['LangGraph Studio', 'A run started in Studio uses only the harness typed into it (or the code defaults) — it bypasses the saved settings and the audit.']])}
+
+      <h3>7 · Example — researching BioActive Labs</h3>
+      ${flow(box('1 Request', 'Assess supply continuity, quality and contract risk'), box('2 Harness loaded', 'settings · allowed tools · limits · rules'),
+        box('3 Plan', 'todo list: scorecard, contract, quality, logistics'), box('4 Evidence', 'supplier_risk + delegate to contract / quality analysts'),
+        box('5 Consolidate', 'cross-check, risks, contract levers'), box('6 Cited report', 'risk rating · evidence · levers · actions · approvals'))}
+      <p class="note">Measured on this machine (Qwen 2.5 7B): saved settings → about 90 s, 5 tool calls including 3 delegations; tight limits (2 tool calls, no delegation) → about 27 s, still a complete short report.</p>
+
+      <h3>8 · Suggested configuration for supplier research</h3>
+      ${rows([['Setting', 'Suggested'], ['Temperature', '0–0.3'], ['Max output tokens', '2,500–4,000'], ['Step budget', '60–80'],
+        ['Max model calls · tool calls · per tool · delegations', '15 · 20 · 6 · 3–4'], ['Model timeout', '120–180 s (more on CPU-only machines)'],
+        ['Subagents · tools', 'All three · all six for full supplier research'], ['Plan first · cite evidence', 'On · on (add code-level citation checks for production)']])}
+
+      <h3>9 · Agent versus harness</h3>
+      ${rows([['The AI agent', 'The harness'], ['Understands the objective', 'Defines the operating constraints'], ['Reasons about the problem', 'Controls the permitted resources and effort'],
+        ['Decides which tool to use', 'Restricts which tools exist for it'], ['Delegates to subagents', 'Defines which subagents are available and how often'],
+        ['Produces conclusions', 'Defines the report format and evidence rules'], ['Uses the LLM', 'Sets the model parameters, timeouts and retries']])}
+      <p class="note">The harness is not a separate LangGraph product: in SPARC it is application code — settings stored in the governance database (<code>DeepAgentHarness</code>), the agent built from them (<code>deep_agent.py</code>: tools, subagents, prompt, loop guard, retries, step budget), the manager-only audited API, and this page.</p>
+    </details>`;
+  }
   async function loadHarness() {
     const box = $('#harness-card');
     try {
       const v = await api('/api/v1/deep-agents/harness');
       const h = v.harness, o = v.options, manager = state.role === 'manager';
       const dis = manager ? '' : 'disabled';
-      const checks = (name, list, labels = {}) => list.map((x) => `<label class="inline check"><input type="checkbox" name="${name}" value="${esc(x)}" ${h[name].includes(x) ? 'checked' : ''} ${dis}>${esc(labels[x] || x)}</label>`).join('');
+      const hint = (key) => `<small class="harness-hint">${esc(HARNESS_HELP[key])}</small>`;
+      const option = (name, value, label, checked) => `<div class="harness-option"><label class="inline check"><input type="checkbox" name="${name}" value="${esc(value)}" ${checked ? 'checked' : ''} ${dis}>${esc(label)}</label>${hint(value)}</div>`;
+      const checks = (name, list, labels = {}) => list.map((x) => option(name, x, labels[x] || x, h[name].includes(x))).join('');
+      const numField = (name, label, step) => `<label>${esc(label)}<input name="${name}" type="number" step="${step}" min="${o.ranges[name][0]}" max="${o.ranges[name][1]}" value="${h[name]}" ${dis}>${hint(name)}</label>`;
+      const NUMBERS = ['temperature', 'max_tokens', 'max_steps', 'max_model_calls', 'max_tool_calls', 'max_calls_per_tool', 'max_subagent_calls', 'model_timeout_seconds', 'model_retries', 'tool_retries'];
       box.innerHTML = `<div class="chart-head"><div><h2>Harness settings</h2><p class="sub">how the Deep Agent runs — model, step budget, subagents, tools and output rules · ${v.updated_by ? `last changed by ${esc(v.updated_by)} ${esc(v.updated_at.slice(0, 16).replace('T', ' '))}` : 'defaults'}</p></div></div>
+        <div class="harness-loop"><b>How the agent works — the loop</b>
+          <span>① reads the task${h.require_plan ? ' and writes a plan' : ''}</span><span>→ ② calls a tool or hands a sub-task to a subagent</span><span>→ ③ reads the result and decides the next step</span><span>→ back to ② … until ④ it writes the report.</span>
+          <small class="harness-hint">The <b>loop controls</b> below end the loop gracefully (max model calls, tool calls, calls of one tool, delegations); the <b>step budget</b> is the hard stop behind them. Settings apply to the next run.</small></div>
         <form id="form-harness" class="harness">
-          <div class="row"><label>Temperature<input name="temperature" type="number" step="0.1" min="${o.ranges.temperature[0]}" max="${o.ranges.temperature[1]}" value="${h.temperature}" ${dis}></label>
-            <label>Max output tokens<input name="max_tokens" type="number" step="50" min="${o.ranges.max_tokens[0]}" max="${o.ranges.max_tokens[1]}" value="${h.max_tokens}" ${dis}></label>
-            <label>Step budget (recursion limit)<input name="max_steps" type="number" step="5" min="${o.ranges.max_steps[0]}" max="${o.ranges.max_steps[1]}" value="${h.max_steps}" ${dis}></label>
-            <label>Report style<select name="report_style" ${dis}>${o.report_style.map((s) => `<option value="${s}" ${h.report_style === s ? 'selected' : ''}>${s === 'full' ? 'Full report' : 'Executive summary'}</option>`).join('')}</select></label></div>
-          <div class="harness-group"><b>Subagents</b>${checks('subagents', o.subagents, HARNESS_LABELS)}</div>
-          <div class="harness-group"><b>Allowed tools</b>${checks('tools', o.tools)}</div>
-          <div class="harness-group"><b>Rules</b><label class="inline check"><input type="checkbox" name="require_plan" ${h.require_plan ? 'checked' : ''} ${dis}>Plan first (todo list)</label>
-            <label class="inline check"><input type="checkbox" name="require_citations" ${h.require_citations ? 'checked' : ''} ${dis}>Cite evidence for every claim</label></div>
+          <div class="harness-fields">
+            <label>Temperature<input name="temperature" type="number" step="0.1" min="${o.ranges.temperature[0]}" max="${o.ranges.temperature[1]}" value="${h.temperature}" ${dis}>${hint('temperature')}</label>
+            <label>Max output tokens<input name="max_tokens" type="number" step="50" min="${o.ranges.max_tokens[0]}" max="${o.ranges.max_tokens[1]}" value="${h.max_tokens}" ${dis}>${hint('max_tokens')}</label>
+            <label>Step budget (loop limit)<input name="max_steps" type="number" step="5" min="${o.ranges.max_steps[0]}" max="${o.ranges.max_steps[1]}" value="${h.max_steps}" ${dis}>${hint('max_steps')}</label>
+            <label>Report style<select name="report_style" ${dis}>${o.report_style.map((s) => `<option value="${s}" ${h.report_style === s ? 'selected' : ''}>${s === 'full' ? 'Full report' : 'Executive summary'}</option>`).join('')}</select>${hint('report_style')}</label></div>
+          <div class="harness-section"><b>Loop controls</b><small class="harness-hint">Limits on the agent loop. The step budget above is the hard stop (the run fails); these end the run gracefully with the work done so far.</small>
+            <div class="harness-fields" style="margin-top:8px">
+              ${numField('max_model_calls', 'Max model calls (thinking turns)', 1)}${numField('max_tool_calls', 'Max tool calls per run', 1)}
+              ${numField('max_calls_per_tool', 'Max calls of one tool', 1)}${numField('max_subagent_calls', 'Max subagent delegations', 1)}</div></div>
+          <div class="harness-section"><b>Reliability</b><small class="harness-hint">What happens when the model or a data source is slow or fails.</small>
+            <div class="harness-fields" style="margin-top:8px">
+              ${numField('model_timeout_seconds', 'Model timeout (seconds)', 5)}${numField('model_retries', 'Model retries', 1)}${numField('tool_retries', 'Tool retries', 1)}</div></div>
+          <div class="harness-section"><b>Subagents</b>${hint('subagents')}<div class="harness-options">${checks('subagents', o.subagents, HARNESS_LABELS)}</div></div>
+          <div class="harness-section"><b>Allowed tools</b>${hint('tools')}<div class="harness-options">${checks('tools', o.tools)}</div></div>
+          <div class="harness-section"><b>Rules</b><div class="harness-options">
+            ${option('require_plan', 'require_plan', 'Plan first (todo list)', h.require_plan)}${option('require_citations', 'require_citations', 'Cite evidence for every claim', h.require_citations)}</div></div>
+          <p class="note" style="margin:10px 0 0">Defaults: temperature 0 · 1,500 tokens · 60 steps · 15 model calls · 20 tool calls · 6 per tool · 4 delegations · 120 s timeout · 1 model / 1 tool retry · full report · all subagents and tools · plan and citations on.</p>
           <div class="row" style="margin:12px 0 0">${manager ? '<button type="submit">Save harness</button><button type="button" class="ghost" id="harness-reset">Reset to defaults</button>' : '<span class="note">Only a manager can change the harness.</span>'}
             <span class="note">All tools stay read-only; changes are audited.</span></div></form>`;
       const read = () => {
         const f = $('#form-harness');
         const list = (n) => $$(`input[name="${n}"]:checked`, f).map((i) => i.value);
-        return { temperature: Number(f.temperature.value), max_tokens: Number(f.max_tokens.value), max_steps: Number(f.max_steps.value), report_style: f.report_style.value,
+        return { ...Object.fromEntries(NUMBERS.map((n) => [n, Number(f[n].value)])), report_style: f.report_style.value,
           subagents: list('subagents'), tools: list('tools'), require_plan: f.require_plan.checked, require_citations: f.require_citations.checked };
       };
+      renderHarnessGuide(v);
       $('#form-harness').addEventListener('submit', (e) => { e.preventDefault(); busy(e.submitter, async () => { await api('/api/v1/deep-agents/harness', { method: 'PUT', body: read() }); toast('Harness saved — the next research run uses it'); loadHarness(); }); });
       $('#harness-reset')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { await api('/api/v1/deep-agents/harness', { method: 'PUT', body: v.defaults }); toast('Harness reset to defaults'); loadHarness(); }));
     } catch (e) { box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }

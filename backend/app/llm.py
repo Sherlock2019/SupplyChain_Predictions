@@ -15,15 +15,15 @@ GROUNDING_RULES = (
 )
 
 
-def chat_model(settings: Settings, temperature: float = 0.0, max_tokens: int = 1200) -> ChatOpenAI:
+def chat_model(settings: Settings, temperature: float = 0.0, max_tokens: int = 1200, timeout: float | None = None, max_retries: int = 1) -> ChatOpenAI:
     return ChatOpenAI(
         model=settings.qwen_model,
         base_url=settings.qwen_base_url,
         api_key=settings.qwen_api_key,
         temperature=temperature,
         max_tokens=max_tokens,
-        timeout=settings.llm_timeout_seconds,
-        max_retries=1,
+        timeout=settings.llm_timeout_seconds if timeout is None else timeout,
+        max_retries=max_retries,
     )
 
 
