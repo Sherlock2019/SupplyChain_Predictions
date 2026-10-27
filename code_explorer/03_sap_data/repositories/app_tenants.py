@@ -121,6 +121,7 @@ class TenantRegistry:
     # OUTPUT:
     #   TenantContext (ValueError for an unknown tenant).
     # CALLED BY:
+    #   <- F1791 CodeEditor.list() (calls)
     #   <- F0017 create_app() (calls)
     #   <- F0033 create_app.snapshot() (calls)
     #   <- F0253 MoatEngine._series() (calls)

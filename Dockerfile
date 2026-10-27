@@ -18,6 +18,13 @@ COPY data ./data
 # the LangGraph mirror of the SCInsight Flowise flows reads the same prompt files
 COPY flowise/prompts ./flowise/prompts
 COPY langgraph.json ./langgraph.json
+# backend code section of the UI: function ids, call graph and annotated copies (read-only reference)
+COPY code_explorer/registry ./code_explorer/registry
+COPY code_explorer/01_fastapi ./code_explorer/01_fastapi
+COPY code_explorer/02_business_logic ./code_explorer/02_business_logic
+COPY code_explorer/03_sap_data ./code_explorer/03_sap_data
+COPY code_explorer/04_ai_ml ./code_explorer/04_ai_ml
+COPY code_explorer/05_security_governance ./code_explorer/05_security_governance
 RUN useradd --create-home --uid 10001 appuser && mkdir -p /app/backend/.data /app/.langgraph_api && chown -R appuser:appuser /app
 USER appuser
 EXPOSE 8000

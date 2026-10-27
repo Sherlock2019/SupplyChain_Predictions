@@ -253,28 +253,106 @@
    "evidence": "backend/app/auth.py:29 same module (passed as a value)"
   },
   {
-   "from": "F0003",
-   "to": "F0002",
+   "from": "F1784",
+   "to": "F1785",
    "kind": "calls",
-   "evidence": "backend/app/config.py:75 self method"
+   "evidence": "backend/app/code_editor.py:36 nested function"
   },
   {
-   "from": "F0004",
+   "from": "F1791",
+   "to": "F1789",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:64 self method"
+  },
+  {
+   "from": "F1791",
+   "to": "F1790",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:66 self method"
+  },
+  {
+   "from": "F1791",
+   "to": "F1784",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:69 same module"
+  },
+  {
+   "from": "F1791",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:74 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1791",
+   "to": "F1786",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:77 same module"
+  },
+  {
+   "from": "F1792",
+   "to": "F1784",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:93 same module"
+  },
+  {
+   "from": "F1793",
+   "to": "F1792",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:99 self method"
+  },
+  {
+   "from": "F1793",
+   "to": "F1786",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:100 same module"
+  },
+  {
+   "from": "F1793",
+   "to": "F1789",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:101 self method"
+  },
+  {
+   "from": "F1793",
+   "to": "F1784",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:109 same module"
+  },
+  {
+   "from": "F1794",
+   "to": "F1792",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:129 self method"
+  },
+  {
+   "from": "F1794",
+   "to": "F1786",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:132 same module"
+  },
+  {
+   "from": "F0003",
    "to": "F0002",
    "kind": "calls",
    "evidence": "backend/app/config.py:79 self method"
   },
   {
+   "from": "F0004",
+   "to": "F0002",
+   "kind": "calls",
+   "evidence": "backend/app/config.py:83 self method"
+  },
+  {
    "from": "F0008",
    "to": "F0001",
    "kind": "calls",
-   "evidence": "backend/app/config.py:101 same module"
+   "evidence": "backend/app/config.py:105 same module"
   },
   {
    "from": "F0008",
    "to": "F0001",
    "kind": "references",
-   "evidence": "backend/app/config.py:100 same module (passed as a value)"
+   "evidence": "backend/app/config.py:104 same module (passed as a value)"
   },
   {
    "from": "F0452",
@@ -2494,3055 +2572,3139 @@
    "from": "F0017",
    "to": "F0001",
    "kind": "references",
-   "evidence": "backend/app/main.py:79 imported from backend.app.config (passed as a value)"
+   "evidence": "backend/app/main.py:81 imported from backend.app.config (passed as a value)"
   },
   {
    "from": "F0017",
    "to": "F0354",
    "kind": "references",
-   "evidence": "backend/app/main.py:79 imported from backend.app.store (passed as a value)"
+   "evidence": "backend/app/main.py:81 imported from backend.app.store (passed as a value)"
   },
   {
    "from": "F0017",
    "to": "F0621",
    "kind": "references",
-   "evidence": "backend/app/main.py:79 imported from backend.app.runner (passed as a value)"
+   "evidence": "backend/app/main.py:81 imported from backend.app.runner (passed as a value)"
   },
   {
    "from": "F0017",
    "to": "F0008",
    "kind": "calls",
-   "evidence": "backend/app/main.py:80 imported from backend.app.config"
+   "evidence": "backend/app/main.py:82 imported from backend.app.config"
   },
   {
    "from": "F0017",
    "to": "F0354",
    "kind": "calls",
-   "evidence": "backend/app/main.py:81 imported from backend.app.store"
+   "evidence": "backend/app/main.py:83 imported from backend.app.store"
   },
   {
    "from": "F0017",
    "to": "F0391",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:83 imported from backend.app.tenants"
-  },
-  {
-   "from": "F0017",
-   "to": "F0393",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:84 typed variable tenants -> TenantRegistry"
-  },
-  {
-   "from": "F0017",
-   "to": "F0398",
    "kind": "calls",
    "evidence": "backend/app/main.py:85 imported from backend.app.tenants"
   },
   {
    "from": "F0017",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:86 typed variable tenants -> TenantRegistry"
+  },
+  {
+   "from": "F0017",
+   "to": "F0398",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:87 imported from backend.app.tenants"
+  },
+  {
+   "from": "F0017",
    "to": "F0250",
    "kind": "calls",
-   "evidence": "backend/app/main.py:90 imported from backend.app.moat"
+   "evidence": "backend/app/main.py:92 imported from backend.app.moat"
   },
   {
    "from": "F0017",
    "to": "F0756",
    "kind": "calls",
-   "evidence": "backend/app/main.py:91 imported from backend.app.rag"
+   "evidence": "backend/app/main.py:93 imported from backend.app.rag"
   },
   {
    "from": "F0017",
    "to": "F0768",
    "kind": "calls",
-   "evidence": "backend/app/main.py:92 imported from backend.app.auth"
+   "evidence": "backend/app/main.py:94 imported from backend.app.auth"
   },
   {
    "from": "F0017",
    "to": "F0621",
    "kind": "calls",
-   "evidence": "backend/app/main.py:93 imported from backend.app.runner"
+   "evidence": "backend/app/main.py:95 imported from backend.app.runner"
   },
   {
    "from": "F0017",
    "to": "F0133",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:526 HTTP POST /api/v1/rag/search"
+   "evidence": "backend/app/main.py:528 HTTP POST /api/v1/rag/search"
   },
   {
    "from": "F0017",
    "to": "F0134",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:561 HTTP GET /api/v1/rag/documents"
+   "evidence": "backend/app/main.py:563 HTTP GET /api/v1/rag/documents"
+  },
+  {
+   "from": "F0017",
+   "to": "F1787",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:570 imported from backend.app.code_editor"
   },
   {
    "from": "F0017",
    "to": "F0172",
    "kind": "references",
-   "evidence": "backend/app/main.py:657 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:687 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0017",
    "to": "F0125",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:825 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
+   "evidence": "backend/app/main.py:855 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
   },
   {
    "from": "F0017",
    "to": "F0146",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:830 HTTP GET /api/v1/audit"
+   "evidence": "backend/app/main.py:860 HTTP GET /api/v1/audit"
   },
   {
    "from": "F0018",
    "to": "F0395",
    "kind": "calls",
-   "evidence": "backend/app/main.py:115 class TenantRegistry"
+   "evidence": "backend/app/main.py:117 class TenantRegistry"
   },
   {
    "from": "F0018",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:115 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:117 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0018",
    "to": "F0396",
    "kind": "calls",
-   "evidence": "backend/app/main.py:122 class TenantRegistry"
+   "evidence": "backend/app/main.py:124 class TenantRegistry"
   },
   {
    "from": "F0019",
    "to": "F0770",
    "kind": "calls",
-   "evidence": "backend/app/main.py:132 typed variable auth -> ApiKeyAuth"
+   "evidence": "backend/app/main.py:134 typed variable auth -> ApiKeyAuth"
   },
   {
    "from": "F0019",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:135 typed variable store -> Store"
+   "evidence": "backend/app/main.py:137 typed variable store -> Store"
   },
   {
    "from": "F0019",
    "to": "F0005",
    "kind": "calls",
-   "evidence": "backend/app/main.py:137 inferred: unique method name"
+   "evidence": "backend/app/main.py:139 inferred: unique method name"
   },
   {
    "from": "F0019",
    "to": "F0397",
    "kind": "calls",
-   "evidence": "backend/app/main.py:138 class TenantRegistry"
+   "evidence": "backend/app/main.py:140 class TenantRegistry"
   },
   {
    "from": "F0019",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:138 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:140 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0019",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:130 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:132 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0020",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:145 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:147 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0020",
    "to": "F0019",
    "kind": "references",
-   "evidence": "backend/app/main.py:145 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:147 sibling closure (passed as a value)"
   },
   {
    "from": "F0020",
    "to": "F0771",
    "kind": "calls",
-   "evidence": "backend/app/main.py:147 typed variable auth -> ApiKeyAuth"
+   "evidence": "backend/app/main.py:149 typed variable auth -> ApiKeyAuth"
   },
   {
    "from": "F0020",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:150 typed variable store -> Store"
+   "evidence": "backend/app/main.py:152 typed variable store -> Store"
   },
   {
    "from": "F0020",
    "to": "F0019",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:145 Depends(principal) (authorization / validation)"
+   "evidence": "backend/app/main.py:147 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0021",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:153 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:155 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0021",
    "to": "F0019",
    "kind": "references",
-   "evidence": "backend/app/main.py:153 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:155 sibling closure (passed as a value)"
   },
   {
    "from": "F0021",
    "to": "F0771",
    "kind": "calls",
-   "evidence": "backend/app/main.py:154 typed variable auth -> ApiKeyAuth"
+   "evidence": "backend/app/main.py:156 typed variable auth -> ApiKeyAuth"
   },
   {
    "from": "F0021",
    "to": "F0019",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:153 Depends(principal) (authorization / validation)"
+   "evidence": "backend/app/main.py:155 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0022",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:156 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:158 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0022",
    "to": "F0397",
    "kind": "calls",
-   "evidence": "backend/app/main.py:157 class TenantRegistry"
+   "evidence": "backend/app/main.py:159 class TenantRegistry"
   },
   {
    "from": "F0022",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:157 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:159 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0023",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:159 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:161 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0023",
    "to": "F0361",
    "kind": "calls",
-   "evidence": "backend/app/main.py:160 typed variable store -> Store"
+   "evidence": "backend/app/main.py:162 typed variable store -> Store"
   },
   {
    "from": "F0023",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:160 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:162 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0023",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:161 typed variable store -> Store"
+   "evidence": "backend/app/main.py:163 typed variable store -> Store"
   },
   {
    "from": "F0025",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:178 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:180 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0026",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:182 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:184 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0026",
    "to": "F0357",
    "kind": "references",
-   "evidence": "backend/app/main.py:182 typed variable store -> Store (passed as a value)"
+   "evidence": "backend/app/main.py:184 typed variable store -> Store (passed as a value)"
   },
   {
    "from": "F0026",
    "to": "F0747",
    "kind": "calls",
-   "evidence": "backend/app/main.py:182 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:184 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0026",
    "to": "F0753",
    "kind": "calls",
-   "evidence": "backend/app/main.py:182 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:184 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0028",
    "to": "F0030",
    "kind": "calls",
-   "evidence": "backend/app/main.py:197 sibling closure"
+   "evidence": "backend/app/main.py:199 sibling closure"
   },
   {
    "from": "F0028",
    "to": "F0624",
    "kind": "references",
-   "evidence": "backend/app/main.py:204 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:206 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0028",
    "to": "F0404",
    "kind": "references",
-   "evidence": "backend/app/main.py:207 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:209 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0029",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:225 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:227 sibling closure (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:231 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:233 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:231 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:233 sibling closure (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0032",
    "kind": "calls",
-   "evidence": "backend/app/main.py:245 nested function"
+   "evidence": "backend/app/main.py:247 nested function"
   },
   {
    "from": "F0031",
    "to": "F0729",
    "kind": "references",
-   "evidence": "backend/app/main.py:252 imported from backend.app.llm (passed as a value)"
+   "evidence": "backend/app/main.py:254 imported from backend.app.llm (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0747",
    "kind": "calls",
-   "evidence": "backend/app/main.py:254 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:256 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0031",
    "to": "F0753",
    "kind": "calls",
-   "evidence": "backend/app/main.py:254 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:256 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0031",
    "to": "F0357",
    "kind": "references",
-   "evidence": "backend/app/main.py:258 typed variable store -> Store (passed as a value)"
+   "evidence": "backend/app/main.py:260 typed variable store -> Store (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0389",
    "kind": "calls",
-   "evidence": "backend/app/main.py:258 typed variable store -> Store"
+   "evidence": "backend/app/main.py:260 typed variable store -> Store"
   },
   {
    "from": "F0031",
    "to": "F0359",
    "kind": "calls",
-   "evidence": "backend/app/main.py:258 typed variable store -> Store"
+   "evidence": "backend/app/main.py:260 typed variable store -> Store"
   },
   {
    "from": "F0031",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:261 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:263 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0624",
    "kind": "references",
-   "evidence": "backend/app/main.py:263 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:265 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0031",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:231 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:233 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0033",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:267 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:269 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0033",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:267 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:269 sibling closure (passed as a value)"
   },
   {
    "from": "F0033",
    "to": "F0393",
    "kind": "calls",
-   "evidence": "backend/app/main.py:269 typed variable tenants -> TenantRegistry"
+   "evidence": "backend/app/main.py:271 typed variable tenants -> TenantRegistry"
   },
   {
    "from": "F0033",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:271 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:273 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0033",
    "to": "F0407",
    "kind": "calls",
-   "evidence": "backend/app/main.py:273 typed variable sap -> SapRepository"
+   "evidence": "backend/app/main.py:275 typed variable sap -> SapRepository"
   },
   {
    "from": "F0033",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:267 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:269 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0034",
    "to": "F0394",
    "kind": "calls",
-   "evidence": "backend/app/main.py:282 typed variable tenants -> TenantRegistry"
+   "evidence": "backend/app/main.py:284 typed variable tenants -> TenantRegistry"
   },
   {
    "from": "F0034",
    "to": "F0397",
    "kind": "calls",
-   "evidence": "backend/app/main.py:282 class TenantRegistry"
+   "evidence": "backend/app/main.py:284 class TenantRegistry"
   },
   {
    "from": "F0034",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:282 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:284 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0035",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:285 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:287 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0035",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:285 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:287 sibling closure (passed as a value)"
   },
   {
    "from": "F0035",
    "to": "F0224",
    "kind": "calls",
-   "evidence": "backend/app/main.py:287 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:289 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0035",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:285 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:287 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0036",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:290 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:292 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0036",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:290 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:292 sibling closure (passed as a value)"
   },
   {
    "from": "F0036",
    "to": "F0415",
    "kind": "calls",
-   "evidence": "backend/app/main.py:292 typed variable sap -> SapRepository"
+   "evidence": "backend/app/main.py:294 typed variable sap -> SapRepository"
   },
   {
    "from": "F0036",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:290 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:292 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0037",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:295 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:297 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0037",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:295 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:297 sibling closure (passed as a value)"
   },
   {
    "from": "F0037",
    "to": "F0376",
    "kind": "calls",
-   "evidence": "backend/app/main.py:297 typed variable store -> Store"
+   "evidence": "backend/app/main.py:299 typed variable store -> Store"
   },
   {
    "from": "F0037",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:295 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:297 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0038",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:307 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:309 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0038",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:307 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:309 sibling closure (passed as a value)"
   },
   {
    "from": "F0038",
    "to": "F0414",
    "kind": "calls",
-   "evidence": "backend/app/main.py:311 typed variable sap -> SapRepository"
+   "evidence": "backend/app/main.py:313 typed variable sap -> SapRepository"
   },
   {
    "from": "F0038",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:301 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:303 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0039",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:316 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:318 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0039",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:316 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:318 sibling closure (passed as a value)"
   },
   {
    "from": "F0039",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:318 typed variable store -> Store"
+   "evidence": "backend/app/main.py:320 typed variable store -> Store"
   },
   {
    "from": "F0039",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:316 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:318 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0040",
    "to": "F0148",
    "kind": "references",
-   "evidence": "backend/app/main.py:323 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:325 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0040",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:323 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:325 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0040",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:323 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:325 sibling closure (passed as a value)"
   },
   {
    "from": "F0040",
    "to": "F0197",
    "kind": "calls",
-   "evidence": "backend/app/main.py:324 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:326 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0040",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:325 sibling closure"
+   "evidence": "backend/app/main.py:327 sibling closure"
   },
   {
    "from": "F0040",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:323 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:325 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0040",
    "to": "F0148",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:323 body: FactoryReadinessRequest"
+   "evidence": "backend/app/main.py:325 body: FactoryReadinessRequest"
   },
   {
    "from": "F0041",
    "to": "F0149",
    "kind": "references",
-   "evidence": "backend/app/main.py:328 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:330 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0041",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:328 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:330 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0041",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:328 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:330 sibling closure (passed as a value)"
   },
   {
    "from": "F0041",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:329 sibling closure"
+   "evidence": "backend/app/main.py:331 sibling closure"
   },
   {
    "from": "F0041",
    "to": "F0198",
    "kind": "calls",
-   "evidence": "backend/app/main.py:329 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:331 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0041",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:328 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:330 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0041",
    "to": "F0149",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:328 body: StockBalanceRequest"
+   "evidence": "backend/app/main.py:330 body: StockBalanceRequest"
   },
   {
    "from": "F0042",
    "to": "F0150",
    "kind": "references",
-   "evidence": "backend/app/main.py:332 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:334 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0042",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:332 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:334 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0042",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:332 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:334 sibling closure (passed as a value)"
   },
   {
    "from": "F0042",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:333 sibling closure"
+   "evidence": "backend/app/main.py:335 sibling closure"
   },
   {
    "from": "F0042",
    "to": "F0199",
    "kind": "calls",
-   "evidence": "backend/app/main.py:333 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:335 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0042",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:332 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:334 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0042",
    "to": "F0150",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:332 body: ForecastRequest"
+   "evidence": "backend/app/main.py:334 body: ForecastRequest"
   },
   {
    "from": "F0043",
    "to": "F0151",
    "kind": "references",
-   "evidence": "backend/app/main.py:336 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:338 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0043",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:336 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:338 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0043",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:336 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:338 sibling closure (passed as a value)"
   },
   {
    "from": "F0043",
    "to": "F0200",
    "kind": "calls",
-   "evidence": "backend/app/main.py:337 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:339 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0043",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:338 sibling closure"
+   "evidence": "backend/app/main.py:340 sibling closure"
   },
   {
    "from": "F0043",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:336 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:338 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0043",
    "to": "F0151",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:336 body: WhatIfRequest"
+   "evidence": "backend/app/main.py:338 body: WhatIfRequest"
   },
   {
    "from": "F0044",
    "to": "F0152",
    "kind": "references",
-   "evidence": "backend/app/main.py:341 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:343 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0044",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:341 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:343 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0044",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:341 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:343 sibling closure (passed as a value)"
   },
   {
    "from": "F0044",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:342 sibling closure"
+   "evidence": "backend/app/main.py:344 sibling closure"
   },
   {
    "from": "F0044",
    "to": "F0201",
    "kind": "calls",
-   "evidence": "backend/app/main.py:342 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:344 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0044",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:341 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:343 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0044",
    "to": "F0152",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:341 body: SupplierRiskRequest"
+   "evidence": "backend/app/main.py:343 body: SupplierRiskRequest"
   },
   {
    "from": "F0045",
    "to": "F0153",
    "kind": "references",
-   "evidence": "backend/app/main.py:345 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:347 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0045",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:345 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:347 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0045",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:345 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:347 sibling closure (passed as a value)"
   },
   {
    "from": "F0045",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:346 sibling closure"
+   "evidence": "backend/app/main.py:348 sibling closure"
   },
   {
    "from": "F0045",
    "to": "F0203",
    "kind": "calls",
-   "evidence": "backend/app/main.py:346 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:348 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0045",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:345 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:347 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0045",
    "to": "F0153",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:345 body: QualityRequest"
+   "evidence": "backend/app/main.py:347 body: QualityRequest"
   },
   {
    "from": "F0046",
    "to": "F0154",
    "kind": "references",
-   "evidence": "backend/app/main.py:349 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:351 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0046",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:349 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:351 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0046",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:349 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:351 sibling closure (passed as a value)"
   },
   {
    "from": "F0046",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:350 sibling closure"
+   "evidence": "backend/app/main.py:352 sibling closure"
   },
   {
    "from": "F0046",
    "to": "F0204",
    "kind": "calls",
-   "evidence": "backend/app/main.py:350 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:352 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0046",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:349 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:351 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0046",
    "to": "F0154",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:349 body: LogisticsRequest"
+   "evidence": "backend/app/main.py:351 body: LogisticsRequest"
   },
   {
    "from": "F0047",
    "to": "F0155",
    "kind": "references",
-   "evidence": "backend/app/main.py:353 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:355 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0047",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:353 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:355 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0047",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:353 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:355 sibling closure (passed as a value)"
   },
   {
    "from": "F0047",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:354 sibling closure"
+   "evidence": "backend/app/main.py:356 sibling closure"
   },
   {
    "from": "F0047",
    "to": "F0206",
    "kind": "calls",
-   "evidence": "backend/app/main.py:354 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:356 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0047",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:353 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:355 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0047",
    "to": "F0155",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:353 body: SalesOrderRequest"
+   "evidence": "backend/app/main.py:355 body: SalesOrderRequest"
   },
   {
    "from": "F0048",
    "to": "F0156",
    "kind": "references",
-   "evidence": "backend/app/main.py:357 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:359 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0048",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:357 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:359 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0048",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:357 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:359 sibling closure (passed as a value)"
   },
   {
    "from": "F0048",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:358 sibling closure"
+   "evidence": "backend/app/main.py:360 sibling closure"
   },
   {
    "from": "F0048",
    "to": "F0207",
    "kind": "calls",
-   "evidence": "backend/app/main.py:358 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:360 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0048",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:357 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:359 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0048",
    "to": "F0156",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:357 body: StocktakeRequest"
+   "evidence": "backend/app/main.py:359 body: StocktakeRequest"
   },
   {
    "from": "F0049",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:361 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:363 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0049",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:361 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:363 sibling closure (passed as a value)"
   },
   {
    "from": "F0049",
    "to": "F0209",
    "kind": "calls",
-   "evidence": "backend/app/main.py:363 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:365 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0049",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:361 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:363 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0050",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:366 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:368 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0050",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:366 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:368 sibling closure (passed as a value)"
   },
   {
    "from": "F0050",
    "to": "F0208",
    "kind": "calls",
-   "evidence": "backend/app/main.py:368 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:370 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0050",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:366 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:368 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0051",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:371 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:373 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0051",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:371 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:373 sibling closure (passed as a value)"
   },
   {
    "from": "F0051",
    "to": "F0211",
    "kind": "calls",
-   "evidence": "backend/app/main.py:373 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:375 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0051",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:371 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:373 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0052",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:376 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:378 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0052",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:376 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:378 sibling closure (passed as a value)"
   },
   {
    "from": "F0052",
    "to": "F0212",
    "kind": "calls",
-   "evidence": "backend/app/main.py:378 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:380 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0052",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:376 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:378 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0053",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:382 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:384 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0053",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:382 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:384 sibling closure (passed as a value)"
   },
   {
    "from": "F0053",
    "to": "F0271",
    "kind": "calls",
-   "evidence": "backend/app/main.py:384 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:386 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0053",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:382 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:384 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0054",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:387 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:389 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0054",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:387 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:389 sibling closure (passed as a value)"
   },
   {
    "from": "F0054",
    "to": "F0272",
    "kind": "calls",
-   "evidence": "backend/app/main.py:391 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:393 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0054",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:387 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:389 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0055",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:394 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:396 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0055",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:394 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:396 sibling closure (passed as a value)"
   },
   {
    "from": "F0055",
    "to": "F0269",
    "kind": "calls",
-   "evidence": "backend/app/main.py:396 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:398 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0055",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:394 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:396 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0056",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:399 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:401 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0056",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:399 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:401 sibling closure (passed as a value)"
   },
   {
    "from": "F0056",
    "to": "F0290",
    "kind": "calls",
-   "evidence": "backend/app/main.py:401 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:403 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0056",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:399 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:401 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0057",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:404 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:406 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0057",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:404 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:406 sibling closure (passed as a value)"
   },
   {
    "from": "F0057",
    "to": "F0255",
    "kind": "calls",
-   "evidence": "backend/app/main.py:407 typed variable moat -> MoatEngine"
+   "evidence": "backend/app/main.py:409 typed variable moat -> MoatEngine"
   },
   {
    "from": "F0057",
    "to": "F0397",
    "kind": "calls",
-   "evidence": "backend/app/main.py:407 class TenantRegistry"
+   "evidence": "backend/app/main.py:409 class TenantRegistry"
   },
   {
    "from": "F0057",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:407 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:409 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0057",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:404 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:406 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0058",
    "to": "F0163",
    "kind": "references",
-   "evidence": "backend/app/main.py:410 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:412 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0058",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:410 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:412 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0058",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:410 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:412 sibling closure (passed as a value)"
   },
   {
    "from": "F0058",
    "to": "F0397",
    "kind": "calls",
-   "evidence": "backend/app/main.py:412 class TenantRegistry"
+   "evidence": "backend/app/main.py:414 class TenantRegistry"
   },
   {
    "from": "F0058",
    "to": "F0391",
    "kind": "references",
-   "evidence": "backend/app/main.py:412 imported from backend.app.tenants (passed as a value)"
+   "evidence": "backend/app/main.py:414 imported from backend.app.tenants (passed as a value)"
   },
   {
    "from": "F0058",
    "to": "F0385",
    "kind": "calls",
-   "evidence": "backend/app/main.py:413 typed variable store -> Store"
+   "evidence": "backend/app/main.py:415 typed variable store -> Store"
   },
   {
    "from": "F0058",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:414 typed variable store -> Store"
+   "evidence": "backend/app/main.py:416 typed variable store -> Store"
   },
   {
    "from": "F0058",
    "to": "F0252",
    "kind": "calls",
-   "evidence": "backend/app/main.py:415 typed variable moat -> MoatEngine"
+   "evidence": "backend/app/main.py:417 typed variable moat -> MoatEngine"
   },
   {
    "from": "F0058",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:410 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:412 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0058",
    "to": "F0163",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:410 body: ConsentRequest"
+   "evidence": "backend/app/main.py:412 body: ConsentRequest"
   },
   {
    "from": "F0059",
    "to": "F0165",
    "kind": "references",
-   "evidence": "backend/app/main.py:418 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:420 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0059",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:418 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:420 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0059",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:418 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:420 sibling closure (passed as a value)"
   },
   {
    "from": "F0059",
    "to": "F0366",
    "kind": "calls",
-   "evidence": "backend/app/main.py:420 typed variable store -> Store"
+   "evidence": "backend/app/main.py:422 typed variable store -> Store"
   },
   {
    "from": "F0059",
    "to": "F0380",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:421 typed variable store -> Store"
-  },
-  {
-   "from": "F0059",
-   "to": "F0378",
    "kind": "calls",
    "evidence": "backend/app/main.py:423 typed variable store -> Store"
   },
   {
    "from": "F0059",
+   "to": "F0378",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:425 typed variable store -> Store"
+  },
+  {
+   "from": "F0059",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:423 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:425 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0059",
    "to": "F0016",
    "kind": "calls",
-   "evidence": "backend/app/main.py:423 same module"
+   "evidence": "backend/app/main.py:425 same module"
   },
   {
    "from": "F0059",
    "to": "F0381",
    "kind": "calls",
-   "evidence": "backend/app/main.py:424 typed variable store -> Store"
+   "evidence": "backend/app/main.py:426 typed variable store -> Store"
   },
   {
    "from": "F0059",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:427 typed variable store -> Store"
+   "evidence": "backend/app/main.py:429 typed variable store -> Store"
   },
   {
    "from": "F0059",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:418 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:420 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0059",
    "to": "F0165",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:418 body: OutcomeRequest"
+   "evidence": "backend/app/main.py:420 body: OutcomeRequest"
   },
   {
    "from": "F0060",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:432 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:434 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0060",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:432 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:434 sibling closure (passed as a value)"
   },
   {
    "from": "F0060",
    "to": "F0220",
    "kind": "calls",
-   "evidence": "backend/app/main.py:434 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:436 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0060",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:432 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:434 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0061",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:437 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:439 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0061",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:437 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:439 sibling closure (passed as a value)"
   },
   {
    "from": "F0061",
    "to": "F0213",
    "kind": "calls",
-   "evidence": "backend/app/main.py:439 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:441 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0061",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:437 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:439 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0062",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:442 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:444 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0062",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:442 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:444 sibling closure (passed as a value)"
   },
   {
    "from": "F0062",
    "to": "F0221",
    "kind": "calls",
-   "evidence": "backend/app/main.py:444 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:446 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0062",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:442 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:444 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0063",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:447 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:449 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0063",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:447 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:449 sibling closure (passed as a value)"
   },
   {
    "from": "F0063",
    "to": "F0222",
    "kind": "calls",
-   "evidence": "backend/app/main.py:449 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:451 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0063",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:447 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:449 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0065",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:456 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:458 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0065",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:456 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:458 sibling closure (passed as a value)"
   },
   {
    "from": "F0065",
    "to": "F0232",
    "kind": "calls",
-   "evidence": "backend/app/main.py:458 typed variable dashboards -> Dashboards"
+   "evidence": "backend/app/main.py:460 typed variable dashboards -> Dashboards"
   },
   {
    "from": "F0065",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:456 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:458 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0066",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:461 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:463 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0066",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:461 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:463 sibling closure (passed as a value)"
   },
   {
    "from": "F0066",
    "to": "F0248",
    "kind": "calls",
-   "evidence": "backend/app/main.py:463 typed variable insight_engine -> InsightEngine"
+   "evidence": "backend/app/main.py:465 typed variable insight_engine -> InsightEngine"
   },
   {
    "from": "F0066",
    "to": "F0404",
    "kind": "references",
-   "evidence": "backend/app/main.py:464 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:466 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0066",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:464 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:466 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0066",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:461 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:463 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0068",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:473 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:475 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0068",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:473 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:475 sibling closure (passed as a value)"
   },
   {
    "from": "F0068",
    "to": "F0372",
    "kind": "calls",
-   "evidence": "backend/app/main.py:474 typed variable store -> Store"
+   "evidence": "backend/app/main.py:476 typed variable store -> Store"
   },
   {
    "from": "F0068",
    "to": "F0022",
    "kind": "calls",
-   "evidence": "backend/app/main.py:474 sibling closure"
+   "evidence": "backend/app/main.py:476 sibling closure"
   },
   {
    "from": "F0068",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:473 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:475 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0069",
    "to": "F0157",
    "kind": "references",
-   "evidence": "backend/app/main.py:477 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:479 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0069",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:477 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:479 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0069",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:477 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:479 sibling closure (passed as a value)"
   },
   {
    "from": "F0069",
    "to": "F0249",
    "kind": "calls",
-   "evidence": "backend/app/main.py:481 typed variable insight_engine -> InsightEngine"
+   "evidence": "backend/app/main.py:483 typed variable insight_engine -> InsightEngine"
   },
   {
    "from": "F0069",
    "to": "F0369",
    "kind": "calls",
-   "evidence": "backend/app/main.py:482 typed variable store -> Store"
+   "evidence": "backend/app/main.py:484 typed variable store -> Store"
   },
   {
    "from": "F0069",
    "to": "F0022",
    "kind": "calls",
-   "evidence": "backend/app/main.py:482 sibling closure"
+   "evidence": "backend/app/main.py:484 sibling closure"
   },
   {
    "from": "F0069",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:483 typed variable store -> Store"
+   "evidence": "backend/app/main.py:485 typed variable store -> Store"
   },
   {
    "from": "F0069",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:477 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:479 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0069",
    "to": "F0157",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:477 body: WatchRequest"
+   "evidence": "backend/app/main.py:479 body: WatchRequest"
   },
   {
    "from": "F0070",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:487 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:489 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0070",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:487 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:489 sibling closure (passed as a value)"
   },
   {
    "from": "F0070",
    "to": "F0373",
    "kind": "calls",
-   "evidence": "backend/app/main.py:488 typed variable store -> Store"
+   "evidence": "backend/app/main.py:490 typed variable store -> Store"
   },
   {
    "from": "F0070",
    "to": "F0022",
    "kind": "calls",
-   "evidence": "backend/app/main.py:488 sibling closure"
+   "evidence": "backend/app/main.py:490 sibling closure"
   },
   {
    "from": "F0070",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:487 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:489 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0071",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:493 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:495 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0071",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:493 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:495 sibling closure (passed as a value)"
   },
   {
    "from": "F0071",
    "to": "F0372",
    "kind": "calls",
-   "evidence": "backend/app/main.py:495 typed variable store -> Store"
+   "evidence": "backend/app/main.py:497 typed variable store -> Store"
   },
   {
    "from": "F0071",
    "to": "F0022",
    "kind": "calls",
-   "evidence": "backend/app/main.py:495 sibling closure"
+   "evidence": "backend/app/main.py:497 sibling closure"
   },
   {
    "from": "F0071",
    "to": "F0249",
    "kind": "calls",
-   "evidence": "backend/app/main.py:496 typed variable insight_engine -> InsightEngine"
+   "evidence": "backend/app/main.py:498 typed variable insight_engine -> InsightEngine"
   },
   {
    "from": "F0071",
    "to": "F0374",
    "kind": "calls",
-   "evidence": "backend/app/main.py:498 typed variable store -> Store"
+   "evidence": "backend/app/main.py:500 typed variable store -> Store"
   },
   {
    "from": "F0071",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:493 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:495 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0072",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:503 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:505 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0072",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:503 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:505 sibling closure (passed as a value)"
   },
   {
    "from": "F0072",
    "to": "F0362",
    "kind": "calls",
-   "evidence": "backend/app/main.py:505 typed variable store -> Store"
+   "evidence": "backend/app/main.py:507 typed variable store -> Store"
   },
   {
    "from": "F0072",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:503 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:505 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0073",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:511 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:513 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0073",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:511 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:513 sibling closure (passed as a value)"
   },
   {
    "from": "F0073",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:513 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:515 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0073",
    "to": "F0205",
    "kind": "calls",
-   "evidence": "backend/app/main.py:513 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:515 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0073",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:511 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:513 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0074",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:516 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:518 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0074",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:516 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:518 sibling closure (passed as a value)"
   },
   {
    "from": "F0074",
    "to": "F0202",
    "kind": "calls",
-   "evidence": "backend/app/main.py:518 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:520 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0074",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:516 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:518 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0075",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:521 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:523 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0075",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:521 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:523 sibling closure (passed as a value)"
   },
   {
    "from": "F0075",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:523 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:525 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0075",
    "to": "F0226",
    "kind": "calls",
-   "evidence": "backend/app/main.py:523 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:525 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0075",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:521 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:523 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0076",
    "to": "F0158",
    "kind": "references",
-   "evidence": "backend/app/main.py:527 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:529 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0076",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:527 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:529 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0076",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:527 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:529 sibling closure (passed as a value)"
   },
   {
    "from": "F0076",
    "to": "F0746",
    "kind": "calls",
-   "evidence": "backend/app/main.py:529 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:531 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0076",
    "to": "F0755",
    "kind": "calls",
-   "evidence": "backend/app/main.py:529 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:531 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0076",
    "to": "F0133",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:526 HTTP POST /api/v1/rag/search"
+   "evidence": "backend/app/main.py:528 HTTP POST /api/v1/rag/search"
   },
   {
    "from": "F0076",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:527 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:529 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0076",
    "to": "F0158",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:527 body: RagQuery"
+   "evidence": "backend/app/main.py:529 body: RagQuery"
   },
   {
    "from": "F0077",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:533 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:535 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0077",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:533 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:535 sibling closure (passed as a value)"
   },
   {
    "from": "F0077",
    "to": "F0746",
    "kind": "calls",
-   "evidence": "backend/app/main.py:536 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:538 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0077",
    "to": "F0755",
    "kind": "calls",
-   "evidence": "backend/app/main.py:536 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:538 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0077",
    "to": "F0133",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:531 HTTP POST /api/v1/rag/search"
+   "evidence": "backend/app/main.py:533 HTTP POST /api/v1/rag/search"
   },
   {
    "from": "F0077",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:532 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:534 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0078",
    "to": "F0168",
    "kind": "references",
-   "evidence": "backend/app/main.py:540 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:542 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0078",
    "to": "F0019",
    "kind": "calls",
-   "evidence": "backend/app/main.py:545 sibling closure"
+   "evidence": "backend/app/main.py:547 sibling closure"
   },
   {
    "from": "F0078",
    "to": "F0079",
    "kind": "calls",
-   "evidence": "backend/app/main.py:554 nested function"
+   "evidence": "backend/app/main.py:556 nested function"
   },
   {
    "from": "F0078",
    "to": "F0168",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:540 body: EmbeddingsRequest"
+   "evidence": "backend/app/main.py:542 body: EmbeddingsRequest"
   },
   {
    "from": "F0080",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:557 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:559 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0080",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:557 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:559 sibling closure (passed as a value)"
   },
   {
    "from": "F0080",
    "to": "F0747",
    "kind": "calls",
-   "evidence": "backend/app/main.py:559 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:561 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0080",
    "to": "F0753",
    "kind": "calls",
-   "evidence": "backend/app/main.py:559 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:561 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0080",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:557 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:559 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0081",
    "to": "F0159",
    "kind": "references",
-   "evidence": "backend/app/main.py:562 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:564 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0081",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:562 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:564 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0081",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:562 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:564 sibling closure (passed as a value)"
   },
   {
    "from": "F0081",
    "to": "F0745",
    "kind": "calls",
-   "evidence": "backend/app/main.py:563 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:565 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0081",
    "to": "F0752",
    "kind": "calls",
-   "evidence": "backend/app/main.py:563 typed variable rag -> MemoryRag|PgVectorRag"
+   "evidence": "backend/app/main.py:565 typed variable rag -> MemoryRag|PgVectorRag"
   },
   {
    "from": "F0081",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:564 typed variable store -> Store"
+   "evidence": "backend/app/main.py:566 typed variable store -> Store"
   },
   {
    "from": "F0081",
    "to": "F0134",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:561 HTTP GET /api/v1/rag/documents"
+   "evidence": "backend/app/main.py:563 HTTP GET /api/v1/rag/documents"
   },
   {
    "from": "F0081",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:562 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:564 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0081",
    "to": "F0159",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:562 body: RagDocument"
+   "evidence": "backend/app/main.py:564 body: RagDocument"
+  },
+  {
+   "from": "F0985",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:573 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0985",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:573 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0985",
+   "to": "F1791",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:575 inferred: unique method name"
+  },
+  {
+   "from": "F0985",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:573 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0986",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:578 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0986",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:578 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0986",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:578 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0987",
+   "to": "F0988",
+   "kind": "references",
+   "evidence": "backend/app/main.py:586 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0987",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:586 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0987",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:586 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0987",
+   "to": "F0358",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:593 typed variable store -> Store"
+  },
+  {
+   "from": "F0987",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:586 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0987",
+   "to": "F0988",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:586 body: CodeUpdateRequest"
   },
   {
    "from": "F0083",
    "to": "F0164",
    "kind": "references",
-   "evidence": "backend/app/main.py:577 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:607 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:577 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:607 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:577 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:607 sibling closure (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:581 sibling closure"
+   "evidence": "backend/app/main.py:611 sibling closure"
   },
   {
    "from": "F0083",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:581 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:611 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:590 typed variable store -> Store"
+   "evidence": "backend/app/main.py:620 typed variable store -> Store"
   },
   {
    "from": "F0083",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:577 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:607 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0083",
    "to": "F0164",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:577 body: ChatRequest"
+   "evidence": "backend/app/main.py:607 body: ChatRequest"
   },
   {
    "from": "F0085",
    "to": "F0164",
    "kind": "references",
-   "evidence": "backend/app/main.py:628 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:658 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:628 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:658 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:628 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:658 sibling closure (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:629 sibling closure"
+   "evidence": "backend/app/main.py:659 sibling closure"
   },
   {
    "from": "F0085",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:629 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:659 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0084",
    "kind": "calls",
-   "evidence": "backend/app/main.py:630 sibling closure"
+   "evidence": "backend/app/main.py:660 sibling closure"
   },
   {
    "from": "F0085",
    "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:631 typed variable store -> Store"
-  },
-  {
-   "from": "F0085",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:628 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0085",
-   "to": "F0164",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:628 body: ChatRequest"
-  },
-  {
-   "from": "F0086",
-   "to": "F0167",
-   "kind": "references",
-   "evidence": "backend/app/main.py:635 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0086",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:635 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0086",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:635 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0086",
-   "to": "F0084",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:636 sibling closure"
-  },
-  {
-   "from": "F0086",
-   "to": "F0082",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:636 sibling closure"
-  },
-  {
-   "from": "F0086",
-   "to": "F0627",
-   "kind": "references",
-   "evidence": "backend/app/main.py:636 typed variable runner -> GraphRunner (passed as a value)"
-  },
-  {
-   "from": "F0086",
-   "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:637 typed variable store -> Store"
-  },
-  {
-   "from": "F0086",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:635 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0086",
-   "to": "F0167",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:635 body: ResumeRequest"
-  },
-  {
-   "from": "F0087",
-   "to": "F0166",
-   "kind": "references",
-   "evidence": "backend/app/main.py:641 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0087",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:641 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0087",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:641 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0087",
-   "to": "F0082",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:643 sibling closure"
-  },
-  {
-   "from": "F0087",
-   "to": "F0626",
-   "kind": "references",
-   "evidence": "backend/app/main.py:643 typed variable runner -> GraphRunner (passed as a value)"
-  },
-  {
-   "from": "F0087",
-   "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:644 typed variable store -> Store"
-  },
-  {
-   "from": "F0087",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:641 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0087",
-   "to": "F0166",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:641 body: BusinessWorkflowRequest"
-  },
-  {
-   "from": "F0088",
-   "to": "F0167",
-   "kind": "references",
-   "evidence": "backend/app/main.py:648 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0088",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:648 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0088",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:648 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0088",
-   "to": "F0082",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:649 sibling closure"
-  },
-  {
-   "from": "F0088",
-   "to": "F0627",
-   "kind": "references",
-   "evidence": "backend/app/main.py:649 typed variable runner -> GraphRunner (passed as a value)"
-  },
-  {
-   "from": "F0088",
-   "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:650 typed variable store -> Store"
-  },
-  {
-   "from": "F0088",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:648 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0088",
-   "to": "F0167",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:648 body: ResumeRequest"
-  },
-  {
-   "from": "F0089",
-   "to": "F0386",
    "kind": "calls",
    "evidence": "backend/app/main.py:661 typed variable store -> Store"
   },
   {
-   "from": "F0089",
-   "to": "F0172",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:662 imported from backend.app.schemas"
+   "from": "F0085",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:658 Depends(reader) (authorization / validation)"
   },
   {
-   "from": "F0090",
+   "from": "F0085",
+   "to": "F0164",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:658 body: ChatRequest"
+  },
+  {
+   "from": "F0086",
+   "to": "F0167",
+   "kind": "references",
+   "evidence": "backend/app/main.py:665 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0086",
    "to": "F0767",
    "kind": "references",
    "evidence": "backend/app/main.py:665 imported from backend.app.auth (passed as a value)"
   },
   {
-   "from": "F0090",
+   "from": "F0086",
    "to": "F0021",
    "kind": "references",
    "evidence": "backend/app/main.py:665 sibling closure (passed as a value)"
   },
   {
-   "from": "F0090",
-   "to": "F0386",
+   "from": "F0086",
+   "to": "F0084",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:666 sibling closure"
+  },
+  {
+   "from": "F0086",
+   "to": "F0082",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:666 sibling closure"
+  },
+  {
+   "from": "F0086",
+   "to": "F0627",
+   "kind": "references",
+   "evidence": "backend/app/main.py:666 typed variable runner -> GraphRunner (passed as a value)"
+  },
+  {
+   "from": "F0086",
+   "to": "F0358",
    "kind": "calls",
    "evidence": "backend/app/main.py:667 typed variable store -> Store"
   },
   {
-   "from": "F0090",
-   "to": "F0089",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:668 sibling closure"
-  },
-  {
-   "from": "F0090",
-   "to": "F0172",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:668 imported from backend.app.schemas"
-  },
-  {
-   "from": "F0090",
+   "from": "F0086",
    "to": "F0021",
    "kind": "depends_on",
    "evidence": "backend/app/main.py:665 Depends(reader) (authorization / validation)"
   },
   {
+   "from": "F0086",
+   "to": "F0167",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:665 body: ResumeRequest"
+  },
+  {
+   "from": "F0087",
+   "to": "F0166",
+   "kind": "references",
+   "evidence": "backend/app/main.py:671 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0087",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:671 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0087",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:671 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0087",
+   "to": "F0082",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:673 sibling closure"
+  },
+  {
+   "from": "F0087",
+   "to": "F0626",
+   "kind": "references",
+   "evidence": "backend/app/main.py:673 typed variable runner -> GraphRunner (passed as a value)"
+  },
+  {
+   "from": "F0087",
+   "to": "F0358",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:674 typed variable store -> Store"
+  },
+  {
+   "from": "F0087",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:671 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0087",
+   "to": "F0166",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:671 body: BusinessWorkflowRequest"
+  },
+  {
+   "from": "F0088",
+   "to": "F0167",
+   "kind": "references",
+   "evidence": "backend/app/main.py:678 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0088",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:678 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0088",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:678 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0088",
+   "to": "F0082",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:679 sibling closure"
+  },
+  {
+   "from": "F0088",
+   "to": "F0627",
+   "kind": "references",
+   "evidence": "backend/app/main.py:679 typed variable runner -> GraphRunner (passed as a value)"
+  },
+  {
+   "from": "F0088",
+   "to": "F0358",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:680 typed variable store -> Store"
+  },
+  {
+   "from": "F0088",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:678 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0088",
+   "to": "F0167",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:678 body: ResumeRequest"
+  },
+  {
+   "from": "F0089",
+   "to": "F0386",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:691 typed variable store -> Store"
+  },
+  {
+   "from": "F0089",
+   "to": "F0172",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:692 imported from backend.app.schemas"
+  },
+  {
+   "from": "F0090",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:695 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0090",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:695 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0090",
+   "to": "F0386",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:697 typed variable store -> Store"
+  },
+  {
+   "from": "F0090",
+   "to": "F0089",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:698 sibling closure"
+  },
+  {
+   "from": "F0090",
+   "to": "F0172",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:698 imported from backend.app.schemas"
+  },
+  {
+   "from": "F0090",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:695 Depends(reader) (authorization / validation)"
+  },
+  {
    "from": "F0091",
    "to": "F0172",
    "kind": "references",
-   "evidence": "backend/app/main.py:674 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:704 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:674 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:704 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:674 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:704 sibling closure (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0387",
    "kind": "calls",
-   "evidence": "backend/app/main.py:675 typed variable store -> Store"
+   "evidence": "backend/app/main.py:705 typed variable store -> Store"
   },
   {
    "from": "F0091",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:676 typed variable store -> Store"
+   "evidence": "backend/app/main.py:706 typed variable store -> Store"
   },
   {
    "from": "F0091",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:674 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:704 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0091",
    "to": "F0172",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:674 body: DeepAgentHarness"
+   "evidence": "backend/app/main.py:704 body: DeepAgentHarness"
   },
   {
    "from": "F0092",
    "to": "F0174",
    "kind": "references",
-   "evidence": "backend/app/main.py:680 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:710 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:680 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:710 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:680 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:710 sibling closure (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0089",
    "kind": "calls",
-   "evidence": "backend/app/main.py:682 sibling closure"
+   "evidence": "backend/app/main.py:712 sibling closure"
   },
   {
    "from": "F0092",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:683 sibling closure"
+   "evidence": "backend/app/main.py:713 sibling closure"
   },
   {
    "from": "F0092",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:683 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:713 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:687 typed variable store -> Store"
+   "evidence": "backend/app/main.py:717 typed variable store -> Store"
   },
   {
    "from": "F0092",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:680 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:710 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0092",
    "to": "F0174",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:680 body: SupplierResearchRequest"
+   "evidence": "backend/app/main.py:710 body: SupplierResearchRequest"
   },
   {
    "from": "F0094",
    "to": "F0175",
    "kind": "references",
-   "evidence": "backend/app/main.py:718 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:748 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:718 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:748 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:718 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:748 sibling closure (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0093",
    "kind": "calls",
-   "evidence": "backend/app/main.py:721 sibling closure"
+   "evidence": "backend/app/main.py:751 sibling closure"
   },
   {
    "from": "F0094",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:739 typed variable store -> Store"
+   "evidence": "backend/app/main.py:769 typed variable store -> Store"
   },
   {
    "from": "F0094",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:718 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:748 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0094",
    "to": "F0175",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:718 body: FlowisePredictRequest"
+   "evidence": "backend/app/main.py:748 body: FlowisePredictRequest"
   },
   {
    "from": "F0095",
    "to": "F0160",
    "kind": "references",
-   "evidence": "backend/app/main.py:756 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:786 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:756 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:786 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:756 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:786 sibling closure (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0364",
    "kind": "calls",
-   "evidence": "backend/app/main.py:758 typed variable store -> Store"
+   "evidence": "backend/app/main.py:788 typed variable store -> Store"
   },
   {
    "from": "F0095",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:761 typed variable store -> Store"
+   "evidence": "backend/app/main.py:791 typed variable store -> Store"
   },
   {
    "from": "F0095",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:756 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:786 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0095",
    "to": "F0160",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:756 body: RecommendationRequest"
+   "evidence": "backend/app/main.py:786 body: RecommendationRequest"
   },
   {
    "from": "F0096",
    "to": "F0161",
    "kind": "references",
-   "evidence": "backend/app/main.py:765 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:795 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:765 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:795 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:765 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:795 sibling closure (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0363",
    "kind": "calls",
-   "evidence": "backend/app/main.py:767 typed variable store -> Store"
+   "evidence": "backend/app/main.py:797 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0364",
    "kind": "calls",
-   "evidence": "backend/app/main.py:771 typed variable store -> Store"
+   "evidence": "backend/app/main.py:801 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:772 typed variable store -> Store"
+   "evidence": "backend/app/main.py:802 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:765 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:795 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0096",
    "to": "F0161",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:765 body: RecommendationFromTextRequest"
+   "evidence": "backend/app/main.py:795 body: RecommendationFromTextRequest"
   },
   {
    "from": "F0097",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:780 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:810 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:780 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:810 sibling closure (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0367",
    "kind": "calls",
-   "evidence": "backend/app/main.py:782 typed variable store -> Store"
+   "evidence": "backend/app/main.py:812 typed variable store -> Store"
   },
   {
    "from": "F0097",
    "to": "F0031",
    "kind": "references",
-   "evidence": "backend/app/main.py:782 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:812 sibling closure (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:782 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:812 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:780 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:810 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0098",
    "to": "F0162",
    "kind": "references",
-   "evidence": "backend/app/main.py:785 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:815 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:785 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:815 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:785 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:815 sibling closure (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0368",
    "kind": "calls",
-   "evidence": "backend/app/main.py:786 typed variable store -> Store"
+   "evidence": "backend/app/main.py:816 typed variable store -> Store"
   },
   {
    "from": "F0098",
    "to": "F0382",
    "kind": "calls",
-   "evidence": "backend/app/main.py:789 typed variable store -> Store"
-  },
-  {
-   "from": "F0098",
-   "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:790 typed variable store -> Store"
-  },
-  {
-   "from": "F0098",
-   "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:785 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0098",
-   "to": "F0162",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:785 body: DecisionRequest"
-  },
-  {
-   "from": "F0099",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:799 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0099",
-   "to": "F0020",
-   "kind": "references",
-   "evidence": "backend/app/main.py:799 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0099",
-   "to": "F0366",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:803 typed variable store -> Store"
-  },
-  {
-   "from": "F0099",
-   "to": "F0377",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:809 typed variable store -> Store"
-  },
-  {
-   "from": "F0099",
-   "to": "F0375",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:811 typed variable store -> Store"
-  },
-  {
-   "from": "F0099",
-   "to": "F0404",
-   "kind": "references",
-   "evidence": "backend/app/main.py:816 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0099",
-   "to": "F0016",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:817 same module"
-  },
-  {
-   "from": "F0099",
-   "to": "F0378",
-   "kind": "calls",
    "evidence": "backend/app/main.py:819 typed variable store -> Store"
   },
   {
-   "from": "F0099",
-   "to": "F0405",
-   "kind": "references",
-   "evidence": "backend/app/main.py:819 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0099",
+   "from": "F0098",
    "to": "F0358",
    "kind": "calls",
    "evidence": "backend/app/main.py:820 typed variable store -> Store"
   },
   {
+   "from": "F0098",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:815 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0098",
+   "to": "F0162",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:815 body: DecisionRequest"
+  },
+  {
    "from": "F0099",
-   "to": "F0376",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:822 typed variable store -> Store"
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:829 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0099",
    "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:799 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0100",
-   "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:826 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:829 sibling closure (passed as a value)"
   },
   {
-   "from": "F0100",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:826 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0100",
-   "to": "F0376",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:828 typed variable store -> Store"
-  },
-  {
-   "from": "F0100",
-   "to": "F0125",
-   "kind": "http_request",
-   "evidence": "backend/app/main.py:825 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
-  },
-  {
-   "from": "F0100",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:826 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0101",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:831 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0101",
-   "to": "F0020",
-   "kind": "references",
-   "evidence": "backend/app/main.py:831 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0101",
-   "to": "F0359",
+   "from": "F0099",
+   "to": "F0366",
    "kind": "calls",
    "evidence": "backend/app/main.py:833 typed variable store -> Store"
   },
   {
-   "from": "F0101",
-   "to": "F0360",
+   "from": "F0099",
+   "to": "F0377",
    "kind": "calls",
-   "evidence": "backend/app/main.py:833 typed variable store -> Store"
+   "evidence": "backend/app/main.py:839 typed variable store -> Store"
   },
   {
-   "from": "F0101",
-   "to": "F0146",
-   "kind": "http_request",
-   "evidence": "backend/app/main.py:830 HTTP GET /api/v1/audit"
-  },
-  {
-   "from": "F0101",
-   "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:831 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:840 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:840 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0414",
+   "from": "F0099",
+   "to": "F0375",
    "kind": "calls",
-   "evidence": "backend/app/main.py:842 typed variable sap -> SapRepository"
+   "evidence": "backend/app/main.py:841 typed variable store -> Store"
   },
   {
-   "from": "F0102",
-   "to": "F0405",
+   "from": "F0099",
+   "to": "F0404",
    "kind": "references",
-   "evidence": "backend/app/main.py:843 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:846 typed variable sap -> SapRepository (passed as a value)"
   },
   {
-   "from": "F0102",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:840 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:846 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:846 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0414",
+   "from": "F0099",
+   "to": "F0016",
    "kind": "calls",
-   "evidence": "backend/app/main.py:848 typed variable sap -> SapRepository"
+   "evidence": "backend/app/main.py:847 same module"
   },
   {
-   "from": "F0103",
+   "from": "F0099",
+   "to": "F0378",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:849 typed variable store -> Store"
+  },
+  {
+   "from": "F0099",
    "to": "F0405",
    "kind": "references",
    "evidence": "backend/app/main.py:849 typed variable sap -> SapRepository (passed as a value)"
   },
   {
-   "from": "F0103",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:846 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0104",
-   "to": "F0150",
-   "kind": "references",
-   "evidence": "backend/app/main.py:852 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0104",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:852 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0104",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:852 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0104",
-   "to": "F0023",
+   "from": "F0099",
+   "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:853 sibling closure"
+   "evidence": "backend/app/main.py:850 typed variable store -> Store"
   },
   {
-   "from": "F0104",
-   "to": "F0199",
+   "from": "F0099",
+   "to": "F0376",
    "kind": "calls",
-   "evidence": "backend/app/main.py:853 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:852 typed variable store -> Store"
   },
   {
-   "from": "F0104",
-   "to": "F0021",
+   "from": "F0099",
+   "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:852 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:829 Depends(manager) (authorization / validation)"
   },
   {
-   "from": "F0104",
-   "to": "F0150",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:852 body: ForecastRequest"
-  },
-  {
-   "from": "F0105",
-   "to": "F0170",
-   "kind": "references",
-   "evidence": "backend/app/main.py:856 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0105",
+   "from": "F0100",
    "to": "F0767",
    "kind": "references",
    "evidence": "backend/app/main.py:856 imported from backend.app.auth (passed as a value)"
   },
   {
-   "from": "F0105",
+   "from": "F0100",
    "to": "F0021",
    "kind": "references",
    "evidence": "backend/app/main.py:856 sibling closure (passed as a value)"
   },
   {
-   "from": "F0105",
-   "to": "F0023",
+   "from": "F0100",
+   "to": "F0376",
    "kind": "calls",
-   "evidence": "backend/app/main.py:857 sibling closure"
+   "evidence": "backend/app/main.py:858 typed variable store -> Store"
   },
   {
-   "from": "F0105",
-   "to": "F0219",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:857 typed variable engine -> SupplyChainEngine"
+   "from": "F0100",
+   "to": "F0125",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:855 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
   },
   {
-   "from": "F0105",
+   "from": "F0100",
    "to": "F0021",
    "kind": "depends_on",
    "evidence": "backend/app/main.py:856 Depends(reader) (authorization / validation)"
   },
   {
+   "from": "F0101",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:861 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0101",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:861 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0101",
+   "to": "F0359",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:863 typed variable store -> Store"
+  },
+  {
+   "from": "F0101",
+   "to": "F0360",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:863 typed variable store -> Store"
+  },
+  {
+   "from": "F0101",
+   "to": "F0146",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:860 HTTP GET /api/v1/audit"
+  },
+  {
+   "from": "F0101",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:861 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0102",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:870 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0102",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:870 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0102",
+   "to": "F0414",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:872 typed variable sap -> SapRepository"
+  },
+  {
+   "from": "F0102",
+   "to": "F0405",
+   "kind": "references",
+   "evidence": "backend/app/main.py:873 typed variable sap -> SapRepository (passed as a value)"
+  },
+  {
+   "from": "F0102",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:870 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:876 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:876 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0414",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:878 typed variable sap -> SapRepository"
+  },
+  {
+   "from": "F0103",
+   "to": "F0405",
+   "kind": "references",
+   "evidence": "backend/app/main.py:879 typed variable sap -> SapRepository (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:876 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0150",
+   "kind": "references",
+   "evidence": "backend/app/main.py:882 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:882 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:882 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0023",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:883 sibling closure"
+  },
+  {
+   "from": "F0104",
+   "to": "F0199",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:883 typed variable engine -> SupplyChainEngine"
+  },
+  {
+   "from": "F0104",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:882 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0150",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:882 body: ForecastRequest"
+  },
+  {
+   "from": "F0105",
+   "to": "F0170",
+   "kind": "references",
+   "evidence": "backend/app/main.py:886 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0105",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:886 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0105",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:886 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0105",
+   "to": "F0023",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:887 sibling closure"
+  },
+  {
+   "from": "F0105",
+   "to": "F0219",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:887 typed variable engine -> SupplyChainEngine"
+  },
+  {
+   "from": "F0105",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:886 Depends(reader) (authorization / validation)"
+  },
+  {
    "from": "F0105",
    "to": "F0170",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:856 body: SupplierLeadTimeRequest"
+   "evidence": "backend/app/main.py:886 body: SupplierLeadTimeRequest"
   },
   {
    "from": "F0106",
    "to": "F0148",
    "kind": "references",
-   "evidence": "backend/app/main.py:860 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:890 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:860 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:890 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:860 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:890 sibling closure (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0197",
    "kind": "calls",
-   "evidence": "backend/app/main.py:861 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:891 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0106",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:862 sibling closure"
+   "evidence": "backend/app/main.py:892 sibling closure"
   },
   {
    "from": "F0106",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:860 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:890 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0106",
    "to": "F0148",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:860 body: FactoryReadinessRequest"
+   "evidence": "backend/app/main.py:890 body: FactoryReadinessRequest"
   },
   {
    "from": "F0107",
    "to": "F0149",
    "kind": "references",
-   "evidence": "backend/app/main.py:865 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:895 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0107",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:865 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:895 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0107",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:865 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:895 sibling closure (passed as a value)"
   },
   {
    "from": "F0107",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:866 sibling closure"
+   "evidence": "backend/app/main.py:896 sibling closure"
   },
   {
    "from": "F0107",
    "to": "F0198",
    "kind": "calls",
-   "evidence": "backend/app/main.py:866 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:896 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0107",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:865 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:895 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0107",
    "to": "F0149",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:865 body: StockBalanceRequest"
+   "evidence": "backend/app/main.py:895 body: StockBalanceRequest"
   },
   {
    "from": "F0108",
    "to": "F0160",
    "kind": "references",
-   "evidence": "backend/app/main.py:869 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:899 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0108",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:869 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:899 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0108",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:869 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:899 sibling closure (passed as a value)"
   },
   {
    "from": "F0108",
    "to": "F0095",
    "kind": "calls",
-   "evidence": "backend/app/main.py:870 sibling closure"
+   "evidence": "backend/app/main.py:900 sibling closure"
   },
   {
    "from": "F0108",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:869 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:899 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0108",
    "to": "F0160",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:869 body: RecommendationRequest"
+   "evidence": "backend/app/main.py:899 body: RecommendationRequest"
   },
   {
    "from": "F0109",
    "to": "F0162",
    "kind": "references",
-   "evidence": "backend/app/main.py:873 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:903 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0109",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:873 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0020",
-   "kind": "references",
-   "evidence": "backend/app/main.py:873 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0098",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:874 sibling closure"
-  },
-  {
-   "from": "F0109",
-   "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:873 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0162",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:873 body: DecisionRequest"
-  },
-  {
-   "from": "F0110",
-   "to": "F0171",
-   "kind": "references",
-   "evidence": "backend/app/main.py:877 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:877 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0020",
-   "kind": "references",
-   "evidence": "backend/app/main.py:877 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0366",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:878 typed variable store -> Store"
-  },
-  {
-   "from": "F0110",
-   "to": "F0404",
-   "kind": "references",
-   "evidence": "backend/app/main.py:884 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0380",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:893 typed variable store -> Store"
-  },
-  {
-   "from": "F0110",
-   "to": "F0378",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:894 typed variable store -> Store"
-  },
-  {
-   "from": "F0110",
-   "to": "F0405",
-   "kind": "references",
-   "evidence": "backend/app/main.py:894 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0016",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:894 same module"
-  },
-  {
-   "from": "F0110",
-   "to": "F0381",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:895 typed variable store -> Store"
-  },
-  {
-   "from": "F0110",
-   "to": "F0358",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:898 typed variable store -> Store"
-  },
-  {
-   "from": "F0110",
-   "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:877 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0110",
-   "to": "F0171",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:877 body: ReconcileRequest"
-  },
-  {
-   "from": "F0111",
    "to": "F0767",
    "kind": "references",
    "evidence": "backend/app/main.py:903 imported from backend.app.auth (passed as a value)"
   },
   {
+   "from": "F0109",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:903 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0098",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:904 sibling closure"
+  },
+  {
+   "from": "F0109",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:903 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0162",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:903 body: DecisionRequest"
+  },
+  {
+   "from": "F0110",
+   "to": "F0171",
+   "kind": "references",
+   "evidence": "backend/app/main.py:907 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:907 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:907 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0366",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:908 typed variable store -> Store"
+  },
+  {
+   "from": "F0110",
+   "to": "F0404",
+   "kind": "references",
+   "evidence": "backend/app/main.py:914 typed variable sap -> SapRepository (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0380",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:923 typed variable store -> Store"
+  },
+  {
+   "from": "F0110",
+   "to": "F0378",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:924 typed variable store -> Store"
+  },
+  {
+   "from": "F0110",
+   "to": "F0405",
+   "kind": "references",
+   "evidence": "backend/app/main.py:924 typed variable sap -> SapRepository (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0016",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:924 same module"
+  },
+  {
+   "from": "F0110",
+   "to": "F0381",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:925 typed variable store -> Store"
+  },
+  {
+   "from": "F0110",
+   "to": "F0358",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:928 typed variable store -> Store"
+  },
+  {
+   "from": "F0110",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:907 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0171",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:907 body: ReconcileRequest"
+  },
+  {
+   "from": "F0111",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:933 imported from backend.app.auth (passed as a value)"
+  },
+  {
    "from": "F0111",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:903 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:933 sibling closure (passed as a value)"
   },
   {
    "from": "F0111",
    "to": "F0290",
    "kind": "calls",
-   "evidence": "backend/app/main.py:905 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:935 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0111",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:903 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:933 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0486",
@@ -11881,6 +12043,30 @@
    "evidence": "flowise/bootstrap.py:187 typed variable flowise -> Flowise"
   },
   {
+   "from": "F1782",
+   "to": "F0973",
+   "kind": "calls",
+   "evidence": "flowise/code_explorer/deploy_code_map.py:48 typed variable flowise -> Flowise"
+  },
+  {
+   "from": "F1782",
+   "to": "F0972",
+   "kind": "calls",
+   "evidence": "flowise/code_explorer/deploy_code_map.py:49 typed variable flowise -> Flowise"
+  },
+  {
+   "from": "F1783",
+   "to": "F1781",
+   "kind": "calls",
+   "evidence": "flowise/code_explorer/deploy_code_map.py:78 same module"
+  },
+  {
+   "from": "F1783",
+   "to": "F1782",
+   "kind": "calls",
+   "evidence": "flowise/code_explorer/deploy_code_map.py:78 same module"
+  },
+  {
    "from": "F0978",
    "to": "F0979",
    "kind": "calls",
@@ -14009,6 +14195,60 @@
    "to": "F0146",
    "kind": "http_request",
    "evidence": "tests/test_api.py:165 HTTP GET /api/v1/audit"
+  },
+  {
+   "from": "F1796",
+   "to": "F0985",
+   "kind": "http_request",
+   "evidence": "tests/test_code_editor.py:32 HTTP GET /api/v1/code/functions"
+  },
+  {
+   "from": "F1796",
+   "to": "F0986",
+   "kind": "http_request",
+   "evidence": "tests/test_code_editor.py:36 HTTP GET /api/v1/code/function"
+  },
+  {
+   "from": "F1796",
+   "to": "F0987",
+   "kind": "http_request",
+   "evidence": "tests/test_code_editor.py:36 HTTP PUT /api/v1/code/function"
+  },
+  {
+   "from": "F1797",
+   "to": "F1787",
+   "kind": "calls",
+   "evidence": "tests/test_code_editor.py:45 imported from backend.app.code_editor"
+  },
+  {
+   "from": "F1797",
+   "to": "F1795",
+   "kind": "references",
+   "evidence": "tests/test_code_editor.py:45 same module (passed as a value)"
+  },
+  {
+   "from": "F1798",
+   "to": "F1787",
+   "kind": "calls",
+   "evidence": "tests/test_code_editor.py:63 imported from backend.app.code_editor"
+  },
+  {
+   "from": "F1798",
+   "to": "F1795",
+   "kind": "references",
+   "evidence": "tests/test_code_editor.py:63 same module (passed as a value)"
+  },
+  {
+   "from": "F1799",
+   "to": "F1787",
+   "kind": "calls",
+   "evidence": "tests/test_code_editor.py:71 imported from backend.app.code_editor"
+  },
+  {
+   "from": "F1799",
+   "to": "F1795",
+   "kind": "references",
+   "evidence": "tests/test_code_editor.py:71 same module (passed as a value)"
   },
   {
    "from": "F0922",

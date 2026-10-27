@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # ===== CLASS: Settings =====
 # ID: F0001 · pydantic_model · used
-# ORIGINAL FILE: backend/app/config.py:11-96
+# ORIGINAL FILE: backend/app/config.py:11-100
 # ROLE: All gateway settings: environment, API keys per role, tenant scopes, databases / RAG, Qwen, service URLs, SAP execution mode.
 # FIELDS:
 #   (see the attributes below; each maps to an UPPERCASE environment variable).
@@ -88,6 +88,11 @@ class Settings(BaseSettings):
     # LOCAL DEMO ONLY: the dashboard signs in automatically (GET /api/v1/demo/session hands out the demo keys).
     demo_auto_login: bool = False
 
+    # Backend code section of the UI: everyone with a key can read the code; saving a function also needs a manager key,
+    # CODE_EDITOR_ENABLED=true and APP_ENV=development|test (never enable it on a shared or cloud deployment).
+    # Off by default, so the deployed app is read-only.
+    code_editor_enabled: bool = False
+
     log_level: str = "INFO"
     # The SAP mock snapshot and the governed knowledge documents.
     data_file: Path = ROOT / "data" / "sap_mock.json"
@@ -95,7 +100,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.parse_keys() =====
     # ID: F0002 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:64-71
+    # ORIGINAL FILE: backend/app/config.py:68-75
     # ROLE: Parse "identity:key,identity:key" into {key: identity} (lookup by presented key).
     # INPUTS:
     #   raw: str.
@@ -118,7 +123,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.assistants() =====
     # ID: F0003 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:73-75
+    # ORIGINAL FILE: backend/app/config.py:77-79
     # ROLE: Assistant keys as {key: identity}.
     # INPUTS:
     #   self.
@@ -134,7 +139,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.managers() =====
     # ID: F0004 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:77-79
+    # ORIGINAL FILE: backend/app/config.py:81-83
     # ROLE: Manager keys as {key: identity}.
     # INPUTS:
     #   self.
@@ -150,7 +155,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.tenants_for() =====
     # ID: F0005 · method · used
-    # ORIGINAL FILE: backend/app/config.py:81-88
+    # ORIGINAL FILE: backend/app/config.py:85-92
     # ROLE: Tenants an identity may use, from TENANT_SCOPES ("identity=t1|t2;other=*"); None = unrestricted.
     # INPUTS:
     #   identity: str.
@@ -171,7 +176,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.llm_enabled() =====
     # ID: F0006 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:90-92
+    # ORIGINAL FILE: backend/app/config.py:94-96
     # ROLE: True when the LLM is enabled (llm_mode == "qwen"); "deterministic" disables model calls.
     # INPUTS:
     #   self.
@@ -187,7 +192,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.langfuse_enabled() =====
     # ID: F0007 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:94-96
+    # ORIGINAL FILE: backend/app/config.py:98-100
     # ROLE: True when all three Langfuse settings are present.
     # INPUTS:
     #   self.
@@ -204,7 +209,7 @@ class Settings(BaseSettings):
 
 # ===== FUNCTION: get_settings() =====
 # ID: F0008 · function · used
-# ORIGINAL FILE: backend/app/config.py:99-101
+# ORIGINAL FILE: backend/app/config.py:103-105
 # ROLE: Process-wide Settings singleton (cached), used by create_app() and the observability helpers.
 # INPUTS:
 #   none.

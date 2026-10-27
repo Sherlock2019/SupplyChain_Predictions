@@ -58,6 +58,9 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F0078 | POST | /v1/embeddings | `embeddings` | gateway :8000 | F0168 EmbeddingsRequest | F0019 create_app.principal(), F0079 create_app.embeddings.encode() |  |
 | F0080 | GET | /api/v1/rag/stats | `rag_stats` | gateway :8000 | F0021 create_app.reader() | F0747 MemoryRag.stats(), F0753 PgVectorRag.stats() |  |
 | F0081 | POST | /api/v1/rag/documents | `rag_add` | gateway :8000 | F0020 create_app.manager(), F0159 RagDocument | F0745 MemoryRag.add(), F0752 PgVectorRag.add(), F0358 Store.audit() |  |
+| F0985 | GET | /api/v1/code/functions | `code_functions` | gateway :8000 | F0021 create_app.reader() | F1791 CodeEditor.list() |  |
+| F0986 | GET | /api/v1/code/function | `code_function` | gateway :8000 | F0021 create_app.reader() |  |  |
+| F0987 | PUT | /api/v1/code/function | `code_update` | gateway :8000 | F0020 create_app.manager(), F0988 CodeUpdateRequest | F0358 Store.audit() |  |
 | F0083 | POST | /api/v1/chat | `chat` | gateway :8000 | F0021 create_app.reader(), F0164 ChatRequest | F0082 create_app._graph_call(), F0358 Store.audit() |  |
 | F0085 | POST | /api/v1/langgraph/agentflow | `langgraph_agentflow` | gateway :8000 | F0021 create_app.reader(), F0164 ChatRequest | F0082 create_app._graph_call(), F0084 create_app._agentflow_view(), F0358 Store.audit() |  |
 | F0086 | POST | /api/v1/langgraph/agentflow/{thread_id}/resume | `langgraph_agentflow_resume` | gateway :8000 | F0021 create_app.reader(), F0167 ResumeRequest | F0084 create_app._agentflow_view(), F0082 create_app._graph_call(), F0358 Store.audit() |  |

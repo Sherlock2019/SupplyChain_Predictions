@@ -57,6 +57,10 @@ class Settings(BaseSettings):
     # LOCAL DEMO ONLY: the dashboard signs in automatically (GET /api/v1/demo/session hands out the demo keys).
     demo_auto_login: bool = False
 
+    # Backend code section of the UI: everyone with a key can read the code; saving a function also needs a manager key,
+    # CODE_EDITOR_ENABLED=true and APP_ENV=development|test (never enable it on a shared or cloud deployment).
+    code_editor_enabled: bool = False
+
     log_level: str = "INFO"
     data_file: Path = ROOT / "data" / "sap_mock.json"
     knowledge_dir: Path = ROOT / "data" / "knowledge"

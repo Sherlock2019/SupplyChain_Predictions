@@ -215,6 +215,13 @@ class SupplierResearchRequest(StrictModel):
     thread_id: str | None = Field(default=None, max_length=128)
 
 
+class CodeUpdateRequest(StrictModel):
+    """Replace one backend function or class (UI backend code section; development only)."""
+    key: str = Field(min_length=5, max_length=400, pattern=r"^backend/[A-Za-z0-9_/]+\.py::[A-Za-z0-9_.]+$")
+    source: str = Field(min_length=1, max_length=200_000)
+    expected_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+
+
 class FlowisePredictRequest(StrictModel):
     question: str = Field(default="", max_length=8000)
     session_id: str | None = Field(default=None, max_length=128)

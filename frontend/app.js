@@ -132,7 +132,7 @@
     sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
     suppliers: ['Suppliers, quality & logistics', loadSuppliersPage], approvals: ['Approvals & execution', loadApprovals], watches: ['Watchlists', loadWatches],
     chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', loadHarness],
-    platform: ['Status & access', loadPlatform],
+    platform: ['Status & access', loadPlatform], code: ['Backend code', loadCode],
   };
   function route() {
     const [page, arg, arg2] = (location.hash || '#command').slice(1).split('/');
@@ -141,6 +141,7 @@
     if (page === 'dashboard' && arg2 !== undefined) { state.focus = arg2.toUpperCase(); local.set('focus', state.focus); }
     if (page === 'products' && arg) state.product = arg.toUpperCase();
     if (page === 'sites' && arg) { state.site = arg.toUpperCase(); local.set('site', state.site); }
+    if (page === 'code' && arg) state.codeKey = decodeURIComponent(arg);
     const [title, loader] = PAGES[page] || PAGES.command;
     $$('.page').forEach((p) => p.classList.toggle('active', p.id === `page-${page}`));
     $$('#nav a').forEach((a) => a.classList.toggle('active', a.dataset.page === page));
@@ -188,6 +189,52 @@
     if (!state.persona) state.persona = role === 'manager' ? 'executive' : 'inventory';
   }
   $('#login').addEventListener('submit', (e) => { e.preventDefault(); const k = $('#api-key').value.trim(); if (k) signIn(k); $('#api-key').value = ''; });
+
+  // ================================================================ BACKEND CODE (view every function; edit on a dev machine)
+  async function loadCode() {
+    const list = await api(`/api/v1/code/functions?q=${encodeURIComponent($('#code-q').value.trim())}`).catch((e) => { toast(e.message); return null; });
+    if (!list) return;
+    state.codeEdit = list.edit_allowed && state.role === 'manager';
+    $('#code-count').textContent = `${list.total} functions and classes in backend/` + (list.registry ? '' : ' (code-explorer registry not found: ids and call graph hidden)');
+    let cur = '';
+    $('#code-items').innerHTML = list.functions.map((f) => {
+      const head = f.file !== cur ? `<div class="code-file">${esc(f.file)}</div>` : '';
+      cur = f.file;
+      return `${head}<div class="code-item${f.key === state.codeKey ? ' on' : ''}" data-key="${esc(f.key)}" title="${esc(f.summary || '')}">${f.id ? `<span class="code-id">${esc(f.id)}</span>` : ''}${esc(f.name)}</div>`;
+    }).join('') || '<div class="empty">No match.</div>';
+    $$('#code-items .code-item').forEach((el) => el.addEventListener('click', () => { location.hash = `code/${encodeURIComponent(el.dataset.key)}`; }));
+    if (state.codeKey) showCode(state.codeKey);
+  }
+  let codeTimer;
+  $('#code-q').addEventListener('input', () => { clearTimeout(codeTimer); codeTimer = setTimeout(loadCode, 250); });
+
+  async function showCode(key) {
+    const host = $('#code-detail');
+    const f = await api(`/api/v1/code/function?key=${encodeURIComponent(key)}`).catch((e) => { host.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return null; });
+    if (!f) return;
+    $$('#code-items .code-item').forEach((el) => el.classList.toggle('on', el.dataset.key === key));
+    const links = (items) => items.length ? items.map((x) => x.key ? `<a href="#code/${encodeURIComponent(x.key)}">${esc(x.label)}</a>` : esc(x.label)).join('<br>') : '<span class="note">none found</span>';
+    const editable = state.codeEdit;
+    host.innerHTML = `<h2>${f.id ? esc(f.id) + ' · ' : ''}${esc(f.name)}</h2>
+      <p class="sub">${esc(f.file)}:${f.lines[0]}-${f.lines[1]} ${f.status ? badge(f.status.split(' ')[0] === 'used' ? 'ready' : 'plan', f.status) : ''} ${(f.routes || []).map((r) => chip(`${r.method} ${r.path}`)).join(' ')}</p>
+      ${f.summary ? `<p>${esc(f.summary)}</p>` : ''}
+      <div class="grid g2"><div><h4>Called by</h4>${links(f.called_by)}</div><div><h4>Calls</h4>${links(f.calls)}</div></div>
+      <div class="pills code-tabs"><button class="pill on" data-tab="source">Source${editable ? ' (editable)' : ''}</button>${f.annotated ? '<button class="pill" data-tab="annotated">Annotated (comments)</button>' : ''}</div>
+      <div data-pane="source"><textarea id="code-src" class="code-box" spellcheck="false" ${editable ? '' : 'readonly'} aria-label="Function source">${esc(f.source)}</textarea>
+        <div class="row">${editable ? '<button id="code-save">Save function</button><button class="ghost" id="code-reset">Undo changes</button>' : `<span class="note">${esc(state.role === 'manager' ? f.reason : 'Read-only: saving needs a manager key' + (f.edit_allowed ? '' : ' and ' + f.reason))}</span>`}</div></div>
+      ${f.annotated ? `<div data-pane="annotated" hidden><pre class="code-box">${esc(f.annotated)}</pre></div>` : ''}`;
+    $$('.code-tabs .pill', host).forEach((b) => b.addEventListener('click', () => {
+      $$('.code-tabs .pill', host).forEach((x) => x.classList.toggle('on', x === b));
+      $$('[data-pane]', host).forEach((p) => { p.hidden = p.dataset.pane !== b.dataset.tab; });
+    }));
+    if (!editable) return;
+    $('#code-reset').addEventListener('click', () => { $('#code-src').value = f.source; });
+    $('#code-save').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const r = await api('/api/v1/code/function', { method: 'PUT', body: { key, source: $('#code-src').value, expected_sha256: f.sha256 } });
+      toast(r.changed ? `${r.note} Backup: ${r.backup}` : 'No change.');
+      loadCode();
+    }));
+  }
 
   // ================================================================ COMMAND CENTER
   const SEV = { critical: 'critical', warning: 'warning', info: 'info', good: 'good' };

@@ -28,6 +28,7 @@ from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from backend.app.auth import ApiKeyAuth, Principal
+from backend.app.code_editor import CodeEditor
 from backend.app.config import ROOT, Settings, get_settings
 from backend.app.dashboards import PERSONAS
 from backend.app.insights import WATCH_KINDS
@@ -42,6 +43,7 @@ from backend.app.schemas import (
     DEEP_TOOLS,
     BusinessWorkflowRequest,
     ChatRequest,
+    CodeUpdateRequest,
     ConsentRequest,
     DecisionRequest,
     DeepAgentHarness,
@@ -78,7 +80,7 @@ FLOW_NAMES = {
 
 # ===== FUNCTION: _expectation() =====
 # ID: F0016 · function · used
-# ORIGINAL FILE: backend/app/main.py:69-76
+# ORIGINAL FILE: backend/app/main.py:71-78
 # ROLE: Plain-language expected result of one executed action (what the outcome check will look for in SAP).
 # INPUTS:
 #   action
@@ -102,7 +104,7 @@ def _expectation(action: dict) -> str:
 
 # ===== FUNCTION: create_app() =====
 # ID: F0017 · function · used
-# ORIGINAL FILE: backend/app/main.py:79-911
+# ORIGINAL FILE: backend/app/main.py:81-941
 # ROLE: Application factory of the SPARC / Aurelia gateway: builds the store, tenant registry + proxies, moat, RAG, auth and graph runner, then registers middleware, dependencies and ~95 routes as closures.
 # INPUTS:
 #   settings, store, runner
@@ -157,7 +159,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.request_context() =====
     # ID: F0018 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:110-128
+    # ORIGINAL FILE: backend/app/main.py:112-130
     # ROLE: HTTP middleware: correlation id, active tenant (X-Tenant or ?tenant=), Prometheus request count + latency.
     # INPUTS:
     #   request, call_next
@@ -191,7 +193,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.principal() =====
     # ID: F0019 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:130-143
+    # ORIGINAL FILE: backend/app/main.py:132-145
     # ROLE: Dependency: authenticate X-API-Key (401) and enforce tenant scope (403); every denial is counted and audited.
     # INPUTS:
     #   request, x_api_key
@@ -227,7 +229,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.manager() =====
     # ID: F0020 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:145-151
+    # ORIGINAL FILE: backend/app/main.py:147-153
     # ROLE: Dependency: authenticated caller with the manager role (403 otherwise, audited).
     # INPUTS:
     #   request, who
@@ -242,11 +244,11 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   <- F0059 create_app.record_outcome() (depends_on)
     #   <- F0081 create_app.rag_add() (references)
     #   <- F0081 create_app.rag_add() (depends_on)
+    #   <- F0987 create_app.code_update() (references)
+    #   <- F0987 create_app.code_update() (depends_on)
     #   <- F0091 create_app.set_deep_harness() (references)
     #   <- F0091 create_app.set_deep_harness() (depends_on)
     #   <- F0098 create_app.decide() (references)
-    #   <- F0098 create_app.decide() (depends_on)
-    #   <- F0099 create_app.execute() (references)
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0019 create_app.principal() (references)
@@ -263,7 +265,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.reader() =====
     # ID: F0021 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:153-154
+    # ORIGINAL FILE: backend/app/main.py:155-156
     # ROLE: Dependency: authenticated caller with the assistant or manager role.
     # INPUTS:
     #   who
@@ -293,7 +295,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.watch_owner() =====
     # ID: F0022 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:156-157
+    # ORIGINAL FILE: backend/app/main.py:158-159
     # ROLE: Owner key of a watch: identity@tenant.
     # INPUTS:
     #   who
@@ -313,7 +315,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.save() =====
     # ID: F0023 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:159-169
+    # ORIGINAL FILE: backend/app/main.py:161-171
     # ROLE: Store an analysis (AN-...), audit it, count it, and return it with snapshot provenance and read_only=True.
     # INPUTS:
     #   kind, payload, result, who, request
@@ -351,7 +353,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.value_error_handler() =====
     # ID: F0024 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:171-173
+    # ORIGINAL FILE: backend/app/main.py:173-175
     # ROLE: Exception handler: any ValueError from the engine becomes HTTP 422 with a VALIDATION_ERROR body.
     # INPUTS:
     #   request, exc
@@ -368,7 +370,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------- platform
     # ===== FUNCTION: create_app.health() =====
     # ID: F0025 · route · used
-    # ORIGINAL FILE: backend/app/main.py:176-178
+    # ORIGINAL FILE: backend/app/main.py:178-180
     # ROLE: HTTP GET /health
     # INPUTS:
     #   none
@@ -384,7 +386,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.ready() =====
     # ID: F0026 · route · used
-    # ORIGINAL FILE: backend/app/main.py:180-182
+    # ORIGINAL FILE: backend/app/main.py:182-184
     # ROLE: HTTP GET /ready
     # INPUTS:
     #   none
@@ -403,7 +405,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.metrics() =====
     # ID: F0027 · route · used
-    # ORIGINAL FILE: backend/app/main.py:184-186
+    # ORIGINAL FILE: backend/app/main.py:186-188
     # ROLE: HTTP GET /metrics
     # INPUTS:
     #   none
@@ -419,7 +421,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.public_config() =====
     # ID: F0028 · route · used
-    # ORIGINAL FILE: backend/app/main.py:188-216
+    # ORIGINAL FILE: backend/app/main.py:190-218
     # ROLE: HTTP GET /api/v1/config/public — Non-secret links for the dashboard header.
     # INPUTS:
     #   none
@@ -464,7 +466,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.demo_session() =====
     # ID: F0029 · route · used
-    # ORIGINAL FILE: backend/app/main.py:218-225
+    # ORIGINAL FILE: backend/app/main.py:220-227
     # ROLE: HTTP GET /api/v1/demo/session — Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the UI needs no login.
     # INPUTS:
     #   none
@@ -485,7 +487,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app._public() =====
     # ID: F0030 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:227-228
+    # ORIGINAL FILE: backend/app/main.py:229-230
     # ROLE: Public URL of a companion service from PUBLIC_<SERVICE>_URL.
     # INPUTS:
     #   service
@@ -500,7 +502,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.status() =====
     # ID: F0031 · route · used
-    # ORIGINAL FILE: backend/app/main.py:230-263
+    # ORIGINAL FILE: backend/app/main.py:232-265
     # ROLE: HTTP GET /api/v1/status
     # INPUTS:
     #   who
@@ -530,7 +532,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
         # ===== FUNCTION: create_app.status.probe() =====
         # ID: F0032 · nested · used
-        # ORIGINAL FILE: backend/app/main.py:234-242
+        # ORIGINAL FILE: backend/app/main.py:236-244
         # ROLE: Probe one service URL asynchronously (up / error / down / not_configured).
         # INPUTS:
         #   name, url, headers
@@ -574,7 +576,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ----------------------------------------------------------- SAP mock
     # ===== FUNCTION: create_app.snapshot() =====
     # ID: F0033 · route · used
-    # ORIGINAL FILE: backend/app/main.py:266-277
+    # ORIGINAL FILE: backend/app/main.py:268-279
     # ROLE: HTTP GET /api/v1/snapshot
     # INPUTS:
     #   who
@@ -607,7 +609,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.tenant_catalogue() =====
     # ID: F0034 · route · used
-    # ORIGINAL FILE: backend/app/main.py:279-282
+    # ORIGINAL FILE: backend/app/main.py:281-284
     # ROLE: HTTP GET /api/v1/tenants — Industries and customers for the top-bar selector (send the id back as the X-Tenant header).
     # INPUTS:
     #   none
@@ -626,7 +628,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.network_map() =====
     # ID: F0035 · route · used
-    # ORIGINAL FILE: backend/app/main.py:284-287
+    # ORIGINAL FILE: backend/app/main.py:286-289
     # ROLE: HTTP GET /api/v1/network/map
     # INPUTS:
     #   who
@@ -647,7 +649,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_metadata() =====
     # ID: F0036 · route · used
-    # ORIGINAL FILE: backend/app/main.py:289-292
+    # ORIGINAL FILE: backend/app/main.py:291-294
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata
     # INPUTS:
     #   who
@@ -670,7 +672,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_sandbox_documents() =====
     # ID: F0037 · route · used
-    # ORIGINAL FILE: backend/app/main.py:294-298
+    # ORIGINAL FILE: backend/app/main.py:296-300
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument
     # INPUTS:
     #   who
@@ -694,7 +696,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_odata() =====
     # ID: F0038 · route · used
-    # ORIGINAL FILE: backend/app/main.py:300-313
+    # ORIGINAL FILE: backend/app/main.py:302-315
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity}
     # INPUTS:
     #   entity, top, plant, material, supplier, who
@@ -730,7 +732,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.block_sap_write() =====
     # ID: F0039 · route · used
-    # ORIGINAL FILE: backend/app/main.py:315-319
+    # ORIGINAL FILE: backend/app/main.py:317-321
     # ROLE: HTTP POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path}
     # INPUTS:
     #   path, request, who
@@ -758,7 +760,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------- deterministic analyses
     # ===== FUNCTION: create_app.factory_readiness() =====
     # ID: F0040 · route · used
-    # ORIGINAL FILE: backend/app/main.py:322-325
+    # ORIGINAL FILE: backend/app/main.py:324-327
     # ROLE: HTTP POST /api/v1/analysis/factory-readiness
     # INPUTS:
     #   body, request, who
@@ -788,7 +790,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.stock_balance() =====
     # ID: F0041 · route · used
-    # ORIGINAL FILE: backend/app/main.py:327-329
+    # ORIGINAL FILE: backend/app/main.py:329-331
     # ROLE: HTTP POST /api/v1/analysis/stock-balance
     # INPUTS:
     #   body, request, who
@@ -816,7 +818,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.demand_forecast() =====
     # ID: F0042 · route · used
-    # ORIGINAL FILE: backend/app/main.py:331-333
+    # ORIGINAL FILE: backend/app/main.py:333-335
     # ROLE: HTTP POST /api/v1/analysis/forecast
     # INPUTS:
     #   body, request, who
@@ -840,7 +842,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.what_if() =====
     # ID: F0043 · route · used
-    # ORIGINAL FILE: backend/app/main.py:335-338
+    # ORIGINAL FILE: backend/app/main.py:337-340
     # ROLE: HTTP POST /api/v1/analysis/what-if
     # INPUTS:
     #   body, request, who
@@ -865,7 +867,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.supplier_risk() =====
     # ID: F0044 · route · used
-    # ORIGINAL FILE: backend/app/main.py:340-342
+    # ORIGINAL FILE: backend/app/main.py:342-344
     # ROLE: HTTP POST /api/v1/analysis/supplier-risk
     # INPUTS:
     #   body, request, who
@@ -890,7 +892,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.quality() =====
     # ID: F0045 · route · used
-    # ORIGINAL FILE: backend/app/main.py:344-346
+    # ORIGINAL FILE: backend/app/main.py:346-348
     # ROLE: HTTP POST /api/v1/analysis/quality
     # INPUTS:
     #   body, request, who
@@ -916,7 +918,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.logistics() =====
     # ID: F0046 · route · used
-    # ORIGINAL FILE: backend/app/main.py:348-350
+    # ORIGINAL FILE: backend/app/main.py:350-352
     # ROLE: HTTP POST /api/v1/analysis/logistics
     # INPUTS:
     #   body, request, who
@@ -941,7 +943,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sales_orders() =====
     # ID: F0047 · route · used
-    # ORIGINAL FILE: backend/app/main.py:352-354
+    # ORIGINAL FILE: backend/app/main.py:354-356
     # ROLE: HTTP POST /api/v1/analysis/sales-orders
     # INPUTS:
     #   body, request, who
@@ -967,7 +969,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.stocktake() =====
     # ID: F0048 · route · used
-    # ORIGINAL FILE: backend/app/main.py:356-358
+    # ORIGINAL FILE: backend/app/main.py:358-360
     # ROLE: HTTP POST /api/v1/analysis/stocktake
     # INPUTS:
     #   body, request, who
@@ -991,7 +993,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.forecast_vs_actuals() =====
     # ID: F0049 · route · used
-    # ORIGINAL FILE: backend/app/main.py:360-363
+    # ORIGINAL FILE: backend/app/main.py:362-365
     # ROLE: HTTP GET /api/v1/analysis/forecast-vs-actuals
     # INPUTS:
     #   material, warehouse, who
@@ -1012,7 +1014,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.production_overview() =====
     # ID: F0050 · route · used
-    # ORIGINAL FILE: backend/app/main.py:365-368
+    # ORIGINAL FILE: backend/app/main.py:367-370
     # ROLE: HTTP GET /api/v1/production/overview
     # INPUTS:
     #   who
@@ -1033,7 +1035,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.products() =====
     # ID: F0051 · route · used
-    # ORIGINAL FILE: backend/app/main.py:370-373
+    # ORIGINAL FILE: backend/app/main.py:372-375
     # ROLE: HTTP GET /api/v1/products
     # INPUTS:
     #   who
@@ -1054,7 +1056,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.product() =====
     # ID: F0052 · route · used
-    # ORIGINAL FILE: backend/app/main.py:375-378
+    # ORIGINAL FILE: backend/app/main.py:377-380
     # ROLE: HTTP GET /api/v1/products/{material}
     # INPUTS:
     #   material, who
@@ -1079,7 +1081,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------ role-centred decision views
     # ===== FUNCTION: create_app.role_catalogue() =====
     # ID: F0053 · route · used
-    # ORIGINAL FILE: backend/app/main.py:381-384
+    # ORIGINAL FILE: backend/app/main.py:383-386
     # ROLE: HTTP GET /api/v1/roles
     # INPUTS:
     #   who
@@ -1100,7 +1102,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.role_view() =====
     # ID: F0054 · route · used
-    # ORIGINAL FILE: backend/app/main.py:386-391
+    # ORIGINAL FILE: backend/app/main.py:388-393
     # ROLE: HTTP GET /api/v1/roles/{role}
     # INPUTS:
     #   role, material, who
@@ -1125,7 +1127,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.north_star() =====
     # ID: F0055 · route · used
-    # ORIGINAL FILE: backend/app/main.py:393-396
+    # ORIGINAL FILE: backend/app/main.py:395-398
     # ROLE: HTTP GET /api/v1/northstar
     # INPUTS:
     #   material, who
@@ -1146,7 +1148,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.learning() =====
     # ID: F0056 · route · used
-    # ORIGINAL FILE: backend/app/main.py:398-401
+    # ORIGINAL FILE: backend/app/main.py:400-403
     # ROLE: HTTP GET /api/v1/learning
     # INPUTS:
     #   who
@@ -1167,7 +1169,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.moat_view() =====
     # ID: F0057 · route · used
-    # ORIGINAL FILE: backend/app/main.py:403-407
+    # ORIGINAL FILE: backend/app/main.py:405-409
     # ROLE: HTTP GET /api/v1/moat — Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strength metrics.
     # INPUTS:
     #   who
@@ -1192,7 +1194,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.moat_consent() =====
     # ID: F0058 · route · used
-    # ORIGINAL FILE: backend/app/main.py:409-415
+    # ORIGINAL FILE: backend/app/main.py:411-417
     # ROLE: HTTP POST /api/v1/moat/consent — The customer decides whether its data may contribute to industry learning (manager only, audited).
     # INPUTS:
     #   body, request, who
@@ -1222,7 +1224,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.record_outcome() =====
     # ID: F0059 · route · used
-    # ORIGINAL FILE: backend/app/main.py:417-429
+    # ORIGINAL FILE: backend/app/main.py:419-431
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/outcome — Record the real result of an executed recommendation against an SAP document (decision outcome learning).
     # INPUTS:
     #   recommendation_id, body, request, who
@@ -1265,7 +1267,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sales_outlook() =====
     # ID: F0060 · route · used
-    # ORIGINAL FILE: backend/app/main.py:431-434
+    # ORIGINAL FILE: backend/app/main.py:433-436
     # ROLE: HTTP GET /api/v1/sales/outlook
     # INPUTS:
     #   material, who
@@ -1286,7 +1288,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.product_brief() =====
     # ID: F0061 · route · used
-    # ORIGINAL FILE: backend/app/main.py:436-439
+    # ORIGINAL FILE: backend/app/main.py:438-441
     # ROLE: HTTP GET /api/v1/products/{material}/brief
     # INPUTS:
     #   material, who
@@ -1308,7 +1310,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sites() =====
     # ID: F0062 · route · used
-    # ORIGINAL FILE: backend/app/main.py:441-444
+    # ORIGINAL FILE: backend/app/main.py:443-446
     # ROLE: HTTP GET /api/v1/sites
     # INPUTS:
     #   who
@@ -1329,7 +1331,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.site() =====
     # ID: F0063 · route · used
-    # ORIGINAL FILE: backend/app/main.py:446-449
+    # ORIGINAL FILE: backend/app/main.py:448-451
     # ROLE: HTTP GET /api/v1/sites/{code}
     # INPUTS:
     #   code, who
@@ -1350,7 +1352,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.dashboards_list() =====
     # ID: F0064 · route · used
-    # ORIGINAL FILE: backend/app/main.py:451-453
+    # ORIGINAL FILE: backend/app/main.py:453-455
     # ROLE: HTTP GET /api/v1/dashboards
     # INPUTS:
     #   none
@@ -1366,7 +1368,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.dashboard() =====
     # ID: F0065 · route · used
-    # ORIGINAL FILE: backend/app/main.py:455-458
+    # ORIGINAL FILE: backend/app/main.py:457-460
     # ROLE: HTTP GET /api/v1/dashboards/{persona}
     # INPUTS:
     #   persona, material, who
@@ -1390,7 +1392,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.get_insights() =====
     # ID: F0066 · route · used
-    # ORIGINAL FILE: backend/app/main.py:460-465
+    # ORIGINAL FILE: backend/app/main.py:462-467
     # ROLE: HTTP GET /api/v1/insights
     # INPUTS:
     #   who
@@ -1418,7 +1420,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------ watches
     # ===== FUNCTION: create_app.watch_kinds() =====
     # ID: F0067 · route · used
-    # ORIGINAL FILE: backend/app/main.py:468-470
+    # ORIGINAL FILE: backend/app/main.py:470-472
     # ROLE: HTTP GET /api/v1/watches/kinds
     # INPUTS:
     #   none
@@ -1435,7 +1437,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.list_watches() =====
     # ID: F0068 · route · used
-    # ORIGINAL FILE: backend/app/main.py:472-474
+    # ORIGINAL FILE: backend/app/main.py:474-476
     # ROLE: HTTP GET /api/v1/watches
     # INPUTS:
     #   who
@@ -1458,7 +1460,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.create_watch() =====
     # ID: F0069 · route · used
-    # ORIGINAL FILE: backend/app/main.py:476-484
+    # ORIGINAL FILE: backend/app/main.py:478-486
     # ROLE: HTTP POST /api/v1/watches
     # INPUTS:
     #   body, request, who
@@ -1491,7 +1493,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.delete_watch() =====
     # ID: F0070 · route · used
-    # ORIGINAL FILE: backend/app/main.py:486-490
+    # ORIGINAL FILE: backend/app/main.py:488-492
     # ROLE: HTTP DELETE /api/v1/watches/{watch_id}
     # INPUTS:
     #   watch_id, who
@@ -1515,7 +1517,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.evaluate_watches() =====
     # ID: F0071 · route · used
-    # ORIGINAL FILE: backend/app/main.py:492-500
+    # ORIGINAL FILE: backend/app/main.py:494-502
     # ROLE: HTTP POST /api/v1/watches/evaluate
     # INPUTS:
     #   who
@@ -1545,7 +1547,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.get_analysis() =====
     # ID: F0072 · route · used
-    # ORIGINAL FILE: backend/app/main.py:502-508
+    # ORIGINAL FILE: backend/app/main.py:504-510
     # ROLE: HTTP GET /api/v1/analyses/{analysis_id}
     # INPUTS:
     #   analysis_id, who
@@ -1569,7 +1571,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.inventory() =====
     # ID: F0073 · route · used
-    # ORIGINAL FILE: backend/app/main.py:510-513
+    # ORIGINAL FILE: backend/app/main.py:512-515
     # ROLE: HTTP GET /api/v1/inventory
     # INPUTS:
     #   material, who
@@ -1592,7 +1594,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.supplier_scorecard() =====
     # ID: F0074 · route · used
-    # ORIGINAL FILE: backend/app/main.py:515-518
+    # ORIGINAL FILE: backend/app/main.py:517-520
     # ROLE: HTTP GET /api/v1/suppliers/scorecard
     # INPUTS:
     #   who
@@ -1613,7 +1615,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.kpis() =====
     # ID: F0075 · route · used
-    # ORIGINAL FILE: backend/app/main.py:520-523
+    # ORIGINAL FILE: backend/app/main.py:522-525
     # ROLE: HTTP GET /api/v1/kpis
     # INPUTS:
     #   who
@@ -1639,7 +1641,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # -------------------------------------------------------------- RAG
     # ===== FUNCTION: create_app.rag_search() =====
     # ID: F0076 · route · used
-    # ORIGINAL FILE: backend/app/main.py:526-529
+    # ORIGINAL FILE: backend/app/main.py:528-531
     # ROLE: HTTP POST /api/v1/rag/search
     # INPUTS:
     #   body, who
@@ -1675,7 +1677,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_search_get() =====
     # ID: F0077 · route · used
-    # ORIGINAL FILE: backend/app/main.py:531-537
+    # ORIGINAL FILE: backend/app/main.py:533-539
     # ROLE: HTTP GET /api/v1/rag/search — Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escaping of the question).
     # INPUTS:
     #   q, top_k, category, who
@@ -1709,7 +1711,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.embeddings() =====
     # ID: F0078 · route · used
-    # ORIGINAL FILE: backend/app/main.py:539-554
+    # ORIGINAL FILE: backend/app/main.py:541-556
     # ROLE: HTTP POST /v1/embeddings — Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding model of the backend RAG,
     # INPUTS:
     #   body, request, authorization, x_api_key
@@ -1733,7 +1735,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         vectors = rag.embedder.embed(texts)
         # ===== FUNCTION: create_app.embeddings.encode() =====
         # ID: F0079 · nested · used
-        # ORIGINAL FILE: backend/app/main.py:548-551
+        # ORIGINAL FILE: backend/app/main.py:550-553
         # ROLE: Encode an embedding as a float list or base64 little-endian float32 (OpenAI clients).
         # INPUTS:
         #   vector
@@ -1753,7 +1755,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_stats() =====
     # ID: F0080 · route · used
-    # ORIGINAL FILE: backend/app/main.py:556-559
+    # ORIGINAL FILE: backend/app/main.py:558-561
     # ROLE: HTTP GET /api/v1/rag/stats
     # INPUTS:
     #   who
@@ -1775,7 +1777,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_add() =====
     # ID: F0081 · route · used
-    # ORIGINAL FILE: backend/app/main.py:561-565
+    # ORIGINAL FILE: backend/app/main.py:563-567
     # ROLE: HTTP POST /api/v1/rag/documents
     # INPUTS:
     #   body, request, who
@@ -1802,10 +1804,87 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
 
+    # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
+    code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
+
+    # ===== FUNCTION: create_app.code_functions() =====
+    # ID: F0985 · route · used
+    # ORIGINAL FILE: backend/app/main.py:572-575
+    # ROLE: HTTP GET /api/v1/code/functions
+    # INPUTS:
+    #   q, who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   <- F1796 test_api_lists_and_shows_backend_functions_read_only_by_default() (http_request)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0021 create_app.reader() (references)
+    #   -> F1791 CodeEditor.list() (calls)
+    #   -> F0021 create_app.reader() (depends_on)
+    @app.get("/api/v1/code/functions")
+    def code_functions(q: str = Query(default="", max_length=200), who: Principal = Depends(reader)) -> dict:
+        del who
+        return code.list(q)
+
+    # ===== FUNCTION: create_app.code_function() =====
+    # ID: F0986 · route · used
+    # ORIGINAL FILE: backend/app/main.py:577-583
+    # ROLE: HTTP GET /api/v1/code/function
+    # INPUTS:
+    #   key, who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   <- F1796 test_api_lists_and_shows_backend_functions_read_only_by_default() (http_request)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0021 create_app.reader() (references)
+    #   -> F0021 create_app.reader() (depends_on)
+    @app.get("/api/v1/code/function")
+    def code_function(key: str = Query(min_length=5, max_length=400), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.get(key)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="Unknown backend function") from exc
+
+    # ===== FUNCTION: create_app.code_update() =====
+    # ID: F0987 · route · used
+    # ORIGINAL FILE: backend/app/main.py:585-595
+    # ROLE: HTTP PUT /api/v1/code/function
+    # INPUTS:
+    #   body, request, who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   <- F1796 test_api_lists_and_shows_backend_functions_read_only_by_default() (http_request)
+    # CALLS:
+    #   -> F0988 CodeUpdateRequest (references)
+    #   -> F0767 Principal (references)
+    #   -> F0020 create_app.manager() (references)
+    #   -> F0358 Store.audit() (calls)
+    #   -> F0020 create_app.manager() (depends_on)
+    #   -> F0988 CodeUpdateRequest (validates_input)
+    @app.put("/api/v1/code/function")
+    def code_update(body: CodeUpdateRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        try:
+            result = code.update(body.key, body.source, body.expected_sha256)
+        except PermissionError as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="Unknown backend function") from exc
+        store.audit(who.identity, who.role, "code.function_updated",
+                    {k: result.get(k) for k in ("key", "file", "changed", "backup", "sha256_before", "sha256_after")}, request.state.correlation_id)
+        return result
+
     # -------------------------------------------------- LangGraph / agents
     # ===== FUNCTION: create_app._graph_call() =====
     # ID: F0082 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:568-574
+    # ORIGINAL FILE: backend/app/main.py:598-604
     # ROLE: Run a graph call; non-HTTP errors become 502 Agent runtime error.
     # INPUTS:
     #   fn
@@ -1830,7 +1909,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.chat() =====
     # ID: F0083 · route · used
-    # ORIGINAL FILE: backend/app/main.py:576-601
+    # ORIGINAL FILE: backend/app/main.py:606-631
     # ROLE: HTTP POST /api/v1/chat
     # INPUTS:
     #   body, request, who
@@ -1879,7 +1958,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app._agentflow_view() =====
     # ID: F0084 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:603-625
+    # ORIGINAL FILE: backend/app/main.py:633-655
     # ROLE: Shape the LangGraph agentflow result for the UI (route, workflow, answer, tools, interrupts).
     # INPUTS:
     #   result
@@ -1916,7 +1995,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.langgraph_agentflow() =====
     # ID: F0085 · route · used
-    # ORIGINAL FILE: backend/app/main.py:627-632
+    # ORIGINAL FILE: backend/app/main.py:657-662
     # ROLE: HTTP POST /api/v1/langgraph/agentflow
     # INPUTS:
     #   body, request, who
@@ -1945,7 +2024,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.langgraph_agentflow_resume() =====
     # ID: F0086 · route · used
-    # ORIGINAL FILE: backend/app/main.py:634-638
+    # ORIGINAL FILE: backend/app/main.py:664-668
     # ROLE: HTTP POST /api/v1/langgraph/agentflow/{thread_id}/resume
     # INPUTS:
     #   thread_id, body, request, who
@@ -1973,7 +2052,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.business_start() =====
     # ID: F0087 · route · used
-    # ORIGINAL FILE: backend/app/main.py:640-645
+    # ORIGINAL FILE: backend/app/main.py:670-675
     # ROLE: HTTP POST /api/v1/workflows/business
     # INPUTS:
     #   body, request, who
@@ -2001,7 +2080,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.business_resume() =====
     # ID: F0088 · route · used
-    # ORIGINAL FILE: backend/app/main.py:647-651
+    # ORIGINAL FILE: backend/app/main.py:677-681
     # ROLE: HTTP POST /api/v1/workflows/business/{thread_id}/resume
     # INPUTS:
     #   thread_id, body, request, who
@@ -2035,7 +2114,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.current_harness() =====
     # ID: F0089 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:660-662
+    # ORIGINAL FILE: backend/app/main.py:690-692
     # ROLE: Current Deep Agent harness (stored setting validated over defaults).
     # INPUTS:
     #   none
@@ -2053,7 +2132,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.deep_harness() =====
     # ID: F0090 · route · used
-    # ORIGINAL FILE: backend/app/main.py:664-671
+    # ORIGINAL FILE: backend/app/main.py:694-701
     # ROLE: HTTP GET /api/v1/deep-agents/harness
     # INPUTS:
     #   who
@@ -2080,7 +2159,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.set_deep_harness() =====
     # ID: F0091 · route · used
-    # ORIGINAL FILE: backend/app/main.py:673-677
+    # ORIGINAL FILE: backend/app/main.py:703-707
     # ROLE: HTTP PUT /api/v1/deep-agents/harness
     # INPUTS:
     #   body, request, who
@@ -2105,7 +2184,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.supplier_research() =====
     # ID: F0092 · route · used
-    # ORIGINAL FILE: backend/app/main.py:679-700
+    # ORIGINAL FILE: backend/app/main.py:709-730
     # ROLE: HTTP POST /api/v1/deep-agents/supplier-research
     # INPUTS:
     #   body, request, who
@@ -2150,7 +2229,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------ Flowise
     # ===== FUNCTION: create_app._flow_id() =====
     # ID: F0093 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:703-715
+    # ORIGINAL FILE: backend/app/main.py:733-745
     # ROLE: Resolve a Flowise flow id: configured id, else look it up by name through the Flowise API.
     # INPUTS:
     #   flow
@@ -2176,7 +2255,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.flowise_predict() =====
     # ID: F0094 · route · used
-    # ORIGINAL FILE: backend/app/main.py:717-752
+    # ORIGINAL FILE: backend/app/main.py:747-782
     # ROLE: HTTP POST /api/v1/flowise/{flow}/predict
     # INPUTS:
     #   flow, body, request, who
@@ -2234,7 +2313,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------- recommendations
     # ===== FUNCTION: create_app.submit_recommendation() =====
     # ID: F0095 · route · used
-    # ORIGINAL FILE: backend/app/main.py:755-762
+    # ORIGINAL FILE: backend/app/main.py:785-792
     # ROLE: HTTP POST /api/v1/recommendations
     # INPUTS:
     #   body, request, who
@@ -2270,7 +2349,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.submit_from_agent() =====
     # ID: F0096 · route · used
-    # ORIGINAL FILE: backend/app/main.py:764-777
+    # ORIGINAL FILE: backend/app/main.py:794-807
     # ROLE: HTTP POST /api/v1/recommendations/from-agent
     # INPUTS:
     #   body, request, who
@@ -2312,7 +2391,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.recommendations() =====
     # ID: F0097 · route · used
-    # ORIGINAL FILE: backend/app/main.py:779-782
+    # ORIGINAL FILE: backend/app/main.py:809-812
     # ROLE: HTTP GET /api/v1/recommendations
     # INPUTS:
     #   status, who
@@ -2342,7 +2421,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.decide() =====
     # ID: F0098 · route · used
-    # ORIGINAL FILE: backend/app/main.py:784-791
+    # ORIGINAL FILE: backend/app/main.py:814-821
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/decision
     # INPUTS:
     #   recommendation_id, body, request, who
@@ -2383,7 +2462,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.execute() =====
     # ID: F0099 · route · used
-    # ORIGINAL FILE: backend/app/main.py:798-823
+    # ORIGINAL FILE: backend/app/main.py:828-853
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/execute — 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents cannot call this).
     # INPUTS:
     #   recommendation_id, request, who
@@ -2439,7 +2518,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_documents() =====
     # ID: F0100 · route · used
-    # ORIGINAL FILE: backend/app/main.py:825-828
+    # ORIGINAL FILE: backend/app/main.py:855-858
     # ROLE: HTTP GET /api/v1/sap/documents
     # INPUTS:
     #   who
@@ -2461,7 +2540,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.audit() =====
     # ID: F0101 · route · used
-    # ORIGINAL FILE: backend/app/main.py:830-833
+    # ORIGINAL FILE: backend/app/main.py:860-863
     # ROLE: HTTP GET /api/v1/audit
     # INPUTS:
     #   limit, who
@@ -2495,7 +2574,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_sap_inventory() =====
     # ID: F0102 · route · used
-    # ORIGINAL FILE: backend/app/main.py:839-843
+    # ORIGINAL FILE: backend/app/main.py:869-873
     # ROLE: HTTP GET /sap/inventory
     # INPUTS:
     #   plant, material, who
@@ -2520,7 +2599,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_sap_production_orders() =====
     # ID: F0103 · route · used
-    # ORIGINAL FILE: backend/app/main.py:845-849
+    # ORIGINAL FILE: backend/app/main.py:875-879
     # ROLE: HTTP GET /sap/production-orders
     # INPUTS:
     #   plant, material, who
@@ -2544,7 +2623,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_forecast_demand() =====
     # ID: F0104 · route · used
-    # ORIGINAL FILE: backend/app/main.py:851-853
+    # ORIGINAL FILE: backend/app/main.py:881-883
     # ROLE: HTTP POST /forecast/demand
     # INPUTS:
     #   body, request, who
@@ -2568,7 +2647,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_forecast_lead_time() =====
     # ID: F0105 · route · used
-    # ORIGINAL FILE: backend/app/main.py:855-857
+    # ORIGINAL FILE: backend/app/main.py:885-887
     # ROLE: HTTP POST /forecast/supplier-lead-time
     # INPUTS:
     #   body, request, who
@@ -2592,7 +2671,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_material_readiness() =====
     # ID: F0106 · route · used
-    # ORIGINAL FILE: backend/app/main.py:859-862
+    # ORIGINAL FILE: backend/app/main.py:889-892
     # ROLE: HTTP POST /optimizer/material-readiness
     # INPUTS:
     #   body, request, who
@@ -2617,7 +2696,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_warehouse_transfer() =====
     # ID: F0107 · route · used
-    # ORIGINAL FILE: backend/app/main.py:864-866
+    # ORIGINAL FILE: backend/app/main.py:894-896
     # ROLE: HTTP POST /optimizer/warehouse-transfer
     # INPUTS:
     #   body, request, who
@@ -2642,7 +2721,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_decisions() =====
     # ID: F0108 · route · used
-    # ORIGINAL FILE: backend/app/main.py:868-870
+    # ORIGINAL FILE: backend/app/main.py:898-900
     # ROLE: HTTP POST /decisions
     # INPUTS:
     #   body, request, who
@@ -2664,7 +2743,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_human_review() =====
     # ID: F0109 · route · used
-    # ORIGINAL FILE: backend/app/main.py:872-874
+    # ORIGINAL FILE: backend/app/main.py:902-904
     # ROLE: HTTP POST /decisions/{decision_id}/human-review
     # INPUTS:
     #   decision_id, body, request, who
@@ -2687,7 +2766,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_reconcile() =====
     # ID: F0110 · route · used
-    # ORIGINAL FILE: backend/app/main.py:876-900
+    # ORIGINAL FILE: backend/app/main.py:906-930
     # ROLE: HTTP POST /outcomes/reconcile
     # INPUTS:
     #   body, request, who
@@ -2738,7 +2817,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_model_performance() =====
     # ID: F0111 · route · used
-    # ORIGINAL FILE: backend/app/main.py:902-906
+    # ORIGINAL FILE: backend/app/main.py:932-936
     # ROLE: HTTP GET /learning/model-performance
     # INPUTS:
     #   who

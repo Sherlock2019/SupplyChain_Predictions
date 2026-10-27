@@ -58,6 +58,7 @@
       <a href="#moat" data-page="moat"><svg class="ico"><use href="#i-loop"/></svg>Intelligence moat</a>
       <div class="nav-group">System</div>
       <a href="#platform" data-page="platform"><svg class="ico"><use href="#i-pulse"/></svg>Status &amp; access</a>
+      <a href="#code" data-page="code"><svg class="ico"><use href="#i-flow"/></svg>Backend code</a>
     </nav>
   </aside>
 
@@ -321,6 +322,45 @@
       <section class="page" id="page-platform">
         <div class="card"><h2>Platform status <span class="note" id="runtime"></span></h2><div id="status"></div></div>
         <div class="grid g2"><div class="card"><h2>Agent backends</h2><div id="backends"></div></div><div class="card"><h2>Workbenches</h2><ul id="links"></ul></div></div>
+      </section>
+
+      <!-- BACKEND CODE -->
+      <section class="page" id="page-code">
+        <div class="card code-apps">
+          <h2>Backend apps that run the POC</h2>
+          <p class="note">Four Python backend apps, all from the same Docker image (<code>aurelia-scm-app:local</code>), defined in <code>docker-compose.yml</code>.</p>
+          <div class="scroll"><table>
+            <thead><tr><th>Service</th><th>What it is</th><th>Port</th><th>Started with</th><th>Code</th></tr></thead>
+            <tbody>
+              <tr><td><b>scinsight-api</b></td><td><b>SCInsight API</b>, the governed backend of the current POC: synthetic SAP data, calculations, policy RAG, recommendations waiting for manager approval, outcome checks, audit. All the Flowise SCInsight tools call it.</td><td><b>8100</b> (Swagger at <code>/docs</code>)</td><td><code>uvicorn backend.scinsight.app:create_app --factory</code></td><td><a href="#code/backend%2Fscinsight%2Fapp.py%3A%3Acreate_app">backend/scinsight/</a></td></tr>
+              <tr><td><b>api</b></td><td><b>SPARC / Aurelia gateway</b> (FastAPI): dashboard UI, SAP OData mock, analytics engine, agents, approvals, <code>/v1/embeddings</code> used by the Flowise RAG, and this Backend code page</td><td><b>8000</b></td><td>the image's default <code>uvicorn backend.app.main:app</code></td><td><a href="#code/backend%2Fapp%2Fmain.py%3A%3Acreate_app">backend/app/main.py</a></td></tr>
+              <tr><td><b>langgraph</b></td><td><b>LangGraph Server</b>: runs the LangGraph graphs listed in <code>langgraph.json</code>, including the LangGraph copies of the SCInsight Flowise flows</td><td><b>8123</b></td><td><code>langgraph dev</code></td><td><a href="#code/backend%2Fscinsight%2Flg%2Fsupervisor.py%3A%3Abuild_supervisor">backend/app/graphs.py, backend/scinsight/lg/</a></td></tr>
+              <tr><td><b>mcp</b></td><td><b>MCP server</b>: read-only SAP, analytics and RAG tools for MCP clients</td><td><b>8002</b></td><td><code>python -m backend.app.mcp_server</code></td><td><a href="#code/backend%2Fapp%2Fmcp_server.py%3A%3Acreate_mcp_app">backend/app/mcp_server.py</a></td></tr>
+            </tbody>
+          </table></div>
+          <details class="more"><summary>What they depend on, and how a chat question flows</summary>
+            <div class="scroll"><table>
+              <thead><tr><th>Service</th><th>Role</th><th>Port</th></tr></thead>
+              <tbody>
+                <tr><td><b>flowise</b> (3.1.2)</td><td>Chat bot, Agentflows, Document Store; calls the SCInsight API</td><td>3101</td></tr>
+                <tr><td><b>postgres</b> (pgvector, pg17)</td><td>Database for the apps, the RAG vectors and the Flowise RAG DB</td><td>55432 (localhost only)</td></tr>
+                <tr><td><b>Qwen LLM</b></td><td>Local demo: runs in Ollama on the host, outside Docker; <code>ollama-relay</code> forwards it to the containers (the <code>ollama</code> / <code>qwen</code> compose services are not started in this mode)</td><td>11434 → 11435</td></tr>
+                <tr><td><b>langfuse</b> + <b>langfuse-worker</b>, with <b>clickhouse</b>, <b>redis</b> and <b>objectstore</b> (SeaweedFS)</td><td>Tracing of LLM and agent runs</td><td>3103</td></tr>
+                <tr><td><b>prometheus</b> + <b>grafana</b></td><td>Metrics and dashboards</td><td>9090 / 3002</td></tr>
+                <tr><td><b>demo-edge</b> (Caddy)</td><td>Local proxy for the demo URLs</td><td>3000 / 3003 (localhost only)</td></tr>
+              </tbody>
+            </table></div>
+            <p class="note">Flowise chat → SC Agent Manager Agentflow → <b>SCInsight API :8100</b>, which reads SAP data from Postgres and does the calculations, with Qwen explaining the result. The <b>gateway :8000</b> provides the embeddings for the Flowise RAG DB and hosts the dashboard.</p>
+          </details>
+        </div>
+        <div class="code-layout">
+          <div class="card code-list">
+            <input id="code-q" placeholder="Search function, file or summary…" aria-label="Search backend functions">
+            <p class="note" id="code-count"></p>
+            <div id="code-items"></div>
+          </div>
+          <div class="card code-detail" id="code-detail"><p class="note">Select a function to see its code, comments, callers and callees.</p></div>
+        </div>
       </section>
     </main>
   </div>

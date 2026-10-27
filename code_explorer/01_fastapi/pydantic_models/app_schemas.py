@@ -560,9 +560,28 @@ class SupplierResearchRequest(StrictModel):
     thread_id: str | None = Field(default=None, max_length=128)
 
 
+# ===== CLASS: CodeUpdateRequest =====
+# ID: F0988 · pydantic_model · used
+# ORIGINAL FILE: backend/app/schemas.py:218-222
+# ROLE: Body of PUT /api/v1/code/function (UI backend code section; saving only works in development).
+# FIELDS:
+#   key: "backend/<file>.py::<qualname>", and the regex keeps it inside backend/.
+#   source: the new function/class text; expected_sha256: optimistic lock (save refused if the file changed meanwhile).
+# CALLED BY:
+#   <- F0987 create_app.code_update() (references)
+#   <- F0987 create_app.code_update() (validates_input)
+# CALLS:
+#   (none found)
+class CodeUpdateRequest(StrictModel):
+    """Replace one backend function or class (UI backend code section; development only)."""
+    key: str = Field(min_length=5, max_length=400, pattern=r"^backend/[A-Za-z0-9_/]+\.py::[A-Za-z0-9_.]+$")
+    source: str = Field(min_length=1, max_length=200_000)
+    expected_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+
+
 # ===== CLASS: FlowisePredictRequest =====
 # ID: F0175 · pydantic_model · used
-# ORIGINAL FILE: backend/app/schemas.py:218-229
+# ORIGINAL FILE: backend/app/schemas.py:225-236
 # ROLE: Body of POST /api/v1/flowise/{flow}/predict (gateway proxy to a Flowise flow).
 # FIELDS:
 #   question; session_id; form (Flowise form input); human_input (resume of a Human Input node).
@@ -579,7 +598,7 @@ class FlowisePredictRequest(StrictModel):
 
     # ===== FUNCTION: FlowisePredictRequest.question_or_resume() =====
     # ID: F0176 · method · used (framework)
-    # ORIGINAL FILE: backend/app/schemas.py:224-229
+    # ORIGINAL FILE: backend/app/schemas.py:231-236
     # ROLE: A question is required unless the call resumes a paused Human Input.
     # INPUTS:
     #   self.

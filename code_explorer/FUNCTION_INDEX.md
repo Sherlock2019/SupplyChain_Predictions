@@ -7,13 +7,13 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | ID | Folder | Function / class | Original file | Kind | Status | Summary | Called by | FastAPI endpoint | Flowise node |
 |---|---|---|---|---|---|---|---|---|---|
 | F0001 | 01_fastapi/app_setup | `Settings` | [backend/app/config.py:11](../backend/app/config.py#L11) | pydantic_model | used |  | F0769, F0008, F0008, F0483, F0728, F0729, F0017, F0610, F0622, F0904, F0904, F09 |  |  |
-| F0002 | 01_fastapi/app_setup | `Settings.parse_keys` | [backend/app/config.py:64](../backend/app/config.py#L64) | method | used (framework) |  | F0003, F0004 |  |  |
-| F0003 | 01_fastapi/app_setup | `Settings.assistants` | [backend/app/config.py:73](../backend/app/config.py#L73) | method | used (framework) |  |  |  |  |
-| F0004 | 01_fastapi/app_setup | `Settings.managers` | [backend/app/config.py:77](../backend/app/config.py#L77) | method | used (framework) |  |  |  |  |
-| F0005 | 01_fastapi/app_setup | `Settings.tenants_for` | [backend/app/config.py:81](../backend/app/config.py#L81) | method | used | Tenants an identity may use; None = unrestricted. | F0019 |  |  |
-| F0006 | 01_fastapi/app_setup | `Settings.llm_enabled` | [backend/app/config.py:90](../backend/app/config.py#L90) | method | used (framework) |  |  |  |  |
-| F0007 | 01_fastapi/app_setup | `Settings.langfuse_enabled` | [backend/app/config.py:94](../backend/app/config.py#L94) | method | used (framework) |  |  |  |  |
-| F0008 | 01_fastapi/app_setup | `get_settings` | [backend/app/config.py:99](../backend/app/config.py#L99) | function | used |  | F0544, F0551, F0484, F0565, F0575, F0580, F0589, F0599, F0017, F0009, F0010 |  |  |
+| F0002 | 01_fastapi/app_setup | `Settings.parse_keys` | [backend/app/config.py:68](../backend/app/config.py#L68) | method | used (framework) |  | F0003, F0004 |  |  |
+| F0003 | 01_fastapi/app_setup | `Settings.assistants` | [backend/app/config.py:77](../backend/app/config.py#L77) | method | used (framework) |  |  |  |  |
+| F0004 | 01_fastapi/app_setup | `Settings.managers` | [backend/app/config.py:81](../backend/app/config.py#L81) | method | used (framework) |  |  |  |  |
+| F0005 | 01_fastapi/app_setup | `Settings.tenants_for` | [backend/app/config.py:85](../backend/app/config.py#L85) | method | used | Tenants an identity may use; None = unrestricted. | F0019 |  |  |
+| F0006 | 01_fastapi/app_setup | `Settings.llm_enabled` | [backend/app/config.py:94](../backend/app/config.py#L94) | method | used (framework) |  |  |  |  |
+| F0007 | 01_fastapi/app_setup | `Settings.langfuse_enabled` | [backend/app/config.py:98](../backend/app/config.py#L98) | method | used (framework) |  |  |  |  |
+| F0008 | 01_fastapi/app_setup | `get_settings` | [backend/app/config.py:103](../backend/app/config.py#L103) | function | used |  | F0544, F0551, F0484, F0565, F0575, F0580, F0589, F0599, F0017, F0009, F0010 |  |  |
 | F0009 | 01_fastapi/app_setup | `_langfuse_client` | [backend/app/observability.py:22](../backend/app/observability.py#L22) | function | used |  | F0010, F0012 |  |  |
 | F0010 | 01_fastapi/app_setup | `langfuse_callbacks` | [backend/app/observability.py:41](../backend/app/observability.py#L41) | function | used | LangChain callback handlers for one run; empty when Langfuse is not configured. | F0572, F0585, F0011 |  |  |
 | F0011 | 01_fastapi/app_setup | `run_config` | [backend/app/observability.py:51](../backend/app/observability.py#L51) | function | used |  | F0614, F0615 |  |  |
@@ -21,102 +21,102 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0013 | 01_fastapi/app_setup | `SciSettings` | [backend/scinsight/settings.py:13](../backend/scinsight/settings.py#L13) | pydantic_model | used |  | F0112, F0112, F0312, F0908, F0908 |  |  |
 | F0014 | 01_fastapi/app_setup | `SciSettings.user_keys` | [backend/scinsight/settings.py:42](../backend/scinsight/settings.py#L42) | method | used |  | F0112 |  |  |
 | F0015 | 01_fastapi/app_setup | `SciSettings.missing_keys` | [backend/scinsight/settings.py:45](../backend/scinsight/settings.py#L45) | method | used |  | F0112 |  |  |
-| F0016 | 01_fastapi/endpoints | `_expectation` | [backend/app/main.py:69](../backend/app/main.py#L69) | function | used | Plain-language expected result of one executed action (what the outcome check will look fo | F0059, F0099, F0110 |  |  |
-| F0017 | 01_fastapi/endpoints | `create_app` | [backend/app/main.py:79](../backend/app/main.py#L79) | function | used |  | F0905, F0872 |  |  |
-| F0018 | 01_fastapi/endpoints | `create_app.request_context` | [backend/app/main.py:110](../backend/app/main.py#L110) | nested | used |  |  |  |  |
-| F0019 | 01_fastapi/endpoints | `create_app.principal` | [backend/app/main.py:130](../backend/app/main.py#L130) | nested | used |  | F0020, F0020, F0021, F0021, F0078 |  |  |
-| F0020 | 01_fastapi/endpoints | `create_app.manager` | [backend/app/main.py:145](../backend/app/main.py#L145) | nested | used |  | F0029, F0058, F0058, F0059, F0059, F0081, F0081, F0091, F0091, F0098, F0098, F00 |  |  |
-| F0021 | 01_fastapi/endpoints | `create_app.reader` | [backend/app/main.py:153](../backend/app/main.py#L153) | nested | used |  | F0031, F0031, F0033, F0033, F0035, F0035, F0036, F0036, F0037, F0037, F0038, F00 |  |  |
-| F0022 | 01_fastapi/endpoints | `create_app.watch_owner` | [backend/app/main.py:156](../backend/app/main.py#L156) | nested | used |  | F0068, F0069, F0070, F0071 |  |  |
-| F0023 | 01_fastapi/endpoints | `create_app.save` | [backend/app/main.py:159](../backend/app/main.py#L159) | nested | used |  | F0040, F0041, F0042, F0043, F0044, F0045, F0046, F0047, F0048, F0104, F0105, F01 |  |  |
-| F0024 | 01_fastapi/endpoints | `create_app.value_error_handler` | [backend/app/main.py:171](../backend/app/main.py#L171) | nested | used |  |  |  |  |
-| F0025 | 01_fastapi/endpoints | `create_app.health` | [backend/app/main.py:176](../backend/app/main.py#L176) | route | used |  |  | GET /health |  |
-| F0026 | 01_fastapi/endpoints | `create_app.ready` | [backend/app/main.py:180](../backend/app/main.py#L180) | route | used |  |  | GET /ready |  |
-| F0027 | 01_fastapi/endpoints | `create_app.metrics` | [backend/app/main.py:184](../backend/app/main.py#L184) | route | used |  |  | GET /metrics |  |
-| F0028 | 01_fastapi/endpoints | `create_app.public_config` | [backend/app/main.py:188](../backend/app/main.py#L188) | route | used | Non-secret links for the dashboard header. | F0871, F0872 | GET /api/v1/config/public |  |
-| F0029 | 01_fastapi/endpoints | `create_app.demo_session` | [backend/app/main.py:218](../backend/app/main.py#L218) | route | used | Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the U | F0872 | GET /api/v1/demo/session |  |
-| F0030 | 01_fastapi/endpoints | `create_app._public` | [backend/app/main.py:227](../backend/app/main.py#L227) | nested | used |  | F0028 |  |  |
-| F0031 | 01_fastapi/endpoints | `create_app.status` | [backend/app/main.py:230](../backend/app/main.py#L230) | route | used |  | F0097, F0887, F0871 | GET /api/v1/status |  |
-| F0032 | 01_fastapi/endpoints | `create_app.status.probe` | [backend/app/main.py:234](../backend/app/main.py#L234) | nested | used |  | F0031 |  |  |
-| F0033 | 01_fastapi/endpoints | `create_app.snapshot` | [backend/app/main.py:266](../backend/app/main.py#L266) | route | used |  | F0471, F0861, F0964 | GET /api/v1/snapshot |  |
-| F0034 | 01_fastapi/endpoints | `create_app.tenant_catalogue` | [backend/app/main.py:279](../backend/app/main.py#L279) | route | used | Industries and customers for the top-bar selector (send the id back as the X-Tenant header | F0963 | GET /api/v1/tenants |  |
-| F0035 | 01_fastapi/endpoints | `create_app.network_map` | [backend/app/main.py:284](../backend/app/main.py#L284) | route | used |  | F0964 | GET /api/v1/network/map |  |
-| F0036 | 01_fastapi/endpoints | `create_app.sap_metadata` | [backend/app/main.py:289](../backend/app/main.py#L289) | route | used |  | F0862, F0818, F0819 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata |  |
-| F0037 | 01_fastapi/endpoints | `create_app.sap_sandbox_documents` | [backend/app/main.py:294](../backend/app/main.py#L294) | route | used |  | F0818, F0819, F0942 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument |  |
-| F0038 | 01_fastapi/endpoints | `create_app.sap_odata` | [backend/app/main.py:300](../backend/app/main.py#L300) | route | used |  | F0888, F0862, F0818, F0819, F0942, F0875 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} |  |
-| F0039 | 01_fastapi/endpoints | `create_app.block_sap_write` | [backend/app/main.py:315](../backend/app/main.py#L315) | route | used |  | F0888, F0862, F0818, F0819, F0942, F0875 | POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path} |  |
-| F0040 | 01_fastapi/endpoints | `create_app.factory_readiness` | [backend/app/main.py:322](../backend/app/main.py#L322) | route | used |  | F0472, F0889, F0863, F0864, F0865, F0866, F0867 | POST /api/v1/analysis/factory-readiness |  |
-| F0041 | 01_fastapi/endpoints | `create_app.stock_balance` | [backend/app/main.py:327](../backend/app/main.py#L327) | route | used |  | F0473, F0889, F0863, F0864, F0959, F0965 | POST /api/v1/analysis/stock-balance |  |
-| F0042 | 01_fastapi/endpoints | `create_app.demand_forecast` | [backend/app/main.py:331](../backend/app/main.py#L331) | route | used |  | F0474, F0864 | POST /api/v1/analysis/forecast |  |
-| F0043 | 01_fastapi/endpoints | `create_app.what_if` | [backend/app/main.py:335](../backend/app/main.py#L335) | route | used |  | F0889, F0864 | POST /api/v1/analysis/what-if |  |
-| F0044 | 01_fastapi/endpoints | `create_app.supplier_risk` | [backend/app/main.py:340](../backend/app/main.py#L340) | route | used |  | F0475, F0889, F0864 | POST /api/v1/analysis/supplier-risk |  |
-| F0045 | 01_fastapi/endpoints | `create_app.quality` | [backend/app/main.py:344](../backend/app/main.py#L344) | route | used |  | F0476, F0889, F0864, F0866 | POST /api/v1/analysis/quality |  |
-| F0046 | 01_fastapi/endpoints | `create_app.logistics` | [backend/app/main.py:348](../backend/app/main.py#L348) | route | used |  | F0477, F0889, F0864 | POST /api/v1/analysis/logistics |  |
-| F0047 | 01_fastapi/endpoints | `create_app.sales_orders` | [backend/app/main.py:352](../backend/app/main.py#L352) | route | used |  | F0479, F0900, F0942, F0965 | POST /api/v1/analysis/sales-orders |  |
-| F0048 | 01_fastapi/endpoints | `create_app.stocktake` | [backend/app/main.py:356](../backend/app/main.py#L356) | route | used |  | F0480, F0900 | POST /api/v1/analysis/stocktake |  |
-| F0049 | 01_fastapi/endpoints | `create_app.forecast_vs_actuals` | [backend/app/main.py:360](../backend/app/main.py#L360) | route | used |  |  | GET /api/v1/analysis/forecast-vs-actuals |  |
-| F0050 | 01_fastapi/endpoints | `create_app.production_overview` | [backend/app/main.py:365](../backend/app/main.py#L365) | route | used |  |  | GET /api/v1/production/overview |  |
-| F0051 | 01_fastapi/endpoints | `create_app.products` | [backend/app/main.py:370](../backend/app/main.py#L370) | route | used |  | F0946 | GET /api/v1/products |  |
-| F0052 | 01_fastapi/endpoints | `create_app.product` | [backend/app/main.py:375](../backend/app/main.py#L375) | route | used |  | F0900, F0940, F0946, F0964 | GET /api/v1/products/{material} |  |
-| F0053 | 01_fastapi/endpoints | `create_app.role_catalogue` | [backend/app/main.py:381](../backend/app/main.py#L381) | route | used |  | F0955 | GET /api/v1/roles |  |
-| F0054 | 01_fastapi/endpoints | `create_app.role_view` | [backend/app/main.py:386](../backend/app/main.py#L386) | route | used |  | F0878, F0956, F0957 | GET /api/v1/roles/{role} |  |
-| F0055 | 01_fastapi/endpoints | `create_app.north_star` | [backend/app/main.py:393](../backend/app/main.py#L393) | route | used |  | F0958 | GET /api/v1/northstar |  |
-| F0056 | 01_fastapi/endpoints | `create_app.learning` | [backend/app/main.py:398](../backend/app/main.py#L398) | route | used |  | F0959 | GET /api/v1/learning |  |
-| F0057 | 01_fastapi/endpoints | `create_app.moat_view` | [backend/app/main.py:403](../backend/app/main.py#L403) | route | used | Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strengt | F0959, F0960 | GET /api/v1/moat |  |
-| F0058 | 01_fastapi/endpoints | `create_app.moat_consent` | [backend/app/main.py:409](../backend/app/main.py#L409) | route | used | The customer decides whether its data may contribute to industry learning (manager only, a | F0960 | POST /api/v1/moat/consent |  |
-| F0059 | 01_fastapi/endpoints | `create_app.record_outcome` | [backend/app/main.py:417](../backend/app/main.py#L417) | route | used | Record the real result of an executed recommendation against an SAP document (decision out | F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/outcome |  |
-| F0060 | 01_fastapi/endpoints | `create_app.sales_outlook` | [backend/app/main.py:431](../backend/app/main.py#L431) | route | used |  | F0946 | GET /api/v1/sales/outlook |  |
-| F0061 | 01_fastapi/endpoints | `create_app.product_brief` | [backend/app/main.py:436](../backend/app/main.py#L436) | route | used |  | F0946, F0964 | GET /api/v1/products/{material}/brief |  |
-| F0062 | 01_fastapi/endpoints | `create_app.sites` | [backend/app/main.py:441](../backend/app/main.py#L441) | route | used |  | F0964 | GET /api/v1/sites |  |
-| F0063 | 01_fastapi/endpoints | `create_app.site` | [backend/app/main.py:446](../backend/app/main.py#L446) | route | used |  | F0964 | GET /api/v1/sites/{code} |  |
-| F0064 | 01_fastapi/endpoints | `create_app.dashboards_list` | [backend/app/main.py:451](../backend/app/main.py#L451) | route | used |  | F0900 | GET /api/v1/dashboards |  |
-| F0065 | 01_fastapi/endpoints | `create_app.dashboard` | [backend/app/main.py:455](../backend/app/main.py#L455) | route | used |  | F0900, F0940, F0941, F0964 | GET /api/v1/dashboards/{persona} |  |
-| F0066 | 01_fastapi/endpoints | `create_app.get_insights` | [backend/app/main.py:460](../backend/app/main.py#L460) | route | used |  | F0900, F0940, F0964 | GET /api/v1/insights |  |
-| F0067 | 01_fastapi/endpoints | `create_app.watch_kinds` | [backend/app/main.py:468](../backend/app/main.py#L468) | route | used |  | F0900, F0940 | GET /api/v1/watches/kinds |  |
-| F0068 | 01_fastapi/endpoints | `create_app.list_watches` | [backend/app/main.py:472](../backend/app/main.py#L472) | route | used |  | F0900, F0940, F0965 | GET /api/v1/watches |  |
-| F0069 | 01_fastapi/endpoints | `create_app.create_watch` | [backend/app/main.py:476](../backend/app/main.py#L476) | route | used |  | F0900, F0940, F0965 | POST /api/v1/watches |  |
-| F0070 | 01_fastapi/endpoints | `create_app.delete_watch` | [backend/app/main.py:486](../backend/app/main.py#L486) | route | used |  | F0900, F0940 | DELETE /api/v1/watches/{watch_id} |  |
-| F0071 | 01_fastapi/endpoints | `create_app.evaluate_watches` | [backend/app/main.py:492](../backend/app/main.py#L492) | route | used |  | F0900, F0940 | POST /api/v1/watches/evaluate |  |
-| F0072 | 01_fastapi/endpoints | `create_app.get_analysis` | [backend/app/main.py:502](../backend/app/main.py#L502) | route | used |  |  | GET /api/v1/analyses/{analysis_id} |  |
-| F0073 | 01_fastapi/endpoints | `create_app.inventory` | [backend/app/main.py:510](../backend/app/main.py#L510) | route | used |  | F0478, F0864 | GET /api/v1/inventory |  |
-| F0074 | 01_fastapi/endpoints | `create_app.supplier_scorecard` | [backend/app/main.py:515](../backend/app/main.py#L515) | route | used |  | F0864 | GET /api/v1/suppliers/scorecard |  |
-| F0075 | 01_fastapi/endpoints | `create_app.kpis` | [backend/app/main.py:520](../backend/app/main.py#L520) | route | used |  | F0888, F0864, F0873, F0965 | GET /api/v1/kpis |  |
-| F0076 | 01_fastapi/endpoints | `create_app.rag_search` | [backend/app/main.py:526](../backend/app/main.py#L526) | route | used |  | F0481, F0112, F0133, F0629, F0678, F0890, F0844, F0868, F0819 | POST /api/v1/rag/search | Flowise Custom Tool · search_supply_chain_policy, Factory-Planning-Agentflow · 5 · Policy search (RAG), Inventory-Optimi |
-| F0077 | 01_fastapi/endpoints | `create_app.rag_search_get` | [backend/app/main.py:531](../backend/app/main.py#L531) | route | used | Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escapin | F0481, F0112, F0133, F0629, F0678, F0890, F0844, F0868, F0819 | GET /api/v1/rag/search |  |
-| F0078 | 01_fastapi/endpoints | `create_app.embeddings` | [backend/app/main.py:539](../backend/app/main.py#L539) | route | used | Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding mo |  | POST /v1/embeddings |  |
-| F0079 | 01_fastapi/endpoints | `create_app.embeddings.encode` | [backend/app/main.py:548](../backend/app/main.py#L548) | nested | used |  | F0078 |  |  |
-| F0080 | 01_fastapi/endpoints | `create_app.rag_stats` | [backend/app/main.py:556](../backend/app/main.py#L556) | route | used |  | F0864 | GET /api/v1/rag/stats |  |
-| F0081 | 01_fastapi/endpoints | `create_app.rag_add` | [backend/app/main.py:561](../backend/app/main.py#L561) | route | used |  | F0112, F0134, F0868 | POST /api/v1/rag/documents |  |
-| F0082 | 01_fastapi/endpoints | `create_app._graph_call` | [backend/app/main.py:568](../backend/app/main.py#L568) | nested | used |  | F0083, F0085, F0086, F0087, F0088, F0092 |  |  |
-| F0083 | 01_fastapi/endpoints | `create_app.chat` | [backend/app/main.py:576](../backend/app/main.py#L576) | route | used |  | F0891, F0869, F0962 | POST /api/v1/chat |  |
-| F0084 | 01_fastapi/endpoints | `create_app._agentflow_view` | [backend/app/main.py:603](../backend/app/main.py#L603) | nested | used |  | F0085, F0086 |  |  |
-| F0085 | 01_fastapi/endpoints | `create_app.langgraph_agentflow` | [backend/app/main.py:627](../backend/app/main.py#L627) | route | used |  | F0892, F0870 | POST /api/v1/langgraph/agentflow |  |
-| F0086 | 01_fastapi/endpoints | `create_app.langgraph_agentflow_resume` | [backend/app/main.py:634](../backend/app/main.py#L634) | route | used |  | F0892, F0870 | POST /api/v1/langgraph/agentflow/{thread_id}/resume |  |
-| F0087 | 01_fastapi/endpoints | `create_app.business_start` | [backend/app/main.py:640](../backend/app/main.py#L640) | route | used |  | F0893, F0869 | POST /api/v1/workflows/business |  |
-| F0088 | 01_fastapi/endpoints | `create_app.business_resume` | [backend/app/main.py:647](../backend/app/main.py#L647) | route | used |  | F0893, F0869 | POST /api/v1/workflows/business/{thread_id}/resume |  |
-| F0089 | 01_fastapi/endpoints | `create_app.current_harness` | [backend/app/main.py:660](../backend/app/main.py#L660) | nested | used |  | F0090, F0092 |  |  |
-| F0090 | 01_fastapi/endpoints | `create_app.deep_harness` | [backend/app/main.py:664](../backend/app/main.py#L664) | route | used |  | F0874 | GET /api/v1/deep-agents/harness |  |
-| F0091 | 01_fastapi/endpoints | `create_app.set_deep_harness` | [backend/app/main.py:673](../backend/app/main.py#L673) | route | used |  | F0874 | PUT /api/v1/deep-agents/harness |  |
-| F0092 | 01_fastapi/endpoints | `create_app.supplier_research` | [backend/app/main.py:679](../backend/app/main.py#L679) | route | used |  | F0894 | POST /api/v1/deep-agents/supplier-research |  |
-| F0093 | 01_fastapi/endpoints | `create_app._flow_id` | [backend/app/main.py:703](../backend/app/main.py#L703) | nested | used |  | F0094 |  |  |
-| F0094 | 01_fastapi/endpoints | `create_app.flowise_predict` | [backend/app/main.py:717](../backend/app/main.py#L717) | route | used |  | F0895, F0896 | POST /api/v1/flowise/{flow}/predict |  |
-| F0095 | 01_fastapi/endpoints | `create_app.submit_recommendation` | [backend/app/main.py:755](../backend/app/main.py#L755) | route | used |  | F0482, F0108, F0900, F0901, F0865, F0867, F0942, F0959, F0965 | POST /api/v1/recommendations |  |
-| F0096 | 01_fastapi/endpoints | `create_app.submit_from_agent` | [backend/app/main.py:764](../backend/app/main.py#L764) | route | used |  | F0900, F0901, F0865, F0866, F0819, F0942, F0877, F0959 | POST /api/v1/recommendations/from-agent |  |
-| F0097 | 01_fastapi/endpoints | `create_app.recommendations` | [backend/app/main.py:779](../backend/app/main.py#L779) | route | used |  | F0482, F0900, F0901, F0865, F0867, F0942, F0959, F0965 | GET /api/v1/recommendations |  |
-| F0098 | 01_fastapi/endpoints | `create_app.decide` | [backend/app/main.py:784](../backend/app/main.py#L784) | route | used |  | F0109, F0888, F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/decision |  |
-| F0099 | 01_fastapi/endpoints | `create_app.execute` | [backend/app/main.py:798](../backend/app/main.py#L798) | route | used | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents | F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/execute |  |
-| F0100 | 01_fastapi/endpoints | `create_app.sap_documents` | [backend/app/main.py:825](../backend/app/main.py#L825) | route | used |  |  | GET /api/v1/sap/documents |  |
-| F0101 | 01_fastapi/endpoints | `create_app.audit` | [backend/app/main.py:830](../backend/app/main.py#L830) | route | used |  | F0112, F0146, F0901, F0848, F0862, F0865, F0874, F0878 | GET /api/v1/audit |  |
-| F0102 | 01_fastapi/endpoints | `create_app.poc_sap_inventory` | [backend/app/main.py:839](../backend/app/main.py#L839) | route | used |  | F0875, F0878, F0879 | GET /sap/inventory |  |
-| F0103 | 01_fastapi/endpoints | `create_app.poc_sap_production_orders` | [backend/app/main.py:845](../backend/app/main.py#L845) | route | used |  | F0875, F0879 | GET /sap/production-orders |  |
-| F0104 | 01_fastapi/endpoints | `create_app.poc_forecast_demand` | [backend/app/main.py:851](../backend/app/main.py#L851) | route | used |  | F0876, F0879 | POST /forecast/demand |  |
-| F0105 | 01_fastapi/endpoints | `create_app.poc_forecast_lead_time` | [backend/app/main.py:855](../backend/app/main.py#L855) | route | used |  | F0876, F0879 | POST /forecast/supplier-lead-time |  |
-| F0106 | 01_fastapi/endpoints | `create_app.poc_material_readiness` | [backend/app/main.py:859](../backend/app/main.py#L859) | route | used |  | F0876, F0879 | POST /optimizer/material-readiness |  |
-| F0107 | 01_fastapi/endpoints | `create_app.poc_warehouse_transfer` | [backend/app/main.py:864](../backend/app/main.py#L864) | route | used |  | F0876, F0877, F0879 | POST /optimizer/warehouse-transfer |  |
-| F0108 | 01_fastapi/endpoints | `create_app.poc_decisions` | [backend/app/main.py:868](../backend/app/main.py#L868) | route | used |  |  | POST /decisions |  |
-| F0109 | 01_fastapi/endpoints | `create_app.poc_human_review` | [backend/app/main.py:872](../backend/app/main.py#L872) | route | used |  | F0877, F0879 | POST /decisions/{decision_id}/human-review |  |
-| F0110 | 01_fastapi/endpoints | `create_app.poc_reconcile` | [backend/app/main.py:876](../backend/app/main.py#L876) | route | used |  | F0877, F0879 | POST /outcomes/reconcile |  |
-| F0111 | 01_fastapi/endpoints | `create_app.poc_model_performance` | [backend/app/main.py:902](../backend/app/main.py#L902) | route | used |  | F0877, F0879 | GET /learning/model-performance |  |
+| F0016 | 01_fastapi/endpoints | `_expectation` | [backend/app/main.py:71](../backend/app/main.py#L71) | function | used | Plain-language expected result of one executed action (what the outcome check will look fo | F0059, F0099, F0110 |  |  |
+| F0017 | 01_fastapi/endpoints | `create_app` | [backend/app/main.py:81](../backend/app/main.py#L81) | function | used |  | F0905, F0872 |  |  |
+| F0018 | 01_fastapi/endpoints | `create_app.request_context` | [backend/app/main.py:112](../backend/app/main.py#L112) | nested | used |  |  |  |  |
+| F0019 | 01_fastapi/endpoints | `create_app.principal` | [backend/app/main.py:132](../backend/app/main.py#L132) | nested | used |  | F0020, F0020, F0021, F0021, F0078 |  |  |
+| F0020 | 01_fastapi/endpoints | `create_app.manager` | [backend/app/main.py:147](../backend/app/main.py#L147) | nested | used |  | F0029, F0058, F0058, F0059, F0059, F0081, F0081, F0987, F0987, F0091, F0091, F00 |  |  |
+| F0021 | 01_fastapi/endpoints | `create_app.reader` | [backend/app/main.py:155](../backend/app/main.py#L155) | nested | used |  | F0031, F0031, F0033, F0033, F0035, F0035, F0036, F0036, F0037, F0037, F0038, F00 |  |  |
+| F0022 | 01_fastapi/endpoints | `create_app.watch_owner` | [backend/app/main.py:158](../backend/app/main.py#L158) | nested | used |  | F0068, F0069, F0070, F0071 |  |  |
+| F0023 | 01_fastapi/endpoints | `create_app.save` | [backend/app/main.py:161](../backend/app/main.py#L161) | nested | used |  | F0040, F0041, F0042, F0043, F0044, F0045, F0046, F0047, F0048, F0104, F0105, F01 |  |  |
+| F0024 | 01_fastapi/endpoints | `create_app.value_error_handler` | [backend/app/main.py:173](../backend/app/main.py#L173) | nested | used |  |  |  |  |
+| F0025 | 01_fastapi/endpoints | `create_app.health` | [backend/app/main.py:178](../backend/app/main.py#L178) | route | used |  |  | GET /health |  |
+| F0026 | 01_fastapi/endpoints | `create_app.ready` | [backend/app/main.py:182](../backend/app/main.py#L182) | route | used |  |  | GET /ready |  |
+| F0027 | 01_fastapi/endpoints | `create_app.metrics` | [backend/app/main.py:186](../backend/app/main.py#L186) | route | used |  |  | GET /metrics |  |
+| F0028 | 01_fastapi/endpoints | `create_app.public_config` | [backend/app/main.py:190](../backend/app/main.py#L190) | route | used | Non-secret links for the dashboard header. | F0871, F0872 | GET /api/v1/config/public |  |
+| F0029 | 01_fastapi/endpoints | `create_app.demo_session` | [backend/app/main.py:220](../backend/app/main.py#L220) | route | used | Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the U | F0872 | GET /api/v1/demo/session |  |
+| F0030 | 01_fastapi/endpoints | `create_app._public` | [backend/app/main.py:229](../backend/app/main.py#L229) | nested | used |  | F0028 |  |  |
+| F0031 | 01_fastapi/endpoints | `create_app.status` | [backend/app/main.py:232](../backend/app/main.py#L232) | route | used |  | F0097, F0887, F0871 | GET /api/v1/status |  |
+| F0032 | 01_fastapi/endpoints | `create_app.status.probe` | [backend/app/main.py:236](../backend/app/main.py#L236) | nested | used |  | F0031 |  |  |
+| F0033 | 01_fastapi/endpoints | `create_app.snapshot` | [backend/app/main.py:268](../backend/app/main.py#L268) | route | used |  | F0471, F0861, F0964 | GET /api/v1/snapshot |  |
+| F0034 | 01_fastapi/endpoints | `create_app.tenant_catalogue` | [backend/app/main.py:281](../backend/app/main.py#L281) | route | used | Industries and customers for the top-bar selector (send the id back as the X-Tenant header | F0963 | GET /api/v1/tenants |  |
+| F0035 | 01_fastapi/endpoints | `create_app.network_map` | [backend/app/main.py:286](../backend/app/main.py#L286) | route | used |  | F0964 | GET /api/v1/network/map |  |
+| F0036 | 01_fastapi/endpoints | `create_app.sap_metadata` | [backend/app/main.py:291](../backend/app/main.py#L291) | route | used |  | F0862, F0818, F0819 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata |  |
+| F0037 | 01_fastapi/endpoints | `create_app.sap_sandbox_documents` | [backend/app/main.py:296](../backend/app/main.py#L296) | route | used |  | F0818, F0819, F0942 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument |  |
+| F0038 | 01_fastapi/endpoints | `create_app.sap_odata` | [backend/app/main.py:302](../backend/app/main.py#L302) | route | used |  | F0888, F0862, F0818, F0819, F0942, F0875 | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} |  |
+| F0039 | 01_fastapi/endpoints | `create_app.block_sap_write` | [backend/app/main.py:317](../backend/app/main.py#L317) | route | used |  | F0888, F0862, F0818, F0819, F0942, F0875 | POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path} |  |
+| F0040 | 01_fastapi/endpoints | `create_app.factory_readiness` | [backend/app/main.py:324](../backend/app/main.py#L324) | route | used |  | F0472, F0889, F0863, F0864, F0865, F0866, F0867 | POST /api/v1/analysis/factory-readiness |  |
+| F0041 | 01_fastapi/endpoints | `create_app.stock_balance` | [backend/app/main.py:329](../backend/app/main.py#L329) | route | used |  | F0473, F0889, F0863, F0864, F0959, F0965 | POST /api/v1/analysis/stock-balance |  |
+| F0042 | 01_fastapi/endpoints | `create_app.demand_forecast` | [backend/app/main.py:333](../backend/app/main.py#L333) | route | used |  | F0474, F0864 | POST /api/v1/analysis/forecast |  |
+| F0043 | 01_fastapi/endpoints | `create_app.what_if` | [backend/app/main.py:337](../backend/app/main.py#L337) | route | used |  | F0889, F0864 | POST /api/v1/analysis/what-if |  |
+| F0044 | 01_fastapi/endpoints | `create_app.supplier_risk` | [backend/app/main.py:342](../backend/app/main.py#L342) | route | used |  | F0475, F0889, F0864 | POST /api/v1/analysis/supplier-risk |  |
+| F0045 | 01_fastapi/endpoints | `create_app.quality` | [backend/app/main.py:346](../backend/app/main.py#L346) | route | used |  | F0476, F0889, F0864, F0866 | POST /api/v1/analysis/quality |  |
+| F0046 | 01_fastapi/endpoints | `create_app.logistics` | [backend/app/main.py:350](../backend/app/main.py#L350) | route | used |  | F0477, F0889, F0864 | POST /api/v1/analysis/logistics |  |
+| F0047 | 01_fastapi/endpoints | `create_app.sales_orders` | [backend/app/main.py:354](../backend/app/main.py#L354) | route | used |  | F0479, F0900, F0942, F0965 | POST /api/v1/analysis/sales-orders |  |
+| F0048 | 01_fastapi/endpoints | `create_app.stocktake` | [backend/app/main.py:358](../backend/app/main.py#L358) | route | used |  | F0480, F0900 | POST /api/v1/analysis/stocktake |  |
+| F0049 | 01_fastapi/endpoints | `create_app.forecast_vs_actuals` | [backend/app/main.py:362](../backend/app/main.py#L362) | route | used |  |  | GET /api/v1/analysis/forecast-vs-actuals |  |
+| F0050 | 01_fastapi/endpoints | `create_app.production_overview` | [backend/app/main.py:367](../backend/app/main.py#L367) | route | used |  |  | GET /api/v1/production/overview |  |
+| F0051 | 01_fastapi/endpoints | `create_app.products` | [backend/app/main.py:372](../backend/app/main.py#L372) | route | used |  | F0946 | GET /api/v1/products |  |
+| F0052 | 01_fastapi/endpoints | `create_app.product` | [backend/app/main.py:377](../backend/app/main.py#L377) | route | used |  | F0900, F0940, F0946, F0964 | GET /api/v1/products/{material} |  |
+| F0053 | 01_fastapi/endpoints | `create_app.role_catalogue` | [backend/app/main.py:383](../backend/app/main.py#L383) | route | used |  | F0955 | GET /api/v1/roles |  |
+| F0054 | 01_fastapi/endpoints | `create_app.role_view` | [backend/app/main.py:388](../backend/app/main.py#L388) | route | used |  | F0878, F0956, F0957 | GET /api/v1/roles/{role} |  |
+| F0055 | 01_fastapi/endpoints | `create_app.north_star` | [backend/app/main.py:395](../backend/app/main.py#L395) | route | used |  | F0958 | GET /api/v1/northstar |  |
+| F0056 | 01_fastapi/endpoints | `create_app.learning` | [backend/app/main.py:400](../backend/app/main.py#L400) | route | used |  | F0959 | GET /api/v1/learning |  |
+| F0057 | 01_fastapi/endpoints | `create_app.moat_view` | [backend/app/main.py:405](../backend/app/main.py#L405) | route | used | Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strengt | F0959, F0960 | GET /api/v1/moat |  |
+| F0058 | 01_fastapi/endpoints | `create_app.moat_consent` | [backend/app/main.py:411](../backend/app/main.py#L411) | route | used | The customer decides whether its data may contribute to industry learning (manager only, a | F0960 | POST /api/v1/moat/consent |  |
+| F0059 | 01_fastapi/endpoints | `create_app.record_outcome` | [backend/app/main.py:419](../backend/app/main.py#L419) | route | used | Record the real result of an executed recommendation against an SAP document (decision out | F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/outcome |  |
+| F0060 | 01_fastapi/endpoints | `create_app.sales_outlook` | [backend/app/main.py:433](../backend/app/main.py#L433) | route | used |  | F0946 | GET /api/v1/sales/outlook |  |
+| F0061 | 01_fastapi/endpoints | `create_app.product_brief` | [backend/app/main.py:438](../backend/app/main.py#L438) | route | used |  | F0946, F0964 | GET /api/v1/products/{material}/brief |  |
+| F0062 | 01_fastapi/endpoints | `create_app.sites` | [backend/app/main.py:443](../backend/app/main.py#L443) | route | used |  | F0964 | GET /api/v1/sites |  |
+| F0063 | 01_fastapi/endpoints | `create_app.site` | [backend/app/main.py:448](../backend/app/main.py#L448) | route | used |  | F0964 | GET /api/v1/sites/{code} |  |
+| F0064 | 01_fastapi/endpoints | `create_app.dashboards_list` | [backend/app/main.py:453](../backend/app/main.py#L453) | route | used |  | F0900 | GET /api/v1/dashboards |  |
+| F0065 | 01_fastapi/endpoints | `create_app.dashboard` | [backend/app/main.py:457](../backend/app/main.py#L457) | route | used |  | F0900, F0940, F0941, F0964 | GET /api/v1/dashboards/{persona} |  |
+| F0066 | 01_fastapi/endpoints | `create_app.get_insights` | [backend/app/main.py:462](../backend/app/main.py#L462) | route | used |  | F0900, F0940, F0964 | GET /api/v1/insights |  |
+| F0067 | 01_fastapi/endpoints | `create_app.watch_kinds` | [backend/app/main.py:470](../backend/app/main.py#L470) | route | used |  | F0900, F0940 | GET /api/v1/watches/kinds |  |
+| F0068 | 01_fastapi/endpoints | `create_app.list_watches` | [backend/app/main.py:474](../backend/app/main.py#L474) | route | used |  | F0900, F0940, F0965 | GET /api/v1/watches |  |
+| F0069 | 01_fastapi/endpoints | `create_app.create_watch` | [backend/app/main.py:478](../backend/app/main.py#L478) | route | used |  | F0900, F0940, F0965 | POST /api/v1/watches |  |
+| F0070 | 01_fastapi/endpoints | `create_app.delete_watch` | [backend/app/main.py:488](../backend/app/main.py#L488) | route | used |  | F0900, F0940 | DELETE /api/v1/watches/{watch_id} |  |
+| F0071 | 01_fastapi/endpoints | `create_app.evaluate_watches` | [backend/app/main.py:494](../backend/app/main.py#L494) | route | used |  | F0900, F0940 | POST /api/v1/watches/evaluate |  |
+| F0072 | 01_fastapi/endpoints | `create_app.get_analysis` | [backend/app/main.py:504](../backend/app/main.py#L504) | route | used |  |  | GET /api/v1/analyses/{analysis_id} |  |
+| F0073 | 01_fastapi/endpoints | `create_app.inventory` | [backend/app/main.py:512](../backend/app/main.py#L512) | route | used |  | F0478, F0864 | GET /api/v1/inventory |  |
+| F0074 | 01_fastapi/endpoints | `create_app.supplier_scorecard` | [backend/app/main.py:517](../backend/app/main.py#L517) | route | used |  | F0864 | GET /api/v1/suppliers/scorecard |  |
+| F0075 | 01_fastapi/endpoints | `create_app.kpis` | [backend/app/main.py:522](../backend/app/main.py#L522) | route | used |  | F0888, F0864, F0873, F0965 | GET /api/v1/kpis |  |
+| F0076 | 01_fastapi/endpoints | `create_app.rag_search` | [backend/app/main.py:528](../backend/app/main.py#L528) | route | used |  | F0481, F0112, F0133, F0629, F0678, F0890, F0844, F0868, F0819 | POST /api/v1/rag/search | Flowise Custom Tool · search_supply_chain_policy, Factory-Planning-Agentflow · 5 · Policy search (RAG), Inventory-Optimi |
+| F0077 | 01_fastapi/endpoints | `create_app.rag_search_get` | [backend/app/main.py:533](../backend/app/main.py#L533) | route | used | Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escapin | F0481, F0112, F0133, F0629, F0678, F0890, F0844, F0868, F0819 | GET /api/v1/rag/search |  |
+| F0078 | 01_fastapi/endpoints | `create_app.embeddings` | [backend/app/main.py:541](../backend/app/main.py#L541) | route | used | Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding mo |  | POST /v1/embeddings |  |
+| F0079 | 01_fastapi/endpoints | `create_app.embeddings.encode` | [backend/app/main.py:550](../backend/app/main.py#L550) | nested | used |  | F0078 |  |  |
+| F0080 | 01_fastapi/endpoints | `create_app.rag_stats` | [backend/app/main.py:558](../backend/app/main.py#L558) | route | used |  | F0864 | GET /api/v1/rag/stats |  |
+| F0081 | 01_fastapi/endpoints | `create_app.rag_add` | [backend/app/main.py:563](../backend/app/main.py#L563) | route | used |  | F0112, F0134, F0868 | POST /api/v1/rag/documents |  |
+| F0082 | 01_fastapi/endpoints | `create_app._graph_call` | [backend/app/main.py:598](../backend/app/main.py#L598) | nested | used |  | F0083, F0085, F0086, F0087, F0088, F0092 |  |  |
+| F0083 | 01_fastapi/endpoints | `create_app.chat` | [backend/app/main.py:606](../backend/app/main.py#L606) | route | used |  | F0891, F0869, F0962 | POST /api/v1/chat |  |
+| F0084 | 01_fastapi/endpoints | `create_app._agentflow_view` | [backend/app/main.py:633](../backend/app/main.py#L633) | nested | used |  | F0085, F0086 |  |  |
+| F0085 | 01_fastapi/endpoints | `create_app.langgraph_agentflow` | [backend/app/main.py:657](../backend/app/main.py#L657) | route | used |  | F0892, F0870 | POST /api/v1/langgraph/agentflow |  |
+| F0086 | 01_fastapi/endpoints | `create_app.langgraph_agentflow_resume` | [backend/app/main.py:664](../backend/app/main.py#L664) | route | used |  | F0892, F0870 | POST /api/v1/langgraph/agentflow/{thread_id}/resume |  |
+| F0087 | 01_fastapi/endpoints | `create_app.business_start` | [backend/app/main.py:670](../backend/app/main.py#L670) | route | used |  | F0893, F0869 | POST /api/v1/workflows/business |  |
+| F0088 | 01_fastapi/endpoints | `create_app.business_resume` | [backend/app/main.py:677](../backend/app/main.py#L677) | route | used |  | F0893, F0869 | POST /api/v1/workflows/business/{thread_id}/resume |  |
+| F0089 | 01_fastapi/endpoints | `create_app.current_harness` | [backend/app/main.py:690](../backend/app/main.py#L690) | nested | used |  | F0090, F0092 |  |  |
+| F0090 | 01_fastapi/endpoints | `create_app.deep_harness` | [backend/app/main.py:694](../backend/app/main.py#L694) | route | used |  | F0874 | GET /api/v1/deep-agents/harness |  |
+| F0091 | 01_fastapi/endpoints | `create_app.set_deep_harness` | [backend/app/main.py:703](../backend/app/main.py#L703) | route | used |  | F0874 | PUT /api/v1/deep-agents/harness |  |
+| F0092 | 01_fastapi/endpoints | `create_app.supplier_research` | [backend/app/main.py:709](../backend/app/main.py#L709) | route | used |  | F0894 | POST /api/v1/deep-agents/supplier-research |  |
+| F0093 | 01_fastapi/endpoints | `create_app._flow_id` | [backend/app/main.py:733](../backend/app/main.py#L733) | nested | used |  | F0094 |  |  |
+| F0094 | 01_fastapi/endpoints | `create_app.flowise_predict` | [backend/app/main.py:747](../backend/app/main.py#L747) | route | used |  | F0895, F0896 | POST /api/v1/flowise/{flow}/predict |  |
+| F0095 | 01_fastapi/endpoints | `create_app.submit_recommendation` | [backend/app/main.py:785](../backend/app/main.py#L785) | route | used |  | F0482, F0108, F0900, F0901, F0865, F0867, F0942, F0959, F0965 | POST /api/v1/recommendations |  |
+| F0096 | 01_fastapi/endpoints | `create_app.submit_from_agent` | [backend/app/main.py:794](../backend/app/main.py#L794) | route | used |  | F0900, F0901, F0865, F0866, F0819, F0942, F0877, F0959 | POST /api/v1/recommendations/from-agent |  |
+| F0097 | 01_fastapi/endpoints | `create_app.recommendations` | [backend/app/main.py:809](../backend/app/main.py#L809) | route | used |  | F0482, F0900, F0901, F0865, F0867, F0942, F0959, F0965 | GET /api/v1/recommendations |  |
+| F0098 | 01_fastapi/endpoints | `create_app.decide` | [backend/app/main.py:814](../backend/app/main.py#L814) | route | used |  | F0109, F0888, F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/decision |  |
+| F0099 | 01_fastapi/endpoints | `create_app.execute` | [backend/app/main.py:828](../backend/app/main.py#L828) | route | used | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents | F0900, F0901, F0865, F0942, F0877, F0959 | POST /api/v1/recommendations/{recommendation_id}/execute |  |
+| F0100 | 01_fastapi/endpoints | `create_app.sap_documents` | [backend/app/main.py:855](../backend/app/main.py#L855) | route | used |  |  | GET /api/v1/sap/documents |  |
+| F0101 | 01_fastapi/endpoints | `create_app.audit` | [backend/app/main.py:860](../backend/app/main.py#L860) | route | used |  | F0112, F0146, F0901, F0848, F0862, F0865, F0874, F0878 | GET /api/v1/audit |  |
+| F0102 | 01_fastapi/endpoints | `create_app.poc_sap_inventory` | [backend/app/main.py:869](../backend/app/main.py#L869) | route | used |  | F0875, F0878, F0879 | GET /sap/inventory |  |
+| F0103 | 01_fastapi/endpoints | `create_app.poc_sap_production_orders` | [backend/app/main.py:875](../backend/app/main.py#L875) | route | used |  | F0875, F0879 | GET /sap/production-orders |  |
+| F0104 | 01_fastapi/endpoints | `create_app.poc_forecast_demand` | [backend/app/main.py:881](../backend/app/main.py#L881) | route | used |  | F0876, F0879 | POST /forecast/demand |  |
+| F0105 | 01_fastapi/endpoints | `create_app.poc_forecast_lead_time` | [backend/app/main.py:885](../backend/app/main.py#L885) | route | used |  | F0876, F0879 | POST /forecast/supplier-lead-time |  |
+| F0106 | 01_fastapi/endpoints | `create_app.poc_material_readiness` | [backend/app/main.py:889](../backend/app/main.py#L889) | route | used |  | F0876, F0879 | POST /optimizer/material-readiness |  |
+| F0107 | 01_fastapi/endpoints | `create_app.poc_warehouse_transfer` | [backend/app/main.py:894](../backend/app/main.py#L894) | route | used |  | F0876, F0877, F0879 | POST /optimizer/warehouse-transfer |  |
+| F0108 | 01_fastapi/endpoints | `create_app.poc_decisions` | [backend/app/main.py:898](../backend/app/main.py#L898) | route | used |  |  | POST /decisions |  |
+| F0109 | 01_fastapi/endpoints | `create_app.poc_human_review` | [backend/app/main.py:902](../backend/app/main.py#L902) | route | used |  | F0877, F0879 | POST /decisions/{decision_id}/human-review |  |
+| F0110 | 01_fastapi/endpoints | `create_app.poc_reconcile` | [backend/app/main.py:906](../backend/app/main.py#L906) | route | used |  | F0877, F0879 | POST /outcomes/reconcile |  |
+| F0111 | 01_fastapi/endpoints | `create_app.poc_model_performance` | [backend/app/main.py:932](../backend/app/main.py#L932) | route | used |  | F0877, F0879 | GET /learning/model-performance |  |
 | F0112 | 01_fastapi/endpoints | `create_app` | [backend/scinsight/app.py:34](../backend/scinsight/app.py#L34) | function | used |  | F0909, F0846, F0847, F0851, F0852 |  |  |
 | F0113 | 01_fastapi/endpoints | `create_app.principal` | [backend/scinsight/app.py:57](../backend/scinsight/app.py#L57) | nested | used |  | F0114, F0114, F0125, F0125, F0138, F0138, F0140, F0140, F0141, F0141, F0143, F01 |  |  |
 | F0114 | 01_fastapi/endpoints | `create_app.reader` | [backend/scinsight/app.py:62](../backend/scinsight/app.py#L62) | nested | used |  | F0117, F0117, F0118, F0118, F0119, F0119, F0120, F0120, F0121, F0121, F0122, F01 |  |  |
@@ -180,8 +180,8 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0172 | 01_fastapi/pydantic_models | `DeepAgentHarness` | [backend/app/schemas.py:182](../backend/app/schemas.py#L182) | pydantic_model | used | Harness settings of the Deep Agents supplier-research agent (model, step budget, subagents | F0554, F0017, F0089, F0090, F0091, F0091, F0173 |  |  |
 | F0173 | 01_fastapi/pydantic_models | `DeepAgentHarness._unique` | [backend/app/schemas.py:204](../backend/app/schemas.py#L204) | method | used (framework) |  |  |  |  |
 | F0174 | 01_fastapi/pydantic_models | `SupplierResearchRequest` | [backend/app/schemas.py:211](../backend/app/schemas.py#L211) | pydantic_model | used |  | F0092, F0092 |  |  |
-| F0175 | 01_fastapi/pydantic_models | `FlowisePredictRequest` | [backend/app/schemas.py:218](../backend/app/schemas.py#L218) | pydantic_model | used |  | F0094, F0094 |  |  |
-| F0176 | 01_fastapi/pydantic_models | `FlowisePredictRequest.question_or_resume` | [backend/app/schemas.py:224](../backend/app/schemas.py#L224) | method | used (framework) |  |  |  |  |
+| F0175 | 01_fastapi/pydantic_models | `FlowisePredictRequest` | [backend/app/schemas.py:225](../backend/app/schemas.py#L225) | pydantic_model | used |  | F0094, F0094 |  |  |
+| F0176 | 01_fastapi/pydantic_models | `FlowisePredictRequest.question_or_resume` | [backend/app/schemas.py:231](../backend/app/schemas.py#L231) | method | used (framework) |  |  |  |  |
 | F0177 | 01_fastapi/pydantic_models | `Strict` | [backend/scinsight/schemas.py:12](../backend/scinsight/schemas.py#L12) | pydantic_model | used (framework) |  |  |  |  |
 | F0178 | 01_fastapi/pydantic_models | `ContextRequest` | [backend/scinsight/schemas.py:16](../backend/scinsight/schemas.py#L16) | pydantic_model | used |  | F0118, F0118 |  |  |
 | F0179 | 01_fastapi/pydantic_models | `MaterialReadinessRequest` | [backend/scinsight/schemas.py:20](../backend/scinsight/schemas.py#L20) | pydantic_model | used |  | F0126, F0126, F0180 |  |  |
@@ -363,7 +363,7 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0355 | 03_sap_data/repositories | `Store.__init__` | [backend/app/store.py:172](../backend/app/store.py#L172) | method | used (framework) |  |  |  |  |
 | F0356 | 03_sap_data/repositories | `Store.memory` | [backend/app/store.py:180](../backend/app/store.py#L180) | method | used |  | F0452, F0905, F0872, F0878, F0953 |  |  |
 | F0357 | 03_sap_data/repositories | `Store.dialect` | [backend/app/store.py:184](../backend/app/store.py#L184) | method | used |  | F0026, F0031 |  |  |
-| F0358 | 03_sap_data/repositories | `Store.audit` | [backend/app/store.py:189](../backend/app/store.py#L189) | method | used |  | F0019, F0020, F0023, F0039, F0058, F0059, F0069, F0081, F0083, F0085, F0086, F00 |  |  |
+| F0358 | 03_sap_data/repositories | `Store.audit` | [backend/app/store.py:189](../backend/app/store.py#L189) | method | used |  | F0019, F0020, F0023, F0039, F0058, F0059, F0069, F0081, F0987, F0083, F0085, F00 |  |  |
 | F0359 | 03_sap_data/repositories | `Store.verify_chain` | [backend/app/store.py:214](../backend/app/store.py#L214) | method | used |  | F0031, F0101, F0952 |  |  |
 | F0360 | 03_sap_data/repositories | `Store.audit_events` | [backend/app/store.py:223](../backend/app/store.py#L223) | method | used |  | F0101 |  |  |
 | F0361 | 03_sap_data/repositories | `Store.save_analysis` | [backend/app/store.py:228](../backend/app/store.py#L228) | method | used |  | F0453, F0023, F0952 |  |  |
@@ -398,7 +398,7 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0390 | 03_sap_data/repositories | `TenantContext` | [backend/app/tenants.py:27](../backend/app/tenants.py#L27) | class | used |  | F0392, F0393, F0393 |  |  |
 | F0391 | 03_sap_data/repositories | `TenantRegistry` | [backend/app/tenants.py:40](../backend/app/tenants.py#L40) | class | used |  | F0017, F0018, F0019, F0022, F0034, F0057, F0058, F0251, F0399 |  |  |
 | F0392 | 03_sap_data/repositories | `TenantRegistry.__init__` | [backend/app/tenants.py:41](../backend/app/tenants.py#L41) | method | used (framework) |  |  |  |  |
-| F0393 | 03_sap_data/repositories | `TenantRegistry.get` | [backend/app/tenants.py:59](../backend/app/tenants.py#L59) | method | used |  | F0017, F0033, F0253, F0254, F0255 |  |  |
+| F0393 | 03_sap_data/repositories | `TenantRegistry.get` | [backend/app/tenants.py:59](../backend/app/tenants.py#L59) | method | used |  | F1791, F0017, F0033, F0253, F0254, F0255 |  |  |
 | F0394 | 03_sap_data/repositories | `TenantRegistry.catalogue` | [backend/app/tenants.py:74](../backend/app/tenants.py#L74) | method | used |  | F0034 |  |  |
 | F0395 | 03_sap_data/repositories | `TenantRegistry.activate` | [backend/app/tenants.py:80](../backend/app/tenants.py#L80) | method | used |  | F0018 |  |  |
 | F0396 | 03_sap_data/repositories | `TenantRegistry.deactivate` | [backend/app/tenants.py:84](../backend/app/tenants.py#L84) | method | used |  | F0018 |  |  |
@@ -977,8 +977,8 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0969 | 07_flowise_functions/deployment | `write_env` | [flowise/bootstrap.py:50](../flowise/bootstrap.py#L50) | function | used |  | F0975 |  |  |
 | F0970 | 07_flowise_functions/deployment | `Flowise` | [flowise/bootstrap.py:62](../flowise/bootstrap.py#L62) | class | used |  | F0975 |  |  |
 | F0971 | 07_flowise_functions/deployment | `Flowise.__init__` | [flowise/bootstrap.py:63](../flowise/bootstrap.py#L63) | method | used (framework) |  |  |  |  |
-| F0972 | 07_flowise_functions/deployment | `Flowise.call` | [flowise/bootstrap.py:70](../flowise/bootstrap.py#L70) | method | used |  | F0973, F0975, F0976, F0980, F0981, F0982 |  |  |
-| F0973 | 07_flowise_functions/deployment | `Flowise.wait` | [flowise/bootstrap.py:96](../flowise/bootstrap.py#L96) | method | used |  | F0619, F0620, F0975, F0981 |  |  |
+| F0972 | 07_flowise_functions/deployment | `Flowise.call` | [flowise/bootstrap.py:70](../flowise/bootstrap.py#L70) | method | used |  | F0973, F0975, F0976, F1782, F0980, F0981, F0982 |  |  |
+| F0973 | 07_flowise_functions/deployment | `Flowise.wait` | [flowise/bootstrap.py:96](../flowise/bootstrap.py#L96) | method | used |  | F0619, F0620, F0975, F1782, F0981 |  |  |
 | F0974 | 07_flowise_functions/deployment | `build_flows` | [flowise/bootstrap.py:106](../flowise/bootstrap.py#L106) | function | used |  | F0975 |  |  |
 | F0975 | 07_flowise_functions/deployment | `main` | [flowise/bootstrap.py:129](../flowise/bootstrap.py#L129) | function | used |  |  |  |  |
 | F0976 | 07_flowise_functions/deployment | `main.upsert_credential` | [flowise/bootstrap.py:183](../flowise/bootstrap.py#L183) | nested | used |  | F0975 |  |  |
@@ -990,3 +990,26 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F0982 | 07_flowise_functions/deployment | `import_flows.credential` | [flowise/scinsight/deploy.py:177](../flowise/scinsight/deploy.py#L177) | nested | used |  | F0981 |  |  |
 | F0983 | 07_flowise_functions/deployment | `import_flows.bind` | [flowise/scinsight/deploy.py:202](../flowise/scinsight/deploy.py#L202) | nested | used |  | F0981 |  |  |
 | F0984 | 07_flowise_functions/deployment | `main` | [flowise/scinsight/deploy.py:275](../flowise/scinsight/deploy.py#L275) | function | used |  |  |  |  |
+| F0985 | 01_fastapi/endpoints | `create_app.code_functions` | [backend/app/main.py:572](../backend/app/main.py#L572) | route | used |  | F1796 | GET /api/v1/code/functions |  |
+| F0986 | 01_fastapi/endpoints | `create_app.code_function` | [backend/app/main.py:577](../backend/app/main.py#L577) | route | used |  | F1796 | GET /api/v1/code/function |  |
+| F0987 | 01_fastapi/endpoints | `create_app.code_update` | [backend/app/main.py:585](../backend/app/main.py#L585) | route | used |  | F1796 | PUT /api/v1/code/function |  |
+| F0988 | 01_fastapi/pydantic_models | `CodeUpdateRequest` | [backend/app/schemas.py:218](../backend/app/schemas.py#L218) | pydantic_model | used | Replace one backend function or class (UI backend code section; development only). | F0987, F0987 |  |  |
+| F1781 | 06_testing/other | `build` | [flowise/code_explorer/deploy_code_map.py:27](../flowise/code_explorer/deploy_code_map.py#L27) | function | used |  | F1783 |  |  |
+| F1782 | 06_testing/other | `import_flows` | [flowise/code_explorer/deploy_code_map.py:44](../flowise/code_explorer/deploy_code_map.py#L44) | function | used |  | F1783 |  |  |
+| F1783 | 06_testing/other | `main` | [flowise/code_explorer/deploy_code_map.py:69](../flowise/code_explorer/deploy_code_map.py#L69) | function | used |  |  |  |  |
+| F1784 | 06_testing/other | `_defs` | [backend/app/code_editor.py:25](../backend/app/code_editor.py#L25) | function | used | qualname -> def/class node, including methods and nested functions. | F1791, F1792, F1793 |  |  |
+| F1785 | 06_testing/other | `_defs.walk` | [backend/app/code_editor.py:29](../backend/app/code_editor.py#L29) | nested | used |  | F1784 |  |  |
+| F1786 | 06_testing/other | `_span` | [backend/app/code_editor.py:40](../backend/app/code_editor.py#L40) | function | used |  | F1791, F1793, F1794 |  |  |
+| F1787 | 06_testing/other | `CodeEditor` | [backend/app/code_editor.py:44](../backend/app/code_editor.py#L44) | class | used |  | F0017, F1797, F1798, F1799 |  |  |
+| F1788 | 06_testing/other | `CodeEditor.__init__` | [backend/app/code_editor.py:45](../backend/app/code_editor.py#L45) | method | used (framework) |  |  |  |  |
+| F1789 | 06_testing/other | `CodeEditor._registry` | [backend/app/code_editor.py:52](../backend/app/code_editor.py#L52) | method | used |  | F1791, F1793 |  |  |
+| F1790 | 06_testing/other | `CodeEditor._files` | [backend/app/code_editor.py:60](../backend/app/code_editor.py#L60) | method | used |  | F1791 |  |  |
+| F1791 | 06_testing/other | `CodeEditor.list` | [backend/app/code_editor.py:63](../backend/app/code_editor.py#L63) | method | used |  | F0985 |  |  |
+| F1792 | 06_testing/other | `CodeEditor._locate` | [backend/app/code_editor.py:85](../backend/app/code_editor.py#L85) | method | used (framework) |  | F1793, F1794 |  |  |
+| F1793 | 06_testing/other | `CodeEditor.get` | [backend/app/code_editor.py:98](../backend/app/code_editor.py#L98) | method | used (framework) |  |  |  |  |
+| F1794 | 06_testing/other | `CodeEditor.update` | [backend/app/code_editor.py:126](../backend/app/code_editor.py#L126) | method | used (framework) |  |  |  |  |
+| F1795 | 06_testing/unit_tests | `repo` | [tests/test_code_editor.py:24](../tests/test_code_editor.py#L24) | function | used |  | F1797, F1798, F1799 |  |  |
+| F1796 | 06_testing/unit_tests | `test_api_lists_and_shows_backend_functions_read_only_by_default` | [tests/test_code_editor.py:31](../tests/test_code_editor.py#L31) | test | test |  |  |  |  |
+| F1797 | 06_testing/unit_tests | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | [tests/test_code_editor.py:44](../tests/test_code_editor.py#L44) | test | test |  |  |  |  |
+| F1798 | 06_testing/unit_tests | `test_invalid_edits_are_refused_and_the_file_is_untouched` | [tests/test_code_editor.py:57](../tests/test_code_editor.py#L57) | test | test |  |  |  |  |
+| F1799 | 06_testing/unit_tests | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | [tests/test_code_editor.py:69](../tests/test_code_editor.py#L69) | test | test |  |  |  |  |

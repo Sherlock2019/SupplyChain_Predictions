@@ -251,6 +251,20 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--surf
 .focus-bar label { color: var(--ink-2); font-size: 13px; }
 .focus-bar select { min-width: 260px; font-weight: 600; }
 .agent-note { margin-bottom: 16px; }
+/* backend code section */
+.code-apps { margin-bottom: 20px; }
+.code-apps td { vertical-align: top; }
+.code-apps code { overflow-wrap: anywhere; }
+.code-layout { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; align-items: start; }
+.code-list { max-height: calc(100vh - 160px); overflow: auto; position: sticky; top: 12px; }
+.code-list input { width: 100%; }
+.code-file { margin: 12px 0 4px; font-size: 11px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: .03em; }
+.code-item { padding: 3px 6px; border-radius: 6px; cursor: pointer; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+.code-item:hover, .code-item.on { background: color-mix(in srgb, var(--info) 14%, transparent); }
+.code-id { color: var(--ink-2); margin-right: 6px; }
+.code-box { width: 100%; min-height: 420px; font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; overflow: auto; tab-size: 4; padding: 12px; border-radius: 8px; border: 1px solid var(--line); background: color-mix(in srgb, var(--ink) 4%, transparent); color: inherit; }
+pre.code-box { min-height: 0; max-height: 70vh; }
+@media (max-width: 960px) { .code-layout { grid-template-columns: minmax(0, 1fr); } .code-list { position: static; max-height: 40vh; } }
 .map-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(380px, 1fr); gap: 20px; align-items: start; }
 #network-map { height: 620px; border-radius: 14px; background: var(--surface-2); overflow: hidden; }
 .map-card { position: sticky; top: 78px; }

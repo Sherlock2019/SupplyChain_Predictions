@@ -115,8 +115,10 @@ SKIP_NAMES = {"get", "items", "append", "extend", "join", "split", "format", "up
 
 
 def git_files(pattern: str) -> list[str]:
-    out = subprocess.run(["git", "ls-files", pattern], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split()
-    return sorted(out)
+    # tracked + new (not ignored) files; code_explorer/ itself holds copies and is never indexed
+    out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", pattern], cwd=ROOT,
+                         capture_output=True, text=True, check=True).stdout.split()
+    return sorted(p for p in set(out) if not p.startswith("code_explorer/"))
 
 
 def category_of(path: str) -> tuple[str, str]:
@@ -637,6 +639,7 @@ def main() -> int:
         p.write_text(text if text.endswith("\n") else text + "\n", encoding="utf-8")
 
     write_docs(fns, fnodes, all_edges, out_map, in_map, labels, ann_ok, problems)
+    write_backend_docs(fns, out_map, labels, problems)
     write_viewer(fns, fnodes, all_edges, labels)
     write_codemap_spec(fns, fnodes, all_edges, labels)
     used = sum(f.status.startswith("used") for f in fns)
@@ -732,6 +735,164 @@ def write_docs(fns, fnodes, edges, out_map, in_map, labels, ann_ok, problems):
     cov += [f"- {f.id} `{f.qual}` ({f.path}:{f.first})" for f in unused] or ["- none"]
     cov += ["", "## Problems", ""] + ([f"- {p}" for p in problems] or ["- none"])
     (CE / "COVERAGE.md").write_text("\n".join(cov) + "\n", encoding="utf-8")
+
+
+# Main backend functions for the README: hand-picked (layer, "file::qualname", role). Links / line numbers are resolved from the
+# live code, and a name that no longer exists is reported as a problem, so the table cannot silently go stale.
+MAIN_FUNCTIONS = [
+    ("FastAPI app", "backend/scinsight/app.py::create_app", "SCInsight API factory (:8100): loads fixtures, RAG and security, registers the 31 governed routes"),
+    ("FastAPI app", "backend/app/main.py::create_app", "SPARC / Aurelia gateway factory (:8000): middleware, SAP facade, analyses, agents, RAG, approvals, UI"),
+    ("FastAPI app", "backend/app/main.py::create_app.request_context", "Middleware: correlation id, active tenant, Prometheus request metrics"),
+    ("FastAPI app", "backend/app/main.py::create_app.value_error_handler", "Turns any business ValueError into HTTP 422 VALIDATION_ERROR"),
+    ("FastAPI app", "backend/app/config.py::get_settings", "Gateway settings from environment / .env (cached)"),
+    ("FastAPI app", "backend/scinsight/settings.py::SciSettings", "SCInsight settings: database, user keys, RAG and SAP-write guard"),
+    ("Security", "backend/app/main.py::create_app.principal", "Dependency: API key -> identity + role, tenant scope check; denials audited"),
+    ("Security", "backend/app/main.py::create_app.reader", "Dependency: assistant or manager may read and analyse"),
+    ("Security", "backend/app/main.py::create_app.manager", "Dependency: only a manager may decide, execute or change settings"),
+    ("Security", "backend/app/auth.py::ApiKeyAuth.authenticate", "Constant-time API-key lookup -> Principal (identity, role)"),
+    ("Security", "backend/scinsight/app.py::create_app.principal", "SCInsight dependency: key -> user, tenant and roles (never taken from the request body)"),
+    ("Security", "backend/scinsight/security.py::Security.require", "Role check for an action (agent_service can never approve)"),
+    ("Security", "backend/scinsight/security.py::Security.audit", "Append-only, hash-chained audit event"),
+    ("Security", "backend/scinsight/security.py::Security.verify_chain", "Verifies the audit hash chain was not altered"),
+    ("SAP data", "backend/app/sap.py::SapRepository", "Read-only SAP S/4HANA mock: validated snapshot + OData-shaped entity sets"),
+    ("SAP data", "backend/app/sap.py::SapRepository.validate_codes", "Rejects unknown plant / material / supplier codes before any calculation"),
+    ("SAP data", "backend/app/tenants.py::TenantRegistry.get", "Per-customer SAP, engine and dashboards (multi-tenant)"),
+    ("SAP data", "backend/scinsight/fixtures.py::load", "Loads the synthetic Belleva SAP fixtures (idempotent)"),
+    ("SAP data", "backend/scinsight/db.py::Database.transaction", "SQLite / PostgreSQL access; several statements all-or-nothing"),
+    ("Business rules", "backend/app/engine.py::SupplyChainEngine.factory_readiness", "BOM material readiness for a production run (shortages, ETAs)"),
+    ("Business rules", "backend/app/engine.py::SupplyChainEngine.stock_balance", "Demand forecast + transfer proposals across warehouses"),
+    ("Business rules", "backend/app/engine.py::SupplyChainEngine.supplier_scorecard", "OTIF, delays, quality rejects, single-source risk per supplier"),
+    ("Business rules", "backend/app/engine.py::SupplyChainEngine.sales_order_fulfilment", "Allocates stock + inbound to open sales orders by date"),
+    ("Business rules", "backend/app/engine.py::SupplyChainEngine.position_health", "Coverage of every stocked position against its target"),
+    ("Business rules", "backend/app/forecasting.py::forecast", "XGBoost daily demand forecast"),
+    ("Business rules", "backend/app/optimizer.py::optimize_transfers", "OR-Tools warehouse rebalancing (greedy fallback)"),
+    ("Business rules", "backend/scinsight/business.py::calculate_usable_stock", "Usable stock from SAP batches with an itemised exclusion list"),
+    ("Business rules", "backend/scinsight/business.py::calculate_bom_requirements", "Material requirements from the approved BOM version"),
+    ("Business rules", "backend/scinsight/business.py::calculate_material_shortage", "Shortage after usable stock and POs arriving before the need date"),
+    ("Business rules", "backend/scinsight/business.py::evaluate_transfer_feasibility", "Can a warehouse transfer arrive in time and in quantity"),
+    ("Business rules", "backend/scinsight/business.py::compare_supply_options", "Ranks supply options: feasible, in time, coverage, cost, speed"),
+    ("Business rules", "backend/scinsight/business.py::estimate_supplier_lead_time", "Empirical supplier lead time from goods receipts"),
+    ("Business rules", "backend/scinsight/business.py::reconcile_actual_outcome", "Compares a prediction with the real SAP outcome"),
+    ("Use cases", "backend/scinsight/service.py::Service.material_readiness", "Production readiness: BOM, usable stock, shortages, supply options -> CALC id"),
+    ("Use cases", "backend/scinsight/service.py::Service.warehouse_balancing", "Warehouse transfer analysis -> CALC id"),
+    ("Use cases", "backend/scinsight/service.py::Service.forecast_demand", "Demand forecast and days of cover -> CALC id"),
+    ("Use cases", "backend/scinsight/service.py::Service.create_decision", "Turns a calculation into a recommendation (REC) waiting for approval"),
+    ("Use cases", "backend/scinsight/service.py::Service.review", "Manager approves / rejects a recommendation (never the agent)"),
+    ("Use cases", "backend/scinsight/service.py::Service.reconcile", "Verifies the outcome against SAP goods receipts after execution"),
+    ("Use cases", "backend/scinsight/learning.py::train_lead_time_model", "Trains a lead-time model; promoted only if it beats the baseline"),
+    ("Persistence", "backend/app/store.py::Store.audit", "Gateway audit log (hash chained)"),
+    ("Persistence", "backend/app/store.py::Store.submit", "Saves a recommendation from an analysis"),
+    ("Persistence", "backend/app/store.py::Store.decide", "Records the manager's decision"),
+    ("Persistence", "backend/app/store.py::Store.execute_recommendation", "Writes approved documents to the SAP sandbox outbox (never production SAP)"),
+    ("RAG", "backend/scinsight/rag.py::KnowledgeBase.ingest_dir", "SCInsight RAG ingestion: validate front matter, chunk, embed, store"),
+    ("RAG", "backend/scinsight/rag.py::KnowledgeBase.search", "Tenant / role / validity-filtered vector search with citations"),
+    ("RAG", "backend/scinsight/rag.py::chunk_document", "Section-aware chunking (900 chars, 120 overlap)"),
+    ("RAG", "backend/app/rag.py::PgVectorRag.search", "Gateway RAG search on PostgreSQL + pgvector"),
+    ("RAG", "backend/app/rag.py::FastEmbedder.embed", "BAAI/bge-small-en-v1.5 embeddings (also served at /v1/embeddings for Flowise)"),
+    ("AI agents", "backend/app/llm.py::chat_model", "Qwen through an OpenAI-compatible endpoint (vLLM / Ollama)"),
+    ("AI agents", "backend/app/copilot.py::get_backend", "One governed backend for every agent runtime (local engine or HTTP API)"),
+    ("AI agents", "backend/app/runner.py::GraphRunner.run", "Runs a LangGraph graph on LangGraph Server or in-process"),
+    ("AI agents", "backend/app/runner.py::GraphRunner.resume", "Resumes a graph after a human-in-the-loop interrupt"),
+    ("AI agents", "backend/app/graphs.py::approval_gate", "Business graph: pauses for human approval before submitting"),
+    ("AI agents", "backend/app/agentflow.py::supervisor", "LangGraph mirror of the Flowise AgentFlow: picks the role specialist"),
+    ("AI agents", "backend/app/deep_agent.py::build_deep_agent", "Deep Agent supplier research with harness limits"),
+    ("AI agents", "backend/scinsight/lg/supervisor.py::build_supervisor", "LangGraph mirror of the SC Agent Manager Agentflow"),
+    ("AI agents", "backend/scinsight/lg/chat.py::evidence_gate", "Every number in an answer must come from a tool result"),
+    ("AI agents", "backend/app/mcp_server.py::create_mcp_app", "Restricted MCP server exposing read-only tools"),
+    ("Developer tools", "backend/app/code_editor.py::CodeEditor.update", "Backend code page: validated, backed-up edit of one function (development only)"),
+]
+
+
+def write_backend_docs(fns, out_map, labels, problems):
+    """BACKEND_FUNCTIONS.md (every backend definition, linked) + the generated README section (modules + FastAPI endpoints)."""
+    back = [f for f in fns if f.path.startswith("backend/")]
+    files = sorted({f.path for f in back})
+    anchor = lambda p: re.sub(r"[^a-z0-9_ -]", "", p.lower()).replace(" ", "-")  # noqa: E731  GitHub heading slug
+
+    def role(path):  # first line of the module docstring, else the annotated copy's "What this module is" line
+        doc = ast.get_docstring(ast.parse((ROOT / path).read_text(encoding="utf-8"))) or ""
+        if not doc and path in ANNOTATED:
+            m = re.search(r"# What this module is: (.*)", (CE / ANNOTATED[path]).read_text(encoding="utf-8"))
+            doc = m.group(1) if m else ""
+        return doc.strip().splitlines()[0][:140] if doc.strip() else ""
+
+    def auth(f):  # FastAPI dependencies of a route: who may call it
+        deps = {labels[e["to"]].split(" ", 1)[1].split(".")[-1].rstrip("()") for e in out_map.get(f.id, []) if e["kind"] == "depends_on"}
+        return ", ".join(sorted(deps)) or "public"
+
+    # full list, one table per module
+    out = ["# Backend functions (generated)", "",
+           f"Every function, method, class and route under `backend/`: **{len(back)}** definitions in **{len(files)}** modules, "
+           f"**{sum(len(f.routes) for f in back)}** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.", "",
+           "Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.", ""]
+    for path in files:
+        items = sorted((f for f in back if f.path == path), key=lambda f: f.first)
+        out += [f"## {path}", "", role(path), ""]
+        rows = [[f.id, f"[`{f.qual}`](../{f.path}#L{f.first})", f.kind, "; ".join(f"{m} {p}" for m, p in f.routes), f.status,
+                 f"[annotated](../{f.annotated})" if f.annotated else "—", (f.doc or "").splitlines()[0][:90] if f.doc else ""] for f in items]
+        out += [md_table(rows, ["ID", "Function", "Kind", "FastAPI route", "Status", "Annotated", "Summary"]), ""]
+    (CE / "BACKEND_FUNCTIONS.md").write_text("\n".join(out), encoding="utf-8")
+
+    # README section (links relative to the repository root)
+    mrows = [[f"[{p}]({p})", role(p), sum(1 for f in back if f.path == p and f.kind not in ("class", "pydantic_model")),
+              sum(1 for f in back if f.path == p and f.kind in ("class", "pydantic_model")), sum(len(f.routes) for f in back if f.path == p),
+              f"[list](code_explorer/BACKEND_FUNCTIONS.md#{anchor(p)})"] for p in files]
+    rrows = []
+    for f in sorted((f for f in back if f.routes), key=lambda f: (f.path, f.first)):
+        app = "SCInsight :8100" if f.path.startswith("backend/scinsight") else ("MCP" if "mcp_server" in f.path else "Gateway :8000")
+        for m, p in f.routes:
+            rrows.append([app, m, f"`{p}`", f"[`{f.name}`]({f.path}#L{f.first})", auth(f), (f.doc or "").splitlines()[0][:80] if f.doc else ""])
+    by_key = {f"{f.path}::{f.qual}": f for f in back}
+    main_rows, code_doc, layer_now = [], ["# Main backend code (generated)", "",
+                                          "The complete, current source of every element in the README table *Main backend functions*: whole FastAPI app "
+                                          "factories with all their routes, whole classes with all their methods, full functions. Copied from `backend/` "
+                                          "on each run of `python3 code_explorer/tools/build_code_explorer.py` (key, password, secret and token strings are masked).", ""], None
+    secret = re.compile(r"""((?:api_key|apikey|password|secret|token)\w*\s*(?::\s*[\w |\[\]]+)?=\s*)(["'])[^"']+\2""", re.I)
+    for layer, key, role_text in MAIN_FUNCTIONS:
+        f = by_key.get(key)
+        if not f:
+            problems.append(f"MAIN_FUNCTIONS: {key} not found in the code (update the list)")
+            continue
+        app = "SCInsight" if f.path.startswith("backend/scinsight") else "Gateway"
+        anchor_id = f.id.lower()
+        main_rows.append([layer, f"[`{f.qual}`]({f.path}#L{f.first})", app, role_text, f"[full code](code_explorer/MAIN_BACKEND_CODE.md#{anchor_id})", f.id])
+        # full source of the element (decorators included), from the live file
+        src = (ROOT / f.path).read_text(encoding="utf-8").splitlines()[f.first - 1:f.end]
+        indent = min((len(s) - len(s.lstrip()) for s in src if s.strip()), default=0)
+        code = "\n".join(secret.sub(r"\1\2***\2", s[indent:]) for s in src)
+        if layer != layer_now:
+            code_doc += [f"## {layer}", ""]
+            layer_now = layer
+        code_doc += [f'<a id="{anchor_id}"></a>', f"### {f.id} · `{f.qual}` ({app})", "",
+                     f"{role_text}  ", f"Source: [{f.path}:{f.first}-{f.end}](../{f.path}#L{f.first}) · {f.end - f.first + 1} lines"
+                     + (f" · [annotated copy](../{f.annotated})" if f.annotated else ""), "",
+                     "<details><summary>Show the full code</summary>", "", "```python", code, "```", "", "</details>", ""]
+    (CE / "MAIN_BACKEND_CODE.md").write_text("\n".join(code_doc), encoding="utf-8")
+    section = "\n".join([
+        "<!-- BACKEND_FUNCTIONS:START (generated by code_explorer/tools/build_code_explorer.py; do not edit by hand) -->",
+        "## Backend functions", "",
+        f"**{len(back)}** Python definitions in **{len(files)}** backend modules, **{len(rrows)}** FastAPI routes. "
+        "Full linked list of every function: [code_explorer/BACKEND_FUNCTIONS.md](code_explorer/BACKEND_FUNCTIONS.md) · "
+        "call graph and ids: [code_explorer/FUNCTION_INDEX.md](code_explorer/FUNCTION_INDEX.md) · in the dashboard: **System → Backend code**.", "",
+        "### Main backend functions", "",
+        "The functions that carry the app, by layer (SCInsight = API on :8100, Gateway = SPARC / Aurelia on :8000). "
+        "A request goes FastAPI route -> security dependency -> use case -> business rules on SAP data -> stored, audited result; "
+        "agents and RAG call the same routes.", "",
+        "Full source of every element below (whole FastAPI factories with their routes, whole classes): "
+        "[code_explorer/MAIN_BACKEND_CODE.md](code_explorer/MAIN_BACKEND_CODE.md).", "",
+        md_table(main_rows, ["Layer", "Function", "App", "Role", "Code", "ID"]), "",
+        "### Modules", "", md_table(mrows, ["Module", "What it does", "Functions", "Classes", "Routes", "Functions list"]), "",
+        "### FastAPI endpoints", "",
+        "Access: `reader` = assistant or manager key, `manager` = manager key; SCInsight routes use their own role dependencies.", "",
+        md_table(rrows, ["App", "Method", "Path", "Handler", "Access", "Summary"]), "",
+        "<!-- BACKEND_FUNCTIONS:END -->"])
+    readme = ROOT / "README.md"
+    text = readme.read_text(encoding="utf-8")
+    if "<!-- BACKEND_FUNCTIONS:START" in text:
+        text = re.sub(r"<!-- BACKEND_FUNCTIONS:START.*?<!-- BACKEND_FUNCTIONS:END -->", lambda _: section, text, flags=re.S)
+    else:
+        text = text.replace("\n## What next\n", "\n" + section + "\n\n## What next\n", 1)
+    readme.write_text(text, encoding="utf-8")
 
 
 def link_from(folder: str, f) -> str:

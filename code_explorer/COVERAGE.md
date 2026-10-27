@@ -1,14 +1,16 @@
 # Coverage report (generated)
 
-- Definitions discovered: **984** (759 functions / methods, 98 classes / models, 127 tests)
-- FastAPI endpoints: **112** (SCInsight 31, gateway 80, MCP 1)
+- Definitions discovered: **1007** (776 functions / methods, 100 classes / models, 131 tests)
+- FastAPI endpoints: **115** (SCInsight 31, gateway 83, MCP 1)
 - Flowise nodes with code: **46** (Custom Tools + Agentflow Custom Functions), copied to `07_flowise_functions/custom_js/`
-- Definitions with an annotated copy: **762** in **38** modules; AST-identical to the original: **38/38**
-- Call / dependency edges: **2609**
+- Definitions with an annotated copy: **766** in **38** modules; AST-identical to the original: **38/38**
+- Call / dependency edges: **2649**
 
 ## Not annotated line by line (indexed with full original source in the registry, viewer and Flowise map)
 
+- `backend/app/code_editor.py` — ops / deploy tooling (not part of the runtime)
 - `flowise/bootstrap.py` — ops / deploy tooling (not part of the runtime)
+- `flowise/code_explorer/deploy_code_map.py` — ops / deploy tooling (not part of the runtime)
 - `flowise/scinsight/deploy.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/aws-cost-estimate.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/gen-env.py` — ops / deploy tooling (not part of the runtime)
@@ -24,6 +26,7 @@
 - `tests/scinsight/test_langgraph_mirror.py` — pytest tests
 - `tests/scinsight/test_security.py` — pytest tests
 - `tests/test_api.py` — pytest tests
+- `tests/test_code_editor.py` — pytest tests
 - `tests/test_engine.py` — pytest tests
 - `tests/test_flowise_flows.py` — pytest tests
 - `tests/test_graphs_and_agents.py` — pytest tests

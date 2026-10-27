@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from backend.app.auth import ApiKeyAuth, Principal
+from backend.app.code_editor import CodeEditor
 from backend.app.config import ROOT, Settings, get_settings
 from backend.app.dashboards import PERSONAS
 from backend.app.insights import WATCH_KINDS
@@ -32,6 +33,7 @@ from backend.app.schemas import (
     DEEP_TOOLS,
     BusinessWorkflowRequest,
     ChatRequest,
+    CodeUpdateRequest,
     ConsentRequest,
     DecisionRequest,
     DeepAgentHarness,
@@ -563,6 +565,34 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         chunks = rag.add(body.title, body.category, body.source, body.text)
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
+
+    # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
+    code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
+
+    @app.get("/api/v1/code/functions")
+    def code_functions(q: str = Query(default="", max_length=200), who: Principal = Depends(reader)) -> dict:
+        del who
+        return code.list(q)
+
+    @app.get("/api/v1/code/function")
+    def code_function(key: str = Query(min_length=5, max_length=400), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.get(key)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="Unknown backend function") from exc
+
+    @app.put("/api/v1/code/function")
+    def code_update(body: CodeUpdateRequest, request: Request, who: Principal = Depends(manager)) -> dict:
+        try:
+            result = code.update(body.key, body.source, body.expected_sha256)
+        except PermissionError as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="Unknown backend function") from exc
+        store.audit(who.identity, who.role, "code.function_updated",
+                    {k: result.get(k) for k in ("key", "file", "changed", "backup", "sha256_before", "sha256_after")}, request.state.correlation_id)
+        return result
 
     # -------------------------------------------------- LangGraph / agents
     def _graph_call(fn, *args) -> dict:
