@@ -136,6 +136,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         route = request.scope.get("route")
         path = getattr(route, "path", "static")
         response.headers["X-Correlation-ID"] = correlation_id
+        if response.headers.get("content-type", "").startswith(("text/html", "text/javascript", "application/javascript", "text/css")):
+            response.headers["Cache-Control"] = "no-cache"  # dashboard files: revalidate (ETag) so a new release shows at once
         REQUESTS.labels(request.method, path, str(response.status_code)).inc()
         LATENCY.labels(request.method, path).observe(time.perf_counter() - started)
         return response
