@@ -293,7 +293,7 @@ function buildApiMap() {
 const AGENTFLOW_DIRS = {
     startAgentflow: 'Start', agentAgentflow: 'Agent', conditionAgentAgentflow: 'ConditionAgent', humanInputAgentflow: 'HumanInput',
     customFunctionAgentflow: 'CustomFunction', httpAgentflow: 'HTTP', directReplyAgentflow: 'DirectReply', stickyNoteAgentflow: 'StickyNote',
-    llmAgentflow: 'LLM', conditionAgentflow: 'Condition', executeFlowAgentflow: 'ExecuteFlow'
+    llmAgentflow: 'LLM', conditionAgentflow: 'Condition', executeFlowAgentflow: 'ExecuteFlow', retrieverAgentflow: 'Retriever'
 }
 
 class AgentflowBuilder {

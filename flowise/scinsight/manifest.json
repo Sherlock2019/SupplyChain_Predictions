@@ -124,6 +124,25 @@
     "__FLOWISE_API_CREDENTIAL__": "Flowise credential (chatflowApi) holding the Flowise API key used by Execute Flow",
     "__FLOWISE_INTERNAL_URL__": "Flowise URL reachable from inside the Flowise container, e.g. http://flowise:3000",
     "__TOOL:<name>__": "id of the imported Custom Tool <name>",
-    "__FLOW:<name>__": "id of the imported flow <name>"
+    "__FLOW:<name>__": "id of the imported flow <name>",
+    "__SCI_PG_CREDENTIAL__": "Flowise credential (PostgresApi) of the RAG DB",
+    "__SCI_EMB_CREDENTIAL__": "Flowise credential (openAIApi) holding the gateway key for /v1/embeddings",
+    "__SCI_EMBEDDINGS_URL__": "OpenAI-compatible embeddings base URL (FastAPI gateway /v1, bge-small)",
+    "__SCI_PG_HOST__ / __SCI_PG_PORT__ / __SCI_PG_DATABASE__ / __SCI_PG_SSL__": "PostgreSQL of the RAG DB (database scinsight)",
+    "__DOCSTORE:<name>__": "id:name of the Flowise Document Store <name> (Agentflow Retriever nodes)"
+  },
+  "rag": {
+    "docstore": "flowise/scinsight/rag_docstore.json",
+    "knowledge": [
+      "flowise/scinsight/knowledge/AGR-SUP-A-002_alpine_dispensing_agreement.md",
+      "flowise/scinsight/knowledge/POL-ALLOC-030_stock_allocation_rules.md",
+      "flowise/scinsight/knowledge/POL-PROC-001_procurement_policy.md",
+      "flowise/scinsight/knowledge/POL-QA-045_expiry_fefo.md",
+      "flowise/scinsight/knowledge/POL-WH-020_warehouse_transfer_policy.md",
+      "flowise/scinsight/knowledge/SOP-PROD-010_material_readiness.md",
+      "flowise/scinsight/knowledge/SOP-QA-040_batch_release.md",
+      "flowise/scinsight/knowledge/SPEC-MAT-024_pump_dispenser.md"
+    ],
+    "source": "data/scinsight/knowledge (tenant scinsight-cosmetics, readable by agent_service)"
   }
 }

@@ -1,0 +1,50 @@
+[
+ {
+  "name": "SCInsight \u2014 Functions & Code Explorer",
+  "file": "flowise/code_explorer/00_master.json",
+  "nodes": 32,
+  "edges": 27
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 01 FastAPI",
+  "file": "flowise/code_explorer/01_fastapi.json",
+  "nodes": 391,
+  "edges": 229
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 02 Business logic",
+  "file": "flowise/code_explorer/02_business_logic.json",
+  "nodes": 298,
+  "edges": 265
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 03 SAP / data",
+  "file": "flowise/code_explorer/03_sap_data.json",
+  "nodes": 180,
+  "edges": 132
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 04 AI / ML",
+  "file": "flowise/code_explorer/04_ai_ml.json",
+  "nodes": 620,
+  "edges": 460
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 05 Security & governance",
+  "file": "flowise/code_explorer/05_security_governance.json",
+  "nodes": 35,
+  "edges": 9
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 06 Testing",
+  "file": "flowise/code_explorer/06_testing.json",
+  "nodes": 119,
+  "edges": 38
+ },
+ {
+  "name": "SCInsight Code Explorer \u00b7 07 Flowise",
+  "file": "flowise/code_explorer/07_flowise_functions.json",
+  "nodes": 176,
+  "edges": 68
+ }
+]

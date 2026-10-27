@@ -1,34 +1,46 @@
 # Chatflow: SCInsight-Cosmetics-Chatflow-v1 (the chat front door)
 
-Export: `flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.json` (6 functional nodes, 5 edges, plus note panels), with
+Export: `flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.json` (16 functional nodes, 15 edges, plus note panels), with
 `SCInsight-Cosmetics-Chatflow-v1.chatbotConfig.json` (post-processing) and `.postprocessing.js` (the same code, readable).
 
-The chatflow is deliberately small. It holds the conversation and company RAG. All orchestration lives only in the
-**SC Agent Manager Agentflow** (`SCInsight-Cosmetics-Supervisor-Agentflow-v1`): routing, the 7 specialists, SAP data,
-calculations and approval. The chatflow never repeats SAP queries or calculations.
+The canvas uses the same design as the Aurelia copilot Chatflow (`flowise/build-flows.cjs`): the RAG pipeline on the left feeding
+the RAG DB and a retriever tool, the input guardrail, the model and memory, a column of tools, and the Tool Agent on the right.
+Every tool calls the SCInsight app itself. All orchestration (routing, the 7 specialists, calculations, approval) lives only in the
+**SC Agent Manager Agentflow** (`SCInsight-Cosmetics-Supervisor-Agentflow-v1`); the chatflow never repeats calculations.
 
 ```mermaid
 flowchart LR
-    C[1 Chat request] --> G[2 Guardrail] --> MEM[3 Memory] --> B[4 Brain - Qwen]
-    B --> A[6 Chat assistant<br/>Tool Agent]
-    T1[5a Ask the SC Agent Manager<br/>Chatflow Tool -> Supervisor Agentflow] --> A
-    T2[5b Company RAG search] --> A
-    A --> E[7 Answer + source evidence<br/>post-processing gate] --> R[8 Chat output]
+    SPL[Chunking · Markdown splitter] --> DOC[Governed documents · folder loader]
+    DOC --> PG[(RAG DB · PostgreSQL + pgvector)]
+    EMB[Embeddings · bge-small via /v1/embeddings] --> PG
+    RM[Record manager] --> PG
+    PG --> RT[Retriever tool · company_policy_rag_db]
+    G[Input guardrail] --> A[SCInsight Supply Chain Assistant<br/>Tool Agent]
+    Q[Qwen] --> A
+    MEM[Conversation memory] --> A
+    RT --> A
+    T1[SC Agent Manager<br/>Chatflow Tool -> Supervisor Agentflow] --> A
+    T2[SCInsight API · governed policy search] --> A
+    T3[SAP synthetic S/4HANA · stock, production orders,<br/>open POs, BOM - read-only] --> A
+    A --> E[Evidence gate<br/>post-processing] --> R[Chat output]
 ```
 
-The canvas reads left to right in these numbered steps. Under every node there is a panel saying what it does, its input and its output.
-
-| Step | Node (Flowise component) | What it does |
-|---|---|---|
-| 1 Chat request | note | Flowise chat bubble, embedded widget or prediction API. Flowise chatflows have no chat-input node. |
-| 2 Guardrail | `inputModerationSimple` | Blocks instruction overrides, SAP-change phrases, requests for keys |
-| 3 Memory | `bufferWindowMemory` (k = 6) | Conversation context |
-| 4 Brain | `chatOpenAICustom` (Qwen 2.5 7B, temperature 0) | The assistant's model; it never calculates numbers |
-| 5a Ask the SC Agent Manager | `ChatflowTool` → Supervisor Agentflow (Flowise API key credential, new session per call) | Every planning or analysis question, and the status or outcome of a REC-… |
-| 5b Company RAG search | `customTool` `search_supply_chain_policy` → POST /api/v1/rag/search | Policies, SOPs, supplier agreements (tenant-, role- and validity-filtered, cited) |
-| 6 Chat assistant | `toolAgent` (max 4 iterations) | Picks one of the two tools and relays its answer without changing numbers |
-| 7 Answer + source evidence | `chatbotConfig.postProcessing` | Every number must come from a tool result, otherwise the tool result is shown instead. Appends tools, CALC ids and policy documents |
-| 8 Chat output | note | The checked answer in the chat |
+| Node (Flowise component) | What it does |
+|---|---|
+| Chunking · `markdownTextSplitter` (800 / 100) | Splits the governed documents on markdown structure |
+| Governed documents · `folderFiles` (`opt/flows/scinsight/knowledge`) | The Belleva policies, SOPs, specs and supplier agreements the agent key may read (copied by `deploy.py build`) |
+| Embeddings · `openAIEmbeddingsCustom` | BAAI/bge-small-en-v1.5 through the FastAPI gateway `/v1/embeddings` (the model the SCInsight API RAG uses) |
+| Record manager · `postgresRecordManager` | Re-indexing never duplicates (full cleanup) |
+| RAG DB · `postgres` vector store | PostgreSQL database `scinsight`, table `scinsight_flowise_rag`, cosine, top 4 |
+| Retriever tool · `company_policy_rag_db` | Company rules, thresholds, approval policies, contract clauses, with source files |
+| Input guardrail · `inputModerationSimple` | Blocks instruction overrides, SAP-change phrases, requests for keys |
+| Qwen · `chatOpenAICustom` (temperature 0) | The assistant's model; it never calculates numbers |
+| Conversation memory · `bufferWindowMemory` (k = 6) | Conversation context |
+| SC Agent Manager · `ChatflowTool` → Supervisor Agentflow | Every planning or analysis question, and the status or outcome of a REC-… |
+| SCInsight API · governed policy search · `customTool` `search_supply_chain_policy` | Same documents through POST /api/v1/rag/search (tenant-, role- and validity-filtered, `[doc_id section]` citations) |
+| SAP S/4HANA (synthetic) · `get_sap_inventory`, `get_production_orders`, `get_open_purchase_orders`, `get_material_bom` | Raw read-only SAP records from the SCInsight API (`/api/v1/sap/*`); never used to calculate |
+| SCInsight Supply Chain Assistant · `toolAgent` (max 4 iterations) | Picks one tool and relays its answer without changing numbers |
+| Evidence gate · `chatbotConfig.postProcessing` | Every number must come from a tool result, otherwise the tool result is shown instead. Appends tools, CALC ids and policy documents |
 
 ## Approval from the chat
 
@@ -39,22 +51,20 @@ Agentflow directly. Each chat call starts a new supervisor session (`startNewSes
 
 ## Tools kept outside the chatflow
 
-The other 12 allowlisted Custom Tools are still imported in Flowise → Tools, for direct use or other flows:
-`get_sap_inventory`, `get_production_orders`, `get_material_bom`, `get_open_purchase_orders`, `check_material_readiness`,
-`calculate_stock_cover`, `optimize_warehouse_transfer`, `check_batch_quality`, `forecast_demand`, `get_supplier_reliability`,
-`save_recommendation`, `get_decision_status`, `get_verified_outcomes`.
+The calculation tools (`check_material_readiness`, `calculate_stock_cover`, `optimize_warehouse_transfer`, `check_batch_quality`,
+`forecast_demand`, `get_supplier_reliability`, `save_recommendation`, `get_decision_status`, `get_verified_outcomes`) are imported in
+Flowise → Tools but not wired into the chatflow: the specialists do this work inside the Agentflow.
 
-Each calls one fixed endpoint with validated arguments (see [FASTAPI_CONTRACTS.md](FASTAPI_CONTRACTS.md)). They are not wired into
-the chatflow, because the specialists do this work inside the Agentflow.
+## RAG: two paths over the same governed documents
 
-A backup of the earlier, larger chatflow is in `deploy-evidence/backups/` (not committed).
+1. **Company RAG DB (native Flowise)**: this chatflow's pipeline (table `scinsight_flowise_rag`) and the Document Store
+   "SCInsight policy RAG DB" (table `scinsight_flowise_rag_docstore`) read by the Retriever node of every specialist Agentflow.
+   Indexed by `flowise/scinsight/deploy.py import`. Only documents of tenant `scinsight-cosmetics` that the agent key may read are copied
+   to `flowise/scinsight/knowledge/` (the Northwind document and the malformed test document are excluded), because a native store has
+   no tenant or role filter.
+2. **Governed API RAG**: POST /api/v1/rag/search. Validates front matter, chunks by `##` section (900 / 120), embeds with bge-small,
+   stores `rag_chunks.embedding_vec` (HNSW), filters by tenant, role and validity, and withholds chunks with instruction-like text.
+   The specialists' "Policy search (RAG)" step and the `search_supply_chain_policy` tool use it; its `[doc_id section]` citations feed the evidence footer.
 
-## RAG
-
-RAG goes through the API's tenant-, role- and validity-filtered search, not through a Flowise vector store. Ingestion runs in the API:
-1. Validate front matter: `doc_id`, `version`, `title`, `category`, `tenant`, `allowed_roles`, `valid_from` / `valid_to`.
-2. Chunk by `##` section (900 characters, 120 overlap).
-3. Embed with BAAI/bge-small-en-v1.5.
-4. Store in `rag_chunks.embedding_vec` with an HNSW index.
-
-Chunks containing instruction-like text are flagged and withheld.
+Flowise 3.x rejects absolute folder-loader paths (`PATH_TRAVERSAL_SAFETY`), so the loader path is relative (`opt/flows/...`); the
+Flowise process runs in `/`.

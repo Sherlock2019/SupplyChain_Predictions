@@ -42,7 +42,7 @@ flowchart LR
 | Proceed | Custom Function → `GET /decisions/{id}` | Reports the verified review, or "still pending_review … Clicking Proceed in Flowise is not an approval" |
 | Reject | Custom Function → `POST /decisions/{id}/withdraw` | The requester withdraws; it stays in the audit trail |
 
-## Specialists (10–12 nodes each)
+## Specialists (11–13 nodes each)
 
 ```mermaid
 flowchart LR
@@ -53,9 +53,16 @@ flowchart LR
     K --> W{calculation available?}
     W -- no --> R1[Reply: needs input / API error]
     W -- yes --> P[CF · /rag/search<br/>flagged chunks withheld]
-    P --> X[LLM · explain<br/>only given numbers]
+    P --> RDB[(Retriever · company RAG DB<br/>Document Store, PostgreSQL + pgvector)]
+    RDB --> X[LLM · explain<br/>only given numbers]
     X --> GT[CF · evidence gate]
 ```
+
+The **Company RAG DB (pgvector)** step is a native Flowise Retriever node on the Document Store "SCInsight policy RAG DB"
+(table `scinsight_flowise_rag_docstore`, bge-small embeddings through the FastAPI gateway, indexed by `deploy.py import`). Its excerpts go
+into flow state `rag_db`, are given to the explanation LLM as reference data, and are part of the evidence-gate evidence. The governed
+API step before it keeps providing the `[doc_id section]` citations. The Decision-Outcome-Learning specialist has no policy topic, so
+it has neither RAG step. The LangGraph mirror does not query the Flowise Document Store: its `rag_db` value is empty.
 
 | Specialist | Calculation endpoints | Recommendation reviewed by |
 |---|---|---|

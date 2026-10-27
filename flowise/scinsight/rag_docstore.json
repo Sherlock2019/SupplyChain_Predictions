@@ -1,0 +1,61 @@
+{
+  "name": "SCInsight policy RAG DB",
+  "description": "Governed SCInsight policies, SOPs, specifications and supplier agreements (Belleva, readable by the agent key) in PostgreSQL + pgvector",
+  "loader": {
+    "name": "folderFiles",
+    "config": {
+      "folderPath": "opt/flows/scinsight/knowledge",
+      "recursive": false,
+      "metadata": "{\"corpus\":\"scinsight_governed_knowledge\",\"tenant\":\"scinsight-cosmetics\"}"
+    }
+  },
+  "splitter": {
+    "name": "markdownTextSplitter",
+    "config": {
+      "chunkSize": 800,
+      "chunkOverlap": 100
+    }
+  },
+  "embedding": {
+    "name": "openAIEmbeddingsCustom",
+    "config": {
+      "credential": "__SCI_EMB_CREDENTIAL__",
+      "basepath": "__SCI_EMBEDDINGS_URL__",
+      "modelName": "BAAI/bge-small-en-v1.5",
+      "stripNewLines": false,
+      "batchSize": 64,
+      "timeout": 60000,
+      "encodingFormat": "float"
+    }
+  },
+  "vectorStore": {
+    "name": "postgres",
+    "config": {
+      "credential": "__SCI_PG_CREDENTIAL__",
+      "host": "__SCI_PG_HOST__",
+      "port": "__SCI_PG_PORT__",
+      "database": "__SCI_PG_DATABASE__",
+      "ssl": "__SCI_PG_SSL__",
+      "tableName": "scinsight_flowise_rag_docstore",
+      "distanceStrategy": "cosine",
+      "topK": 4,
+      "batchSize": 64,
+      "additionalConfig": ""
+    }
+  },
+  "recordManager": {
+    "name": "postgresRecordManager",
+    "config": {
+      "credential": "__SCI_PG_CREDENTIAL__",
+      "host": "__SCI_PG_HOST__",
+      "port": "__SCI_PG_PORT__",
+      "database": "__SCI_PG_DATABASE__",
+      "ssl": "__SCI_PG_SSL__",
+      "tableName": "scinsight_flowise_upsertion_records",
+      "namespace": "scinsight-rag-docstore",
+      "cleanup": "full",
+      "sourceIdKey": "source",
+      "additionalConfig": ""
+    }
+  }
+}

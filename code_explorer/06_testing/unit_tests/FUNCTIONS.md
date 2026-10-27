@@ -1,0 +1,69 @@
+# 06_testing/unit_tests (generated)
+
+Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/test_business_rules.py`, `tests/test_engine.py`, `tests/test_mentana_features.py`, `tests/test_product_brief_outlook.py`, `tests/test_rag_mcp_store.py`, `tests/test_roles_and_moat.py`, `tests/test_tenants_and_map.py`
+
+| ID | Function / class | Kind | Status | Original | Annotated copy | Summary |
+|---|---|---|---|---|---|---|
+| F0904 | `settings` | function | used | [tests/conftest.py:28](../../../tests/conftest.py#L28) | — |  |
+| F0905 | `client` | function | used | [tests/conftest.py:45](../../../tests/conftest.py#L45) | — |  |
+| F0906 | `assistant_headers` | function | used | [tests/conftest.py:52](../../../tests/conftest.py#L52) | — |  |
+| F0907 | `manager_headers` | function | used | [tests/conftest.py:57](../../../tests/conftest.py#L57) | — |  |
+| F0908 | `settings` | function | used | [tests/scinsight/conftest.py:11](../../../tests/scinsight/conftest.py#L11) | — |  |
+| F0909 | `app` | function | used | [tests/scinsight/conftest.py:16](../../../tests/scinsight/conftest.py#L16) | — |  |
+| F0910 | `client` | function | used | [tests/scinsight/conftest.py:21](../../../tests/scinsight/conftest.py#L21) | — |  |
+| F0911 | `key` | function | used | [tests/scinsight/conftest.py:26](../../../tests/scinsight/conftest.py#L26) | — |  |
+| F0912 | `batch` | function | used | [tests/scinsight/test_business_rules.py:13](../../../tests/scinsight/test_business_rules.py#L13) | — |  |
+| F0913 | `test_usable_stock_excludes_blocked_inspection_reserved_expired_and_flags_near_expiry` | test | test | [tests/scinsight/test_business_rules.py:17](../../../tests/scinsight/test_business_rules.py#L17) | — |  |
+| F0914 | `test_duplicate_batches_are_counted_once` | test | test | [tests/scinsight/test_business_rules.py:28](../../../tests/scinsight/test_business_rules.py#L28) | — |  |
+| F0915 | `test_days_of_cover_and_replenishment_handle_zero_demand` | test | test | [tests/scinsight/test_business_rules.py:33](../../../tests/scinsight/test_business_rules.py#L33) | — |  |
+| F0916 | `test_bom_requirements_units_rounding_and_invalid_versions` | test | test | [tests/scinsight/test_business_rules.py:40](../../../tests/scinsight/test_business_rules.py#L40) | — |  |
+| F0917 | `test_shortage_counts_only_confirmed_timely_inbound_and_dedupes_pos` | test | test | [tests/scinsight/test_business_rules.py:56](../../../tests/scinsight/test_business_rules.py#L56) | — |  |
+| F0918 | `test_transfer_candidates_feasibility_and_ranking` | test | test | [tests/scinsight/test_business_rules.py:66](../../../tests/scinsight/test_business_rules.py#L66) | — |  |
+| F0919 | `test_nothing_is_recommended_when_no_option_is_in_time` | test | test | [tests/scinsight/test_business_rules.py:81](../../../tests/scinsight/test_business_rules.py#L81) | — |  |
+| F0920 | `test_lead_time_estimate_and_prediction_error_and_reconciliation` | test | test | [tests/scinsight/test_business_rules.py:86](../../../tests/scinsight/test_business_rules.py#L86) | — |  |
+| F0921 | `test_expiry_risk_is_ordered_most_urgent_first` | test | test | [tests/scinsight/test_business_rules.py:102](../../../tests/scinsight/test_business_rules.py#L102) | — |  |
+| F0922 | `engine` | function | used | [tests/test_engine.py:12](../../../tests/test_engine.py#L12) | — |  |
+| F0923 | `test_readiness_counts_only_unrestricted_stock_and_confirmed_pos` | test | test | [tests/test_engine.py:17](../../../tests/test_engine.py#L17) | — |  |
+| F0924 | `test_readiness_proposes_expedite_of_later_confirmed_po` | test | test | [tests/test_engine.py:32](../../../tests/test_engine.py#L32) | — |  |
+| F0925 | `test_expired_batches_are_excluded` | test | test | [tests/test_engine.py:43](../../../tests/test_engine.py#L43) | — |  |
+| F0926 | `test_ready_when_all_components_covered` | test | test | [tests/test_engine.py:50](../../../tests/test_engine.py#L50) | — |  |
+| F0927 | `test_unknown_codes_are_rejected_with_valid_values` | test | test | [tests/test_engine.py:56](../../../tests/test_engine.py#L56) | — |  |
+| F0928 | `test_stock_balance_moves_surplus_to_gap_with_ortools` | test | test | [tests/test_engine.py:61](../../../tests/test_engine.py#L61) | — |  |
+| F0929 | `test_supplier_risk_scores` | test | test | [tests/test_engine.py:74](../../../tests/test_engine.py#L74) | — |  |
+| F0930 | `test_quality_status_links_lots_to_production_orders` | test | test | [tests/test_engine.py:87](../../../tests/test_engine.py#L87) | — |  |
+| F0931 | `test_logistics_escalates_long_delays` | test | test | [tests/test_engine.py:93](../../../tests/test_engine.py#L93) | — |  |
+| F0932 | `test_inventory_and_kpis` | test | test | [tests/test_engine.py:100](../../../tests/test_engine.py#L100) | — |  |
+| F0933 | `engine` | function | used | [tests/test_mentana_features.py:13](../../../tests/test_mentana_features.py#L13) | — |  |
+| F0934 | `test_insights_are_plain_english_deterministic_and_sorted` | test | test | [tests/test_mentana_features.py:18](../../../tests/test_mentana_features.py#L18) | — |  |
+| F0935 | `test_sales_orders_find_shortfall_and_cheapest_on_time_transfer` | test | test | [tests/test_mentana_features.py:28](../../../tests/test_mentana_features.py#L28) | — |  |
+| F0936 | `test_stocktake_explains_differences_with_evidence` | test | test | [tests/test_mentana_features.py:37](../../../tests/test_mentana_features.py#L37) | — |  |
+| F0937 | `test_product_360_end_of_stock_resupply_suppliers_and_donor` | test | test | [tests/test_mentana_features.py:46](../../../tests/test_mentana_features.py#L46) | — |  |
+| F0938 | `test_forecast_vs_actuals_backtest` | test | test | [tests/test_mentana_features.py:59](../../../tests/test_mentana_features.py#L59) | — |  |
+| F0939 | `test_watch_evaluation` | test | test | [tests/test_mentana_features.py:65](../../../tests/test_mentana_features.py#L65) | — |  |
+| F0940 | `test_api_dashboards_products_insights_watches` | test | test | [tests/test_mentana_features.py:73](../../../tests/test_mentana_features.py#L73) | — |  |
+| F0941 | `test_dashboards_focus_on_one_product` | test | test | [tests/test_mentana_features.py:95](../../../tests/test_mentana_features.py#L95) | — |  |
+| F0942 | `test_one_click_execution_only_after_acceptance_and_only_for_manager` | test | test | [tests/test_mentana_features.py:111](../../../tests/test_mentana_features.py#L111) | — |  |
+| F0943 | `engine` | function | used | [tests/test_product_brief_outlook.py:11](../../../tests/test_product_brief_outlook.py#L11) | — |  |
+| F0944 | `test_brief_pairs_every_issue_with_a_fix_and_action` | test | test | [tests/test_product_brief_outlook.py:16](../../../tests/test_product_brief_outlook.py#L16) | — |  |
+| F0945 | `test_outlook_sales_rates_and_calendar` | test | test | [tests/test_product_brief_outlook.py:34](../../../tests/test_product_brief_outlook.py#L34) | — |  |
+| F0946 | `test_brief_and_outlook_endpoints_follow_tenant` | test | test | [tests/test_product_brief_outlook.py:48](../../../tests/test_product_brief_outlook.py#L48) | — |  |
+| F0947 | `test_chunking_keeps_title_and_section` | test | test | [tests/test_rag_mcp_store.py:14](../../../tests/test_rag_mcp_store.py#L14) | — |  |
+| F0948 | `test_keyword_boost_rewards_exact_sap_codes` | test | test | [tests/test_rag_mcp_store.py:19](../../../tests/test_rag_mcp_store.py#L19) | — |  |
+| F0949 | `test_memory_rag_finds_category_and_injection_text_is_just_data` | test | test | [tests/test_rag_mcp_store.py:24](../../../tests/test_rag_mcp_store.py#L24) | — |  |
+| F0950 | `test_fastembed_semantic_retrieval` | test | test | [tests/test_rag_mcp_store.py:33](../../../tests/test_rag_mcp_store.py#L33) | — |  |
+| F0951 | `test_mcp_server_tools_health_and_auth` | test | test | [tests/test_rag_mcp_store.py:43](../../../tests/test_rag_mcp_store.py#L43) | — |  |
+| F0952 | `_exercise_store` | function | used | [tests/test_rag_mcp_store.py:68](../../../tests/test_rag_mcp_store.py#L68) | — |  |
+| F0953 | `test_sqlite_store` | test | test | [tests/test_rag_mcp_store.py:81](../../../tests/test_rag_mcp_store.py#L81) | — |  |
+| F0954 | `test_postgres_store_and_pgvector_rag` | test | test | [tests/test_rag_mcp_store.py:85](../../../tests/test_rag_mcp_store.py#L85) | — |  |
+| F0955 | `test_catalogue_puts_the_five_mvp_roles_first` | test | test | [tests/test_roles_and_moat.py:12](../../../tests/test_roles_and_moat.py#L12) | — |  |
+| F0956 | `test_every_role_answers_the_four_questions` | test | test | [tests/test_roles_and_moat.py:19](../../../tests/test_roles_and_moat.py#L19) | — |  |
+| F0957 | `test_role_views_know_the_aurelia_situation` | test | test | [tests/test_roles_and_moat.py:35](../../../tests/test_roles_and_moat.py#L35) | — |  |
+| F0958 | `test_north_star_platform_kpis_and_industry_kpis` | test | test | [tests/test_roles_and_moat.py:51](../../../tests/test_roles_and_moat.py#L51) | — |  |
+| F0959 | `test_approval_is_not_proof_until_the_outcome_is_recorded` | test | test | [tests/test_roles_and_moat.py:61](../../../tests/test_roles_and_moat.py#L61) | — |  |
+| F0960 | `test_moat_view_flywheel_metrics_and_consent_gate` | test | test | [tests/test_roles_and_moat.py:86](../../../tests/test_roles_and_moat.py#L86) | — |  |
+| F0961 | `test_role_agent_gets_scoped_tools_and_industry_rules` | test | test | [tests/test_roles_and_moat.py:106](../../../tests/test_roles_and_moat.py#L106) | — |  |
+| F0962 | `test_chat_accepts_only_known_roles` | test | test | [tests/test_roles_and_moat.py:115](../../../tests/test_roles_and_moat.py#L115) | — |  |
+| F0963 | `test_catalogue_lists_industries_and_customers` | test | test | [tests/test_tenants_and_map.py:13](../../../tests/test_tenants_and_map.py#L13) | — |  |
+| F0964 | `test_every_view_works_for_each_customer` | test | test | [tests/test_tenants_and_map.py:22](../../../tests/test_tenants_and_map.py#L22) | — |  |
+| F0965 | `test_customers_are_isolated` | test | test | [tests/test_tenants_and_map.py:37](../../../tests/test_tenants_and_map.py#L37) | — |  |
+| F0966 | `test_network_map_tiers_and_sourcing` | test | test | [tests/test_tenants_and_map.py:50](../../../tests/test_tenants_and_map.py#L50) | — |  |

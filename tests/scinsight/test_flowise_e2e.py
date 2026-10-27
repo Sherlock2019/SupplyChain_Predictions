@@ -34,7 +34,9 @@ def _target() -> dict | None:
 
 TARGET = _target()
 pytestmark = pytest.mark.skipif(TARGET is None, reason="Flowise end-to-end tests are opt-in: set SCI_E2E=1 or SCI_E2E_STATE")
-ALLOWLISTED_TOOLS = {"ask_sc_agent_manager", "search_supply_chain_policy"}  # the chat bot's 2 tools: Supervisor Agentflow + company RAG
+# the chat bot's tools: Supervisor Agentflow, company RAG DB (pgvector retriever), governed policy search, read-only SAP records
+ALLOWLISTED_TOOLS = {"ask_sc_agent_manager", "company_policy_rag_db", "search_supply_chain_policy",
+                     "get_sap_inventory", "get_production_orders", "get_open_purchase_orders", "get_material_bom"}
 
 
 def _http(url: str, body=None, headers=None) -> tuple[int, dict]:
