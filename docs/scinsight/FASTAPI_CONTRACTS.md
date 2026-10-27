@@ -1,6 +1,6 @@
 # FastAPI contracts: SCInsight API
 
-- **Base URL:** `http://localhost:8100` (from Flowise: `http://scinsight-api:8100`). Swagger is at `/docs`, OpenAPI at `/openapi.json`.
+- **Base URL:** `http://localhost:8000/scinsight` (from Flowise: `http://api:8000/scinsight`). Swagger is at `/docs`, OpenAPI at `/openapi.json`.
 - **Auth:** `X-API-Key: <key>` or `Authorization: Bearer <key>`. The optional `X-Tenant` header must match the key's tenant (otherwise 403, audited).
 - **Request bodies are strict:** unknown fields get 422. Codes match `^[A-Z0-9][A-Z0-9_-]{1,40}$`.
 

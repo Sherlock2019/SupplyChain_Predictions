@@ -20,7 +20,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV = dict(line.split("=", 1) for line in (ROOT / ".env").read_text().splitlines() if "=" in line and not line.startswith("#")) if (ROOT / ".env").exists() else {}
-SCI_URL = os.environ.get("SCI_E2E_API_URL", "http://127.0.0.1:8100")
+SCI_URL = os.environ.get("SCI_E2E_API_URL", "http://127.0.0.1:8000/scinsight")
 
 
 def _target() -> dict | None:

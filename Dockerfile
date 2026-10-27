@@ -26,6 +26,8 @@ COPY code_explorer/02_business_logic ./code_explorer/02_business_logic
 COPY code_explorer/03_sap_data ./code_explorer/03_sap_data
 COPY code_explorer/04_ai_ml ./code_explorer/04_ai_ml
 COPY code_explorer/05_security_governance ./code_explorer/05_security_governance
+# starter templates shown next to the real code on the Backend code page
+COPY templates ./templates
 RUN useradd --create-home --uid 10001 appuser && mkdir -p /app/backend/.data /app/.langgraph_api && chown -R appuser:appuser /app
 USER appuser
 EXPOSE 8000

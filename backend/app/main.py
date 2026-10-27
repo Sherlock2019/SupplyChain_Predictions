@@ -9,9 +9,10 @@ import time
 import uuid
 from datetime import date, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -21,6 +22,9 @@ from backend.app.auth import ApiKeyAuth, Principal
 from backend.app.code_editor import CodeEditor
 from backend.app.config import ROOT, Settings, get_settings
 from backend.app.dashboards import PERSONAS
+from backend.app.erp.emulator import router as erp_emulator
+from backend.app.erp.routes import register as register_erp
+from backend.app.erp.service import ErpService
 from backend.app.insights import WATCH_KINDS
 from backend.app.llm import llm_health
 from backend.app.moat import MoatEngine
@@ -78,8 +82,15 @@ def _expectation(action: dict) -> str:
     return kind.replace("_", " ") + (f" for {action['material']}" if action.get("material") else "")
 
 
-def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None,
+               scinsight_router: APIRouter | None = None) -> FastAPI:
     settings = settings or get_settings()
+    # THE FastAPI app of the backend. The SCInsight API (backend of the Flowise chatflow and agentflows) is one of its routers,
+    # included below at /scinsight with its own keys, roles, database and audit chain. Built from SCI_* settings unless a test
+    # passes its own router.
+    if scinsight_router is None and settings.scinsight_enabled:
+        from backend.scinsight.app import create_router as create_scinsight_router
+        scinsight_router = create_scinsight_router()
     store = store or Store(settings.database_url)
     # One SAP snapshot + engine stack per industry/customer; the request's X-Tenant header selects it.
     tenants = TenantRegistry(settings.data_file, store)
@@ -319,6 +330,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         DENIALS.labels("sap_write").inc()
         store.audit(who.identity, who.role, "sap.write_blocked", {"path": path, "method": request.method}, request.state.correlation_id)
         raise HTTPException(status_code=405, detail="SAP adapter is read-only; write operations are disabled")
+
 
     # ------------------------------------------------- deterministic analyses
     @app.post("/api/v1/analysis/factory-readiness")
@@ -566,20 +578,50 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
 
-    # -------------------------------------------------- RAG Tuning page -> SCInsight API (managers only; key held server-side)
+    # -------------------------------------------------- RAG Tuning page -> SCInsight API (every role; keys held server-side)
+    # managers -> SCI_TUNING_KEY (director: may publish / roll back); planners -> SCI_TUNING_READER_KEY (mlops: everything else)
     @app.api_route("/api/v1/rag-tuning/{path:path}", methods=["GET", "POST", "PUT"], include_in_schema=False)
-    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(manager)) -> Response:
-        if not settings.sci_tuning_key:
-            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY)")
+    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(reader)) -> Response:
+        if path.strip("/") in ("publish", "rollback") and who.role != "manager":
+            raise HTTPException(status_code=403, detail="Publishing or rolling back the RAG configuration needs the manager role")
+        key = settings.sci_tuning_key if who.role == "manager" else settings.sci_tuning_reader_key
+        if not key:
+            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY / SCI_TUNING_READER_KEY)")
         store.audit(who.identity, who.role, "rag_tuning.proxy", {"method": request.method, "path": path[:120]}, request.state.correlation_id)
-        async with httpx.AsyncClient(timeout=120) as client:
-            upstream = await client.request(request.method, f"{settings.sci_api_url.rstrip('/')}/api/v1/rag-tuning/{path}",
+        # in-process call to this same app's /scinsight routes (no network hop); SCI_API_URL only when SCInsight runs elsewhere
+        local = app.state.scinsight is not None
+        transport = httpx.ASGITransport(app=app) if local else None
+        base = "http://local/scinsight" if local else settings.sci_api_url.rstrip("/")
+        async with httpx.AsyncClient(timeout=120, transport=transport) as client:
+            upstream = await client.request(request.method, f"{base}/api/v1/rag-tuning/{path}",
                                             params=dict(request.query_params), content=await request.body(),
-                                            headers={"X-API-Key": settings.sci_tuning_key, "Content-Type": "application/json"})
+                                            headers={"X-API-Key": key, "Content-Type": "application/json"})
         return Response(content=upstream.content, status_code=upstream.status_code, media_type="application/json")
 
     # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
     code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
+
+    @app.get("/api/v1/code/files")
+    def code_files(who: Principal = Depends(reader)) -> dict:
+        del who
+        # vscode_base: link prefix to open a file in VS Code on the machine that holds the repository (CODE_VSCODE_BASE)
+        return {**code.files(), "vscode_base": settings.code_vscode_base}
+
+    @app.get("/api/v1/code/file")
+    def code_file(path: str = Query(min_length=5, max_length=300), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.file(path)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="file not found") from exc
+
+    @app.get("/api/v1/code/template")
+    def code_template(name: str = Query(pattern=r"^[a-z_]+\.py$"), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.template(name)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="template not found") from exc
 
     @app.get("/api/v1/code/functions")
     def code_functions(q: str = Query(default="", max_length=200), who: Principal = Depends(reader)) -> dict:
@@ -717,6 +759,23 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         saved = store.set_setting(HARNESS_KEY, body.model_dump(), who.identity)
         store.audit(who.identity, who.role, "agent.deep_research.harness_updated", body.model_dump(), request.state.correlation_id)
         return {"harness": saved["value"], "updated_by": saved["updated_by"], "updated_at": saved["updated_at"]}
+
+    # ------------------------------------------------ ERP / SAP Setup (connections, mapping, sync, activation, checks)
+    # Activation swaps the customer's snapshot in the TenantRegistry: every endpoint above (and so every Flowise / LangGraph tool)
+    # computes on it from the next call. Restored from the database at startup.
+    erp = ErpService(store, tenants, environment=settings.app_env, allowed_hosts=settings.erp_allowed_hosts)
+    erp.restore()
+    app.state.erp = erp
+    erp_ctx = SimpleNamespace(tenants=tenants, store=store, rag=rag, runner=runner, settings=settings, erp=erp, harness=current_harness)
+
+    def erp_audit(who: Principal, action: str, details: dict, request: Request) -> None:
+        store.audit(who.identity, who.role, action, details, request.state.correlation_id)
+
+    register_erp(app, erp=erp, ctx=erp_ctx, reader=reader, manager=manager, audit=erp_audit)
+    if settings.app_env in ("development", "test"):  # SAP OData emulator for the "second ERP endpoint" demo and tests; never in staging/production
+        app.include_router(erp_emulator(settings.data_file, settings.erp_emulator_password), prefix="/erp-emulator")
+    if settings.erp_scheduler_enabled:
+        erp.start_scheduler()  # daemon thread; scheduled syncs only stage snapshots
 
     @app.post("/api/v1/deep-agents/supplier-research")
     def supplier_research(body: SupplierResearchRequest, request: Request, who: Principal = Depends(reader)) -> dict:
@@ -947,6 +1006,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         view = roles.learning()
         return {"as_of": view["as_of"], "models": view["models"], "summary": view["summary"], "note": view["note"]}
 
+    # SCInsight API routes in this same app (before the static frontend, which catches every other path): /scinsight/api/v1/...
+    app.state.scinsight = scinsight_router.state if scinsight_router is not None else None
+    if scinsight_router is not None:
+        app.include_router(scinsight_router, prefix="/scinsight", tags=["SCInsight API"])
     frontend = Path(ROOT / "frontend")
     if frontend.exists():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")

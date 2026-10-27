@@ -11,7 +11,7 @@ later against real outcomes.
 
 | Part | Where | What it does |
 |---|---|---|
-| SCInsight API (FastAPI) | `backend/scinsight/` · port **8100** · Swagger `http://localhost:8100/docs` | Synthetic SAP read API, deterministic calculations, recommendations and human review, outcome reconciliation, learning metrics, governed RAG, audit hash chain |
+| SCInsight API (FastAPI) | `backend/scinsight/` · port **8000**, path `/scinsight` · Swagger `http://localhost:8000/docs` (tag *SCInsight API*) | Synthetic SAP read API, deterministic calculations, recommendations and human review, outcome reconciliation, learning metrics, governed RAG, audit hash chain |
 | Database | PostgreSQL database `scinsight` (+ pgvector), SQLite for unit tests | 26 tables, versioned migrations (`backend/scinsight/migrations/`) |
 | Knowledge base | `data/scinsight/knowledge/*.md` | 9 synthetic policies, SOPs and agreements with front-matter metadata (plus one deliberately broken document that ingestion rejects) |
 | Chatflow | `flowise/chatflows/SCInsight-Cosmetics-Chatflow-v1.json` | Tool Agent over 14 allowlisted Custom Tools, memory, input guardrail, post-processing evidence gate |
@@ -27,12 +27,12 @@ later against real outcomes.
 python3 scripts/gen-env.py --add-missing        # adds SCI_*_KEY user keys to an existing .env (new installs: gen-env.py)
 ./start-localdemo.sh                             # whole stack; it also imports the SCInsight flows into Flowise
 # or step by step:
-docker compose --profile core up -d postgres flowise scinsight-api
+docker compose --profile core --profile localdb up -d postgres flowise api   # SCInsight API at /scinsight
 python3 flowise/scinsight/deploy.py import       # tools, variables, credentials, 9 flows; writes FLOWISE_SCI_* to .env
 ```
 
 Open:
-- **Swagger:** http://localhost:8100/docs. Authorize with a user key from `.env` (`SCI_PLANNER_KEY`, `SCI_WAREHOUSE_KEY`, …).
+- **Swagger:** http://localhost:8000/docs. Authorize with a user key from `.env` (`SCI_PLANNER_KEY`, `SCI_WAREHOUSE_KEY`, …).
 - **Flowise:** http://localhost:3000. Use the `SCInsight-Cosmetics-*` flows, category "SupplyChain Insight AI".
 
 Ask the supervisor (Flowise chat on `SCInsight-Cosmetics-Supervisor-Agentflow-v1`, or the prediction API with `FLOWISE_SCI_API_KEY`):

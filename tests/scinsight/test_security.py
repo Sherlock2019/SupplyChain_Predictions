@@ -4,9 +4,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.scinsight.app import create_app
 from backend.scinsight.db import Database
-from tests.scinsight.conftest import key, settings
+from tests.scinsight.conftest import create_app, key, settings
 
 
 def test_unauthenticated_and_invalid_keys(client):

@@ -54,17 +54,31 @@ class Settings(BaseSettings):
     # (never a production SAP system); "disabled" keeps execution manual. Agents can never execute either way.
     sap_execution_mode: str = "sandbox"
 
+    # ERP / SAP Setup page. Hosts a connection may call (comma-separated; required for production connections, optional otherwise).
+    erp_allowed_hosts: str = ""
+    # Password of the development-only SAP OData emulator (/erp-emulator, user SPARC_COMM); never mounted outside development/test.
+    erp_emulator_password: str = "dev-erp-emulator"
+    # Runs scheduled ERP syncs (staging only: a sync never activates a snapshot).
+    erp_scheduler_enabled: bool = True
+
     # LOCAL DEMO ONLY: the dashboard signs in automatically (GET /api/v1/demo/session hands out the demo keys).
     demo_auto_login: bool = False
 
     # Backend code section of the UI: everyone with a key can read the code; saving a function also needs a manager key,
     # CODE_EDITOR_ENABLED=true and APP_ENV=development|test (never enable it on a shared or cloud deployment).
     code_editor_enabled: bool = False
+    # "Open in VS Code" links of the Backend code page: vscode:// prefix of the repository on the developer's machine,
+    # e.g. vscode://vscode-remote/wsl+UbuntuD/home/me/Supplychain-AI-optimizer (empty = links hidden)
+    code_vscode_base: str = ""
 
-    # RAG Tuning page: the gateway forwards a MANAGER's calls to the SCInsight API with this administrator key (supply_chain_director).
-    # The key stays on the server; the browser never sees it, and the SCInsight API derives tenant and roles from it.
-    sci_api_url: str = "http://scinsight-api:8100"
+    # RAG Tuning page: the gateway forwards calls to the SCInsight API with a server-side key (the browser never sees it; the
+    # SCInsight API derives tenant and roles from it). Managers: director key (may publish / roll back). Other roles: MLOps key
+    # (inspect, preview, build candidates, benchmark; never publish).
+    sci_api_url: str = ""          # only when the SCInsight routes are NOT in this app (scinsight_enabled=false)
+    # The SCInsight API routes are included in this app at /scinsight (one FastAPI app, one port). They read their own SCI_* settings.
+    scinsight_enabled: bool = True
     sci_tuning_key: str = ""
+    sci_tuning_reader_key: str = ""
 
     log_level: str = "INFO"
     data_file: Path = ROOT / "data" / "sap_mock.json"

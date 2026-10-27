@@ -4,7 +4,7 @@ Tested with **Flowise 3.1.2**, both in the stack's instance and in a brand-new e
 
 ## Prerequisites
 
-1. **The SCInsight API is reachable from the Flowise container**, e.g. `http://scinsight-api:8100` on the same Docker network.
+1. **The SCInsight API is reachable from the Flowise container**, e.g. `http://api:8000/scinsight` on the same Docker network.
 2. **SSRF policy.** Flowise's default policy denies every private range, including the Docker bridge, so the tools would fail
    with `isDeniedIP … denied by policy`. Set exactly what the stack sets:
    ```
@@ -51,7 +51,7 @@ The importer upserts by name, so re-running it updates in place.
 
 The exports are plain flowData (`{nodes, edges}`), the format the UI's *Load* expects.
 
-1. **Variables:** create `sci_api_url` = `http://scinsight-api:8100` and `sci_agent_key` = the value of `SCI_AGENT_KEY`.
+1. **Variables:** create `sci_api_url` = `http://api:8000/scinsight` and `sci_agent_key` = the value of `SCI_AGENT_KEY`.
 2. **Credentials:** create an *OpenAI API* credential for the LLM. Create a *Chatflow API* credential holding a Flowise API key.
 3. **Tools:** for each file in `flowise/tools/`, go to Tools → *Load* and select it.
 4. **Agentflows:** load the 7 specialists first. Then load the supervisor and, in each of its 7 *Execute Flow* nodes, select the

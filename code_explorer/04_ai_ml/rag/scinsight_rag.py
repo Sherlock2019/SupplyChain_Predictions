@@ -171,7 +171,7 @@ class HashEmbedder:  # offline tests only
 # OUTPUT:
 #   object with .name and .embed(texts).
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 # CALLS:
 #   -> F0760 HashEmbedder (calls)
 #   -> F1868 get_embedder() (calls)
@@ -195,7 +195,7 @@ def _vec(v: list[float]) -> str:
 # FIELDS:
 #   db: Database, embedder: object with .embed().
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 #   <- F1945 test_candidate_index_failure_keeps_the_active_configuration() (references)
 # CALLS:
 #   (none found)
@@ -248,7 +248,7 @@ class KnowledgeBase:
     # OUTPUT:
     #   dict -> {"ingested": [{doc_id, tenant, chunks, flags}], "skipped": [doc_id], "rejected": [error messages]}.
     # CALLED BY:
-    #   <- F0112 create_app() (calls)
+    #   <- F1993 create_router() (calls)
     # CALLS:
     #   -> F0758 parse_document() (calls)
     #   -> F0757 DocumentError (references)

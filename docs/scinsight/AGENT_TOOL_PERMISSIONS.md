@@ -52,7 +52,7 @@ The supply_chain_director can review every domain.
 ## Network and secrets
 
 - Flowise's SSRF policy (`HTTP_SECURITY_CHECK=false` plus a custom `HTTP_DENY_LIST`) denies loopback, cloud metadata, 10/8,
-  192.168/16 and the IPv6 private ranges. Only the Docker bridge (172.16/12: scinsight-api, flowise) is reachable.
+  192.168/16 and the IPv6 private ranges. Only the Docker bridge (172.16/12: api, flowise) is reachable.
 - Flowise prediction for all 9 flows requires the `scinsight-flows` API key (`apikeyid` on each flow). Without it the request
   is refused ("Unauthorized"; Flowise returns HTTP 500 with that message).
 - The agent key is stored in the Flowise Variable `sci_agent_key`. It never appears in a prompt, flow export or tool output.

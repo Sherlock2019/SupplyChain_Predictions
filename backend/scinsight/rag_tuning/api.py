@@ -11,7 +11,7 @@ import json
 import time
 import urllib.request
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from backend.scinsight.rag_tuning import documents, embeddings, evaluation, indexing, publishing
@@ -96,12 +96,12 @@ def _llm_answer_fn(settings):
     return answer
 
 
-def register(app: FastAPI, *, db, kb, security, settings, principal_dep, biz_date) -> None:
+def register(app: APIRouter, *, db, kb, security, settings, principal_dep, biz_date) -> None:
     registry = Registry(db, kb)
     flowise = FlowiseAdapter(settings.sci_flowise_url, settings.sci_flowise_api_key, settings.sci_flowise_chatflow_id,
                              settings.sci_flowise_chatflow_name, db)
     kdir = settings.sci_knowledge_dir
-    app.state.rag_registry, app.state.rag_flowise = registry, flowise
+    app.state.rag_registry, app.state.rag_flowise = registry, flowise  # app = the SCInsight router (router.state)
 
     def admin(p: Principal = Depends(principal_dep)) -> Principal:
         security.require(p, ADMIN, "RAG tuning")
@@ -129,7 +129,7 @@ def register(app: FastAPI, *, db, kb, security, settings, principal_dep, biz_dat
                 "chunk_unit": CHUNK_UNIT, "score_metric": SCORE_METRIC, "embedding_backend": kb.backend,
                 "retrieval_path": [
                     "Flowise chatflow SCInsight-Cosmetics-Chatflow-v1 -> Tool Agent",
-                    "tool search_supply_chain_policy (Custom Tool, JavaScript) -> POST scinsight-api /api/v1/rag/search -> KnowledgeBase.search "
+                    "tool search_supply_chain_policy (Custom Tool, JavaScript) -> POST api:8000/scinsight/api/v1/rag/search -> KnowledgeBase.search "
                     "(backend/scinsight/rag.py) -> rag_chunks (pgvector, index_version of the active configuration) -> cited passages",
                     "tool company_policy_rag_db (Retriever tool) -> Flowise Postgres vector store scinsight_flowise_rag <- folder loader, Markdown "
                     "splitter, gateway /v1/embeddings (bge-small); synchronised with the active configuration on publish"],

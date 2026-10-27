@@ -152,7 +152,7 @@ def _d(offset: int) -> str:
 # OUTPUT:
 #   dict -> row counts per table for the main tenant (products, materials, inventory_batches, purchase_orders, ...).
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 # CALLS:
 #   -> F0418 Database (references)
 #   -> F0416 now_iso() (calls)

@@ -1,17 +1,18 @@
 # 06_testing/unit_tests (generated)
 
-Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/test_business_rules.py`, `tests/scinsight/test_rag_tuning.py`, `tests/test_code_editor.py`, `tests/test_engine.py`, `tests/test_mentana_features.py`, `tests/test_product_brief_outlook.py`, `tests/test_rag_mcp_store.py`, `tests/test_roles_and_moat.py`, `tests/test_tenants_and_map.py`
+Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/test_business_rules.py`, `tests/scinsight/test_rag_tuning.py`, `tests/test_code_editor.py`, `tests/test_engine.py`, `tests/test_erp.py`, `tests/test_fused_app.py`, `tests/test_mentana_features.py`, `tests/test_product_brief_outlook.py`, `tests/test_rag_mcp_store.py`, `tests/test_roles_and_moat.py`, `tests/test_templates.py`, `tests/test_tenants_and_map.py`
 
 | ID | Function / class | Kind | Status | Original | Annotated copy | Summary |
 |---|---|---|---|---|---|---|
-| F0904 | `settings` | function | used | [tests/conftest.py:28](../../../tests/conftest.py#L28) | — |  |
-| F0905 | `client` | function | used | [tests/conftest.py:45](../../../tests/conftest.py#L45) | — |  |
-| F0906 | `assistant_headers` | function | used | [tests/conftest.py:52](../../../tests/conftest.py#L52) | — |  |
-| F0907 | `manager_headers` | function | used | [tests/conftest.py:57](../../../tests/conftest.py#L57) | — |  |
-| F0908 | `settings` | function | used | [tests/scinsight/conftest.py:11](../../../tests/scinsight/conftest.py#L11) | — |  |
-| F0909 | `app` | function | used | [tests/scinsight/conftest.py:16](../../../tests/scinsight/conftest.py#L16) | — |  |
-| F0910 | `client` | function | used | [tests/scinsight/conftest.py:21](../../../tests/scinsight/conftest.py#L21) | — |  |
-| F0911 | `key` | function | used | [tests/scinsight/conftest.py:26](../../../tests/scinsight/conftest.py#L26) | — |  |
+| F0904 | `settings` | function | used | [tests/conftest.py:30](../../../tests/conftest.py#L30) | — |  |
+| F0905 | `client` | function | used | [tests/conftest.py:47](../../../tests/conftest.py#L47) | — |  |
+| F0906 | `assistant_headers` | function | used | [tests/conftest.py:54](../../../tests/conftest.py#L54) | — |  |
+| F0907 | `manager_headers` | function | used | [tests/conftest.py:59](../../../tests/conftest.py#L59) | — |  |
+| F2034 | `create_app` | function | used | [tests/scinsight/conftest.py:12](../../../tests/scinsight/conftest.py#L12) | — | Test harness only: the SCInsight router on a bare app (in production it lives in |
+| F0908 | `settings` | function | used | [tests/scinsight/conftest.py:22](../../../tests/scinsight/conftest.py#L22) | — |  |
+| F0909 | `app` | function | used | [tests/scinsight/conftest.py:27](../../../tests/scinsight/conftest.py#L27) | — |  |
+| F0910 | `client` | function | used | [tests/scinsight/conftest.py:32](../../../tests/scinsight/conftest.py#L32) | — |  |
+| F0911 | `key` | function | used | [tests/scinsight/conftest.py:37](../../../tests/scinsight/conftest.py#L37) | — |  |
 | F0912 | `batch` | function | used | [tests/scinsight/test_business_rules.py:13](../../../tests/scinsight/test_business_rules.py#L13) | — |  |
 | F0913 | `test_usable_stock_excludes_blocked_inspection_reserved_expired_and_flags_near_expiry` | test | test | [tests/scinsight/test_business_rules.py:17](../../../tests/scinsight/test_business_rules.py#L17) | — |  |
 | F0914 | `test_duplicate_batches_are_counted_once` | test | test | [tests/scinsight/test_business_rules.py:28](../../../tests/scinsight/test_business_rules.py#L28) | — |  |
@@ -22,34 +23,34 @@ Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/te
 | F0919 | `test_nothing_is_recommended_when_no_option_is_in_time` | test | test | [tests/scinsight/test_business_rules.py:81](../../../tests/scinsight/test_business_rules.py#L81) | — |  |
 | F0920 | `test_lead_time_estimate_and_prediction_error_and_reconciliation` | test | test | [tests/scinsight/test_business_rules.py:86](../../../tests/scinsight/test_business_rules.py#L86) | — |  |
 | F0921 | `test_expiry_risk_is_ordered_most_urgent_first` | test | test | [tests/scinsight/test_business_rules.py:102](../../../tests/scinsight/test_business_rules.py#L102) | — |  |
-| F1927 | `kdir` | function | used | [tests/scinsight/test_rag_tuning.py:23](../../../tests/scinsight/test_rag_tuning.py#L23) | — |  |
-| F1928 | `client` | function | used | [tests/scinsight/test_rag_tuning.py:30](../../../tests/scinsight/test_rag_tuning.py#L30) | — |  |
-| F1929 | `draft` | function | used | [tests/scinsight/test_rag_tuning.py:35](../../../tests/scinsight/test_rag_tuning.py#L35) | — |  |
-| F1930 | `run_job` | function | used | [tests/scinsight/test_rag_tuning.py:41](../../../tests/scinsight/test_rag_tuning.py#L41) | — |  |
-| F1931 | `test_config_validation_rejects_overlap_not_smaller_than_size_and_negative_overlap` | test | test | [tests/scinsight/test_rag_tuning.py:48](../../../tests/scinsight/test_rag_tuning.py#L48) | — |  |
-| F1932 | `test_only_admins_see_the_console_and_tenant_comes_from_the_key` | test | test | [tests/scinsight/test_rag_tuning.py:59](../../../tests/scinsight/test_rag_tuning.py#L59) | — |  |
-| F1933 | `test_chunk_preview_sizes_overlap_and_clause_boundaries` | test | test | [tests/scinsight/test_rag_tuning.py:68](../../../tests/scinsight/test_rag_tuning.py#L68) | — |  |
-| F1934 | `test_chunk_preview_endpoint_compares_without_writing` | test | test | [tests/scinsight/test_rag_tuning.py:80](../../../tests/scinsight/test_rag_tuning.py#L80) | — |  |
-| F1935 | `test_metadata_checks_report_missing_expired_and_superseded_without_inventing` | test | test | [tests/scinsight/test_rag_tuning.py:91](../../../tests/scinsight/test_rag_tuning.py#L91) | — |  |
-| F1936 | `test_embedding_models_are_an_approved_list_and_dimensions_are_checked` | test | test | [tests/scinsight/test_rag_tuning.py:109](../../../tests/scinsight/test_rag_tuning.py#L109) | — |  |
-| F1937 | `test_candidate_index_is_separate_and_active_search_is_unchanged` | test | test | [tests/scinsight/test_rag_tuning.py:117](../../../tests/scinsight/test_rag_tuning.py#L117) | — |  |
-| F1938 | `test_top_k_threshold_and_access_control_in_retrieval_preview` | test | test | [tests/scinsight/test_rag_tuning.py:129](../../../tests/scinsight/test_rag_tuning.py#L129) | — |  |
-| F1939 | `test_unauthorized_tenant_never_sees_other_documents` | test | test | [tests/scinsight/test_rag_tuning.py:143](../../../tests/scinsight/test_rag_tuning.py#L143) | — |  |
-| F1940 | `test_metrics_definitions_hit_recall_precision_mrr_and_leakage` | test | test | [tests/scinsight/test_rag_tuning.py:151](../../../tests/scinsight/test_rag_tuning.py#L151) | — |  |
-| F1941 | `test_answer_checks_catch_wrong_citations_and_unsupported_numbers` | test | test | [tests/scinsight/test_rag_tuning.py:160](../../../tests/scinsight/test_rag_tuning.py#L160) | — |  |
-| F1942 | `test_benchmark_runs_the_real_search_and_is_reproducible` | test | test | [tests/scinsight/test_rag_tuning.py:169](../../../tests/scinsight/test_rag_tuning.py#L169) | — |  |
-| F1943 | `test_grid_shows_workload_before_running` | test | test | [tests/scinsight/test_rag_tuning.py:180](../../../tests/scinsight/test_rag_tuning.py#L180) | — |  |
-| F1944 | `test_publish_needs_director_benchmark_and_confirm_then_rollback` | test | test | [tests/scinsight/test_rag_tuning.py:186](../../../tests/scinsight/test_rag_tuning.py#L186) | — |  |
-| F1945 | `test_candidate_index_failure_keeps_the_active_configuration` | test | test | [tests/scinsight/test_rag_tuning.py:205](../../../tests/scinsight/test_rag_tuning.py#L205) | — |  |
-| F1946 | `test_candidate_index_failure_keeps_the_active_configuration.boom` | nested | used | [tests/scinsight/test_rag_tuning.py:209](../../../tests/scinsight/test_rag_tuning.py#L209) | — |  |
-| F1947 | `test_rollback_only_to_previously_published_versions` | test | test | [tests/scinsight/test_rag_tuning.py:219](../../../tests/scinsight/test_rag_tuning.py#L219) | — |  |
-| F1948 | `test_stale_index_is_detected_when_documents_change` | test | test | [tests/scinsight/test_rag_tuning.py:225](../../../tests/scinsight/test_rag_tuning.py#L225) | — |  |
+| F1927 | `kdir` | function | used | [tests/scinsight/test_rag_tuning.py:22](../../../tests/scinsight/test_rag_tuning.py#L22) | — |  |
+| F1928 | `client` | function | used | [tests/scinsight/test_rag_tuning.py:29](../../../tests/scinsight/test_rag_tuning.py#L29) | — |  |
+| F1929 | `draft` | function | used | [tests/scinsight/test_rag_tuning.py:34](../../../tests/scinsight/test_rag_tuning.py#L34) | — |  |
+| F1930 | `run_job` | function | used | [tests/scinsight/test_rag_tuning.py:40](../../../tests/scinsight/test_rag_tuning.py#L40) | — |  |
+| F1931 | `test_config_validation_rejects_overlap_not_smaller_than_size_and_negative_overlap` | test | test | [tests/scinsight/test_rag_tuning.py:47](../../../tests/scinsight/test_rag_tuning.py#L47) | — |  |
+| F1932 | `test_only_admins_see_the_console_and_tenant_comes_from_the_key` | test | test | [tests/scinsight/test_rag_tuning.py:58](../../../tests/scinsight/test_rag_tuning.py#L58) | — |  |
+| F1933 | `test_chunk_preview_sizes_overlap_and_clause_boundaries` | test | test | [tests/scinsight/test_rag_tuning.py:67](../../../tests/scinsight/test_rag_tuning.py#L67) | — |  |
+| F1934 | `test_chunk_preview_endpoint_compares_without_writing` | test | test | [tests/scinsight/test_rag_tuning.py:79](../../../tests/scinsight/test_rag_tuning.py#L79) | — |  |
+| F1935 | `test_metadata_checks_report_missing_expired_and_superseded_without_inventing` | test | test | [tests/scinsight/test_rag_tuning.py:90](../../../tests/scinsight/test_rag_tuning.py#L90) | — |  |
+| F1936 | `test_embedding_models_are_an_approved_list_and_dimensions_are_checked` | test | test | [tests/scinsight/test_rag_tuning.py:108](../../../tests/scinsight/test_rag_tuning.py#L108) | — |  |
+| F1937 | `test_candidate_index_is_separate_and_active_search_is_unchanged` | test | test | [tests/scinsight/test_rag_tuning.py:116](../../../tests/scinsight/test_rag_tuning.py#L116) | — |  |
+| F1938 | `test_top_k_threshold_and_access_control_in_retrieval_preview` | test | test | [tests/scinsight/test_rag_tuning.py:128](../../../tests/scinsight/test_rag_tuning.py#L128) | — |  |
+| F1939 | `test_unauthorized_tenant_never_sees_other_documents` | test | test | [tests/scinsight/test_rag_tuning.py:142](../../../tests/scinsight/test_rag_tuning.py#L142) | — |  |
+| F1940 | `test_metrics_definitions_hit_recall_precision_mrr_and_leakage` | test | test | [tests/scinsight/test_rag_tuning.py:150](../../../tests/scinsight/test_rag_tuning.py#L150) | — |  |
+| F1941 | `test_answer_checks_catch_wrong_citations_and_unsupported_numbers` | test | test | [tests/scinsight/test_rag_tuning.py:159](../../../tests/scinsight/test_rag_tuning.py#L159) | — |  |
+| F1942 | `test_benchmark_runs_the_real_search_and_is_reproducible` | test | test | [tests/scinsight/test_rag_tuning.py:168](../../../tests/scinsight/test_rag_tuning.py#L168) | — |  |
+| F1943 | `test_grid_shows_workload_before_running` | test | test | [tests/scinsight/test_rag_tuning.py:179](../../../tests/scinsight/test_rag_tuning.py#L179) | — |  |
+| F1944 | `test_publish_needs_director_benchmark_and_confirm_then_rollback` | test | test | [tests/scinsight/test_rag_tuning.py:185](../../../tests/scinsight/test_rag_tuning.py#L185) | — |  |
+| F1945 | `test_candidate_index_failure_keeps_the_active_configuration` | test | test | [tests/scinsight/test_rag_tuning.py:204](../../../tests/scinsight/test_rag_tuning.py#L204) | — |  |
+| F1946 | `test_candidate_index_failure_keeps_the_active_configuration.boom` | nested | used | [tests/scinsight/test_rag_tuning.py:208](../../../tests/scinsight/test_rag_tuning.py#L208) | — |  |
+| F1947 | `test_rollback_only_to_previously_published_versions` | test | test | [tests/scinsight/test_rag_tuning.py:218](../../../tests/scinsight/test_rag_tuning.py#L218) | — |  |
+| F1948 | `test_stale_index_is_detected_when_documents_change` | test | test | [tests/scinsight/test_rag_tuning.py:224](../../../tests/scinsight/test_rag_tuning.py#L224) | — |  |
 | F1795 | `repo` | function | used | [tests/test_code_editor.py:24](../../../tests/test_code_editor.py#L24) | — |  |
 | F1796 | `test_api_lists_and_shows_backend_functions_read_only_by_default` | test | test | [tests/test_code_editor.py:31](../../../tests/test_code_editor.py#L31) | — |  |
-| F1949 | `test_rag_tuning_proxy_is_for_managers_and_needs_the_server_side_key` | test | test | [tests/test_code_editor.py:49](../../../tests/test_code_editor.py#L49) | — |  |
-| F1797 | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | test | test | [tests/test_code_editor.py:55](../../../tests/test_code_editor.py#L55) | — |  |
-| F1798 | `test_invalid_edits_are_refused_and_the_file_is_untouched` | test | test | [tests/test_code_editor.py:68](../../../tests/test_code_editor.py#L68) | — |  |
-| F1799 | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | test | test | [tests/test_code_editor.py:80](../../../tests/test_code_editor.py#L80) | — |  |
+| F1954 | `test_rag_tuning_proxy_is_open_to_every_role_but_publish_needs_a_manager` | test | test | [tests/test_code_editor.py:49](../../../tests/test_code_editor.py#L49) | — |  |
+| F1797 | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | test | test | [tests/test_code_editor.py:58](../../../tests/test_code_editor.py#L58) | — |  |
+| F1798 | `test_invalid_edits_are_refused_and_the_file_is_untouched` | test | test | [tests/test_code_editor.py:71](../../../tests/test_code_editor.py#L71) | — |  |
+| F1799 | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | test | test | [tests/test_code_editor.py:83](../../../tests/test_code_editor.py#L83) | — |  |
 | F0922 | `engine` | function | used | [tests/test_engine.py:12](../../../tests/test_engine.py#L12) | — |  |
 | F0923 | `test_readiness_counts_only_unrestricted_stock_and_confirmed_pos` | test | test | [tests/test_engine.py:17](../../../tests/test_engine.py#L17) | — |  |
 | F0924 | `test_readiness_proposes_expedite_of_later_confirmed_po` | test | test | [tests/test_engine.py:32](../../../tests/test_engine.py#L32) | — |  |
@@ -61,6 +62,23 @@ Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/te
 | F0930 | `test_quality_status_links_lots_to_production_orders` | test | test | [tests/test_engine.py:87](../../../tests/test_engine.py#L87) | — |  |
 | F0931 | `test_logistics_escalates_long_delays` | test | test | [tests/test_engine.py:93](../../../tests/test_engine.py#L93) | — |  |
 | F0932 | `test_inventory_and_kpis` | test | test | [tests/test_engine.py:100](../../../tests/test_engine.py#L100) | — |  |
+| F2174 | `emulator_transport` | function | used | [tests/test_erp.py:20](../../../tests/test_erp.py#L20) | — |  |
+| F2175 | `emulator_transport.handle` | nested | used | [tests/test_erp.py:23](../../../tests/test_erp.py#L23) | — |  |
+| F2176 | `app` | function | used | [tests/test_erp.py:39](../../../tests/test_erp.py#L39) | — |  |
+| F2177 | `c` | function | used | [tests/test_erp.py:49](../../../tests/test_erp.py#L49) | — |  |
+| F2178 | `live` | function | used | [tests/test_erp.py:60](../../../tests/test_erp.py#L60) | — |  |
+| F2179 | `snapshot_id` | function | used | [tests/test_erp.py:66](../../../tests/test_erp.py#L66) | — |  |
+| F2180 | `test_a_mock_sap_connection` | test | test | [tests/test_erp.py:70](../../../tests/test_erp.py#L70) | — |  |
+| F2181 | `test_b_live_connection_sync_activate_and_rollback` | test | test | [tests/test_erp.py:87](../../../tests/test_erp.py#L87) | — |  |
+| F2182 | `test_c_failures_keep_the_active_snapshot` | test | test | [tests/test_erp.py:128](../../../tests/test_erp.py#L128) | — |  |
+| F2183 | `test_invalid_mapping_blocks_activation` | test | test | [tests/test_erp.py:151](../../../tests/test_erp.py#L151) | — |  |
+| F2184 | `test_oauth_client_credentials` | test | test | [tests/test_erp.py:165](../../../tests/test_erp.py#L165) | — |  |
+| F2185 | `test_d_security` | test | test | [tests/test_erp.py:170](../../../tests/test_erp.py#L170) | — |  |
+| F2186 | `test_activation_is_per_customer` | test | test | [tests/test_erp.py:200](../../../tests/test_erp.py#L200) | — |  |
+| F2187 | `test_activation_survives_restart` | test | test | [tests/test_erp.py:209](../../../tests/test_erp.py#L209) | — |  |
+| F1985 | `fused` | function | used | [tests/test_fused_app.py:15](../../../tests/test_fused_app.py#L15) | — |  |
+| F2035 | `test_one_fastapi_instance_serves_both_apis_with_their_own_auth` | test | test | [tests/test_fused_app.py:21](../../../tests/test_fused_app.py#L21) | — |  |
+| F2036 | `test_rag_tuning_page_reaches_the_scinsight_routes_in_process` | test | test | [tests/test_fused_app.py:35](../../../tests/test_fused_app.py#L35) | — |  |
 | F0933 | `engine` | function | used | [tests/test_mentana_features.py:13](../../../tests/test_mentana_features.py#L13) | — |  |
 | F0934 | `test_insights_are_plain_english_deterministic_and_sorted` | test | test | [tests/test_mentana_features.py:18](../../../tests/test_mentana_features.py#L18) | — |  |
 | F0935 | `test_sales_orders_find_shortfall_and_cheapest_on_time_transfer` | test | test | [tests/test_mentana_features.py:28](../../../tests/test_mentana_features.py#L28) | — |  |
@@ -91,6 +109,11 @@ Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/te
 | F0960 | `test_moat_view_flywheel_metrics_and_consent_gate` | test | test | [tests/test_roles_and_moat.py:86](../../../tests/test_roles_and_moat.py#L86) | — |  |
 | F0961 | `test_role_agent_gets_scoped_tools_and_industry_rules` | test | test | [tests/test_roles_and_moat.py:106](../../../tests/test_roles_and_moat.py#L106) | — |  |
 | F0962 | `test_chat_accepts_only_known_roles` | test | test | [tests/test_roles_and_moat.py:115](../../../tests/test_roles_and_moat.py#L115) | — |  |
+| F1988 | `test_fastapi_template_auth_roles_validation_and_read_only_sap` | test | test | [tests/test_templates.py:11](../../../tests/test_templates.py#L11) | — |  |
+| F2037 | `test_router_template_is_one_app_with_a_prefixed_module` | test | test | [tests/test_templates.py:23](../../../tests/test_templates.py#L23) | — |  |
+| F1990 | `test_langgraph_template_interrupts_for_approval_then_resumes` | test | test | [tests/test_templates.py:32](../../../tests/test_templates.py#L32) | — |  |
+| F1991 | `test_backend_code_page_serves_each_apps_templates_and_nothing_else` | test | test | [tests/test_templates.py:42](../../../tests/test_templates.py#L42) | — |  |
+| F1992 | `test_mcp_template_tools_are_read_only_and_the_endpoint_needs_a_key` | test | test | [tests/test_templates.py:53](../../../tests/test_templates.py#L53) | — |  |
 | F0963 | `test_catalogue_lists_industries_and_customers` | test | test | [tests/test_tenants_and_map.py:13](../../../tests/test_tenants_and_map.py#L13) | — |  |
 | F0964 | `test_every_view_works_for_each_customer` | test | test | [tests/test_tenants_and_map.py:22](../../../tests/test_tenants_and_map.py#L22) | — |  |
 | F0965 | `test_customers_are_isolated` | test | test | [tests/test_tenants_and_map.py:37](../../../tests/test_tenants_and_map.py#L37) | — |  |

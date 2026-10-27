@@ -47,7 +47,7 @@ def _id(*parts) -> str:
 # CALLED BY:
 #   <- F0230 Dashboards.__init__() (references)
 #   <- F0260 RoleCenter.__init__() (references)
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
 #   <- F0934 test_insights_are_plain_english_deterministic_and_sorted() (calls)
 #   <- F0939 test_watch_evaluation() (calls)
 # CALLS:

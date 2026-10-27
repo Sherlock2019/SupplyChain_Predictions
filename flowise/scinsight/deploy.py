@@ -281,7 +281,7 @@ def main() -> int:
     i.add_argument("--env-file", default=str(ROOT / ".env"))
     i.add_argument("--flowise-url", default="http://127.0.0.1:3000", help="Flowise URL reachable from this script")
     i.add_argument("--flowise-internal-url", default="http://flowise:3000", help="Flowise URL reachable from inside its own container (Execute Flow)")
-    i.add_argument("--sci-api-url", default="http://scinsight-api:8100", help="SCInsight API URL reachable from the Flowise container")
+    i.add_argument("--sci-api-url", default="http://api:8000/scinsight", help="SCInsight API URL reachable from the Flowise container")
     i.add_argument("--embeddings-url", default="http://api:8000/v1", help="OpenAI-compatible embeddings base URL reachable from the Flowise container")
     i.add_argument("--rag-database", default="scinsight", help="PostgreSQL database of the RAG DB tables")
     i.add_argument("--qwen-model", default="")

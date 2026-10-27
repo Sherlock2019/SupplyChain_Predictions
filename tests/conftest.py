@@ -13,6 +13,8 @@ os.environ.update(
         "LANGGRAPH_URL": "",
         "LANGFUSE_HOST": "",
         "DATABASE_URL": "sqlite:///:memory:",
+        "SCINSIGHT_ENABLED": "false",  # gateway tests include a hermetic SCInsight router explicitly where needed
+        "ERP_SCHEDULER_ENABLED": "false",
     }
 )
 

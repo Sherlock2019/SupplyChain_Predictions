@@ -11,7 +11,7 @@ The chatflow's Tool Agent reaches company policies through two tools. Both are c
 ```
 Chat (Flowise) → Tool Agent "SCInsight Supply Chain Assistant"
  ├─ search_supply_chain_policy  (Custom Tool, JavaScript: POST $vars.sci_api_url/api/v1/rag/search, query only)
- │    → SCInsight API (FastAPI :8100) rag_search → KnowledgeBase.search (backend/scinsight/rag.py)
+ │    → SCInsight routes (/scinsight of the one FastAPI app, :8000) rag_search → KnowledgeBase.search (backend/scinsight/rag.py)
  │    → PostgreSQL "scinsight": rag_chunks (pgvector, index_version of the ACTIVE configuration) + rag_documents
  │    → passages with citation {doc_id, version, section, chunk, validity}, injection flags, config_version, index_version
  └─ company_policy_rag_db       (Flowise Retriever tool, no code)
@@ -123,7 +123,10 @@ forwards a manager's calls with `SCI_TUNING_KEY` (= `SCI_DIRECTOR_KEY`, server-s
 `GET experiments` · `GET experiments/compare` · `GET experiments/{id}` · `POST validate` · `POST publish` · `POST rollback` ·
 `GET flowise` · `GET metrics`.
 
-Roles: supply_chain_director and mlops_engineer can use the console; only the director can publish or roll back.
+Roles: in the SCInsight API, supply_chain_director and mlops_engineer can use the console and only the director can publish or
+roll back. In the dashboard, every role can open the console. The gateway forwards managers' calls with the director key
+(`SCI_TUNING_KEY`) and everyone else's with the MLOps key (`SCI_TUNING_READER_KEY`). Publish and rollback are refused for
+non-managers (403). For non-managers the Retrieval tab tests access with a role fixture (default `planner`).
 
 ```bash
 python3 scripts/rag_tuning.py config | documents | validate | models | history | flowise | metrics

@@ -33,9 +33,9 @@ def test_api_lists_and_shows_backend_functions_read_only_by_default(client, assi
     assert listing["edit_allowed"] is False
     row = next(f for f in listing["functions"] if f["name"] == "calculate_material_shortage")
     assert row["file"] == "backend/scinsight/business.py"
-    assert row["apps"] == ["scinsight-api"]  # files are grouped by the docker-compose app that imports them
+    assert row["apps"] == ["api", "scinsight"]  # SCInsight routes are a router of the one FastAPI app
     apps = {c["id"]: c for c in listing["components"]}
-    assert apps["scinsight-api"]["kind"] == apps["api"]["kind"] == "FastAPI"
+    assert apps["api"]["kind"] == "FastAPI" and apps["scinsight"]["kind"] == "FastAPI router" and apps["scinsight"]["port"] == 8000
     assert "backend/app/engine.py" in apps["api"]["files"] and "backend/app/engine.py" in apps["mcp"]["files"]
     assert "backend/app/main.py" not in apps["mcp"]["files"]
     detail = client.get("/api/v1/code/function", params={"key": row["key"]}, headers=assistant_headers).json()
@@ -46,10 +46,13 @@ def test_api_lists_and_shows_backend_functions_read_only_by_default(client, assi
     assert client.get("/api/v1/code/function", params={"key": "backend/../.env::x"}, headers=assistant_headers).status_code == 404
 
 
-def test_rag_tuning_proxy_is_for_managers_and_needs_the_server_side_key(client, assistant_headers, manager_headers):
-    assert client.get("/api/v1/rag-tuning/config", headers=assistant_headers).status_code == 403  # planners never reach the console
-    r = client.get("/api/v1/rag-tuning/config", headers=manager_headers)
-    assert r.status_code == 503 and "SCI_TUNING_KEY" in r.text  # not configured in tests: no key, no forwarding
+def test_rag_tuning_proxy_is_open_to_every_role_but_publish_needs_a_manager(client, assistant_headers, manager_headers):
+    for headers in (assistant_headers, manager_headers):
+        r = client.get("/api/v1/rag-tuning/config", headers=headers)
+        assert r.status_code == 503 and "SCI_TUNING" in r.text  # not configured in tests: no key, no forwarding
+    for path in ("publish", "rollback"):
+        assert client.post(f"/api/v1/rag-tuning/{path}", json={}, headers=assistant_headers).status_code == 403
+    assert client.get("/api/v1/rag-tuning/config").status_code == 401
 
 
 def test_edit_replaces_only_the_selected_method_and_keeps_a_backup(repo):

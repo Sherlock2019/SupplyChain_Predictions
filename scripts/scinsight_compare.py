@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(line.split("=", 1) for line in (ROOT / ".env").read_text().splitlines() if "=" in line and not line.startswith("#"))
-FLOWISE, LANGGRAPH, SCI = "http://127.0.0.1:3000", "http://127.0.0.1:8123", "http://127.0.0.1:8100"
+FLOWISE, LANGGRAPH, SCI = "http://127.0.0.1:3000", "http://127.0.0.1:8123", "http://127.0.0.1:8000/scinsight"
 LABEL_TO_INTENT = {"Factory-Planning": "factory_planning", "Procurement": "procurement", "Warehouse": "warehouse", "Inventory-Optimizer": "inventory_optimizer",
                    "Logistics": "logistics", "Quality": "quality", "Decision-Outcome-Learning": "outcome_learning",
                    "SAP change refused": "sap_write_request", "out of scope": "out_of_scope"}

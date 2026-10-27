@@ -19,9 +19,10 @@ import time
 import uuid
 from datetime import date, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +32,9 @@ from backend.app.auth import ApiKeyAuth, Principal
 from backend.app.code_editor import CodeEditor
 from backend.app.config import ROOT, Settings, get_settings
 from backend.app.dashboards import PERSONAS
+from backend.app.erp.emulator import router as erp_emulator
+from backend.app.erp.routes import register as register_erp
+from backend.app.erp.service import ErpService
 from backend.app.insights import WATCH_KINDS
 from backend.app.llm import llm_health
 from backend.app.moat import MoatEngine
@@ -80,7 +84,7 @@ FLOW_NAMES = {
 
 # ===== FUNCTION: _expectation() =====
 # ID: F0016 · function · used
-# ORIGINAL FILE: backend/app/main.py:71-78
+# ORIGINAL FILE: backend/app/main.py:75-82
 # ROLE: Plain-language expected result of one executed action (what the outcome check will look for in SAP).
 # INPUTS:
 #   action
@@ -104,20 +108,24 @@ def _expectation(action: dict) -> str:
 
 # ===== FUNCTION: create_app() =====
 # ID: F0017 · function · used
-# ORIGINAL FILE: backend/app/main.py:81-953
+# ORIGINAL FILE: backend/app/main.py:85-1016
 # ROLE: Application factory of the SPARC / Aurelia gateway: builds the store, tenant registry + proxies, moat, RAG, auth and graph runner, then registers middleware, dependencies and ~95 routes as closures.
 # INPUTS:
-#   settings, store, runner
+#   settings, store, runner, scinsight_router
 # OUTPUT:
 #   FastAPI
 # CALLED BY:
 #   <- F0905 client() (calls)
 #   <- F0872 test_demo_session_disabled_by_default_and_enabled_for_local_demo() (calls)
+#   <- F2176 app() (calls)
+#   <- F2187 test_activation_survives_restart() (calls)
+#   <- F1985 fused() (calls)
 # CALLS:
 #   -> F0001 Settings (references)
 #   -> F0354 Store (references)
 #   -> F0621 GraphRunner (references)
 #   -> F0008 get_settings() (calls)
+#   -> F1993 create_router() (calls)
 #   -> F0354 Store (calls)
 #   -> F0391 TenantRegistry (calls)
 #   -> F0393 TenantRegistry.get() (calls)
@@ -125,9 +133,15 @@ def _expectation(action: dict) -> str:
 #   -> F0250 MoatEngine (calls)
 #   -> F0756 create_rag() (calls)
 #   -> F0768 ApiKeyAuth (calls)
-#   -> F0621 GraphRunner (calls)
-def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None,
+               scinsight_router: APIRouter | None = None) -> FastAPI:
     settings = settings or get_settings()
+    # THE FastAPI app of the backend. The SCInsight API (backend of the Flowise chatflow and agentflows) is one of its routers,
+    # included below at /scinsight with its own keys, roles, database and audit chain. Built from SCI_* settings unless a test
+    # passes its own router.
+    if scinsight_router is None and settings.scinsight_enabled:
+        from backend.scinsight.app import create_router as create_scinsight_router
+        scinsight_router = create_scinsight_router()
     store = store or Store(settings.database_url)
     # One SAP snapshot + engine stack per industry/customer; the request's X-Tenant header selects it.
     tenants = TenantRegistry(settings.data_file, store)
@@ -159,7 +173,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.request_context() =====
     # ID: F0018 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:112-130
+    # ORIGINAL FILE: backend/app/main.py:123-141
     # ROLE: HTTP middleware: correlation id, active tenant (X-Tenant or ?tenant=), Prometheus request count + latency.
     # INPUTS:
     #   request, call_next
@@ -193,7 +207,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.principal() =====
     # ID: F0019 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:132-145
+    # ORIGINAL FILE: backend/app/main.py:143-156
     # ROLE: Dependency: authenticate X-API-Key (401) and enforce tenant scope (403); every denial is counted and audited.
     # INPUTS:
     #   request, x_api_key
@@ -229,7 +243,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.manager() =====
     # ID: F0020 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:147-153
+    # ORIGINAL FILE: backend/app/main.py:158-164
     # ROLE: Dependency: authenticated caller with the manager role (403 otherwise, audited).
     # INPUTS:
     #   request, who
@@ -237,6 +251,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   Principal
     # CALLED BY:
+    #   <- F0017 create_app() (references)
     #   <- F0029 create_app.demo_session() (references)
     #   <- F0058 create_app.moat_consent() (references)
     #   <- F0058 create_app.moat_consent() (depends_on)
@@ -244,11 +259,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   <- F0059 create_app.record_outcome() (depends_on)
     #   <- F0081 create_app.rag_add() (references)
     #   <- F0081 create_app.rag_add() (depends_on)
-    #   <- F1801 create_app.rag_tuning_proxy() (references)
-    #   <- F1801 create_app.rag_tuning_proxy() (depends_on)
     #   <- F0987 create_app.code_update() (references)
     #   <- F0987 create_app.code_update() (depends_on)
     #   <- F0091 create_app.set_deep_harness() (references)
+    #   <- F0091 create_app.set_deep_harness() (depends_on)
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0019 create_app.principal() (references)
@@ -265,7 +279,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.reader() =====
     # ID: F0021 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:155-156
+    # ORIGINAL FILE: backend/app/main.py:166-167
     # ROLE: Dependency: authenticated caller with the assistant or manager role.
     # INPUTS:
     #   who
@@ -273,6 +287,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   Principal
     # CALLED BY:
+    #   <- F0017 create_app() (references)
     #   <- F0031 create_app.status() (references)
     #   <- F0031 create_app.status() (depends_on)
     #   <- F0033 create_app.snapshot() (references)
@@ -284,7 +299,6 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   <- F0037 create_app.sap_sandbox_documents() (references)
     #   <- F0037 create_app.sap_sandbox_documents() (depends_on)
     #   <- F0038 create_app.sap_odata() (references)
-    #   <- F0038 create_app.sap_odata() (depends_on)
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0019 create_app.principal() (references)
@@ -295,7 +309,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.watch_owner() =====
     # ID: F0022 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:158-159
+    # ORIGINAL FILE: backend/app/main.py:169-170
     # ROLE: Owner key of a watch: identity@tenant.
     # INPUTS:
     #   who
@@ -315,7 +329,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.save() =====
     # ID: F0023 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:161-171
+    # ORIGINAL FILE: backend/app/main.py:172-182
     # ROLE: Store an analysis (AN-...), audit it, count it, and return it with snapshot provenance and read_only=True.
     # INPUTS:
     #   kind, payload, result, who, request
@@ -353,7 +367,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.value_error_handler() =====
     # ID: F0024 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:173-175
+    # ORIGINAL FILE: backend/app/main.py:184-186
     # ROLE: Exception handler: any ValueError from the engine becomes HTTP 422 with a VALIDATION_ERROR body.
     # INPUTS:
     #   request, exc
@@ -370,7 +384,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------- platform
     # ===== FUNCTION: create_app.health() =====
     # ID: F0025 · route · used
-    # ORIGINAL FILE: backend/app/main.py:178-180
+    # ORIGINAL FILE: backend/app/main.py:189-191
     # ROLE: HTTP GET /health
     # INPUTS:
     #   none
@@ -386,7 +400,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.ready() =====
     # ID: F0026 · route · used
-    # ORIGINAL FILE: backend/app/main.py:182-184
+    # ORIGINAL FILE: backend/app/main.py:193-195
     # ROLE: HTTP GET /ready
     # INPUTS:
     #   none
@@ -405,7 +419,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.metrics() =====
     # ID: F0027 · route · used
-    # ORIGINAL FILE: backend/app/main.py:186-188
+    # ORIGINAL FILE: backend/app/main.py:197-199
     # ROLE: HTTP GET /metrics
     # INPUTS:
     #   none
@@ -421,7 +435,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.public_config() =====
     # ID: F0028 · route · used
-    # ORIGINAL FILE: backend/app/main.py:190-218
+    # ORIGINAL FILE: backend/app/main.py:201-229
     # ROLE: HTTP GET /api/v1/config/public — Non-secret links for the dashboard header.
     # INPUTS:
     #   none
@@ -466,7 +480,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.demo_session() =====
     # ID: F0029 · route · used
-    # ORIGINAL FILE: backend/app/main.py:220-227
+    # ORIGINAL FILE: backend/app/main.py:231-238
     # ROLE: HTTP GET /api/v1/demo/session — Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the UI needs no login.
     # INPUTS:
     #   none
@@ -487,7 +501,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app._public() =====
     # ID: F0030 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:229-230
+    # ORIGINAL FILE: backend/app/main.py:240-241
     # ROLE: Public URL of a companion service from PUBLIC_<SERVICE>_URL.
     # INPUTS:
     #   service
@@ -502,7 +516,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.status() =====
     # ID: F0031 · route · used
-    # ORIGINAL FILE: backend/app/main.py:232-265
+    # ORIGINAL FILE: backend/app/main.py:243-276
     # ROLE: HTTP GET /api/v1/status
     # INPUTS:
     #   who
@@ -532,7 +546,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
         # ===== FUNCTION: create_app.status.probe() =====
         # ID: F0032 · nested · used
-        # ORIGINAL FILE: backend/app/main.py:236-244
+        # ORIGINAL FILE: backend/app/main.py:247-255
         # ROLE: Probe one service URL asynchronously (up / error / down / not_configured).
         # INPUTS:
         #   name, url, headers
@@ -576,7 +590,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ----------------------------------------------------------- SAP mock
     # ===== FUNCTION: create_app.snapshot() =====
     # ID: F0033 · route · used
-    # ORIGINAL FILE: backend/app/main.py:268-279
+    # ORIGINAL FILE: backend/app/main.py:279-290
     # ROLE: HTTP GET /api/v1/snapshot
     # INPUTS:
     #   who
@@ -586,6 +600,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # CALLED BY:
     #   <- F0471 ApiBackend.snapshot() (http_request)
     #   <- F0861 test_health_is_public_but_data_requires_key() (http_request)
+    #   <- F2179 snapshot_id() (http_request)
     #   <- F0964 test_every_view_works_for_each_customer() (http_request)
     # CALLS:
     #   -> F0767 Principal (references)
@@ -609,7 +624,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.tenant_catalogue() =====
     # ID: F0034 · route · used
-    # ORIGINAL FILE: backend/app/main.py:281-284
+    # ORIGINAL FILE: backend/app/main.py:292-295
     # ROLE: HTTP GET /api/v1/tenants — Industries and customers for the top-bar selector (send the id back as the X-Tenant header).
     # INPUTS:
     #   none
@@ -628,7 +643,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.network_map() =====
     # ID: F0035 · route · used
-    # ORIGINAL FILE: backend/app/main.py:286-289
+    # ORIGINAL FILE: backend/app/main.py:297-300
     # ROLE: HTTP GET /api/v1/network/map
     # INPUTS:
     #   who
@@ -649,7 +664,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_metadata() =====
     # ID: F0036 · route · used
-    # ORIGINAL FILE: backend/app/main.py:291-294
+    # ORIGINAL FILE: backend/app/main.py:302-305
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata
     # INPUTS:
     #   who
@@ -657,6 +672,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
+    #   <- F2099 router.odata() (http_request)
     #   <- F0862 test_sap_odata_reads_and_blocks_writes() (http_request)
     #   <- F0818 test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory() (http_request)
     #   <- F0819 test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input() (http_request)
@@ -664,6 +680,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
     #   -> F0415 SapRepository.metadata() (calls)
+    #   -> F2099 router.odata() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata")
     def sap_metadata(who: Principal = Depends(reader)) -> dict:
@@ -672,7 +689,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_sandbox_documents() =====
     # ID: F0037 · route · used
-    # ORIGINAL FILE: backend/app/main.py:296-300
+    # ORIGINAL FILE: backend/app/main.py:307-311
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument
     # INPUTS:
     #   who
@@ -680,6 +697,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
+    #   <- F2099 router.odata() (http_request)
     #   <- F0818 test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory() (http_request)
     #   <- F0819 test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input() (http_request)
     #   <- F0942 test_one_click_execution_only_after_acceptance_and_only_for_manager() (http_request)
@@ -687,6 +705,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
     #   -> F0376 Store.sap_documents() (calls)
+    #   -> F2099 router.odata() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument")
     def sap_sandbox_documents(who: Principal = Depends(reader)) -> dict:
@@ -696,7 +715,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_odata() =====
     # ID: F0038 · route · used
-    # ORIGINAL FILE: backend/app/main.py:302-315
+    # ORIGINAL FILE: backend/app/main.py:313-326
     # ROLE: HTTP GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity}
     # INPUTS:
     #   entity, top, plant, material, supplier, who
@@ -704,8 +723,12 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
+    #   <- F2047 validate_integrations.flowise() (http_request)
+    #   <- F2099 router.odata() (http_request)
     #   <- F0888 Smoke.security() (http_request)
     #   <- F0862 test_sap_odata_reads_and_blocks_writes() (http_request)
+    #   <- F2181 test_b_live_connection_sync_activate_and_rollback() (http_request)
+    #   <- F2185 test_d_security() (http_request)
     #   <- F0818 test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory() (http_request)
     #   <- F0819 test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input() (http_request)
     #   <- F0942 test_one_click_execution_only_after_acceptance_and_only_for_manager() (http_request)
@@ -714,6 +737,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
     #   -> F0414 SapRepository.odata() (calls)
+    #   -> F2099 router.odata() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity}")
     def sap_odata(
@@ -732,7 +756,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.block_sap_write() =====
     # ID: F0039 · route · used
-    # ORIGINAL FILE: backend/app/main.py:317-321
+    # ORIGINAL FILE: backend/app/main.py:328-332
     # ROLE: HTTP POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path}
     # INPUTS:
     #   path, request, who
@@ -740,8 +764,14 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   Response
     # CALLED BY:
+    #   <- F2047 validate_integrations.flowise() (http_request)
+    #   <- F2084 SapODataConnector.test_connection() (http_request)
+    #   <- F2098 router() (http_request)
+    #   <- F2099 router.odata() (http_request)
     #   <- F0888 Smoke.security() (http_request)
     #   <- F0862 test_sap_odata_reads_and_blocks_writes() (http_request)
+    #   <- F2181 test_b_live_connection_sync_activate_and_rollback() (http_request)
+    #   <- F2185 test_d_security() (http_request)
     #   <- F0818 test_chatflow_is_tool_agent_with_mcp_sap_odata_and_memory() (http_request)
     #   <- F0819 test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input() (http_request)
     #   <- F0942 test_one_click_execution_only_after_acceptance_and_only_for_manager() (http_request)
@@ -750,6 +780,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
     #   -> F0358 Store.audit() (calls)
+    #   -> F2099 router.odata() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.api_route("/sap/opu/odata/sap/{path:path}", methods=["POST", "PUT", "PATCH", "DELETE"])
     def block_sap_write(path: str, request: Request, who: Principal = Depends(reader)) -> Response:
@@ -757,10 +788,11 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "sap.write_blocked", {"path": path, "method": request.method}, request.state.correlation_id)
         raise HTTPException(status_code=405, detail="SAP adapter is read-only; write operations are disabled")
 
+
     # ------------------------------------------------- deterministic analyses
     # ===== FUNCTION: create_app.factory_readiness() =====
     # ID: F0040 · route · used
-    # ORIGINAL FILE: backend/app/main.py:324-327
+    # ORIGINAL FILE: backend/app/main.py:336-339
     # ROLE: HTTP POST /api/v1/analysis/factory-readiness
     # INPUTS:
     #   body, request, who
@@ -775,6 +807,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   <- F0865 test_recommendation_lifecycle_and_roles() (http_request)
     #   <- F0866 test_agent_handoff_selects_analysis_server_side() (http_request)
     #   <- F0867 test_recommendation_requires_actions() (http_request)
+    #   <- F2181 test_b_live_connection_sync_activate_and_rollback() (http_request)
     # CALLS:
     #   -> F0148 FactoryReadinessRequest (references)
     #   -> F0767 Principal (references)
@@ -790,7 +823,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.stock_balance() =====
     # ID: F0041 · route · used
-    # ORIGINAL FILE: backend/app/main.py:329-331
+    # ORIGINAL FILE: backend/app/main.py:341-343
     # ROLE: HTTP POST /api/v1/analysis/stock-balance
     # INPUTS:
     #   body, request, who
@@ -818,7 +851,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.demand_forecast() =====
     # ID: F0042 · route · used
-    # ORIGINAL FILE: backend/app/main.py:333-335
+    # ORIGINAL FILE: backend/app/main.py:345-347
     # ROLE: HTTP POST /api/v1/analysis/forecast
     # INPUTS:
     #   body, request, who
@@ -842,7 +875,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.what_if() =====
     # ID: F0043 · route · used
-    # ORIGINAL FILE: backend/app/main.py:337-340
+    # ORIGINAL FILE: backend/app/main.py:349-352
     # ROLE: HTTP POST /api/v1/analysis/what-if
     # INPUTS:
     #   body, request, who
@@ -867,7 +900,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.supplier_risk() =====
     # ID: F0044 · route · used
-    # ORIGINAL FILE: backend/app/main.py:342-344
+    # ORIGINAL FILE: backend/app/main.py:354-356
     # ROLE: HTTP POST /api/v1/analysis/supplier-risk
     # INPUTS:
     #   body, request, who
@@ -892,7 +925,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.quality() =====
     # ID: F0045 · route · used
-    # ORIGINAL FILE: backend/app/main.py:346-348
+    # ORIGINAL FILE: backend/app/main.py:358-360
     # ROLE: HTTP POST /api/v1/analysis/quality
     # INPUTS:
     #   body, request, who
@@ -918,7 +951,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.logistics() =====
     # ID: F0046 · route · used
-    # ORIGINAL FILE: backend/app/main.py:350-352
+    # ORIGINAL FILE: backend/app/main.py:362-364
     # ROLE: HTTP POST /api/v1/analysis/logistics
     # INPUTS:
     #   body, request, who
@@ -943,7 +976,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sales_orders() =====
     # ID: F0047 · route · used
-    # ORIGINAL FILE: backend/app/main.py:354-356
+    # ORIGINAL FILE: backend/app/main.py:366-368
     # ROLE: HTTP POST /api/v1/analysis/sales-orders
     # INPUTS:
     #   body, request, who
@@ -969,7 +1002,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.stocktake() =====
     # ID: F0048 · route · used
-    # ORIGINAL FILE: backend/app/main.py:358-360
+    # ORIGINAL FILE: backend/app/main.py:370-372
     # ROLE: HTTP POST /api/v1/analysis/stocktake
     # INPUTS:
     #   body, request, who
@@ -993,7 +1026,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.forecast_vs_actuals() =====
     # ID: F0049 · route · used
-    # ORIGINAL FILE: backend/app/main.py:362-365
+    # ORIGINAL FILE: backend/app/main.py:374-377
     # ROLE: HTTP GET /api/v1/analysis/forecast-vs-actuals
     # INPUTS:
     #   material, warehouse, who
@@ -1014,7 +1047,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.production_overview() =====
     # ID: F0050 · route · used
-    # ORIGINAL FILE: backend/app/main.py:367-370
+    # ORIGINAL FILE: backend/app/main.py:379-382
     # ROLE: HTTP GET /api/v1/production/overview
     # INPUTS:
     #   who
@@ -1035,7 +1068,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.products() =====
     # ID: F0051 · route · used
-    # ORIGINAL FILE: backend/app/main.py:372-375
+    # ORIGINAL FILE: backend/app/main.py:384-387
     # ROLE: HTTP GET /api/v1/products
     # INPUTS:
     #   who
@@ -1056,7 +1089,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.product() =====
     # ID: F0052 · route · used
-    # ORIGINAL FILE: backend/app/main.py:377-380
+    # ORIGINAL FILE: backend/app/main.py:389-392
     # ROLE: HTTP GET /api/v1/products/{material}
     # INPUTS:
     #   material, who
@@ -1081,7 +1114,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------ role-centred decision views
     # ===== FUNCTION: create_app.role_catalogue() =====
     # ID: F0053 · route · used
-    # ORIGINAL FILE: backend/app/main.py:383-386
+    # ORIGINAL FILE: backend/app/main.py:395-398
     # ROLE: HTTP GET /api/v1/roles
     # INPUTS:
     #   who
@@ -1102,7 +1135,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.role_view() =====
     # ID: F0054 · route · used
-    # ORIGINAL FILE: backend/app/main.py:388-393
+    # ORIGINAL FILE: backend/app/main.py:400-405
     # ROLE: HTTP GET /api/v1/roles/{role}
     # INPUTS:
     #   role, material, who
@@ -1127,7 +1160,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.north_star() =====
     # ID: F0055 · route · used
-    # ORIGINAL FILE: backend/app/main.py:395-398
+    # ORIGINAL FILE: backend/app/main.py:407-410
     # ROLE: HTTP GET /api/v1/northstar
     # INPUTS:
     #   material, who
@@ -1148,7 +1181,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.learning() =====
     # ID: F0056 · route · used
-    # ORIGINAL FILE: backend/app/main.py:400-403
+    # ORIGINAL FILE: backend/app/main.py:412-415
     # ROLE: HTTP GET /api/v1/learning
     # INPUTS:
     #   who
@@ -1169,7 +1202,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.moat_view() =====
     # ID: F0057 · route · used
-    # ORIGINAL FILE: backend/app/main.py:405-409
+    # ORIGINAL FILE: backend/app/main.py:417-421
     # ROLE: HTTP GET /api/v1/moat — Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strength metrics.
     # INPUTS:
     #   who
@@ -1194,7 +1227,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.moat_consent() =====
     # ID: F0058 · route · used
-    # ORIGINAL FILE: backend/app/main.py:411-417
+    # ORIGINAL FILE: backend/app/main.py:423-429
     # ROLE: HTTP POST /api/v1/moat/consent — The customer decides whether its data may contribute to industry learning (manager only, audited).
     # INPUTS:
     #   body, request, who
@@ -1224,7 +1257,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.record_outcome() =====
     # ID: F0059 · route · used
-    # ORIGINAL FILE: backend/app/main.py:419-431
+    # ORIGINAL FILE: backend/app/main.py:431-443
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/outcome — Record the real result of an executed recommendation against an SAP document (decision outcome learning).
     # INPUTS:
     #   recommendation_id, body, request, who
@@ -1267,7 +1300,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sales_outlook() =====
     # ID: F0060 · route · used
-    # ORIGINAL FILE: backend/app/main.py:433-436
+    # ORIGINAL FILE: backend/app/main.py:445-448
     # ROLE: HTTP GET /api/v1/sales/outlook
     # INPUTS:
     #   material, who
@@ -1288,7 +1321,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.product_brief() =====
     # ID: F0061 · route · used
-    # ORIGINAL FILE: backend/app/main.py:438-441
+    # ORIGINAL FILE: backend/app/main.py:450-453
     # ROLE: HTTP GET /api/v1/products/{material}/brief
     # INPUTS:
     #   material, who
@@ -1310,7 +1343,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sites() =====
     # ID: F0062 · route · used
-    # ORIGINAL FILE: backend/app/main.py:443-446
+    # ORIGINAL FILE: backend/app/main.py:455-458
     # ROLE: HTTP GET /api/v1/sites
     # INPUTS:
     #   who
@@ -1331,7 +1364,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.site() =====
     # ID: F0063 · route · used
-    # ORIGINAL FILE: backend/app/main.py:448-451
+    # ORIGINAL FILE: backend/app/main.py:460-463
     # ROLE: HTTP GET /api/v1/sites/{code}
     # INPUTS:
     #   code, who
@@ -1352,7 +1385,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.dashboards_list() =====
     # ID: F0064 · route · used
-    # ORIGINAL FILE: backend/app/main.py:453-455
+    # ORIGINAL FILE: backend/app/main.py:465-467
     # ROLE: HTTP GET /api/v1/dashboards
     # INPUTS:
     #   none
@@ -1368,7 +1401,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.dashboard() =====
     # ID: F0065 · route · used
-    # ORIGINAL FILE: backend/app/main.py:457-460
+    # ORIGINAL FILE: backend/app/main.py:469-472
     # ROLE: HTTP GET /api/v1/dashboards/{persona}
     # INPUTS:
     #   persona, material, who
@@ -1392,7 +1425,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.get_insights() =====
     # ID: F0066 · route · used
-    # ORIGINAL FILE: backend/app/main.py:462-467
+    # ORIGINAL FILE: backend/app/main.py:474-479
     # ROLE: HTTP GET /api/v1/insights
     # INPUTS:
     #   who
@@ -1420,7 +1453,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------ watches
     # ===== FUNCTION: create_app.watch_kinds() =====
     # ID: F0067 · route · used
-    # ORIGINAL FILE: backend/app/main.py:470-472
+    # ORIGINAL FILE: backend/app/main.py:482-484
     # ROLE: HTTP GET /api/v1/watches/kinds
     # INPUTS:
     #   none
@@ -1437,7 +1470,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.list_watches() =====
     # ID: F0068 · route · used
-    # ORIGINAL FILE: backend/app/main.py:474-476
+    # ORIGINAL FILE: backend/app/main.py:486-488
     # ROLE: HTTP GET /api/v1/watches
     # INPUTS:
     #   who
@@ -1460,7 +1493,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.create_watch() =====
     # ID: F0069 · route · used
-    # ORIGINAL FILE: backend/app/main.py:478-486
+    # ORIGINAL FILE: backend/app/main.py:490-498
     # ROLE: HTTP POST /api/v1/watches
     # INPUTS:
     #   body, request, who
@@ -1493,7 +1526,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.delete_watch() =====
     # ID: F0070 · route · used
-    # ORIGINAL FILE: backend/app/main.py:488-492
+    # ORIGINAL FILE: backend/app/main.py:500-504
     # ROLE: HTTP DELETE /api/v1/watches/{watch_id}
     # INPUTS:
     #   watch_id, who
@@ -1517,7 +1550,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.evaluate_watches() =====
     # ID: F0071 · route · used
-    # ORIGINAL FILE: backend/app/main.py:494-502
+    # ORIGINAL FILE: backend/app/main.py:506-514
     # ROLE: HTTP POST /api/v1/watches/evaluate
     # INPUTS:
     #   who
@@ -1547,7 +1580,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.get_analysis() =====
     # ID: F0072 · route · used
-    # ORIGINAL FILE: backend/app/main.py:504-510
+    # ORIGINAL FILE: backend/app/main.py:516-522
     # ROLE: HTTP GET /api/v1/analyses/{analysis_id}
     # INPUTS:
     #   analysis_id, who
@@ -1571,7 +1604,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.inventory() =====
     # ID: F0073 · route · used
-    # ORIGINAL FILE: backend/app/main.py:512-515
+    # ORIGINAL FILE: backend/app/main.py:524-527
     # ROLE: HTTP GET /api/v1/inventory
     # INPUTS:
     #   material, who
@@ -1581,6 +1614,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # CALLED BY:
     #   <- F0478 ApiBackend.inventory() (http_request)
     #   <- F0864 test_all_analysis_endpoints() (http_request)
+    #   <- F2181 test_b_live_connection_sync_activate_and_rollback() (http_request)
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
@@ -1594,7 +1628,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.supplier_scorecard() =====
     # ID: F0074 · route · used
-    # ORIGINAL FILE: backend/app/main.py:517-520
+    # ORIGINAL FILE: backend/app/main.py:529-532
     # ROLE: HTTP GET /api/v1/suppliers/scorecard
     # INPUTS:
     #   who
@@ -1615,7 +1649,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.kpis() =====
     # ID: F0075 · route · used
-    # ORIGINAL FILE: backend/app/main.py:522-525
+    # ORIGINAL FILE: backend/app/main.py:534-537
     # ROLE: HTTP GET /api/v1/kpis
     # INPUTS:
     #   who
@@ -1641,7 +1675,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # -------------------------------------------------------------- RAG
     # ===== FUNCTION: create_app.rag_search() =====
     # ID: F0076 · route · used
-    # ORIGINAL FILE: backend/app/main.py:528-531
+    # ORIGINAL FILE: backend/app/main.py:540-543
     # ROLE: HTTP POST /api/v1/rag/search
     # INPUTS:
     #   body, who
@@ -1650,8 +1684,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   dict
     # CALLED BY:
     #   <- F0481 ApiBackend.search_knowledge() (http_request)
-    #   <- F0112 create_app() (http_request)
-    #   <- F0133 create_app.rag_search() (http_request)
+    #   <- F1993 create_router() (http_request)
+    #   <- F2014 create_router.rag_search() (http_request)
     #   <- F0629 search_supply_chain_policy() (http_request)
     #   <- F0678 policy() (http_request)
     #   <- F0890 Smoke.rag() (http_request)
@@ -1667,7 +1701,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0021 create_app.reader() (references)
     #   -> F0746 MemoryRag.search() (calls)
     #   -> F0755 PgVectorRag.search() (calls)
-    #   -> F0133 create_app.rag_search() (http_request)
+    #   -> F2014 create_router.rag_search() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     #   -> F0158 RagQuery (validates_input)
     @app.post("/api/v1/rag/search")
@@ -1677,7 +1711,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_search_get() =====
     # ID: F0077 · route · used
-    # ORIGINAL FILE: backend/app/main.py:533-539
+    # ORIGINAL FILE: backend/app/main.py:545-551
     # ROLE: HTTP GET /api/v1/rag/search — Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escaping of the question).
     # INPUTS:
     #   q, top_k, category, who
@@ -1686,8 +1720,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   dict
     # CALLED BY:
     #   <- F0481 ApiBackend.search_knowledge() (http_request)
-    #   <- F0112 create_app() (http_request)
-    #   <- F0133 create_app.rag_search() (http_request)
+    #   <- F1993 create_router() (http_request)
+    #   <- F2014 create_router.rag_search() (http_request)
     #   <- F0629 search_supply_chain_policy() (http_request)
     #   <- F0678 policy() (http_request)
     #   <- F0890 Smoke.rag() (http_request)
@@ -1702,7 +1736,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0021 create_app.reader() (references)
     #   -> F0746 MemoryRag.search() (calls)
     #   -> F0755 PgVectorRag.search() (calls)
-    #   -> F0133 create_app.rag_search() (http_request)
+    #   -> F2014 create_router.rag_search() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/api/v1/rag/search")
     def rag_search_get(q: str = Query(min_length=2, max_length=2000), top_k: int = Query(default=3, ge=1, le=12),
@@ -1714,7 +1748,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.embeddings() =====
     # ID: F0078 · route · used
-    # ORIGINAL FILE: backend/app/main.py:541-556
+    # ORIGINAL FILE: backend/app/main.py:553-568
     # ROLE: HTTP POST /v1/embeddings — Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding model of the backend RAG,
     # INPUTS:
     #   body, request, authorization, x_api_key
@@ -1738,7 +1772,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         vectors = rag.embedder.embed(texts)
         # ===== FUNCTION: create_app.embeddings.encode() =====
         # ID: F0079 · nested · used
-        # ORIGINAL FILE: backend/app/main.py:550-553
+        # ORIGINAL FILE: backend/app/main.py:562-565
         # ROLE: Encode an embedding as a float list or base64 little-endian float32 (OpenAI clients).
         # INPUTS:
         #   vector
@@ -1758,7 +1792,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_stats() =====
     # ID: F0080 · route · used
-    # ORIGINAL FILE: backend/app/main.py:558-561
+    # ORIGINAL FILE: backend/app/main.py:570-573
     # ROLE: HTTP GET /api/v1/rag/stats
     # INPUTS:
     #   who
@@ -1780,7 +1814,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.rag_add() =====
     # ID: F0081 · route · used
-    # ORIGINAL FILE: backend/app/main.py:563-567
+    # ORIGINAL FILE: backend/app/main.py:575-579
     # ROLE: HTTP POST /api/v1/rag/documents
     # INPUTS:
     #   body, request, who
@@ -1788,8 +1822,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
-    #   <- F0112 create_app() (http_request)
-    #   <- F0134 create_app.rag_documents() (http_request)
+    #   <- F1993 create_router() (http_request)
+    #   <- F2015 create_router.rag_documents() (http_request)
     #   <- F0868 test_rag_search_and_manager_only_ingest() (http_request)
     # CALLS:
     #   -> F0159 RagDocument (references)
@@ -1798,7 +1832,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0745 MemoryRag.add() (calls)
     #   -> F0752 PgVectorRag.add() (calls)
     #   -> F0358 Store.audit() (calls)
-    #   -> F0134 create_app.rag_documents() (http_request)
+    #   -> F2015 create_router.rag_documents() (http_request)
     #   -> F0020 create_app.manager() (depends_on)
     #   -> F0159 RagDocument (validates_input)
     @app.post("/api/v1/rag/documents", status_code=201)
@@ -1807,10 +1841,11 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
 
-    # -------------------------------------------------- RAG Tuning page -> SCInsight API (managers only; key held server-side)
+    # -------------------------------------------------- RAG Tuning page -> SCInsight API (every role; keys held server-side)
+    # managers -> SCI_TUNING_KEY (director: may publish / roll back); planners -> SCI_TUNING_READER_KEY (mlops: everything else)
     # ===== FUNCTION: create_app.rag_tuning_proxy() =====
     # ID: F1801 · route · used
-    # ORIGINAL FILE: backend/app/main.py:570-579
+    # ORIGINAL FILE: backend/app/main.py:583-599
     # ROLE: HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}
     # INPUTS:
     #   path, request, who
@@ -1832,7 +1867,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   <- F1834 register.build_candidate() (http_request)
     # CALLS:
     #   -> F0767 Principal (references)
-    #   -> F0020 create_app.manager() (references)
+    #   -> F0021 create_app.reader() (references)
     #   -> F0358 Store.audit() (calls)
     #   -> F1824 register.get_config() (http_request)
     #   -> F1825 register.save_draft() (http_request)
@@ -1844,22 +1879,99 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F1831 register.chunk_preview() (http_request)
     #   -> F1832 register.embedding_models() (http_request)
     @app.api_route("/api/v1/rag-tuning/{path:path}", methods=["GET", "POST", "PUT"], include_in_schema=False)
-    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(manager)) -> Response:
-        if not settings.sci_tuning_key:
-            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY)")
+    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(reader)) -> Response:
+        if path.strip("/") in ("publish", "rollback") and who.role != "manager":
+            raise HTTPException(status_code=403, detail="Publishing or rolling back the RAG configuration needs the manager role")
+        key = settings.sci_tuning_key if who.role == "manager" else settings.sci_tuning_reader_key
+        if not key:
+            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY / SCI_TUNING_READER_KEY)")
         store.audit(who.identity, who.role, "rag_tuning.proxy", {"method": request.method, "path": path[:120]}, request.state.correlation_id)
-        async with httpx.AsyncClient(timeout=120) as client:
-            upstream = await client.request(request.method, f"{settings.sci_api_url.rstrip('/')}/api/v1/rag-tuning/{path}",
+        # in-process call to this same app's /scinsight routes (no network hop); SCI_API_URL only when SCInsight runs elsewhere
+        local = app.state.scinsight is not None
+        transport = httpx.ASGITransport(app=app) if local else None
+        base = "http://local/scinsight" if local else settings.sci_api_url.rstrip("/")
+        async with httpx.AsyncClient(timeout=120, transport=transport) as client:
+            upstream = await client.request(request.method, f"{base}/api/v1/rag-tuning/{path}",
                                             params=dict(request.query_params), content=await request.body(),
-                                            headers={"X-API-Key": settings.sci_tuning_key, "Content-Type": "application/json"})
+                                            headers={"X-API-Key": key, "Content-Type": "application/json"})
         return Response(content=upstream.content, status_code=upstream.status_code, media_type="application/json")
 
     # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
     code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
 
+    # ===== FUNCTION: create_app.code_files() =====
+    # ID: F1950 · route · used
+    # ORIGINAL FILE: backend/app/main.py:604-608
+    # ROLE: HTTP GET /api/v1/code/files
+    # INPUTS:
+    #   who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   <- F1991 test_backend_code_page_serves_each_apps_templates_and_nothing_else() (http_request)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0021 create_app.reader() (references)
+    #   -> F1952 CodeEditor.files() (calls)
+    #   -> F0021 create_app.reader() (depends_on)
+    @app.get("/api/v1/code/files")
+    def code_files(who: Principal = Depends(reader)) -> dict:
+        del who
+        # vscode_base: link prefix to open a file in VS Code on the machine that holds the repository (CODE_VSCODE_BASE)
+        return {**code.files(), "vscode_base": settings.code_vscode_base}
+
+    # ===== FUNCTION: create_app.code_file() =====
+    # ID: F1951 · route · used
+    # ORIGINAL FILE: backend/app/main.py:610-616
+    # ROLE: HTTP GET /api/v1/code/file
+    # INPUTS:
+    #   path, who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   (none found)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0021 create_app.reader() (references)
+    #   -> F1953 CodeEditor.file() (calls)
+    #   -> F0021 create_app.reader() (depends_on)
+    @app.get("/api/v1/code/file")
+    def code_file(path: str = Query(min_length=5, max_length=300), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.file(path)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="file not found") from exc
+
+    # ===== FUNCTION: create_app.code_template() =====
+    # ID: F1955 · route · used
+    # ORIGINAL FILE: backend/app/main.py:618-624
+    # ROLE: HTTP GET /api/v1/code/template
+    # INPUTS:
+    #   name, who
+    #   (FastAPI Depends(...) parameters are injected: principal -> reader / manager run first)
+    # OUTPUT:
+    #   dict
+    # CALLED BY:
+    #   <- F1991 test_backend_code_page_serves_each_apps_templates_and_nothing_else() (http_request)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0021 create_app.reader() (references)
+    #   -> F1956 CodeEditor.template() (calls)
+    #   -> F0021 create_app.reader() (depends_on)
+    @app.get("/api/v1/code/template")
+    def code_template(name: str = Query(pattern=r"^[a-z_]+\.py$"), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.template(name)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="template not found") from exc
+
     # ===== FUNCTION: create_app.code_functions() =====
     # ID: F0985 · route · used
-    # ORIGINAL FILE: backend/app/main.py:584-587
+    # ORIGINAL FILE: backend/app/main.py:626-629
     # ROLE: HTTP GET /api/v1/code/functions
     # INPUTS:
     #   q, who
@@ -1871,7 +1983,6 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
-    #   -> F1791 CodeEditor.list() (calls)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/api/v1/code/functions")
     def code_functions(q: str = Query(default="", max_length=200), who: Principal = Depends(reader)) -> dict:
@@ -1880,7 +1991,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.code_function() =====
     # ID: F0986 · route · used
-    # ORIGINAL FILE: backend/app/main.py:589-595
+    # ORIGINAL FILE: backend/app/main.py:631-637
     # ROLE: HTTP GET /api/v1/code/function
     # INPUTS:
     #   key, who
@@ -1903,7 +2014,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.code_update() =====
     # ID: F0987 · route · used
-    # ORIGINAL FILE: backend/app/main.py:597-607
+    # ORIGINAL FILE: backend/app/main.py:639-649
     # ROLE: HTTP PUT /api/v1/code/function
     # INPUTS:
     #   body, request, who
@@ -1934,7 +2045,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # -------------------------------------------------- LangGraph / agents
     # ===== FUNCTION: create_app._graph_call() =====
     # ID: F0082 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:610-616
+    # ORIGINAL FILE: backend/app/main.py:652-658
     # ROLE: Run a graph call; non-HTTP errors become 502 Agent runtime error.
     # INPUTS:
     #   fn
@@ -1959,7 +2070,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.chat() =====
     # ID: F0083 · route · used
-    # ORIGINAL FILE: backend/app/main.py:618-643
+    # ORIGINAL FILE: backend/app/main.py:660-685
     # ROLE: HTTP POST /api/v1/chat
     # INPUTS:
     #   body, request, who
@@ -2008,7 +2119,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app._agentflow_view() =====
     # ID: F0084 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:645-667
+    # ORIGINAL FILE: backend/app/main.py:687-709
     # ROLE: Shape the LangGraph agentflow result for the UI (route, workflow, answer, tools, interrupts).
     # INPUTS:
     #   result
@@ -2045,7 +2156,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.langgraph_agentflow() =====
     # ID: F0085 · route · used
-    # ORIGINAL FILE: backend/app/main.py:669-674
+    # ORIGINAL FILE: backend/app/main.py:711-716
     # ROLE: HTTP POST /api/v1/langgraph/agentflow
     # INPUTS:
     #   body, request, who
@@ -2074,7 +2185,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.langgraph_agentflow_resume() =====
     # ID: F0086 · route · used
-    # ORIGINAL FILE: backend/app/main.py:676-680
+    # ORIGINAL FILE: backend/app/main.py:718-722
     # ROLE: HTTP POST /api/v1/langgraph/agentflow/{thread_id}/resume
     # INPUTS:
     #   thread_id, body, request, who
@@ -2102,7 +2213,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.business_start() =====
     # ID: F0087 · route · used
-    # ORIGINAL FILE: backend/app/main.py:682-687
+    # ORIGINAL FILE: backend/app/main.py:724-729
     # ROLE: HTTP POST /api/v1/workflows/business
     # INPUTS:
     #   body, request, who
@@ -2130,7 +2241,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.business_resume() =====
     # ID: F0088 · route · used
-    # ORIGINAL FILE: backend/app/main.py:689-693
+    # ORIGINAL FILE: backend/app/main.py:731-735
     # ROLE: HTTP POST /api/v1/workflows/business/{thread_id}/resume
     # INPUTS:
     #   thread_id, body, request, who
@@ -2164,13 +2275,14 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.current_harness() =====
     # ID: F0089 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:702-704
+    # ORIGINAL FILE: backend/app/main.py:744-746
     # ROLE: Current Deep Agent harness (stored setting validated over defaults).
     # INPUTS:
     #   none
     # OUTPUT:
     #   dict
     # CALLED BY:
+    #   <- F0017 create_app() (references)
     #   <- F0090 create_app.deep_harness() (calls)
     #   <- F0092 create_app.supplier_research() (calls)
     # CALLS:
@@ -2182,7 +2294,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.deep_harness() =====
     # ID: F0090 · route · used
-    # ORIGINAL FILE: backend/app/main.py:706-713
+    # ORIGINAL FILE: backend/app/main.py:748-755
     # ROLE: HTTP GET /api/v1/deep-agents/harness
     # INPUTS:
     #   who
@@ -2209,7 +2321,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.set_deep_harness() =====
     # ID: F0091 · route · used
-    # ORIGINAL FILE: backend/app/main.py:715-719
+    # ORIGINAL FILE: backend/app/main.py:757-761
     # ROLE: HTTP PUT /api/v1/deep-agents/harness
     # INPUTS:
     #   body, request, who
@@ -2232,9 +2344,39 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "agent.deep_research.harness_updated", body.model_dump(), request.state.correlation_id)
         return {"harness": saved["value"], "updated_by": saved["updated_by"], "updated_at": saved["updated_at"]}
 
+    # ------------------------------------------------ ERP / SAP Setup (connections, mapping, sync, activation, checks)
+    # Activation swaps the customer's snapshot in the TenantRegistry: every endpoint above (and so every Flowise / LangGraph tool)
+    # computes on it from the next call. Restored from the database at startup.
+    erp = ErpService(store, tenants, environment=settings.app_env, allowed_hosts=settings.erp_allowed_hosts)
+    erp.restore()
+    app.state.erp = erp
+    erp_ctx = SimpleNamespace(tenants=tenants, store=store, rag=rag, runner=runner, settings=settings, erp=erp, harness=current_harness)
+
+    # ===== FUNCTION: create_app.erp_audit() =====
+    # ID: F2038 · nested · used
+    # ORIGINAL FILE: backend/app/main.py:771-772
+    # ROLE: Helper.
+    # INPUTS:
+    #   who, action, details, request
+    # OUTPUT:
+    #   None
+    # CALLED BY:
+    #   <- F0017 create_app() (references)
+    # CALLS:
+    #   -> F0767 Principal (references)
+    #   -> F0358 Store.audit() (calls)
+    def erp_audit(who: Principal, action: str, details: dict, request: Request) -> None:
+        store.audit(who.identity, who.role, action, details, request.state.correlation_id)
+
+    register_erp(app, erp=erp, ctx=erp_ctx, reader=reader, manager=manager, audit=erp_audit)
+    if settings.app_env in ("development", "test"):  # SAP OData emulator for the "second ERP endpoint" demo and tests; never in staging/production
+        app.include_router(erp_emulator(settings.data_file, settings.erp_emulator_password), prefix="/erp-emulator")
+    if settings.erp_scheduler_enabled:
+        erp.start_scheduler()  # daemon thread; scheduled syncs only stage snapshots
+
     # ===== FUNCTION: create_app.supplier_research() =====
     # ID: F0092 · route · used
-    # ORIGINAL FILE: backend/app/main.py:721-742
+    # ORIGINAL FILE: backend/app/main.py:780-801
     # ROLE: HTTP POST /api/v1/deep-agents/supplier-research
     # INPUTS:
     #   body, request, who
@@ -2279,7 +2421,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------------------ Flowise
     # ===== FUNCTION: create_app._flow_id() =====
     # ID: F0093 · nested · used
-    # ORIGINAL FILE: backend/app/main.py:745-757
+    # ORIGINAL FILE: backend/app/main.py:804-816
     # ROLE: Resolve a Flowise flow id: configured id, else look it up by name through the Flowise API.
     # INPUTS:
     #   flow
@@ -2305,7 +2447,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.flowise_predict() =====
     # ID: F0094 · route · used
-    # ORIGINAL FILE: backend/app/main.py:759-794
+    # ORIGINAL FILE: backend/app/main.py:818-853
     # ROLE: HTTP POST /api/v1/flowise/{flow}/predict
     # INPUTS:
     #   flow, body, request, who
@@ -2363,7 +2505,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # ------------------------------------------------- recommendations
     # ===== FUNCTION: create_app.submit_recommendation() =====
     # ID: F0095 · route · used
-    # ORIGINAL FILE: backend/app/main.py:797-804
+    # ORIGINAL FILE: backend/app/main.py:856-863
     # ROLE: HTTP POST /api/v1/recommendations
     # INPUTS:
     #   body, request, who
@@ -2399,7 +2541,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.submit_from_agent() =====
     # ID: F0096 · route · used
-    # ORIGINAL FILE: backend/app/main.py:806-819
+    # ORIGINAL FILE: backend/app/main.py:865-878
     # ROLE: HTTP POST /api/v1/recommendations/from-agent
     # INPUTS:
     #   body, request, who
@@ -2441,7 +2583,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.recommendations() =====
     # ID: F0097 · route · used
-    # ORIGINAL FILE: backend/app/main.py:821-824
+    # ORIGINAL FILE: backend/app/main.py:880-883
     # ROLE: HTTP GET /api/v1/recommendations
     # INPUTS:
     #   status, who
@@ -2471,7 +2613,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.decide() =====
     # ID: F0098 · route · used
-    # ORIGINAL FILE: backend/app/main.py:826-833
+    # ORIGINAL FILE: backend/app/main.py:885-892
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/decision
     # INPUTS:
     #   recommendation_id, body, request, who
@@ -2512,7 +2654,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.execute() =====
     # ID: F0099 · route · used
-    # ORIGINAL FILE: backend/app/main.py:840-865
+    # ORIGINAL FILE: backend/app/main.py:899-924
     # ROLE: HTTP POST /api/v1/recommendations/{recommendation_id}/execute — 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents cannot call this).
     # INPUTS:
     #   recommendation_id, request, who
@@ -2568,7 +2710,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.sap_documents() =====
     # ID: F0100 · route · used
-    # ORIGINAL FILE: backend/app/main.py:867-870
+    # ORIGINAL FILE: backend/app/main.py:926-929
     # ROLE: HTTP GET /api/v1/sap/documents
     # INPUTS:
     #   who
@@ -2581,7 +2723,8 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     #   -> F0767 Principal (references)
     #   -> F0021 create_app.reader() (references)
     #   -> F0376 Store.sap_documents() (calls)
-    #   -> F0125 create_app.sap_write_blocked() (http_request)
+    #   -> F2006 create_router.sap_write_blocked() (http_request)
+    #   -> F1967 create_app.sap_read_only() (http_request)
     #   -> F0021 create_app.reader() (depends_on)
     @app.get("/api/v1/sap/documents")
     def sap_documents(who: Principal = Depends(reader)) -> list[dict]:
@@ -2590,7 +2733,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.audit() =====
     # ID: F0101 · route · used
-    # ORIGINAL FILE: backend/app/main.py:872-875
+    # ORIGINAL FILE: backend/app/main.py:931-934
     # ROLE: HTTP GET /api/v1/audit
     # INPUTS:
     #   limit, who
@@ -2598,21 +2741,25 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
-    #   <- F0112 create_app() (http_request)
-    #   <- F0146 create_app.audit() (http_request)
+    #   <- F1993 create_router() (http_request)
+    #   <- F2027 create_router.audit() (http_request)
     #   <- F0901 Smoke.manager_decision() (http_request)
+    #   <- F1960 create_app() (http_request)
+    #   <- F1968 create_app.read_audit() (http_request)
     #   <- F1944 test_publish_needs_director_benchmark_and_confirm_then_rollback() (http_request)
     #   <- F0848 test_forged_tenant_is_rejected_and_audited() (http_request)
     #   <- F0862 test_sap_odata_reads_and_blocks_writes() (http_request)
     #   <- F0865 test_recommendation_lifecycle_and_roles() (http_request)
     #   <- F0874 test_deep_agent_harness_settings_are_governed() (http_request)
     #   <- F0878 test_tenant_scoped_authorization() (http_request)
+    #   <- F1988 test_fastapi_template_auth_roles_validation_and_read_only_sap() (http_request)
     # CALLS:
     #   -> F0767 Principal (references)
     #   -> F0020 create_app.manager() (references)
     #   -> F0359 Store.verify_chain() (calls)
     #   -> F0360 Store.audit_events() (calls)
-    #   -> F0146 create_app.audit() (http_request)
+    #   -> F2027 create_router.audit() (http_request)
+    #   -> F1968 create_app.read_audit() (http_request)
     #   -> F0020 create_app.manager() (depends_on)
     @app.get("/api/v1/audit")
     def audit(limit: int = Query(default=100, ge=1, le=1000), who: Principal = Depends(manager)) -> dict:
@@ -2625,7 +2772,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_sap_inventory() =====
     # ID: F0102 · route · used
-    # ORIGINAL FILE: backend/app/main.py:881-885
+    # ORIGINAL FILE: backend/app/main.py:940-944
     # ROLE: HTTP GET /sap/inventory
     # INPUTS:
     #   plant, material, who
@@ -2650,7 +2797,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_sap_production_orders() =====
     # ID: F0103 · route · used
-    # ORIGINAL FILE: backend/app/main.py:887-891
+    # ORIGINAL FILE: backend/app/main.py:946-950
     # ROLE: HTTP GET /sap/production-orders
     # INPUTS:
     #   plant, material, who
@@ -2658,6 +2805,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
     # OUTPUT:
     #   dict
     # CALLED BY:
+    #   <- F2181 test_b_live_connection_sync_activate_and_rollback() (http_request)
     #   <- F0875 test_sap_read_endpoints_are_read_only() (http_request)
     #   <- F0879 test_contract_is_documented_in_openapi() (http_request)
     # CALLS:
@@ -2674,7 +2822,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_forecast_demand() =====
     # ID: F0104 · route · used
-    # ORIGINAL FILE: backend/app/main.py:893-895
+    # ORIGINAL FILE: backend/app/main.py:952-954
     # ROLE: HTTP POST /forecast/demand
     # INPUTS:
     #   body, request, who
@@ -2698,7 +2846,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_forecast_lead_time() =====
     # ID: F0105 · route · used
-    # ORIGINAL FILE: backend/app/main.py:897-899
+    # ORIGINAL FILE: backend/app/main.py:956-958
     # ROLE: HTTP POST /forecast/supplier-lead-time
     # INPUTS:
     #   body, request, who
@@ -2722,7 +2870,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_material_readiness() =====
     # ID: F0106 · route · used
-    # ORIGINAL FILE: backend/app/main.py:901-904
+    # ORIGINAL FILE: backend/app/main.py:960-963
     # ROLE: HTTP POST /optimizer/material-readiness
     # INPUTS:
     #   body, request, who
@@ -2747,7 +2895,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_warehouse_transfer() =====
     # ID: F0107 · route · used
-    # ORIGINAL FILE: backend/app/main.py:906-908
+    # ORIGINAL FILE: backend/app/main.py:965-967
     # ROLE: HTTP POST /optimizer/warehouse-transfer
     # INPUTS:
     #   body, request, who
@@ -2772,7 +2920,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_decisions() =====
     # ID: F0108 · route · used
-    # ORIGINAL FILE: backend/app/main.py:910-912
+    # ORIGINAL FILE: backend/app/main.py:969-971
     # ROLE: HTTP POST /decisions
     # INPUTS:
     #   body, request, who
@@ -2794,7 +2942,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_human_review() =====
     # ID: F0109 · route · used
-    # ORIGINAL FILE: backend/app/main.py:914-916
+    # ORIGINAL FILE: backend/app/main.py:973-975
     # ROLE: HTTP POST /decisions/{decision_id}/human-review
     # INPUTS:
     #   decision_id, body, request, who
@@ -2817,7 +2965,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_reconcile() =====
     # ID: F0110 · route · used
-    # ORIGINAL FILE: backend/app/main.py:918-942
+    # ORIGINAL FILE: backend/app/main.py:977-1001
     # ROLE: HTTP POST /outcomes/reconcile
     # INPUTS:
     #   body, request, who
@@ -2868,7 +3016,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 
     # ===== FUNCTION: create_app.poc_model_performance() =====
     # ID: F0111 · route · used
-    # ORIGINAL FILE: backend/app/main.py:944-948
+    # ORIGINAL FILE: backend/app/main.py:1003-1007
     # ROLE: HTTP GET /learning/model-performance
     # INPUTS:
     #   who
@@ -2889,6 +3037,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         view = roles.learning()
         return {"as_of": view["as_of"], "models": view["models"], "summary": view["summary"], "note": view["note"]}
 
+    # SCInsight API routes in this same app (before the static frontend, which catches every other path): /scinsight/api/v1/...
+    app.state.scinsight = scinsight_router.state if scinsight_router is not None else None
+    if scinsight_router is not None:
+        app.include_router(scinsight_router, prefix="/scinsight", tags=["SCInsight API"])
     frontend = Path(ROOT / "frontend")
     if frontend.exists():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")

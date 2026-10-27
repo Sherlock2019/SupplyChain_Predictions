@@ -24,7 +24,7 @@ FLOWISE=$(docker compose ps -q flowise)
 IMAGE=$(docker inspect "$FLOWISE" --format '{{.Config.Image}}')
 NETWORK=$(docker inspect "$FLOWISE" --format '{{range $name, $_ := .NetworkSettings.Networks}}{{$name}} {{end}}' | awk '{print $1}')
 # Same SSRF policy as the stack: HTTP_SECURITY_CHECK=false replaces Flowise's built-in deny list (which blocks every private
-# range, including the Docker bridge where scinsight-api lives) with HTTP_DENY_LIST (loopback, metadata, 10/8, 192.168/16 ... stay denied).
+# range, including the Docker bridge where the api service lives) with HTTP_DENY_LIST (loopback, metadata, 10/8, 192.168/16 ... stay denied).
 DENY=$(docker inspect "$FLOWISE" --format '{{range .Config.Env}}{{println .}}{{end}}' | sed -n 's/^HTTP_DENY_LIST=//p')
 CHECK=$(docker inspect "$FLOWISE" --format '{{range .Config.Env}}{{println .}}{{end}}' | sed -n 's/^HTTP_SECURITY_CHECK=//p')
 rnd() { python3 -c "import secrets; print(secrets.token_urlsafe(32))"; }

@@ -163,7 +163,7 @@ step "Waiting for services"
 wait_for api http://localhost:8000/health 240
 wait_for langgraph http://localhost:8123/ok 240
 wait_for mcp http://localhost:8002/health 120
-wait_for scinsight-api http://localhost:8100/health 240
+wait_for "SCInsight API (/scinsight)" http://localhost:8000/scinsight/health 240
 wait_for flowise http://localhost:3000/api/v1/ping 240
 [ "$LITE" = 0 ] && { wait_for grafana http://localhost:3002/api/health 180; wait_for langfuse http://localhost:3003/api/public/health 300; }
 
@@ -214,8 +214,9 @@ $(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — local demo 
   Dashboard          http://localhost:8000          opens signed in (switch Manager / Planner in the header)
   API docs           http://localhost:8000/docs
   Flowise            http://localhost:3000          opens signed in (Chatflow + AgentFlow V2 canvases)
-  SCInsight API      http://localhost:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
-  LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://localhost:8123   (LangSmith account required by LangChain)
+  SCInsight API      http://localhost:8000/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
+  LangGraph API      http://localhost:8123          (LangSmith Studio: https://smith.langchain.com/studio/?baseUrl=http://localhost:8123 — LangSmith account required)
+                                                 SCInsight mirror: scinsight_chat, scinsight_supervisor, scinsight_<specialist>
   MCP server         http://localhost:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF
   [ "$LITE" = 0 ] && cat <<EOF
@@ -239,8 +240,9 @@ $(printf '\033[1m')SPARC · Smart Supply Chain Performer Copilot — demo is run
   Dashboard          http://${H}:8000          ${DASH}
   API docs           http://${H}:8000/docs
   Flowise            http://${H}:3000          ${FLOWISE_ADMIN_EMAIL:-admin@aurelia.local} / ${FLOWISE_ADMIN_PASSWORD}
-  SCInsight API      http://${H}:8100/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
-  LangSmith Studio   https://smith.langchain.com/studio/?baseUrl=http://${H}:8123
+  SCInsight API      http://${H}:8000/docs     Swagger; user keys SCI_*_KEY in .env (docs/scinsight/README.md)
+  LangGraph API      http://${H}:8123          (LangSmith Studio: https://smith.langchain.com/studio/?baseUrl=http://${H}:8123)
+                                                 SCInsight mirror: scinsight_chat, scinsight_supervisor, scinsight_<specialist>
   MCP server         http://${H}:8002/mcp      X-API-Key: ${MCP_CLIENT_KEY}
 EOF
 if [ "$LITE" = 0 ]; then cat <<EOF

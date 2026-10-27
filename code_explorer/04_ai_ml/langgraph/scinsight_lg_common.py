@@ -86,7 +86,7 @@ def client():
     # `global` lets the function assign the module-level variable.
     global _client
     if _client is None:
-        _client = httpx.Client(base_url=os.environ.get("SCI_API_URL", "http://scinsight-api:8100"), timeout=120)
+        _client = httpx.Client(base_url=os.environ.get("SCI_API_URL", "http://api:8000/scinsight"), timeout=120)
     return _client
 
 
@@ -540,7 +540,7 @@ def _po_unconfirmed(p: dict) -> str:
 #   <- F0703 check_access() (calls)
 # CALLS:
 #   -> F0639 api() (calls)
-#   -> F0118 create_app.validate_context() (http_request)
+#   -> F1999 create_router.validate_context() (http_request)
 #   -> F0640 detail() (calls)
 def context(session: str) -> dict:
     sid = re.sub(r"[^A-Za-z0-9_.:-]", "", session or "")[:120]
@@ -873,11 +873,12 @@ def _fail(message: str) -> dict:
 #   -> F0665 _num() (calls)
 #   -> F0666 _day() (calls)
 #   -> F0639 api() (calls)
-#   -> F0121 create_app.sap_production_orders() (http_request)
-#   -> F0125 create_app.sap_write_blocked() (http_request)
+#   -> F2002 create_router.sap_production_orders() (http_request)
+#   -> F2006 create_router.sap_write_blocked() (http_request)
+#   -> F1967 create_app.sap_read_only() (http_request)
 #   -> F0668 _fail() (calls)
 #   -> F0649 _fmt() (calls)
-#   -> F0126 create_app.material_readiness() (http_request)
+#   -> F2007 create_router.material_readiness() (http_request)
 #   -> F0667 _done() (calls)
 #   -> F0640 detail() (calls)
 def calc_factory(x: dict, question: str) -> dict:
@@ -917,12 +918,13 @@ def calc_factory(x: dict, question: str) -> dict:
 #   -> F0665 _num() (calls)
 #   -> F0666 _day() (calls)
 #   -> F0639 api() (calls)
-#   -> F0128 create_app.replenishment() (http_request)
+#   -> F2009 create_router.replenishment() (http_request)
 #   -> F0668 _fail() (calls)
 #   -> F0640 detail() (calls)
-#   -> F0124 create_app.sap_suppliers() (http_request)
-#   -> F0125 create_app.sap_write_blocked() (http_request)
-#   -> F0130 create_app.forecast_lead_time() (http_request)
+#   -> F2005 create_router.sap_suppliers() (http_request)
+#   -> F2006 create_router.sap_write_blocked() (http_request)
+#   -> F1967 create_app.sap_read_only() (http_request)
+#   -> F2011 create_router.forecast_lead_time() (http_request)
 #   -> F0667 _done() (calls)
 def calc_procurement(x: dict, question: str) -> dict:
     material, supplier, qty, need = _code(x, "material_id"), _code(x, "supplier_id"), _num(x, "quantity"), _day(x, "need_date")
@@ -965,7 +967,7 @@ def calc_procurement(x: dict, question: str) -> dict:
 #   -> F0664 _code() (calls)
 #   -> F0668 _fail() (calls)
 #   -> F0639 api() (calls)
-#   -> F0127 create_app.warehouse_balancing() (http_request)
+#   -> F2008 create_router.warehouse_balancing() (http_request)
 #   -> F0667 _done() (calls)
 #   -> F0640 detail() (calls)
 def _balancing(x: dict, what: str) -> dict:
@@ -1025,9 +1027,9 @@ def calc_logistics(x: dict, question: str) -> dict:
 #   -> F0666 _day() (calls)
 #   -> F0668 _fail() (calls)
 #   -> F0639 api() (calls)
-#   -> F0128 create_app.replenishment() (http_request)
+#   -> F2009 create_router.replenishment() (http_request)
 #   -> F0640 detail() (calls)
-#   -> F0129 create_app.forecast_demand() (http_request)
+#   -> F2010 create_router.forecast_demand() (http_request)
 #   -> F0667 _done() (calls)
 def calc_inventory(x: dict, question: str) -> dict:
     item, loc, qty, need = _code(x, "item_id"), _code(x, "location"), _num(x, "quantity"), _day(x, "need_date")
@@ -1061,7 +1063,7 @@ def calc_inventory(x: dict, question: str) -> dict:
 #   -> F0664 _code() (calls)
 #   -> F0668 _fail() (calls)
 #   -> F0639 api() (calls)
-#   -> F0131 create_app.quality_check() (http_request)
+#   -> F2012 create_router.quality_check() (http_request)
 #   -> F0667 _done() (calls)
 #   -> F0640 detail() (calls)
 def calc_quality(x: dict, question: str) -> dict:
@@ -1085,14 +1087,14 @@ def calc_quality(x: dict, question: str) -> dict:
 #   (none found)
 # CALLS:
 #   -> F0639 api() (calls)
-#   -> F0137 create_app.get_decision() (http_request)
-#   -> F0138 create_app.review() (http_request)
-#   -> F0139 create_app.withdraw() (http_request)
-#   -> F0140 create_app.sap_execution() (http_request)
+#   -> F2018 create_router.get_decision() (http_request)
+#   -> F2019 create_router.review() (http_request)
+#   -> F2020 create_router.withdraw() (http_request)
+#   -> F2021 create_router.sap_execution() (http_request)
 #   -> F0640 detail() (calls)
 #   -> F0649 _fmt() (calls)
-#   -> F0141 create_app.reconcile() (http_request)
-#   -> F0142 create_app.learning_metrics() (http_request)
+#   -> F2022 create_router.reconcile() (http_request)
+#   -> F2023 create_router.learning_metrics() (http_request)
 #   -> F0677 calc_learning.v() (calls)
 def calc_learning(x: dict, question: str) -> dict:
     # dict.fromkeys keeps order and removes duplicates; [:3] caps the number of ids.
@@ -1181,7 +1183,7 @@ CALCULATE = {"factory": calc_factory, "procurement": calc_procurement, "warehous
 #   -> F0639 api() (calls)
 #   -> F0076 create_app.rag_search() (http_request)
 #   -> F0077 create_app.rag_search_get() (http_request)
-#   -> F0133 create_app.rag_search() (http_request)
+#   -> F2014 create_router.rag_search() (http_request)
 #   -> F0640 detail() (calls)
 def policy(topic: str, question: str) -> dict:
     ok, status, d = api("POST", "/api/v1/rag/search", {"query": f"{topic} {question}"[:900], "top_k": 3})
@@ -1313,10 +1315,10 @@ def guard(question: str, classified: str) -> tuple[str, str]:
 #   <- F0713 save_recommendation() (calls)
 # CALLS:
 #   -> F0639 api() (calls)
-#   -> F0132 create_app.calculation() (http_request)
+#   -> F2013 create_router.calculation() (http_request)
 #   -> F0640 detail() (calls)
-#   -> F0135 create_app.create_decision() (http_request)
-#   -> F0136 create_app.list_decisions() (http_request)
+#   -> F2016 create_router.create_decision() (http_request)
+#   -> F2017 create_router.list_decisions() (http_request)
 def save(specialist_output: str, chat_id: str) -> dict:
     none = lambda msg: {"rec_id": "", "rec_domain": "", "rec_status": "", "reviewers": "", "save_message": msg}  # noqa: E731
     m = re.search(r"Decision calculation: (CALC-[A-Z0-9-]{4,40})", specialist_output or "")
@@ -1348,10 +1350,10 @@ def save(specialist_output: str, chat_id: str) -> dict:
 #   <- F0720 show_decision() (calls)
 # CALLS:
 #   -> F0639 api() (calls)
-#   -> F0137 create_app.get_decision() (http_request)
-#   -> F0138 create_app.review() (http_request)
-#   -> F0139 create_app.withdraw() (http_request)
-#   -> F0140 create_app.sap_execution() (http_request)
+#   -> F2018 create_router.get_decision() (http_request)
+#   -> F2019 create_router.review() (http_request)
+#   -> F2020 create_router.withdraw() (http_request)
+#   -> F2021 create_router.sap_execution() (http_request)
 #   -> F0640 detail() (calls)
 def verify(rec_id: str) -> str:
     ok, status, d = api("GET", f"/api/v1/decisions/{rec_id}")
@@ -1380,10 +1382,10 @@ def verify(rec_id: str) -> str:
 #   <- F0721 withdraw() (calls)
 # CALLS:
 #   -> F0639 api() (calls)
-#   -> F0137 create_app.get_decision() (http_request)
-#   -> F0138 create_app.review() (http_request)
-#   -> F0139 create_app.withdraw() (http_request)
-#   -> F0140 create_app.sap_execution() (http_request)
+#   -> F2018 create_router.get_decision() (http_request)
+#   -> F2019 create_router.review() (http_request)
+#   -> F2020 create_router.withdraw() (http_request)
+#   -> F2021 create_router.sap_execution() (http_request)
 #   -> F0640 detail() (calls)
 def withdraw(rec_id: str) -> str:
     ok, status, d = api("POST", f"/api/v1/decisions/{rec_id}/withdraw")

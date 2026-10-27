@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # ===== CLASS: Settings =====
 # ID: F0001 · pydantic_model · used
-# ORIGINAL FILE: backend/app/config.py:11-105
+# ORIGINAL FILE: backend/app/config.py:11-119
 # ROLE: All gateway settings: environment, API keys per role, tenant scopes, databases / RAG, Qwen, service URLs, SAP execution mode.
 # FIELDS:
 #   (see the attributes below; each maps to an UPPERCASE environment variable).
@@ -85,6 +85,13 @@ class Settings(BaseSettings):
     # (never a production SAP system); "disabled" keeps execution manual. Agents can never execute either way.
     sap_execution_mode: str = "sandbox"
 
+    # ERP / SAP Setup page. Hosts a connection may call (comma-separated; required for production connections, optional otherwise).
+    erp_allowed_hosts: str = ""
+    # Password of the development-only SAP OData emulator (/erp-emulator, user SPARC_COMM); never mounted outside development/test.
+    erp_emulator_password: str = "dev-erp-emulator"
+    # Runs scheduled ERP syncs (staging only: a sync never activates a snapshot).
+    erp_scheduler_enabled: bool = True
+
     # LOCAL DEMO ONLY: the dashboard signs in automatically (GET /api/v1/demo/session hands out the demo keys).
     demo_auto_login: bool = False
 
@@ -92,11 +99,18 @@ class Settings(BaseSettings):
     # CODE_EDITOR_ENABLED=true and APP_ENV=development|test (never enable it on a shared or cloud deployment).
     # Off by default, so the deployed app is read-only.
     code_editor_enabled: bool = False
+    # "Open in VS Code" links of the Backend code page: vscode:// prefix of the repository on the developer's machine,
+    # e.g. vscode://vscode-remote/wsl+UbuntuD/home/me/Supplychain-AI-optimizer (empty = links hidden)
+    code_vscode_base: str = ""
 
-    # RAG Tuning page: the gateway forwards a MANAGER's calls to the SCInsight API with this administrator key (supply_chain_director).
-    # The key stays on the server; the browser never sees it, and the SCInsight API derives tenant and roles from it.
-    sci_api_url: str = "http://scinsight-api:8100"
+    # RAG Tuning page: the gateway forwards calls to the SCInsight API with a server-side key (the browser never sees it; the
+    # SCInsight API derives tenant and roles from it). Managers: director key (may publish / roll back). Other roles: MLOps key
+    # (inspect, preview, build candidates, benchmark; never publish).
+    sci_api_url: str = ""          # only when SCInsight is NOT mounted in this app (scinsight_enabled=false)
+    # The SCInsight API is mounted in this app at /scinsight (one FastAPI app, one port). It reads its own SCI_* settings.
+    scinsight_enabled: bool = True
     sci_tuning_key: str = ""
+    sci_tuning_reader_key: str = ""
 
     log_level: str = "INFO"
     # The SAP mock snapshot and the governed knowledge documents.
@@ -105,7 +119,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.parse_keys() =====
     # ID: F0002 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:73-80
+    # ORIGINAL FILE: backend/app/config.py:87-94
     # ROLE: Parse "identity:key,identity:key" into {key: identity} (lookup by presented key).
     # INPUTS:
     #   raw: str.
@@ -128,7 +142,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.assistants() =====
     # ID: F0003 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:82-84
+    # ORIGINAL FILE: backend/app/config.py:96-98
     # ROLE: Assistant keys as {key: identity}.
     # INPUTS:
     #   self.
@@ -144,7 +158,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.managers() =====
     # ID: F0004 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:86-88
+    # ORIGINAL FILE: backend/app/config.py:100-102
     # ROLE: Manager keys as {key: identity}.
     # INPUTS:
     #   self.
@@ -160,7 +174,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.tenants_for() =====
     # ID: F0005 · method · used
-    # ORIGINAL FILE: backend/app/config.py:90-97
+    # ORIGINAL FILE: backend/app/config.py:104-111
     # ROLE: Tenants an identity may use, from TENANT_SCOPES ("identity=t1|t2;other=*"); None = unrestricted.
     # INPUTS:
     #   identity: str.
@@ -181,7 +195,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.llm_enabled() =====
     # ID: F0006 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:99-101
+    # ORIGINAL FILE: backend/app/config.py:113-115
     # ROLE: True when the LLM is enabled (llm_mode == "qwen"); "deterministic" disables model calls.
     # INPUTS:
     #   self.
@@ -197,7 +211,7 @@ class Settings(BaseSettings):
 
     # ===== FUNCTION: Settings.langfuse_enabled() =====
     # ID: F0007 · method · used (framework)
-    # ORIGINAL FILE: backend/app/config.py:103-105
+    # ORIGINAL FILE: backend/app/config.py:117-119
     # ROLE: True when all three Langfuse settings are present.
     # INPUTS:
     #   self.
@@ -214,7 +228,7 @@ class Settings(BaseSettings):
 
 # ===== FUNCTION: get_settings() =====
 # ID: F0008 · function · used
-# ORIGINAL FILE: backend/app/config.py:108-110
+# ORIGINAL FILE: backend/app/config.py:122-124
 # ROLE: Process-wide Settings singleton (cached), used by create_app() and the observability helpers.
 # INPUTS:
 #   none.

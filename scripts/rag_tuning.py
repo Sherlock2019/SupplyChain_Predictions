@@ -67,7 +67,7 @@ def show(data) -> None:
 def main() -> int:
     e = env()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--api", default="http://localhost:8100")
+    ap.add_argument("--api", default="http://localhost:8000/scinsight")
     ap.add_argument("--key", default=e.get("SCI_DIRECTOR_KEY", ""), help="SCInsight administrator key (default: SCI_DIRECTOR_KEY from .env)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name in ("config", "documents", "validate", "models", "history", "flowise", "metrics"):

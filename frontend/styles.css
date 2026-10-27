@@ -251,13 +251,35 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--surf
 .focus-bar label { color: var(--ink-2); font-size: 13px; }
 .focus-bar select { min-width: 260px; font-weight: 600; }
 .agent-note { margin-bottom: 16px; }
-/* RAG tuning */
+/* RAG tuning: full width (wide tables), editable settings, working-draft bar */
+.content:has(#page-rag.active) { max-width: none; }
+#page-rag .pills { margin-bottom: 14px; }
+.rag-settings table td { vertical-align: middle; }
+.rag-settings tr.rag-changed td { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.rag-settings tr.rag-changed td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.rag-chg { margin: 2px 0; }
+.rag-meta-stored { opacity: .6; font-style: italic; }
+.rag-draft { position: sticky; top: 64px; z-index: 4; margin: 14px 0; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+.rag-draft-empty { margin: 10px 0 14px; }
+.rag-explain { margin-bottom: 8px; }
 #page-rag .eyebrow { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 4px; }
 #page-rag form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
 #page-rag form label:has(input[type=checkbox]) { flex-direction: row; align-items: center; }
 #rag-pane .chip input { margin-right: 4px; }
 #rag-pane h4 { margin-top: 18px; }
-/* backend code section */
+/* backend code section: whole file with line numbers */
+.code-view { counter-reset: ln; margin: 14px 0 0; padding: 12px 0; max-height: calc(100vh - 220px); overflow: auto; border-radius: 8px; border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 4%, transparent); font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 4; white-space: pre; }
+.code-view span { counter-increment: ln; display: inline-block; min-width: 100%; padding-right: 12px; }
+.code-view span::before { content: counter(ln); display: inline-block; width: 4.5em; padding-right: 1em; margin-right: 1em; text-align: right; color: var(--ink-2); border-right: 1px solid var(--line); user-select: none; }
+.code-view span:hover { background: color-mix(in srgb, var(--info) 10%, transparent); }
+.content:has(#page-code.active) { max-width: none; }
+.code-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.code-split .code-view { max-height: calc(100vh - 260px); }
+.code-tpl { color: var(--accent-text); }
+@media (max-width: 1200px) { .code-split { grid-template-columns: minmax(0, 1fr); } }
+a.button { display: inline-block; padding: 8px 16px; border-radius: 9px; background: var(--accent); color: #fff; font-weight: 600; font-size: 14px; text-decoration: none; }
+a.button:hover { filter: brightness(1.08); }
 .code-apps { margin-bottom: 20px; }
 .code-apps td { vertical-align: top; }
 .code-apps code { overflow-wrap: anywhere; }
@@ -548,3 +570,9 @@ table.calc tfoot td { border-top: 2px solid var(--line); } table.calc .total { f
 .guide-box span { color: var(--muted); font-size: 12px; }
 .guide-tree { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 8px 0 10px; }
 .guide-children { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 22px; border-left: 2px solid var(--line); }
+
+/* ERP / SAP Setup: mapping table with inline editors */
+table.erp-map td { vertical-align: top; }
+table.erp-map input:not([type=checkbox]) { display: block; width: 100%; min-width: 220px; margin: 0 0 4px; }
+table.erp-map textarea { width: 100%; min-width: 300px; font-family: var(--mono, ui-monospace, monospace); font-size: 12px; }
+.content:has(#page-erp.active) { max-width: none; }

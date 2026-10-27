@@ -53,11 +53,13 @@ Modules: `backend/app/store.py`, `backend/app/tenants.py`
 | F0390 | `TenantContext` | class | used | [backend/app/tenants.py:27](../../../backend/app/tenants.py#L27) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
 | F0391 | `TenantRegistry` | class | used | [backend/app/tenants.py:40](../../../backend/app/tenants.py#L40) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
 | F0392 | `TenantRegistry.__init__` | method | used (framework) | [backend/app/tenants.py:41](../../../backend/app/tenants.py#L41) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0393 | `TenantRegistry.get` | method | used | [backend/app/tenants.py:59](../../../backend/app/tenants.py#L59) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0394 | `TenantRegistry.catalogue` | method | used | [backend/app/tenants.py:74](../../../backend/app/tenants.py#L74) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0395 | `TenantRegistry.activate` | method | used | [backend/app/tenants.py:80](../../../backend/app/tenants.py#L80) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0396 | `TenantRegistry.deactivate` | method | used | [backend/app/tenants.py:84](../../../backend/app/tenants.py#L84) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0397 | `TenantRegistry.current_id` | method | used | [backend/app/tenants.py:88](../../../backend/app/tenants.py#L88) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0398 | `TenantProxy` | class | used | [backend/app/tenants.py:93](../../../backend/app/tenants.py#L93) | [annotated](../../03_sap_data/repositories/app_tenants.py) | Attribute access is forwarded to the active tenant's object (sap / engine / insi |
-| F0399 | `TenantProxy.__init__` | method | used (framework) | [backend/app/tenants.py:96](../../../backend/app/tenants.py#L96) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
-| F0400 | `TenantProxy.__getattr__` | method | used (framework) | [backend/app/tenants.py:100](../../../backend/app/tenants.py#L100) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F2039 | `TenantRegistry._build` | method | used | [backend/app/tenants.py:60](../../../backend/app/tenants.py#L60) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0393 | `TenantRegistry.get` | method | used | [backend/app/tenants.py:68](../../../backend/app/tenants.py#L68) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F2040 | `TenantRegistry.use_snapshot` | method | used (framework) | [backend/app/tenants.py:77](../../../backend/app/tenants.py#L77) | [annotated](../../03_sap_data/repositories/app_tenants.py) | Switch one customer to another validated snapshot file (None = its built-in snap |
+| F0394 | `TenantRegistry.catalogue` | method | used | [backend/app/tenants.py:88](../../../backend/app/tenants.py#L88) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0395 | `TenantRegistry.activate` | method | used | [backend/app/tenants.py:94](../../../backend/app/tenants.py#L94) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0396 | `TenantRegistry.deactivate` | method | used | [backend/app/tenants.py:98](../../../backend/app/tenants.py#L98) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0397 | `TenantRegistry.current_id` | method | used | [backend/app/tenants.py:102](../../../backend/app/tenants.py#L102) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0398 | `TenantProxy` | class | used | [backend/app/tenants.py:107](../../../backend/app/tenants.py#L107) | [annotated](../../03_sap_data/repositories/app_tenants.py) | Attribute access is forwarded to the active tenant's object (sap / engine / insi |
+| F0399 | `TenantProxy.__init__` | method | used (framework) | [backend/app/tenants.py:110](../../../backend/app/tenants.py#L110) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |
+| F0400 | `TenantProxy.__getattr__` | method | used (framework) | [backend/app/tenants.py:114](../../../backend/app/tenants.py#L114) | [annotated](../../03_sap_data/repositories/app_tenants.py) |  |

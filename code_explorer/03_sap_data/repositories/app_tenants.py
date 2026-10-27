@@ -43,8 +43,10 @@ _current: ContextVar[str] = ContextVar("tenant", default=DEFAULT_TENANT)
 #   id, industry, industry_label, customer, sap, engine, insights, dashboards, roles.
 # CALLED BY:
 #   <- F0392 TenantRegistry.__init__() (references)
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
+#   <- F2039 TenantRegistry._build() (references)
 #   <- F0393 TenantRegistry.get() (references)
+#   <- F2040 TenantRegistry.use_snapshot() (references)
 # CALLS:
 #   (none found)
 @dataclass
@@ -62,11 +64,13 @@ class TenantContext:
 
 # ===== CLASS: TenantRegistry =====
 # ID: F0391 · class · used
-# ORIGINAL FILE: backend/app/tenants.py:40-90
+# ORIGINAL FILE: backend/app/tenants.py:40-104
 # ROLE: Registry of tenants (from data/tenants/index.json + the default file) with a lazily filled, thread-safe cache.
 # FIELDS:
 #   store, index, files {tenant_id: Path}, labels {tenant_id: (industry, label, customer)}, _cache, _lock.
 # CALLED BY:
+#   <- F2112 register.tenant() (references)
+#   <- F2139 ErpService.__init__() (references)
 #   <- F0017 create_app() (calls)
 #   <- F0018 create_app.request_context() (references)
 #   <- F0019 create_app.principal() (references)
@@ -81,7 +85,7 @@ class TenantContext:
 class TenantRegistry:
     # ===== FUNCTION: TenantRegistry.__init__() =====
     # ID: F0392 · method · used (framework)
-    # ORIGINAL FILE: backend/app/tenants.py:41-57
+    # ORIGINAL FILE: backend/app/tenants.py:41-58
     # ROLE: Read the tenant index and map every tenant id to its snapshot file and labels.
     # INPUTS:
     #   default_file: Path (Settings.data_file), store: Store, index_file: Path | None.
@@ -109,12 +113,21 @@ class TenantRegistry:
                 self.labels[tid] = (industry, info["label"], customer["name"])
         self.files[DEFAULT_TENANT] = Path(default_file)  # the default always follows Settings.data_file (tests, deployments)
         self.labels.setdefault(DEFAULT_TENANT, ("cosmetics", "Cosmetics & beauty", "Aurelia Cosmetics"))
+        self.builtin: dict[str, Path] = dict(self.files)  # each customer's own snapshot file (the Mock SAP connection)
         self._cache: dict[str, TenantContext] = {}
         self._lock = threading.Lock()
 
+    def _build(self, tid: str, path: Path) -> TenantContext:
+        sap = SapRepository(path)
+        engine = SupplyChainEngine(sap)
+        insights = InsightEngine(engine)
+        industry, label, customer = self.labels[tid]
+        dashboards = Dashboards(engine, insights, self.store)
+        return TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards, RoleCenter(engine, insights, self.store, dashboards, industry))
+
     # ===== FUNCTION: TenantRegistry.get() =====
     # ID: F0393 · method · used
-    # ORIGINAL FILE: backend/app/tenants.py:59-72
+    # ORIGINAL FILE: backend/app/tenants.py:68-75
     # ROLE: The TenantContext of a tenant (default: the request's active tenant), building its engine stack on first use.
     # INPUTS:
     #   tenant_id: str | None.
@@ -122,6 +135,7 @@ class TenantRegistry:
     #   TenantContext (ValueError for an unknown tenant).
     # CALLED BY:
     #   <- F1791 CodeEditor.list() (calls)
+    #   <- F2168 ErpService.health() (calls)
     #   <- F0017 create_app() (calls)
     #   <- F0033 create_app.snapshot() (calls)
     #   <- F0253 MoatEngine._series() (calls)
@@ -132,14 +146,8 @@ class TenantRegistry:
     #   <- F1895 validate_config() (calls)
     #   <- F1897 _activate() (calls)
     #   <- F1898 publish_rag_config() (calls)
-    #   <- F1899 rollback_rag_config() (calls)
     # CALLS:
-    #   -> F0401 SapRepository (calls)
-    #   -> F0192 SupplyChainEngine (calls)
-    #   -> F0244 InsightEngine (calls)
-    #   -> F0229 Dashboards (calls)
-    #   -> F0390 TenantContext (calls)
-    #   -> F0259 RoleCenter (calls)
+    #   -> F2039 TenantRegistry._build() (calls)
     #   -> F0390 TenantContext (references)
     def get(self, tenant_id: str | None = None) -> TenantContext:
         tid = tenant_id or _current.get()
@@ -148,19 +156,23 @@ class TenantRegistry:
         # The lock prevents two concurrent requests from building the same tenant twice.
         with self._lock:
             if tid not in self._cache:
-                # Dependency chain: SAP data -> engine -> insights / dashboards / role center.
-                sap = SapRepository(self.files[tid])
-                engine = SupplyChainEngine(sap)
-                insights = InsightEngine(engine)
-                industry, label, customer = self.labels[tid]
-                dashboards = Dashboards(engine, insights, self.store)
-                self._cache[tid] = TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards,
-                                                 RoleCenter(engine, insights, self.store, dashboards, industry))
+                self._cache[tid] = self._build(tid, self.files[tid])
             return self._cache[tid]
+
+    def use_snapshot(self, tenant_id: str, path: Path | None) -> TenantContext:
+        """Switch one customer to another validated snapshot file (None = its built-in snapshot): ERP activation and rollback.
+        The new engine stack is built before the swap, so a failure leaves the current one untouched, and no other customer
+        is affected."""
+        path = Path(path) if path else self.builtin[tenant_id]
+        ctx = self._build(tenant_id, path)
+        with self._lock:
+            self.files[tenant_id] = path
+            self._cache[tenant_id] = ctx
+        return ctx
 
     # ===== FUNCTION: TenantRegistry.catalogue() =====
     # ID: F0394 · method · used
-    # ORIGINAL FILE: backend/app/tenants.py:74-78
+    # ORIGINAL FILE: backend/app/tenants.py:88-92
     # ROLE: Industries and customers for the UI tenant selector.
     # INPUTS:
     #   self.
@@ -178,7 +190,7 @@ class TenantRegistry:
 
     # ===== FUNCTION: TenantRegistry.activate() =====
     # ID: F0395 · method · used
-    # ORIGINAL FILE: backend/app/tenants.py:80-82
+    # ORIGINAL FILE: backend/app/tenants.py:94-96
     # ROLE: Set the active tenant for the current request; returns a token to restore the previous value.
     # INPUTS:
     #   tenant_id: str | None.
@@ -194,7 +206,7 @@ class TenantRegistry:
 
     # ===== FUNCTION: TenantRegistry.deactivate() =====
     # ID: F0396 · method · used
-    # ORIGINAL FILE: backend/app/tenants.py:84-86
+    # ORIGINAL FILE: backend/app/tenants.py:98-100
     # ROLE: Restore the previous tenant (end of the request).
     # INPUTS:
     #   token.
@@ -210,13 +222,14 @@ class TenantRegistry:
 
     # ===== FUNCTION: TenantRegistry.current_id() =====
     # ID: F0397 · method · used
-    # ORIGINAL FILE: backend/app/tenants.py:88-90
+    # ORIGINAL FILE: backend/app/tenants.py:102-104
     # ROLE: Id of the active tenant.
     # INPUTS:
     #   none.
     # OUTPUT:
     #   str.
     # CALLED BY:
+    #   <- F2112 register.tenant() (calls)
     #   <- F0019 create_app.principal() (calls)
     #   <- F0022 create_app.watch_owner() (calls)
     #   <- F0034 create_app.tenant_catalogue() (calls)
@@ -231,7 +244,7 @@ class TenantRegistry:
 
 # ===== CLASS: TenantProxy =====
 # ID: F0398 · class · used
-# ORIGINAL FILE: backend/app/tenants.py:93-101
+# ORIGINAL FILE: backend/app/tenants.py:107-115
 # ROLE: Thin proxy: `engine.stock_balance(...)` in main.py becomes `registry.get().engine.stock_balance(...)` for the active tenant.
 # FIELDS:
 #   _registry: TenantRegistry, _attribute: str ("sap" | "engine" | "insights" | "dashboards" | "roles").
@@ -244,7 +257,7 @@ class TenantProxy:
 
     # ===== FUNCTION: TenantProxy.__init__() =====
     # ID: F0399 · method · used (framework)
-    # ORIGINAL FILE: backend/app/tenants.py:96-98
+    # ORIGINAL FILE: backend/app/tenants.py:110-112
     # ROLE: Store registry and attribute name without triggering __getattr__.
     # INPUTS:
     #   registry: TenantRegistry, attribute: str.
@@ -261,7 +274,7 @@ class TenantProxy:
 
     # ===== FUNCTION: TenantProxy.__getattr__() =====
     # ID: F0400 · method · used (framework)
-    # ORIGINAL FILE: backend/app/tenants.py:100-101
+    # ORIGINAL FILE: backend/app/tenants.py:114-115
     # ROLE: Called only for attributes NOT found normally: forward to the active tenant's object.
     # INPUTS:
     #   name: str -> attribute requested (e.g. "factory_readiness").

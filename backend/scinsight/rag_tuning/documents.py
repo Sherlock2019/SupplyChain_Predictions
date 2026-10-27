@@ -12,6 +12,9 @@ from backend.scinsight.security import READ_ROLES
 
 KNOWN_ROLES = READ_ROLES | {"all", "sap_executor"}
 RECOMMENDED = ("valid_to", "approval_status", "owner")  # not required by ingestion, but needed to govern a policy
+# What the Company RAG Search does with each front-matter field (anything else is stored but not used by retrieval).
+FIELD_USE = {"doc_id": "citation", "title": "citation + chunk heading", "category": "category filter", "version": "citation + index key",
+             "tenant": "tenant isolation", "valid_from": "validity filter", "valid_to": "validity filter", "access_roles": "role filter"}
 
 
 def _front_matter(text: str) -> dict:
@@ -46,9 +49,21 @@ def inventory(db, kb, knowledge_dir: Path, tenant_id: str, on: date) -> dict:
                      "indexed_sha_matches": bool(reg) and reg["sha256"] == hashlib.sha256(path.read_bytes()).hexdigest(),
                      "chunks": counts.get(key, 0), "index_version": index_version, "flags": json.loads(reg["flags"]) if reg else [],
                      "in_flowise_rag_db": bool({"agent_service", "all"} & set(meta["access_roles"])), "issues": issues,
-                     "chars": len(body)})
+                     "chars": len(body),
+                     "metadata": [{"field": k, "value": v, "used_for": FIELD_USE.get(k, "stored only")} for k, v in fm.items()],
+                     "metadata_missing": [f for f in (*REQUIRED, *RECOMMENDED) if not fm.get(f)]})
     _cross_document_checks(docs, on)
+    by_type = {}
+    for d in docs:  # metadata fields used per document type (category)
+        t = by_type.setdefault(d["category"], {"category": d["category"], "documents": 0, "fields": set(), "missing": set()})
+        t["documents"] += 1
+        t["fields"] |= {m["field"] for m in d["metadata"]}
+        t["missing"] |= set(d["metadata_missing"])
+    types = [{"category": t["category"], "documents": t["documents"],
+              "fields": [{"field": f, "used_for": FIELD_USE.get(f, "stored only")} for f in sorted(t["fields"], key=lambda f: (f not in FIELD_USE, f))],
+              "missing": sorted(t["missing"])} for t in sorted(by_type.values(), key=lambda t: t["category"])]
     return {"tenant": tenant_id, "index_version": index_version, "embedding_model": cfg.embedding_model, "documents": docs, "rejected": rejected,
+            "metadata_by_type": types, "field_use": FIELD_USE,
             "summary": {"documents": len(docs), "rejected": len(rejected), "with_issues": sum(1 for d in docs if d["issues"]),
                         "chunks": sum(d["chunks"] for d in docs)}}
 

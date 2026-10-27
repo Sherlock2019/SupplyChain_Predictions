@@ -192,6 +192,9 @@ class _SqliteDb:
     # OUTPUT:
     #   Any -> row, rows, rowcount, last inserted id, or None.
     # CALLED BY:
+    #   <- F2146 ErpService._save() (calls)
+    #   <- F2151 ErpService.set_mapping() (calls)
+    #   <- F2164 ErpService._record() (calls)
     #   <- F0349 _SqliteDb.query() (calls)
     #   <- F0364 Store.submit() (calls)
     #   <- F0369 Store.create_watch() (calls)
@@ -225,18 +228,18 @@ class _SqliteDb:
     # OUTPUT:
     #   Any.
     # CALLED BY:
-    #   <- F0358 Store.audit() (calls)
-    #   <- F0359 Store.verify_chain() (calls)
-    #   <- F0360 Store.audit_events() (calls)
-    #   <- F0361 Store.save_analysis() (calls)
-    #   <- F0362 Store.get_analysis() (calls)
-    #   <- F0364 Store.submit() (calls)
-    #   <- F0366 Store.get_recommendation() (calls)
-    #   <- F0367 Store.list_recommendations() (calls)
-    #   <- F0368 Store.decide() (calls)
-    #   <- F0371 Store.get_watch() (calls)
-    #   <- F0372 Store.list_watches() (calls)
-    #   <- F0373 Store.delete_watch() (calls)
+    #   <- F2139 ErpService.__init__() (calls)
+    #   <- F2140 ErpService._row() (calls)
+    #   <- F2141 ErpService._secret() (calls)
+    #   <- F2143 ErpService.list() (calls)
+    #   <- F2146 ErpService._save() (calls)
+    #   <- F2150 ErpService.mapping() (calls)
+    #   <- F2152 ErpService.test() (calls)
+    #   <- F2154 ErpService.validate() (calls)
+    #   <- F2156 ErpService.sync() (calls)
+    #   <- F2159 ErpService.job() (calls)
+    #   <- F2160 ErpService.sync_history() (calls)
+    #   <- F2161 ErpService.active() (calls)
     # CALLS:
     #   -> F0348 _SqliteDb.run() (calls)
     def query(self, sql: str, params: tuple = (), fetch: str = "all") -> Any:
@@ -288,6 +291,9 @@ class _PostgresDb:
     # OUTPUT:
     #   Any.
     # CALLED BY:
+    #   <- F2146 ErpService._save() (calls)
+    #   <- F2151 ErpService.set_mapping() (calls)
+    #   <- F2164 ErpService._record() (calls)
     #   <- F0353 _PostgresDb.query() (calls)
     #   <- F0364 Store.submit() (calls)
     #   <- F0369 Store.create_watch() (calls)
@@ -325,18 +331,18 @@ class _PostgresDb:
     # OUTPUT:
     #   Any.
     # CALLED BY:
-    #   <- F0358 Store.audit() (calls)
-    #   <- F0359 Store.verify_chain() (calls)
-    #   <- F0360 Store.audit_events() (calls)
-    #   <- F0361 Store.save_analysis() (calls)
-    #   <- F0362 Store.get_analysis() (calls)
-    #   <- F0364 Store.submit() (calls)
-    #   <- F0366 Store.get_recommendation() (calls)
-    #   <- F0367 Store.list_recommendations() (calls)
-    #   <- F0368 Store.decide() (calls)
-    #   <- F0371 Store.get_watch() (calls)
-    #   <- F0372 Store.list_watches() (calls)
-    #   <- F0373 Store.delete_watch() (calls)
+    #   <- F2139 ErpService.__init__() (calls)
+    #   <- F2140 ErpService._row() (calls)
+    #   <- F2141 ErpService._secret() (calls)
+    #   <- F2143 ErpService.list() (calls)
+    #   <- F2146 ErpService._save() (calls)
+    #   <- F2150 ErpService.mapping() (calls)
+    #   <- F2152 ErpService.test() (calls)
+    #   <- F2154 ErpService.validate() (calls)
+    #   <- F2156 ErpService.sync() (calls)
+    #   <- F2159 ErpService.job() (calls)
+    #   <- F2160 ErpService.sync_history() (calls)
+    #   <- F2161 ErpService.active() (calls)
     # CALLS:
     #   -> F0352 _PostgresDb.run() (calls)
     def query(self, sql: str, params: tuple = (), fetch: str = "all") -> Any:
@@ -352,6 +358,7 @@ class _PostgresDb:
 # CALLED BY:
 #   <- F0452 LocalBackend.__init__() (references)
 #   <- F0230 Dashboards.__init__() (references)
+#   <- F2139 ErpService.__init__() (references)
 #   <- F0017 create_app() (references)
 #   <- F0017 create_app() (calls)
 #   <- F0251 MoatEngine.__init__() (references)
@@ -359,9 +366,8 @@ class _PostgresDb:
 #   <- F0392 TenantRegistry.__init__() (references)
 #   <- F0905 client() (references)
 #   <- F0872 test_demo_session_disabled_by_default_and_enabled_for_local_demo() (references)
-#   <- F0878 test_tenant_scoped_authorization() (references)
-#   <- F0952 _exercise_store() (references)
-#   <- F0953 test_sqlite_store() (references)
+#   <- F2176 app() (references)
+#   <- F2187 test_activation_survives_restart() (calls)
 # CALLS:
 #   (none found)
 class Store:
@@ -398,6 +404,8 @@ class Store:
     #   <- F0452 LocalBackend.__init__() (calls)
     #   <- F0905 client() (calls)
     #   <- F0872 test_demo_session_disabled_by_default_and_enabled_for_local_demo() (calls)
+    #   <- F2176 app() (calls)
+    #   <- F1985 fused() (calls)
     #   <- F0878 test_tenant_scoped_authorization() (calls)
     #   <- F0953 test_sqlite_store() (calls)
     # CALLS:
@@ -433,6 +441,7 @@ class Store:
     # OUTPUT:
     #   None.
     # CALLED BY:
+    #   <- F2170 ErpService.run_scheduled() (calls)
     #   <- F0019 create_app.principal() (calls)
     #   <- F0020 create_app.manager() (calls)
     #   <- F0023 create_app.save() (calls)
@@ -444,7 +453,6 @@ class Store:
     #   <- F1801 create_app.rag_tuning_proxy() (calls)
     #   <- F0987 create_app.code_update() (calls)
     #   <- F0083 create_app.chat() (calls)
-    #   <- F0085 create_app.langgraph_agentflow() (calls)
     # CALLS:
     #   -> F0349 _SqliteDb.query() (calls)
     #   -> F0353 _PostgresDb.query() (calls)
@@ -514,7 +522,10 @@ class Store:
     # OUTPUT:
     #   list[dict].
     # CALLED BY:
+    #   <- F2053 validate_integrations.audit() (calls)
+    #   <- F2169 ErpService.logs() (calls)
     #   <- F0101 create_app.audit() (calls)
+    #   <- F2185 test_d_security() (calls)
     # CALLS:
     #   -> F0349 _SqliteDb.query() (calls)
     #   -> F0353 _PostgresDb.query() (calls)
@@ -959,6 +970,7 @@ class Store:
     # OUTPUT:
     #   list[dict].
     # CALLED BY:
+    #   <- F2052 validate_integrations.outcomes() (calls)
     #   <- F0059 create_app.record_outcome() (calls)
     #   <- F0110 create_app.poc_reconcile() (calls)
     #   <- F0255 MoatEngine.view() (calls)

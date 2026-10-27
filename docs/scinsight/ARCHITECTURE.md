@@ -14,7 +14,7 @@ flowchart LR
     SV --> API
     SP --> API
     M[Manager with own key<br/>Swagger / API client] -->|POST /decisions/id/review| API
-    subgraph API[SCInsight API · FastAPI :8100]
+    subgraph API[SCInsight API · FastAPI :8000/scinsight]
         SEC[Security<br/>key hash -> tenant + roles<br/>audit hash chain]
         SAP[Synthetic SAP<br/>read-only, writes 405]
         CALC[Deterministic engine<br/>business.py]

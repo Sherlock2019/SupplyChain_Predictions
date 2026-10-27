@@ -46,7 +46,7 @@ REVIEW_DECISIONS = {"approve": "approved", "reject": "rejected", "modify": "modi
 # FIELDS:
 #   db: Database, settings: SciSettings, security: Security.
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 # CALLS:
 #   (none found)
 class Service:
@@ -77,9 +77,9 @@ class Service:
     # OUTPUT:
     #   dict -> the sap_snapshots row + "as_of" (date) + "age_days" (int).
     # CALLED BY:
-    #   <- F0115 create_app.biz_date() (calls)
-    #   <- F0117 create_app.context() (calls)
-    #   <- F0118 create_app.validate_context() (calls)
+    #   <- F1996 create_router.biz_date() (calls)
+    #   <- F1998 create_router.context() (calls)
+    #   <- F1999 create_router.validate_context() (calls)
     #   <- F0319 Service.inventory() (calls)
     #   <- F0320 Service.bom() (calls)
     #   <- F0321 Service.table() (calls)
@@ -147,7 +147,7 @@ class Service:
     # OUTPUT:
     #   dict -> the stored body (404 when unknown or owned by another tenant).
     # CALLED BY:
-    #   <- F0132 create_app.calculation() (calls)
+    #   <- F2013 create_router.calculation() (calls)
     #   <- F0333 Service.create_decision() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
@@ -231,7 +231,7 @@ class Service:
     # OUTPUT:
     #   dict -> {"snapshot", "as_of", "items": [summaries], "batches": [rows], "rules"}.
     # CALLED BY:
-    #   <- F0119 create_app.sap_inventory() (calls)
+    #   <- F2000 create_router.sap_inventory() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -269,7 +269,7 @@ class Service:
     # OUTPUT:
     #   dict -> {"sku", "snapshot", "current_for_one_unit" (or {"error"}), "versions"}.
     # CALLED BY:
-    #   <- F0120 create_app.sap_bom() (calls)
+    #   <- F2001 create_router.sap_bom() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -299,9 +299,9 @@ class Service:
     # OUTPUT:
     #   dict -> {"snapshot", "as_of", "items": [rows]}.
     # CALLED BY:
-    #   <- F0121 create_app.sap_production_orders() (calls)
-    #   <- F0122 create_app.sap_purchase_orders() (calls)
-    #   <- F0123 create_app.sap_warehouses() (calls)
+    #   <- F2002 create_router.sap_production_orders() (calls)
+    #   <- F2003 create_router.sap_purchase_orders() (calls)
+    #   <- F2004 create_router.sap_warehouses() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -325,7 +325,7 @@ class Service:
     # OUTPUT:
     #   dict -> {"products", "materials", "locations", "suppliers", "production_orders"}: lists of "CODE = name" strings.
     # CALLED BY:
-    #   <- F0118 create_app.validate_context() (calls)
+    #   <- F1999 create_router.validate_context() (calls)
     # CALLS:
     #   -> F0421 Database.query() (references)
     def catalog(self, tenant: str) -> dict:
@@ -351,7 +351,7 @@ class Service:
     # OUTPUT:
     #   dict -> {"snapshot", "items": [supplier rows with "items"]}.
     # CALLED BY:
-    #   <- F0124 create_app.sap_suppliers() (calls)
+    #   <- F2005 create_router.sap_suppliers() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -416,7 +416,7 @@ class Service:
     #   dict -> stored calculation (kind "material_readiness") with status "ready" | "short".
     # EXAMPLE: {"production_order_id": "PRD-1001"} -> status "short", PUMP-DISP-24 missing 20,000 EA (planted scenario 1).
     # CALLED BY:
-    #   <- F0126 create_app.material_readiness() (calls)
+    #   <- F2007 create_router.material_readiness() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -551,7 +551,7 @@ class Service:
     #   dict -> stored calculation (kind "warehouse_balancing"): positions, options, status, proposed_actions.
     # EXAMPLE: {"sku": "SUN-SPF50-100"} -> receiver WH-B (~6 days cover); donors WH-C / WH-A evaluated with lane cost and lead time.
     # CALLED BY:
-    #   <- F0127 create_app.warehouse_balancing() (calls)
+    #   <- F2008 create_router.warehouse_balancing() (calls)
     #   <- F0328 Service.replenishment() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
@@ -637,7 +637,7 @@ class Service:
     # OUTPUT:
     #   dict -> stored calculation (kind "replenishment", or the balancing result for products).
     # CALLED BY:
-    #   <- F0128 create_app.replenishment() (calls)
+    #   <- F2009 create_router.replenishment() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -683,7 +683,7 @@ class Service:
     # OUTPUT:
     #   dict -> stored calculation (kind "quality_check").
     # CALLED BY:
-    #   <- F0131 create_app.quality_check() (calls)
+    #   <- F2012 create_router.quality_check() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -717,7 +717,7 @@ class Service:
     # OUTPUT:
     #   dict -> stored calculation (kind "demand_forecast"): forecast [{date, units}], total, backtest {holdout_days, wape_pct, naive_same_weekday_wape_pct}.
     # CALLED BY:
-    #   <- F0129 create_app.forecast_demand() (calls)
+    #   <- F2010 create_router.forecast_demand() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -777,7 +777,7 @@ class Service:
     # OUTPUT:
     #   dict -> stored calculation (kind "lead_time_estimate"): estimate, predicted_lead_time_days, model_version, basis.
     # CALLED BY:
-    #   <- F0130 create_app.forecast_lead_time() (calls)
+    #   <- F2011 create_router.forecast_lead_time() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0313 Service.snapshot() (calls)
@@ -821,7 +821,7 @@ class Service:
     # OUTPUT:
     #   dict -> the recommendation (get_decision view), or the existing one + {"idempotent_replay": True}.
     # CALLED BY:
-    #   <- F0135 create_app.create_decision() (calls)
+    #   <- F2016 create_router.create_decision() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0315 Service.calculation() (calls)
@@ -891,7 +891,7 @@ class Service:
     # OUTPUT:
     #   dict -> full recommendation view (404 when unknown for this tenant).
     # CALLED BY:
-    #   <- F0137 create_app.get_decision() (calls)
+    #   <- F2018 create_router.get_decision() (calls)
     #   <- F0333 Service.create_decision() (calls)
     #   <- F0337 Service.review() (calls)
     #   <- F0339 Service.withdraw() (calls)
@@ -924,7 +924,7 @@ class Service:
     # OUTPUT:
     #   list[dict] -> _rec() views.
     # CALLED BY:
-    #   <- F0136 create_app.list_decisions() (calls)
+    #   <- F2017 create_router.list_decisions() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0421 Database.query() (calls)
@@ -944,7 +944,7 @@ class Service:
     # OUTPUT:
     #   dict -> updated recommendation + {"sap_written": False, "next_step"}.
     # CALLED BY:
-    #   <- F0138 create_app.review() (calls)
+    #   <- F2019 create_router.review() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0335 Service.get_decision() (calls)
@@ -996,7 +996,7 @@ class Service:
     # OUTPUT:
     #   dict -> recommendation with status "withdrawn".
     # CALLED BY:
-    #   <- F0139 create_app.withdraw() (calls)
+    #   <- F2020 create_router.withdraw() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0335 Service.get_decision() (calls)
@@ -1023,7 +1023,7 @@ class Service:
     # OUTPUT:
     #   dict -> recommendation with status "executed".
     # CALLED BY:
-    #   <- F0140 create_app.sap_execution() (calls)
+    #   <- F2021 create_router.sap_execution() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0777 Security.require() (calls)
@@ -1060,7 +1060,7 @@ class Service:
     #   dict -> outcome with error, ids, approved_for_training — or unsupported_metric / missing / pending / already_reconciled.
     # EXAMPLE: REC-HIST-0001 -> predicted 5 days, actual 9 (PO-4500020950) -> signed error 4, verified.
     # CALLED BY:
-    #   <- F0141 create_app.reconcile() (calls)
+    #   <- F2022 create_router.reconcile() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0777 Security.require() (calls)
@@ -1136,7 +1136,7 @@ class Service:
     #   dict -> verified_outcome_coverage, supplier_lead_time_mae_days, demand_forecast_wape_pct, acceptance / modification /
     #           execution rates, stockout_warning_accuracy, business_impact_eur, models, learning_records.
     # CALLED BY:
-    #   <- F0142 create_app.learning_metrics() (calls)
+    #   <- F2023 create_router.learning_metrics() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
     #   -> F0421 Database.query() (calls)

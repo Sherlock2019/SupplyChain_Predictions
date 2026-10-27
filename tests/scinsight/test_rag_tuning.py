@@ -8,13 +8,12 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from backend.scinsight.app import create_app
 from backend.scinsight.db import Database
 from backend.scinsight.rag_tuning import evaluation
 from backend.scinsight.rag_tuning.chunking import chunk, preview_document_chunks
 from backend.scinsight.rag_tuning.config import RagTuningConfig, diff
 from backend.scinsight.settings import ROOT
-from tests.scinsight.conftest import key, settings
+from tests.scinsight.conftest import create_app, key, settings
 
 KNOWLEDGE = ROOT / "data" / "scinsight" / "knowledge"
 BASE = "/api/v1/rag-tuning"

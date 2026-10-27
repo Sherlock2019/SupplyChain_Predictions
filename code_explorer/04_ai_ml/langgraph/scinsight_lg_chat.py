@@ -79,7 +79,7 @@ def ask_sc_agent_manager(question: str) -> str:
 #   -> F0639 api() (calls)
 #   -> F0076 create_app.rag_search() (http_request)
 #   -> F0077 create_app.rag_search_get() (http_request)
-#   -> F0133 create_app.rag_search() (http_request)
+#   -> F2014 create_router.rag_search() (http_request)
 #   -> F0641 strip() (calls)
 @tool
 def search_supply_chain_policy(query: str) -> str:

@@ -740,8 +740,8 @@ def write_docs(fns, fnodes, edges, out_map, in_map, labels, ann_ok, problems):
 # Main backend functions for the README: hand-picked (layer, "file::qualname", role). Links / line numbers are resolved from the
 # live code, and a name that no longer exists is reported as a problem, so the table cannot silently go stale.
 MAIN_FUNCTIONS = [
-    ("FastAPI app", "backend/scinsight/app.py::create_app", "SCInsight API factory (:8100): loads fixtures, RAG and security, registers the 31 governed routes"),
-    ("FastAPI app", "backend/app/main.py::create_app", "SPARC / Aurelia gateway factory (:8000): middleware, SAP facade, analyses, agents, RAG, approvals, UI"),
+    ("FastAPI app", "backend/scinsight/app.py::create_router", "SCInsight routes (APIRouter included at /scinsight): loads fixtures, RAG and security, registers the 31 governed routes"),
+    ("FastAPI app", "backend/app/main.py::create_app", "The one FastAPI app (:8000): includes the SCInsight router at /scinsight; gateway middleware, SAP facade, analyses, agents, RAG, approvals, UI"),
     ("FastAPI app", "backend/app/main.py::create_app.request_context", "Middleware: correlation id, active tenant, Prometheus request metrics"),
     ("FastAPI app", "backend/app/main.py::create_app.value_error_handler", "Turns any business ValueError into HTTP 422 VALIDATION_ERROR"),
     ("FastAPI app", "backend/app/config.py::get_settings", "Gateway settings from environment / .env (cached)"),
@@ -750,7 +750,7 @@ MAIN_FUNCTIONS = [
     ("Security", "backend/app/main.py::create_app.reader", "Dependency: assistant or manager may read and analyse"),
     ("Security", "backend/app/main.py::create_app.manager", "Dependency: only a manager may decide, execute or change settings"),
     ("Security", "backend/app/auth.py::ApiKeyAuth.authenticate", "Constant-time API-key lookup -> Principal (identity, role)"),
-    ("Security", "backend/scinsight/app.py::create_app.principal", "SCInsight dependency: key -> user, tenant and roles (never taken from the request body)"),
+    ("Security", "backend/scinsight/app.py::create_router.principal", "SCInsight dependency: key -> user, tenant and roles (never taken from the request body)"),
     ("Security", "backend/scinsight/security.py::Security.require", "Role check for an action (agent_service can never approve)"),
     ("Security", "backend/scinsight/security.py::Security.audit", "Append-only, hash-chained audit event"),
     ("Security", "backend/scinsight/security.py::Security.verify_chain", "Verifies the audit hash chain was not altered"),
@@ -844,7 +844,7 @@ def write_backend_docs(fns, out_map, labels, problems):
               f"[list](code_explorer/BACKEND_FUNCTIONS.md#{anchor(p)})"] for p in files]
     rrows = []
     for f in sorted((f for f in back if f.routes), key=lambda f: (f.path, f.first)):
-        app = "SCInsight :8100" if f.path.startswith("backend/scinsight") else ("MCP" if "mcp_server" in f.path else "Gateway :8000")
+        app = "SCInsight /scinsight" if f.path.startswith("backend/scinsight") else ("MCP" if "mcp_server" in f.path else "Gateway :8000")
         for m, p in f.routes:
             rrows.append([app, m, f"`{p}`", f"[`{f.name}`]({f.path}#L{f.first})", auth(f), (f.doc or "").splitlines()[0][:80] if f.doc else ""])
     by_key = {f"{f.path}::{f.qual}": f for f in back}
@@ -880,7 +880,7 @@ def write_backend_docs(fns, out_map, labels, problems):
         "Full linked list of every function: [code_explorer/BACKEND_FUNCTIONS.md](code_explorer/BACKEND_FUNCTIONS.md) · "
         "call graph and ids: [code_explorer/FUNCTION_INDEX.md](code_explorer/FUNCTION_INDEX.md) · in the dashboard: **System → Backend code**.", "",
         "### Main backend functions", "",
-        "The functions that carry the app, by layer (SCInsight = API on :8100, Gateway = SPARC / Aurelia on :8000). "
+        "The functions that carry the app, by layer (one FastAPI app on :8000: SCInsight = router at /scinsight, Gateway = SPARC / Aurelia at the root). "
         "A request goes FastAPI route -> security dependency -> use case -> business rules on SAP data -> stored, audited result; "
         "agents and RAG call the same routes.", "",
         "Full source of every element below (whole FastAPI factories with their routes, whole classes): "

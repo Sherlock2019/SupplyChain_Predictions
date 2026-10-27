@@ -39,7 +39,7 @@ _client: Any = None  # tests replace this with a FastAPI TestClient (same .reque
 def client():
     global _client
     if _client is None:
-        _client = httpx.Client(base_url=os.environ.get("SCI_API_URL", "http://scinsight-api:8100"), timeout=120)
+        _client = httpx.Client(base_url=os.environ.get("SCI_API_URL", "http://api:8000/scinsight"), timeout=120)
     return _client
 
 

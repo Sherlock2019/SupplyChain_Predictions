@@ -29,9 +29,9 @@ stateDiagram-v2
 1. The specialist returns its analysis and `Decision calculation: CALC-…`.
 2. The supervisor checks that calculation through the API and creates the recommendation (`pending_review`).
 3. The run **pauses** at Human Input. The message names the recommendation and the roles that may decide it.
-4. The manager decides in the API (Swagger `http://localhost:8100/docs` → *Authorize* with their key):
+4. The manager decides in the API (Swagger `http://localhost:8000/docs` → *Authorize* with their key):
    ```bash
-   curl -X POST http://localhost:8100/api/v1/decisions/REC-…/review -H "X-API-Key: $SCI_WAREHOUSE_KEY" \
+   curl -X POST http://localhost:8000/scinsight/api/v1/decisions/REC-…/review -H "X-API-Key: $SCI_WAREHOUSE_KEY" \
         -H 'Content-Type: application/json' -d '{"decision":"approve","explanation":"Move the long-dated batch to Madrid."}'
    ```
 5. The requester clicks **Proceed**. The flow reads `GET /decisions/{id}` and reports the verified result:

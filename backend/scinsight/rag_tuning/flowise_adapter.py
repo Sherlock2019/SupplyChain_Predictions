@@ -4,7 +4,7 @@ The chatflow SCInsight-Cosmetics-Chatflow-v1 reaches company policies through tw
   company_policy_rag_db       Flowise Retriever tool -> Postgres vector store (table scinsight_flowise_rag, database scinsight)
                               <- Folder loader (opt/flows/scinsight/knowledge) <- Markdown text splitter, embeddings = gateway
                               /v1/embeddings (BAAI/bge-small-en-v1.5), record manager with full cleanup
-  search_supply_chain_policy  Custom Tool -> POST scinsight-api /api/v1/rag/search -> KnowledgeBase.search (tuned directly)
+  search_supply_chain_policy  Custom Tool -> POST api:8000/scinsight/api/v1/rag/search -> KnowledgeBase.search (tuned directly)
 On publish this module updates the first path: splitter chunkSize / chunkOverlap, vector store topK, and a rag_config_version
 tag in the loader metadata; then re-indexes through Flowise's upsert API and verifies the table. Threshold, retrieval mode,
 reranking and the context budget have no equivalent on the Flowise Postgres retriever: they apply to the API path only.

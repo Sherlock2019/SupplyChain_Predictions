@@ -36,5 +36,5 @@ the settings actually applied.
 ## Approving a paused run (`scinsight_supervisor`)
 
 1. Submit a question that proposes an action, e.g. the warehouse transfer. The run stops at **human_approval** and shows the recommendation `REC-…`.
-2. Approve as the responsible manager in Swagger (http://localhost:8100/docs → `POST /api/v1/decisions/{id}/review`, e.g. with `SCI_WAREHOUSE_KEY`).
+2. Approve as the responsible manager in Swagger (http://localhost:8000/docs → `POST /scinsight/api/v1/decisions/{id}/review`, e.g. with `SCI_WAREHOUSE_KEY`).
 3. In Studio, click **Resume** with value `proceed` (or `reject` to withdraw). The graph reads the verified decision back from the API: resuming is not the approval.

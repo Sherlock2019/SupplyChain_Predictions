@@ -49,7 +49,11 @@ ODATA_ENTITIES = {
 #   <- F0452 LocalBackend.__init__() (references)
 #   <- F0483 build_backend() (calls)
 #   <- F0193 SupplyChainEngine.__init__() (references)
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2072 MockSapConnector.test_connection() (calls)
+#   <- F2073 MockSapConnector.discover_entities() (calls)
+#   <- F2074 MockSapConnector.read_entity() (calls)
+#   <- F2157 ErpService._smoke() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
 #   <- F0922 engine() (calls)
 #   <- F0933 engine() (calls)
 #   <- F0943 engine() (calls)
@@ -185,6 +189,8 @@ class SapRepository:
     #   <- F0197 SupplyChainEngine.factory_readiness() (calls)
     #   <- F0212 SupplyChainEngine.product_360() (calls)
     #   <- F0224 SupplyChainEngine.network_map() (calls)
+    #   <- F2073 MockSapConnector.discover_entities() (calls)
+    #   <- F2074 MockSapConnector.read_entity() (calls)
     #   <- F0255 MoatEngine.view() (calls)
     # CALLS:
     #   (none found)
@@ -408,6 +414,7 @@ class SapRepository:
     # OUTPUT:
     #   dict.
     # CALLED BY:
+    #   <- F2072 MockSapConnector.test_connection() (calls)
     #   <- F0036 create_app.sap_metadata() (calls)
     # CALLS:
     #   (none found)

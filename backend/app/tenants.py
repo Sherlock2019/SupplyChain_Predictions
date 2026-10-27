@@ -53,8 +53,17 @@ class TenantRegistry:
                 self.labels[tid] = (industry, info["label"], customer["name"])
         self.files[DEFAULT_TENANT] = Path(default_file)  # the default always follows Settings.data_file (tests, deployments)
         self.labels.setdefault(DEFAULT_TENANT, ("cosmetics", "Cosmetics & beauty", "Aurelia Cosmetics"))
+        self.builtin: dict[str, Path] = dict(self.files)  # each customer's own snapshot file (the Mock SAP connection)
         self._cache: dict[str, TenantContext] = {}
         self._lock = threading.Lock()
+
+    def _build(self, tid: str, path: Path) -> TenantContext:
+        sap = SapRepository(path)
+        engine = SupplyChainEngine(sap)
+        insights = InsightEngine(engine)
+        industry, label, customer = self.labels[tid]
+        dashboards = Dashboards(engine, insights, self.store)
+        return TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards, RoleCenter(engine, insights, self.store, dashboards, industry))
 
     def get(self, tenant_id: str | None = None) -> TenantContext:
         tid = tenant_id or _current.get()
@@ -62,14 +71,19 @@ class TenantRegistry:
             raise ValueError(f"Unknown tenant {tid}. Options: {', '.join(sorted(self.files))}")
         with self._lock:
             if tid not in self._cache:
-                sap = SapRepository(self.files[tid])
-                engine = SupplyChainEngine(sap)
-                insights = InsightEngine(engine)
-                industry, label, customer = self.labels[tid]
-                dashboards = Dashboards(engine, insights, self.store)
-                self._cache[tid] = TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards,
-                                                 RoleCenter(engine, insights, self.store, dashboards, industry))
+                self._cache[tid] = self._build(tid, self.files[tid])
             return self._cache[tid]
+
+    def use_snapshot(self, tenant_id: str, path: Path | None) -> TenantContext:
+        """Switch one customer to another validated snapshot file (None = its built-in snapshot): ERP activation and rollback.
+        The new engine stack is built before the swap, so a failure leaves the current one untouched, and no other customer
+        is affected."""
+        path = Path(path) if path else self.builtin[tenant_id]
+        ctx = self._build(tenant_id, path)
+        with self._lock:
+            self.files[tenant_id] = path
+            self._cache[tenant_id] = ctx
+        return ctx
 
     def catalogue(self) -> dict:
         return {"default": DEFAULT_TENANT, "industries": [

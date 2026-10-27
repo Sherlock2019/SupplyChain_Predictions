@@ -4,16 +4,17 @@ The complete, current source of every element in the README table *Main backend 
 
 ## FastAPI app
 
-<a id="f0112"></a>
-### F0112 · `create_app` (SCInsight)
+<a id="f1993"></a>
+### F1993 · `create_router` (SCInsight)
 
-SCInsight API factory (:8100): loads fixtures, RAG and security, registers the 31 governed routes  
-Source: [backend/scinsight/app.py:36-228](../backend/scinsight/app.py#L36) · 193 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/scinsight_app.py)
+SCInsight routes (APIRouter included at /scinsight): loads fixtures, RAG and security, registers the 31 governed routes  
+Source: [backend/scinsight/app.py:37-230](../backend/scinsight/app.py#L37) · 194 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/scinsight_app.py)
 
 <details><summary>Show the full code</summary>
 
 ```python
-def create_app(settings: SciSettings | None = None, db: Database | None = None) -> FastAPI:
+def create_router(settings: SciSettings | None = None, db: Database | None = None) -> APIRouter:
+    """Database, fixtures, security, RAG and every SCInsight route; backend/app/main.py includes it at /scinsight."""
     settings = settings or SciSettings()
     if settings.sap_write_enabled:
         raise RuntimeError("SAP_WRITE_ENABLED=true is not allowed in Phase 1: SupplyChain Insight AI is read-only towards SAP")
@@ -32,9 +33,9 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     kb = KnowledgeBase(db, make_embedder(settings.sci_embedding_backend), settings.sci_embedding_backend)
     ingest_report = kb.ingest_dir(settings.sci_knowledge_dir) if settings.rag_enabled else {}
 
-    app = FastAPI(title="SupplyChain Insight AI — business tools", version="1.0.0", openapi_tags=TAGS,
-                  description="Cosmetics supply-chain POC: synthetic SAP data, deterministic calculations, human-approved decisions, verified-outcome learning.")
-    app.state.db, app.state.service, app.state.security, app.state.kb, app.state.ingest_report = db, service, security, kb, ingest_report
+    router = APIRouter()
+    # shared objects, reachable as app.state.scinsight in the gateway app (tests and the RAG tuning routes use them)
+    router.state = SimpleNamespace(db=db, service=service, security=security, kb=kb, ingest_report=ingest_report)
 
     def principal(request: Request, x_api_key: str | None = Header(default=None), authorization: str | None = Header(default=None),
                   x_tenant: str | None = Header(default=None)) -> Principal:
@@ -48,19 +49,19 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     def biz_date(p: Principal) -> date:
         return service.snapshot(p.tenant_id)["as_of"]
 
-    @app.get("/health", tags=["context"])
+    @router.get("/health", tags=["context"])
     def health() -> dict:
         return {"status": "ok", "sap_mode": settings.sap_mode, "sap_write_enabled": False, "human_approval_required": settings.human_approval_required,
                 "industry_sharing_enabled": settings.industry_sharing_enabled, "database": db.dialect}
 
     # ------------------------------------------------------------------ context
-    @app.get("/api/v1/context", tags=["context"])
+    @router.get("/api/v1/context", tags=["context"])
     def context(p: Principal = Depends(reader)) -> dict:
         snap = service.snapshot(p.tenant_id)
         return {"user_id": p.user_id, "name": p.name, "tenant_id": p.tenant_id, "roles": sorted(p.roles), "is_human": p.is_human,
                 "snapshot": {"id": snap["id"], "as_of": snap["as_of_date"], "age_days": snap["age_days"], "synthetic": bool(snap["synthetic"])}}
 
-    @app.post("/api/v1/context/validate", tags=["context"])
+    @router.post("/api/v1/context/validate", tags=["context"])
     def validate_context(body: s.ContextRequest, p: Principal = Depends(reader)) -> dict:
         snap = service.snapshot(p.tenant_id)
         security.audit(p.tenant_id, p.user_id, sorted(p.roles), "context.validated", {"session_id": body.session_id})
@@ -69,143 +70,143 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
                 "authorized_context_ref": f"{p.tenant_id}:{p.user_id}:{body.session_id}", "catalog": service.catalog(p.tenant_id)}
 
     # ------------------------------------------------------------------ SAP (read-only)
-    @app.get("/api/v1/sap/inventory", tags=["sap"])
+    @router.get("/api/v1/sap/inventory", tags=["sap"])
     def sap_inventory(location: str | None = Query(default=None, pattern=s.CODE), item_id: str | None = Query(default=None, pattern=s.CODE),
                       include_unusable: bool = True, p: Principal = Depends(reader)) -> dict:
         return service.inventory(p, location, item_id, include_unusable)
 
-    @app.get("/api/v1/sap/bom/{sku}", tags=["sap"])
+    @router.get("/api/v1/sap/bom/{sku}", tags=["sap"])
     def sap_bom(sku: str, on: date | None = None, p: Principal = Depends(reader)) -> dict:
         return service.bom(p, sku, on)
 
-    @app.get("/api/v1/sap/production-orders", tags=["sap"])
+    @router.get("/api/v1/sap/production-orders", tags=["sap"])
     def sap_production_orders(sku: str | None = Query(default=None, pattern=s.CODE), status: str | None = None, p: Principal = Depends(reader)) -> dict:
         return service.table(p, "production_orders", {"sku": sku, "status": status})
 
-    @app.get("/api/v1/sap/purchase-orders", tags=["sap"])
+    @router.get("/api/v1/sap/purchase-orders", tags=["sap"])
     def sap_purchase_orders(material_id: str | None = Query(default=None, pattern=s.CODE), supplier_id: str | None = Query(default=None, pattern=s.CODE),
                             status: str | None = None, p: Principal = Depends(reader)) -> dict:
         return service.table(p, "purchase_orders", {"material_id": material_id, "supplier_id": supplier_id, "status": status})
 
-    @app.get("/api/v1/sap/warehouses", tags=["sap"])
+    @router.get("/api/v1/sap/warehouses", tags=["sap"])
     def sap_warehouses(p: Principal = Depends(reader)) -> dict:
         return service.table(p, "warehouses", {})
 
-    @app.get("/api/v1/sap/suppliers", tags=["sap"])
+    @router.get("/api/v1/sap/suppliers", tags=["sap"])
     def sap_suppliers(p: Principal = Depends(reader)) -> dict:
         return service.suppliers(p)
 
-    @app.api_route("/api/v1/sap/{path:path}", methods=["POST", "PUT", "PATCH", "DELETE"], tags=["sap"], include_in_schema=False)
+    @router.api_route("/api/v1/sap/{path:path}", methods=["POST", "PUT", "PATCH", "DELETE"], tags=["sap"], include_in_schema=False)
     def sap_write_blocked(path: str, request: Request, p: Principal = Depends(principal)) -> dict:
         security.audit(p.tenant_id, p.user_id, sorted(p.roles), "sap.write_blocked", {"path": path, "method": request.method})
         raise HTTPException(status_code=405, detail="SAP is read-only in Phase 1 (SAP_WRITE_ENABLED=false). Record approved actions instead.")
 
     # ------------------------------------------------------------------ calculations
-    @app.post("/api/v1/optimizer/material-readiness", tags=["optimizer"])
+    @router.post("/api/v1/optimizer/material-readiness", tags=["optimizer"])
     def material_readiness(body: s.MaterialReadinessRequest, p: Principal = Depends(reader)) -> dict:
         return service.material_readiness(p, body.model_dump(mode="json", exclude_none=True))
 
-    @app.post("/api/v1/optimizer/warehouse-balancing", tags=["optimizer"])
+    @router.post("/api/v1/optimizer/warehouse-balancing", tags=["optimizer"])
     def warehouse_balancing(body: s.WarehouseBalancingRequest, p: Principal = Depends(reader)) -> dict:
         return service.warehouse_balancing(p, body.model_dump(exclude_none=True))
 
-    @app.post("/api/v1/optimizer/replenishment", tags=["optimizer"])
+    @router.post("/api/v1/optimizer/replenishment", tags=["optimizer"])
     def replenishment(body: s.ReplenishmentRequest, p: Principal = Depends(reader)) -> dict:
         return service.replenishment(p, body.model_dump(mode="json", exclude_none=True))
 
-    @app.post("/api/v1/forecast/demand", tags=["forecast"])
+    @router.post("/api/v1/forecast/demand", tags=["forecast"])
     def forecast_demand(body: s.DemandForecastRequest, p: Principal = Depends(reader)) -> dict:
         return service.forecast_demand(p, body.model_dump())
 
-    @app.post("/api/v1/forecast/lead-time", tags=["forecast"])
+    @router.post("/api/v1/forecast/lead-time", tags=["forecast"])
     def forecast_lead_time(body: s.LeadTimeRequest, p: Principal = Depends(reader)) -> dict:
         return service.lead_time(p, body.model_dump(exclude_none=True))
 
-    @app.post("/api/v1/quality/check-stock", tags=["quality"])
+    @router.post("/api/v1/quality/check-stock", tags=["quality"])
     def quality_check(body: s.QualityCheckRequest, p: Principal = Depends(reader)) -> dict:
         return service.quality_check(p, body.model_dump(exclude_none=True))
 
-    @app.get("/api/v1/calculations/{calculation_id}", tags=["optimizer"])
+    @router.get("/api/v1/calculations/{calculation_id}", tags=["optimizer"])
     def calculation(calculation_id: str, p: Principal = Depends(reader)) -> dict:
         return service.calculation(p, calculation_id)
 
     # ------------------------------------------------------------------ RAG
-    @app.post("/api/v1/rag/search", tags=["rag"])
+    @router.post("/api/v1/rag/search", tags=["rag"])
     def rag_search(body: s.RagSearchRequest, p: Principal = Depends(reader)) -> dict:
         if not settings.rag_enabled:
             raise HTTPException(status_code=503, detail="RAG is disabled (RAG_ENABLED=false)")
         return kb.search(p.tenant_id, p.roles, body.query, body.top_k, biz_date(p))
 
-    @app.get("/api/v1/rag/documents", tags=["rag"])
+    @router.get("/api/v1/rag/documents", tags=["rag"])
     def rag_documents(p: Principal = Depends(reader)) -> dict:
         return {"documents": db.query("select doc_id, version, title, category, valid_from, valid_to, flags, source_path from rag_documents where tenant_id=?", (p.tenant_id,)),
                 "last_ingestion": ingest_report}
 
     # ------------------------------------------------------------------ RAG tuning console (administrators)
-    rag_tuning_api.register(app, db=db, kb=kb, security=security, settings=settings, principal_dep=principal, biz_date=biz_date)
+    rag_tuning_api.register(router, db=db, kb=kb, security=security, settings=settings, principal_dep=principal, biz_date=biz_date)
 
     # ------------------------------------------------------------------ decisions
-    @app.post("/api/v1/decisions", tags=["decisions"], status_code=201)
+    @router.post("/api/v1/decisions", tags=["decisions"], status_code=201)
     def create_decision(body: s.DecisionCreateRequest, p: Principal = Depends(reader)) -> dict:
         security.require(p, {"agent_service", "planner"}, "Creating a recommendation")
         return service.create_decision(p, body.model_dump(exclude_none=True))
 
-    @app.get("/api/v1/decisions", tags=["decisions"])
+    @router.get("/api/v1/decisions", tags=["decisions"])
     def list_decisions(status: str | None = Query(default=None, pattern=r"^[a-z_]+$"), p: Principal = Depends(reader)) -> list[dict]:
         return service.list_decisions(p, status)
 
-    @app.get("/api/v1/decisions/{rec_id}", tags=["decisions"])
+    @router.get("/api/v1/decisions/{rec_id}", tags=["decisions"])
     def get_decision(rec_id: str, p: Principal = Depends(reader)) -> dict:
         return service.get_decision(p, rec_id)
 
-    @app.post("/api/v1/decisions/{rec_id}/review", tags=["decisions"])
+    @router.post("/api/v1/decisions/{rec_id}/review", tags=["decisions"])
     def review(rec_id: str, body: s.ReviewRequest, p: Principal = Depends(principal)) -> dict:
         return service.review(p, rec_id, body.model_dump(exclude_none=True))
 
-    @app.post("/api/v1/decisions/{rec_id}/withdraw", tags=["decisions"])
+    @router.post("/api/v1/decisions/{rec_id}/withdraw", tags=["decisions"])
     def withdraw(rec_id: str, p: Principal = Depends(reader)) -> dict:
         return service.withdraw(p, rec_id)
 
-    @app.post("/api/v1/decisions/{rec_id}/sap-execution", tags=["decisions"])
+    @router.post("/api/v1/decisions/{rec_id}/sap-execution", tags=["decisions"])
     def sap_execution(rec_id: str, body: s.SapExecutionRequest, p: Principal = Depends(principal)) -> dict:
         return service.record_sap_execution(p, rec_id, body.model_dump(mode="json"))
 
     # ------------------------------------------------------------------ learning
-    @app.post("/api/v1/outcomes/reconcile", tags=["learning"])
+    @router.post("/api/v1/outcomes/reconcile", tags=["learning"])
     def reconcile(body: s.ReconcileRequest, p: Principal = Depends(principal)) -> dict:
         return service.reconcile(p, body.recommendation_id)
 
-    @app.get("/api/v1/learning/metrics", tags=["learning"])
+    @router.get("/api/v1/learning/metrics", tags=["learning"])
     def learning_metrics(p: Principal = Depends(reader)) -> dict:
         return service.learning_metrics(p)
 
-    @app.post("/api/v1/learning/train-lead-time-model", tags=["learning"])
+    @router.post("/api/v1/learning/train-lead-time-model", tags=["learning"])
     def train(p: Principal = Depends(principal)) -> dict:
         security.require(p, {"mlops_engineer"}, "Training a model")
         result = learning.train_lead_time_model(db, p.tenant_id, p.user_id)
         security.audit(p.tenant_id, p.user_id, sorted(p.roles), "model.trained", {"model_version_id": result["model_version_id"]})
         return result
 
-    @app.post("/api/v1/learning/models/{model_id}/promote", tags=["learning"])
+    @router.post("/api/v1/learning/models/{model_id}/promote", tags=["learning"])
     def promote(model_id: str, p: Principal = Depends(principal)) -> dict:
         security.require(p, {"supply_chain_director"}, "Promoting a model (manual gate)")
         result = learning.promote(db, p.tenant_id, model_id, p.user_id)
         security.audit(p.tenant_id, p.user_id, sorted(p.roles), "model.promoted", {"model_version_id": model_id})
         return result
 
-    @app.post("/api/v1/learning/retraining-requests", tags=["learning"], status_code=201)
+    @router.post("/api/v1/learning/retraining-requests", tags=["learning"], status_code=201)
     def retraining(body: s.RetrainingRequest, p: Principal = Depends(reader)) -> dict:
         result = learning.retraining_request(db, p.tenant_id, p.user_id, body.reason)
         security.audit(p.tenant_id, p.user_id, sorted(p.roles), "model.retraining_requested", {"id": result["id"]})
         return result
 
-    @app.get("/api/v1/audit", tags=["learning"])
+    @router.get("/api/v1/audit", tags=["learning"])
     def audit(limit: int = Query(default=50, ge=1, le=500), p: Principal = Depends(principal)) -> dict:
         security.require(p, {"supply_chain_director"}, "Reading the audit log")
         return {"chain_valid": security.verify_chain(),
                 "events": db.query("select * from audit_events where tenant_id=? order by id desc limit ?", (p.tenant_id, limit))}
 
-    return app
+    return router
 ```
 
 </details>
@@ -213,14 +214,21 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 <a id="f0017"></a>
 ### F0017 · `create_app` (Gateway)
 
-SPARC / Aurelia gateway factory (:8000): middleware, SAP facade, analyses, agents, RAG, approvals, UI  
-Source: [backend/app/main.py:81-953](../backend/app/main.py#L81) · 873 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+The one FastAPI app (:8000): includes the SCInsight router at /scinsight; gateway middleware, SAP facade, analyses, agents, RAG, approvals, UI  
+Source: [backend/app/main.py:85-1016](../backend/app/main.py#L85) · 932 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
 ```python
-def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, store: Store | None = None, runner: GraphRunner | None = None,
+               scinsight_router: APIRouter | None = None) -> FastAPI:
     settings = settings or get_settings()
+    # THE FastAPI app of the backend. The SCInsight API (backend of the Flowise chatflow and agentflows) is one of its routers,
+    # included below at /scinsight with its own keys, roles, database and audit chain. Built from SCI_* settings unless a test
+    # passes its own router.
+    if scinsight_router is None and settings.scinsight_enabled:
+        from backend.scinsight.app import create_router as create_scinsight_router
+        scinsight_router = create_scinsight_router()
     store = store or Store(settings.database_url)
     # One SAP snapshot + engine stack per industry/customer; the request's X-Tenant header selects it.
     tenants = TenantRegistry(settings.data_file, store)
@@ -460,6 +468,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         DENIALS.labels("sap_write").inc()
         store.audit(who.identity, who.role, "sap.write_blocked", {"path": path, "method": request.method}, request.state.correlation_id)
         raise HTTPException(status_code=405, detail="SAP adapter is read-only; write operations are disabled")
+
 
     # ------------------------------------------------- deterministic analyses
     @app.post("/api/v1/analysis/factory-readiness")
@@ -707,20 +716,50 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
 
-    # -------------------------------------------------- RAG Tuning page -> SCInsight API (managers only; key held server-side)
+    # -------------------------------------------------- RAG Tuning page -> SCInsight API (every role; keys held server-side)
+    # managers -> SCI_TUNING_KEY (director: may publish / roll back); planners -> SCI_TUNING_READER_KEY (mlops: everything else)
     @app.api_route("/api/v1/rag-tuning/{path:path}", methods=["GET", "POST", "PUT"], include_in_schema=False)
-    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(manager)) -> Response:
-        if not settings.sci_tuning_key:
-            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY)")
+    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(reader)) -> Response:
+        if path.strip("/") in ("publish", "rollback") and who.role != "manager":
+            raise HTTPException(status_code=403, detail="Publishing or rolling back the RAG configuration needs the manager role")
+        key = settings.sci_tuning_key if who.role == "manager" else settings.sci_tuning_reader_key
+        if not key:
+            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY / SCI_TUNING_READER_KEY)")
         store.audit(who.identity, who.role, "rag_tuning.proxy", {"method": request.method, "path": path[:120]}, request.state.correlation_id)
-        async with httpx.AsyncClient(timeout=120) as client:
-            upstream = await client.request(request.method, f"{settings.sci_api_url.rstrip('/')}/api/v1/rag-tuning/{path}",
+        # in-process call to this same app's /scinsight routes (no network hop); SCI_API_URL only when SCInsight runs elsewhere
+        local = app.state.scinsight is not None
+        transport = httpx.ASGITransport(app=app) if local else None
+        base = "http://local/scinsight" if local else settings.sci_api_url.rstrip("/")
+        async with httpx.AsyncClient(timeout=120, transport=transport) as client:
+            upstream = await client.request(request.method, f"{base}/api/v1/rag-tuning/{path}",
                                             params=dict(request.query_params), content=await request.body(),
-                                            headers={"X-API-Key": settings.sci_tuning_key, "Content-Type": "application/json"})
+                                            headers={"X-API-Key": key, "Content-Type": "application/json"})
         return Response(content=upstream.content, status_code=upstream.status_code, media_type="application/json")
 
     # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
     code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
+
+    @app.get("/api/v1/code/files")
+    def code_files(who: Principal = Depends(reader)) -> dict:
+        del who
+        # vscode_base: link prefix to open a file in VS Code on the machine that holds the repository (CODE_VSCODE_BASE)
+        return {**code.files(), "vscode_base": settings.code_vscode_base}
+
+    @app.get("/api/v1/code/file")
+    def code_file(path: str = Query(min_length=5, max_length=300), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.file(path)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="file not found") from exc
+
+    @app.get("/api/v1/code/template")
+    def code_template(name: str = Query(pattern=r"^[a-z_]+\.py$"), who: Principal = Depends(reader)) -> dict:
+        del who
+        try:
+            return code.template(name)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="template not found") from exc
 
     @app.get("/api/v1/code/functions")
     def code_functions(q: str = Query(default="", max_length=200), who: Principal = Depends(reader)) -> dict:
@@ -858,6 +897,23 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         saved = store.set_setting(HARNESS_KEY, body.model_dump(), who.identity)
         store.audit(who.identity, who.role, "agent.deep_research.harness_updated", body.model_dump(), request.state.correlation_id)
         return {"harness": saved["value"], "updated_by": saved["updated_by"], "updated_at": saved["updated_at"]}
+
+    # ------------------------------------------------ ERP / SAP Setup (connections, mapping, sync, activation, checks)
+    # Activation swaps the customer's snapshot in the TenantRegistry: every endpoint above (and so every Flowise / LangGraph tool)
+    # computes on it from the next call. Restored from the database at startup.
+    erp = ErpService(store, tenants, environment=settings.app_env, allowed_hosts=settings.erp_allowed_hosts)
+    erp.restore()
+    app.state.erp = erp
+    erp_ctx = SimpleNamespace(tenants=tenants, store=store, rag=rag, runner=runner, settings=settings, erp=erp, harness=current_harness)
+
+    def erp_audit(who: Principal, action: str, details: dict, request: Request) -> None:
+        store.audit(who.identity, who.role, action, details, request.state.correlation_id)
+
+    register_erp(app, erp=erp, ctx=erp_ctx, reader=reader, manager=manager, audit=erp_audit)
+    if settings.app_env in ("development", "test"):  # SAP OData emulator for the "second ERP endpoint" demo and tests; never in staging/production
+        app.include_router(erp_emulator(settings.data_file, settings.erp_emulator_password), prefix="/erp-emulator")
+    if settings.erp_scheduler_enabled:
+        erp.start_scheduler()  # daemon thread; scheduled syncs only stage snapshots
 
     @app.post("/api/v1/deep-agents/supplier-research")
     def supplier_research(body: SupplierResearchRequest, request: Request, who: Principal = Depends(reader)) -> dict:
@@ -1088,6 +1144,10 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         view = roles.learning()
         return {"as_of": view["as_of"], "models": view["models"], "summary": view["summary"], "note": view["note"]}
 
+    # SCInsight API routes in this same app (before the static frontend, which catches every other path): /scinsight/api/v1/...
+    app.state.scinsight = scinsight_router.state if scinsight_router is not None else None
+    if scinsight_router is not None:
+        app.include_router(scinsight_router, prefix="/scinsight", tags=["SCInsight API"])
     frontend = Path(ROOT / "frontend")
     if frontend.exists():
         app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")
@@ -1100,7 +1160,7 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
 ### F0018 · `create_app.request_context` (Gateway)
 
 Middleware: correlation id, active tenant, Prometheus request metrics  
-Source: [backend/app/main.py:112-130](../backend/app/main.py#L112) · 19 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+Source: [backend/app/main.py:123-141](../backend/app/main.py#L123) · 19 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1132,7 +1192,7 @@ async def request_context(request: Request, call_next):
 ### F0024 · `create_app.value_error_handler` (Gateway)
 
 Turns any business ValueError into HTTP 422 VALIDATION_ERROR  
-Source: [backend/app/main.py:173-175](../backend/app/main.py#L173) · 3 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+Source: [backend/app/main.py:184-186](../backend/app/main.py#L184) · 3 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1148,7 +1208,7 @@ async def value_error_handler(request: Request, exc: ValueError):
 ### F0008 · `get_settings` (Gateway)
 
 Gateway settings from environment / .env (cached)  
-Source: [backend/app/config.py:108-110](../backend/app/config.py#L108) · 3 lines · [annotated copy](../code_explorer/01_fastapi/app_setup/app_config.py)
+Source: [backend/app/config.py:122-124](../backend/app/config.py#L122) · 3 lines · [annotated copy](../code_explorer/01_fastapi/app_setup/app_config.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1223,7 +1283,7 @@ class SciSettings(BaseSettings):
 ### F0019 · `create_app.principal` (Gateway)
 
 Dependency: API key -> identity + role, tenant scope check; denials audited  
-Source: [backend/app/main.py:132-145](../backend/app/main.py#L132) · 14 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+Source: [backend/app/main.py:143-156](../backend/app/main.py#L143) · 14 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1250,7 +1310,7 @@ def principal(request: Request, x_api_key: str | None = Header(default=None)) ->
 ### F0021 · `create_app.reader` (Gateway)
 
 Dependency: assistant or manager may read and analyse  
-Source: [backend/app/main.py:155-156](../backend/app/main.py#L155) · 2 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+Source: [backend/app/main.py:166-167](../backend/app/main.py#L166) · 2 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1265,7 +1325,7 @@ def reader(who: Principal = Depends(principal)) -> Principal:
 ### F0020 · `create_app.manager` (Gateway)
 
 Dependency: only a manager may decide, execute or change settings  
-Source: [backend/app/main.py:147-153](../backend/app/main.py#L147) · 7 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
+Source: [backend/app/main.py:158-164](../backend/app/main.py#L158) · 7 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/app_main.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1300,11 +1360,11 @@ def authenticate(self, request: Request, x_api_key: str | None = Header(default=
 
 </details>
 
-<a id="f0113"></a>
-### F0113 · `create_app.principal` (SCInsight)
+<a id="f1994"></a>
+### F1994 · `create_router.principal` (SCInsight)
 
 SCInsight dependency: key -> user, tenant and roles (never taken from the request body)  
-Source: [backend/scinsight/app.py:59-62](../backend/scinsight/app.py#L59) · 4 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/scinsight_app.py)
+Source: [backend/scinsight/app.py:61-64](../backend/scinsight/app.py#L61) · 4 lines · [annotated copy](../code_explorer/01_fastapi/endpoints/scinsight_app.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1533,7 +1593,7 @@ def validate_codes(self, *, plant: str | None = None, material: str | None = Non
 ### F0393 · `TenantRegistry.get` (Gateway)
 
 Per-customer SAP, engine and dashboards (multi-tenant)  
-Source: [backend/app/tenants.py:59-72](../backend/app/tenants.py#L59) · 14 lines · [annotated copy](../code_explorer/03_sap_data/repositories/app_tenants.py)
+Source: [backend/app/tenants.py:68-75](../backend/app/tenants.py#L68) · 8 lines · [annotated copy](../code_explorer/03_sap_data/repositories/app_tenants.py)
 
 <details><summary>Show the full code</summary>
 
@@ -1544,13 +1604,7 @@ def get(self, tenant_id: str | None = None) -> TenantContext:
         raise ValueError(f"Unknown tenant {tid}. Options: {', '.join(sorted(self.files))}")
     with self._lock:
         if tid not in self._cache:
-            sap = SapRepository(self.files[tid])
-            engine = SupplyChainEngine(sap)
-            insights = InsightEngine(engine)
-            industry, label, customer = self.labels[tid]
-            dashboards = Dashboards(engine, insights, self.store)
-            self._cache[tid] = TenantContext(tid, industry, label, customer, sap, engine, insights, dashboards,
-                                             RoleCenter(engine, insights, self.store, dashboards, industry))
+            self._cache[tid] = self._build(tid, self.files[tid])
         return self._cache[tid]
 ```
 
@@ -2993,12 +3047,12 @@ Source: [backend/scinsight/rag_tuning/api.py:99-355](../backend/scinsight/rag_tu
 <details><summary>Show the full code</summary>
 
 ```python
-def register(app: FastAPI, *, db, kb, security, settings, principal_dep, biz_date) -> None:
+def register(app: APIRouter, *, db, kb, security, settings, principal_dep, biz_date) -> None:
     registry = Registry(db, kb)
     flowise = FlowiseAdapter(settings.sci_flowise_url, settings.sci_flowise_api_key, settings.sci_flowise_chatflow_id,
                              settings.sci_flowise_chatflow_name, db)
     kdir = settings.sci_knowledge_dir
-    app.state.rag_registry, app.state.rag_flowise = registry, flowise
+    app.state.rag_registry, app.state.rag_flowise = registry, flowise  # app = the SCInsight router (router.state)
 
     def admin(p: Principal = Depends(principal_dep)) -> Principal:
         security.require(p, ADMIN, "RAG tuning")
@@ -3026,7 +3080,7 @@ def register(app: FastAPI, *, db, kb, security, settings, principal_dep, biz_dat
                 "chunk_unit": CHUNK_UNIT, "score_metric": SCORE_METRIC, "embedding_backend": kb.backend,
                 "retrieval_path": [
                     "Flowise chatflow SCInsight-Cosmetics-Chatflow-v1 -> Tool Agent",
-                    "tool search_supply_chain_policy (Custom Tool, JavaScript) -> POST scinsight-api /api/v1/rag/search -> KnowledgeBase.search "
+                    "tool search_supply_chain_policy (Custom Tool, JavaScript) -> POST api:8000/scinsight/api/v1/rag/search -> KnowledgeBase.search "
                     "(backend/scinsight/rag.py) -> rag_chunks (pgvector, index_version of the active configuration) -> cited passages",
                     "tool company_policy_rag_db (Retriever tool) -> Flowise Postgres vector store scinsight_flowise_rag <- folder loader, Markdown "
                     "splitter, gateway /v1/embeddings (bge-small); synchronised with the active configuration on publish"],
@@ -3717,7 +3771,7 @@ def create_mcp_app():
 ### F1794 · `CodeEditor.update` (Gateway)
 
 Backend code page: validated, backed-up edit of one function (development only)  
-Source: [backend/app/code_editor.py:173-208](../backend/app/code_editor.py#L173) · 36 lines
+Source: [backend/app/code_editor.py:215-250](../backend/app/code_editor.py#L215) · 36 lines
 
 <details><summary>Show the full code</summary>
 

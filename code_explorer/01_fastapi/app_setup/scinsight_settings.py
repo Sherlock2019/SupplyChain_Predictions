@@ -37,9 +37,10 @@ ROOT = Path(__file__).resolve().parents[2]
 #   sci_business_date, sci_snapshot_max_age_days -> freshness rule for the SAP snapshot.
 #   sci_*_key               -> API keys of the 10 synthetic users (stored hashed in the DB, never sent to the LLM).
 # CALLED BY:
-#   <- F0112 create_app() (references)
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (references)
+#   <- F1993 create_router() (calls)
 #   <- F0312 Service.__init__() (references)
+#   <- F2034 create_app() (references)
 #   <- F0908 settings() (calls)
 #   <- F0908 settings() (references)
 # CALLS:
@@ -95,7 +96,7 @@ class SciSettings(BaseSettings):
     # OUTPUT:
     #   dict[str, str] -> {"agent": "<key>", "planner": "<key>", ...} only for slots that have a value.
     # CALLED BY:
-    #   <- F0112 create_app() (calls)
+    #   <- F1993 create_router() (calls)
     # CALLS:
     #   (none found)
     def user_keys(self) -> dict[str, str]:
@@ -111,7 +112,7 @@ class SciSettings(BaseSettings):
     # OUTPUT:
     #   list[str] -> e.g. ["SCI_QUALITY_KEY"]; empty list when everything is configured.
     # CALLED BY:
-    #   <- F0112 create_app() (calls)
+    #   <- F1993 create_router() (calls)
     # CALLS:
     #   (none found)
     def missing_keys(self) -> list[str]:

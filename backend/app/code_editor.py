@@ -22,18 +22,21 @@ EDITABLE_PREFIX = "backend/"
 DEV_ENVS = ("development", "test")
 # The backend apps of docker-compose.yml and their entry modules; the files each app runs are found by following imports.
 APPS = [
-    {"id": "scinsight-api", "name": "SCInsight API", "kind": "FastAPI", "port": 8100,
-     "start": "uvicorn backend.scinsight.app:create_app --factory", "entry": "backend/scinsight/app.py::create_app",
-     "modules": ["backend.scinsight.app"]},
-    {"id": "api", "name": "SPARC / Aurelia gateway", "kind": "FastAPI", "port": 8000,
-     "start": "uvicorn backend.app.main:app", "entry": "backend/app/main.py::create_app", "modules": ["backend.app.main"]},
+    # ONE FastAPI app (service "api", port 8000); the SCInsight API is one of its routers, included at /scinsight.
+    {"id": "api", "name": "FastAPI app (gateway + /scinsight)", "kind": "FastAPI", "port": 8000,
+     "start": "uvicorn backend.app.main:app", "entry": "backend/app/main.py::create_app", "modules": ["backend.app.main"],
+     "templates": ["fastapi_router.py", "fastapi_app.py"]},
+    {"id": "scinsight", "name": "SCInsight routes (/scinsight)", "kind": "FastAPI router", "port": 8000,
+     "start": "included at /scinsight by backend.app.main:create_app", "entry": "backend/scinsight/app.py::create_router",
+     "modules": ["backend.scinsight.app"], "templates": ["fastapi_app.py"]},
     {"id": "langgraph", "name": "LangGraph Server", "kind": "LangGraph", "port": 8123, "start": "langgraph dev (graphs in langgraph.json)",
      "entry": "backend/scinsight/lg/supervisor.py::build_supervisor",
      "modules": ["backend.app.graphs", "backend.app.agentflow", "backend.app.deep_agent", "backend.scinsight.lg.chat",
-                 "backend.scinsight.lg.supervisor", "backend.scinsight.lg.specialists"]},
+                 "backend.scinsight.lg.supervisor", "backend.scinsight.lg.specialists"], "templates": ["langgraph_graph.py"]},
     {"id": "mcp", "name": "MCP server", "kind": "FastMCP", "port": 8002, "start": "python -m backend.app.mcp_server",
-     "entry": "backend/app/mcp_server.py::create_mcp_app", "modules": ["backend.app.mcp_server"]},
+     "entry": "backend/app/mcp_server.py::create_mcp_app", "modules": ["backend.app.mcp_server"], "templates": ["mcp_server.py"]},
 ]
+TEMPLATES_DIR = "templates/backend"  # starter templates, one per app type (not imported by the running apps)
 
 
 def _defs(tree: ast.AST) -> dict[str, ast.AST]:
@@ -99,6 +102,45 @@ class CodeEditor:
             for m in seen:
                 apps[by_mod[m]].append(app["id"])
         return apps
+
+    # ------------------------------------------------------------------ whole files (the dashboard's Backend code page)
+    def files(self) -> dict:
+        """Every backend file with the apps that load it; the page shows a file's full source and links to VS Code."""
+        trees, sizes = {}, {}
+        for path in self._files():
+            rel = path.relative_to(self.root).as_posix()
+            text = path.read_text(encoding="utf-8")
+            sizes[rel] = text.count("\n") + 1
+            try:
+                trees[rel] = ast.parse(text)
+            except SyntaxError:
+                trees[rel] = ast.parse("")
+        apps_of = self._apps_of(trees)
+        return {"files": [{"path": rel, "lines": sizes[rel], "apps": apps_of[rel],
+                           "summary": (ast.get_docstring(trees[rel]) or "").split("\n")[0]} for rel in trees],
+                "components": [{k: v for k, v in app.items() if k != "modules"} | {"files": sorted(f for f, a in apps_of.items() if app["id"] in a)}
+                               for app in APPS]}
+
+    def template(self, name: str) -> dict:
+        """One starter template by file name (only the names the apps list; no path from the browser is used)."""
+        allowed = {t for app in APPS for t in app.get("templates", [])}
+        if name not in allowed:
+            raise KeyError(name)
+        path = self.root / TEMPLATES_DIR / name
+        if not path.is_file():
+            raise KeyError(name)
+        text = path.read_text(encoding="utf-8")
+        return {"path": f"{TEMPLATES_DIR}/{name}", "source": text, "lines": text.count("\n") + 1,
+                "summary": (ast.get_docstring(ast.parse(text)) or "").split("\n")[0], "template": True}
+
+    def file(self, rel: str) -> dict:
+        if not rel.startswith(EDITABLE_PREFIX) or ".." in Path(rel).parts or not rel.endswith(".py"):
+            raise KeyError(rel)
+        path = self.root / rel
+        if not path.is_file():
+            raise KeyError(rel)
+        text = path.read_text(encoding="utf-8")
+        return {"path": rel, "source": text, "lines": text.count("\n") + 1}
 
     def list(self, query: str = "", limit: int = 2000) -> dict:
         registry, rows = self._registry(), []

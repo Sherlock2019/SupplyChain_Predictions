@@ -57,18 +57,18 @@ READ_ROLES = HUMAN_ROLES | {"agent_service", "mlops_engineer"}
 #   roles: frozenset[str] -> immutable set of role names from role_assignments.
 #   name: str             -> display name.
 # CALLED BY:
-#   <- F0113 create_app.principal() (references)
-#   <- F0114 create_app.reader() (references)
-#   <- F0115 create_app.biz_date() (references)
-#   <- F0117 create_app.context() (references)
-#   <- F0118 create_app.validate_context() (references)
-#   <- F0119 create_app.sap_inventory() (references)
-#   <- F0120 create_app.sap_bom() (references)
-#   <- F0121 create_app.sap_production_orders() (references)
-#   <- F0122 create_app.sap_purchase_orders() (references)
-#   <- F0123 create_app.sap_warehouses() (references)
-#   <- F0124 create_app.sap_suppliers() (references)
-#   <- F0125 create_app.sap_write_blocked() (references)
+#   <- F1994 create_router.principal() (references)
+#   <- F1995 create_router.reader() (references)
+#   <- F1996 create_router.biz_date() (references)
+#   <- F1998 create_router.context() (references)
+#   <- F1999 create_router.validate_context() (references)
+#   <- F2000 create_router.sap_inventory() (references)
+#   <- F2001 create_router.sap_bom() (references)
+#   <- F2002 create_router.sap_production_orders() (references)
+#   <- F2003 create_router.sap_purchase_orders() (references)
+#   <- F2004 create_router.sap_warehouses() (references)
+#   <- F2005 create_router.sap_suppliers() (references)
+#   <- F2006 create_router.sap_write_blocked() (references)
 # CALLS:
 #   (none found)
 @dataclass(frozen=True)
@@ -104,7 +104,7 @@ class Principal:
 # FIELDS:
 #   db: Database -> where users, role_assignments and audit_events live.
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 #   <- F0312 Service.__init__() (references)
 # CALLS:
 #   (none found)
@@ -134,7 +134,7 @@ class Security:
     # OUTPUT:
     #   Principal -> user id, tenant, roles, name.
     # CALLED BY:
-    #   <- F0113 create_app.principal() (calls)
+    #   <- F1994 create_router.principal() (calls)
     # CALLS:
     #   -> F0779 Security.audit() (calls)
     #   -> F0422 Database.one() (calls)
@@ -174,11 +174,11 @@ class Security:
     #   None (raises HTTPException 403 when not allowed).
     # @staticmethod: does not need `self`; called as security.require(...) or Security.require(...).
     # CALLED BY:
-    #   <- F0114 create_app.reader() (calls)
-    #   <- F0135 create_app.create_decision() (calls)
-    #   <- F0143 create_app.train() (calls)
-    #   <- F0144 create_app.promote() (calls)
-    #   <- F0146 create_app.audit() (calls)
+    #   <- F1995 create_router.reader() (calls)
+    #   <- F2016 create_router.create_decision() (calls)
+    #   <- F2024 create_router.train() (calls)
+    #   <- F2025 create_router.promote() (calls)
+    #   <- F2027 create_router.audit() (calls)
     #   <- F1820 register.admin() (calls)
     #   <- F1844 register.publish() (calls)
     #   <- F1845 register.rollback() (calls)
@@ -228,11 +228,11 @@ class Security:
     # OUTPUT:
     #   None (one row inserted into audit_events).
     # CALLED BY:
-    #   <- F0118 create_app.validate_context() (calls)
-    #   <- F0125 create_app.sap_write_blocked() (calls)
-    #   <- F0143 create_app.train() (calls)
-    #   <- F0144 create_app.promote() (calls)
-    #   <- F0145 create_app.retraining() (calls)
+    #   <- F1999 create_router.validate_context() (calls)
+    #   <- F2006 create_router.sap_write_blocked() (calls)
+    #   <- F2024 create_router.train() (calls)
+    #   <- F2025 create_router.promote() (calls)
+    #   <- F2026 create_router.retraining() (calls)
     #   <- F1821 register.audit() (calls)
     #   <- F0776 Security.authenticate() (calls)
     #   <- F0778 Security.require_reviewer() (calls)
@@ -281,7 +281,7 @@ class Security:
     # OUTPUT:
     #   bool -> True if the whole chain is intact.
     # CALLED BY:
-    #   <- F0146 create_app.audit() (calls)
+    #   <- F2027 create_router.audit() (calls)
     # CALLS:
     #   -> F0421 Database.query() (calls)
     def verify_chain(self) -> bool:

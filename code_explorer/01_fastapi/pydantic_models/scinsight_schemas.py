@@ -45,8 +45,8 @@ class Strict(BaseModel):
 # FIELDS:
 #   session_id: str -> 3-128 characters from [A-Za-z0-9_.:-] (Flowise chatId / LangGraph thread id).
 # CALLED BY:
-#   <- F0118 create_app.validate_context() (references)
-#   <- F0118 create_app.validate_context() (validates_input)
+#   <- F1999 create_router.validate_context() (references)
+#   <- F1999 create_router.validate_context() (validates_input)
 # CALLS:
 #   (none found)
 class ContextRequest(Strict):
@@ -64,8 +64,8 @@ class ContextRequest(Strict):
 #   need_date: date | None           -> date the materials are needed.
 #   plant: str | None                -> producing plant, default FAC-1 in the service.
 # CALLED BY:
-#   <- F0126 create_app.material_readiness() (references)
-#   <- F0126 create_app.material_readiness() (validates_input)
+#   <- F2007 create_router.material_readiness() (references)
+#   <- F2007 create_router.material_readiness() (validates_input)
 #   <- F0180 MaterialReadinessRequest._one_way() (references)
 # CALLS:
 #   (none found)
@@ -109,8 +109,8 @@ class MaterialReadinessRequest(Strict):
 #   sku: str                      -> required finished good.
 #   target_warehouse: str | None  -> receiving warehouse; None = the warehouse with the lowest cover.
 # CALLED BY:
-#   <- F0127 create_app.warehouse_balancing() (references)
-#   <- F0127 create_app.warehouse_balancing() (validates_input)
+#   <- F2008 create_router.warehouse_balancing() (references)
+#   <- F2008 create_router.warehouse_balancing() (validates_input)
 # CALLS:
 #   (none found)
 class WarehouseBalancingRequest(Strict):
@@ -128,8 +128,8 @@ class WarehouseBalancingRequest(Strict):
 #   quantity: float | None  -> material quantity to buy (required by the service for materials).
 #   need_date: date | None  -> need date; default = snapshot date + 14 days.
 # CALLED BY:
-#   <- F0128 create_app.replenishment() (references)
-#   <- F0128 create_app.replenishment() (validates_input)
+#   <- F2009 create_router.replenishment() (references)
+#   <- F2009 create_router.replenishment() (validates_input)
 # CALLS:
 #   (none found)
 class ReplenishmentRequest(Strict):
@@ -147,8 +147,8 @@ class ReplenishmentRequest(Strict):
 #   sku, warehouse: str -> required codes.
 #   horizon_days: int   -> 1..90 days (ge = greater or equal, le = less or equal), default 14.
 # CALLED BY:
-#   <- F0129 create_app.forecast_demand() (references)
-#   <- F0129 create_app.forecast_demand() (validates_input)
+#   <- F2010 create_router.forecast_demand() (references)
+#   <- F2010 create_router.forecast_demand() (validates_input)
 # CALLS:
 #   (none found)
 class DemandForecastRequest(Strict):
@@ -166,8 +166,8 @@ class DemandForecastRequest(Strict):
 #   material_id: str | None   -> narrows receipts and contract lead time to one material.
 #   quantity: float | None    -> needed only to use the promoted ML model.
 # CALLED BY:
-#   <- F0130 create_app.forecast_lead_time() (references)
-#   <- F0130 create_app.forecast_lead_time() (validates_input)
+#   <- F2011 create_router.forecast_lead_time() (references)
+#   <- F2011 create_router.forecast_lead_time() (validates_input)
 # CALLS:
 #   (none found)
 class LeadTimeRequest(Strict):
@@ -185,8 +185,8 @@ class LeadTimeRequest(Strict):
 #   location: str | None   -> one site, or all sites when None.
 #   horizon_days: int      -> expiry-risk horizon 1..365 days, default 90.
 # CALLED BY:
-#   <- F0131 create_app.quality_check() (references)
-#   <- F0131 create_app.quality_check() (validates_input)
+#   <- F2012 create_router.quality_check() (references)
+#   <- F2012 create_router.quality_check() (validates_input)
 # CALLS:
 #   (none found)
 class QualityCheckRequest(Strict):
@@ -203,8 +203,8 @@ class QualityCheckRequest(Strict):
 #   query: str  -> 2..1000 characters.
 #   top_k: int  -> 1..10 hits, default 4.
 # CALLED BY:
-#   <- F0133 create_app.rag_search() (references)
-#   <- F0133 create_app.rag_search() (validates_input)
+#   <- F2014 create_router.rag_search() (references)
+#   <- F2014 create_router.rag_search() (validates_input)
 # CALLS:
 #   (none found)
 class RagSearchRequest(Strict):
@@ -222,8 +222,8 @@ class RagSearchRequest(Strict):
 #   idempotency_key: str | None -> repeated calls with the same key return the same recommendation.
 #   po_id: str | None           -> SAP purchase order that will later verify the lead-time prediction.
 # CALLED BY:
-#   <- F0135 create_app.create_decision() (references)
-#   <- F0135 create_app.create_decision() (validates_input)
+#   <- F2016 create_router.create_decision() (references)
+#   <- F2016 create_router.create_decision() (validates_input)
 # CALLS:
 #   (none found)
 class DecisionCreateRequest(Strict):
@@ -242,8 +242,8 @@ class DecisionCreateRequest(Strict):
 #   explanation: str  -> mandatory justification, 3..4000 chars (stored in the audit trail).
 #   modifications: dict | None -> required by the service when decision == "modify".
 # CALLED BY:
-#   <- F0138 create_app.review() (references)
-#   <- F0138 create_app.review() (validates_input)
+#   <- F2019 create_router.review() (references)
+#   <- F2019 create_router.review() (validates_input)
 # CALLS:
 #   (none found)
 class ReviewRequest(Strict):
@@ -261,8 +261,8 @@ class ReviewRequest(Strict):
 #   doc_type: Literal -> one of the five SAP document kinds.
 #   executed_at: datetime -> when the SAP user executed it.
 # CALLED BY:
-#   <- F0140 create_app.sap_execution() (references)
-#   <- F0140 create_app.sap_execution() (validates_input)
+#   <- F2021 create_router.sap_execution() (references)
+#   <- F2021 create_router.sap_execution() (validates_input)
 # CALLS:
 #   (none found)
 class SapExecutionRequest(Strict):
@@ -278,7 +278,7 @@ class SapExecutionRequest(Strict):
 # FIELDS:
 #   recommendation_id: str -> REC-...
 # CALLED BY:
-#   <- F0141 create_app.reconcile() (references)
+#   <- F2022 create_router.reconcile() (references)
 # CALLS:
 #   (none found)
 class ReconcileRequest(Strict):
@@ -292,8 +292,8 @@ class ReconcileRequest(Strict):
 # FIELDS:
 #   reason: str -> 10..1000 characters explaining why retraining is requested.
 # CALLED BY:
-#   <- F0145 create_app.retraining() (references)
-#   <- F0145 create_app.retraining() (validates_input)
+#   <- F2026 create_router.retraining() (references)
+#   <- F2026 create_router.retraining() (validates_input)
 # CALLS:
 #   (none found)
 class RetrainingRequest(Strict):

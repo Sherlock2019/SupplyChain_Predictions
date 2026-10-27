@@ -34,9 +34,10 @@ DECISION_CONTROL = "Advisory only. An authorized manager must approve; a planner
 # CALLED BY:
 #   <- F0452 LocalBackend.__init__() (calls)
 #   <- F0230 Dashboards.__init__() (references)
+#   <- F2157 ErpService._smoke() (calls)
 #   <- F0245 InsightEngine.__init__() (references)
 #   <- F0260 RoleCenter.__init__() (references)
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
 #   <- F0922 engine() (calls)
 #   <- F0922 engine() (references)
 #   <- F0933 engine() (calls)
@@ -843,6 +844,7 @@ class SupplyChainEngine:
     # CALLED BY:
     #   <- F0241 Dashboards._production() (calls)
     #   <- F0222 SupplyChainEngine.site_360() (calls)
+    #   <- F2157 ErpService._smoke() (calls)
     #   <- F0248 InsightEngine.insights() (calls)
     #   <- F0050 create_app.production_overview() (calls)
     #   <- F0261 RoleCenter._facts() (calls)
@@ -911,6 +913,7 @@ class SupplyChainEngine:
     #   <- F0241 Dashboards._production() (calls)
     #   <- F0221 SupplyChainEngine.sites() (calls)
     #   <- F0222 SupplyChainEngine.site_360() (calls)
+    #   <- F2157 ErpService._smoke() (calls)
     #   <- F0261 RoleCenter._facts() (calls)
     # CALLS:
     #   -> F0404 SapRepository.as_of() (references)
@@ -1789,6 +1792,7 @@ class SupplyChainEngine:
     # OUTPUT:
     #   dict.
     # CALLED BY:
+    #   <- F2157 ErpService._smoke() (calls)
     #   <- F0035 create_app.network_map() (calls)
     #   <- F0255 MoatEngine.view() (calls)
     #   <- F0966 test_network_map_tiers_and_sourcing() (calls)
@@ -1924,6 +1928,7 @@ class SupplyChainEngine:
     # OUTPUT:
     #   dict.
     # CALLED BY:
+    #   <- F2157 ErpService._smoke() (calls)
     #   <- F0075 create_app.kpis() (calls)
     #   <- F0932 test_inventory_and_kpis() (calls)
     # CALLS:

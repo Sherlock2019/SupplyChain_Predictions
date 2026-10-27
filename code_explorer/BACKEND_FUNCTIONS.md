@@ -1,6 +1,6 @@
 # Backend functions (generated)
 
-Every function, method, class and route under `backend/`: **896** definitions in **50** modules, **139** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
+Every function, method, class and route under `backend/`: **1038** definitions in **56** modules, **163** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
 
 Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 
@@ -45,18 +45,21 @@ Backend code section of the SPARC UI: browse every backend function and, on a de
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F1784 | [`_defs`](../backend/app/code_editor.py#L39) | function |  | used | — | qualname -> def/class node, including methods and nested functions. |
-| F1785 | [`_defs.walk`](../backend/app/code_editor.py#L43) | nested |  | used | — |  |
-| F1786 | [`_span`](../backend/app/code_editor.py#L54) | function |  | used | — |  |
-| F1787 | [`CodeEditor`](../backend/app/code_editor.py#L58) | class |  | used | — |  |
-| F1788 | [`CodeEditor.__init__`](../backend/app/code_editor.py#L59) | method |  | used (framework) | — |  |
-| F1789 | [`CodeEditor._registry`](../backend/app/code_editor.py#L66) | method |  | used | — |  |
-| F1790 | [`CodeEditor._files`](../backend/app/code_editor.py#L74) | method |  | used | — |  |
-| F1800 | [`CodeEditor._apps_of`](../backend/app/code_editor.py#L77) | method |  | used | — | file -> ids of the apps that load it (transitive backend imports from each app's entry mod |
-| F1791 | [`CodeEditor.list`](../backend/app/code_editor.py#L103) | method |  | used | — |  |
-| F1792 | [`CodeEditor._locate`](../backend/app/code_editor.py#L130) | method |  | used (framework) | — |  |
-| F1793 | [`CodeEditor.get`](../backend/app/code_editor.py#L143) | method |  | used (framework) | — |  |
-| F1794 | [`CodeEditor.update`](../backend/app/code_editor.py#L173) | method |  | used (framework) | — |  |
+| F1784 | [`_defs`](../backend/app/code_editor.py#L42) | function |  | used (framework) | — | qualname -> def/class node, including methods and nested functions. |
+| F1785 | [`_defs.walk`](../backend/app/code_editor.py#L46) | nested |  | used (framework) | — |  |
+| F1786 | [`_span`](../backend/app/code_editor.py#L57) | function |  | used (framework) | — |  |
+| F1787 | [`CodeEditor`](../backend/app/code_editor.py#L61) | class |  | used | — |  |
+| F1788 | [`CodeEditor.__init__`](../backend/app/code_editor.py#L62) | method |  | used (framework) | — |  |
+| F1789 | [`CodeEditor._registry`](../backend/app/code_editor.py#L69) | method |  | used (framework) | — |  |
+| F1790 | [`CodeEditor._files`](../backend/app/code_editor.py#L77) | method |  | used | — |  |
+| F1800 | [`CodeEditor._apps_of`](../backend/app/code_editor.py#L80) | method |  | used | — | file -> ids of the apps that load it (transitive backend imports from each app's entry mod |
+| F1952 | [`CodeEditor.files`](../backend/app/code_editor.py#L107) | method |  | used | — | Every backend file with the apps that load it; the page shows a file's full source and lin |
+| F1956 | [`CodeEditor.template`](../backend/app/code_editor.py#L124) | method |  | used | — | One starter template by file name (only the names the apps list; no path from the browser  |
+| F1953 | [`CodeEditor.file`](../backend/app/code_editor.py#L136) | method |  | used | — |  |
+| F1791 | [`CodeEditor.list`](../backend/app/code_editor.py#L145) | method |  | used (framework) | — |  |
+| F1792 | [`CodeEditor._locate`](../backend/app/code_editor.py#L172) | method |  | used (framework) | — |  |
+| F1793 | [`CodeEditor.get`](../backend/app/code_editor.py#L185) | method |  | used (framework) | — |  |
+| F1794 | [`CodeEditor.update`](../backend/app/code_editor.py#L215) | method |  | used (framework) | — |  |
 
 ## backend/app/config.py
 
@@ -65,13 +68,13 @@ configuration of the SPARC / Aurelia gateway (backend/app), read from environmen
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
 | F0001 | [`Settings`](../backend/app/config.py#L11) | pydantic_model |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0002 | [`Settings.parse_keys`](../backend/app/config.py#L73) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0003 | [`Settings.assistants`](../backend/app/config.py#L82) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0004 | [`Settings.managers`](../backend/app/config.py#L86) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0005 | [`Settings.tenants_for`](../backend/app/config.py#L90) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) | Tenants an identity may use; None = unrestricted. |
-| F0006 | [`Settings.llm_enabled`](../backend/app/config.py#L99) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0007 | [`Settings.langfuse_enabled`](../backend/app/config.py#L103) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0008 | [`get_settings`](../backend/app/config.py#L108) | function |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0002 | [`Settings.parse_keys`](../backend/app/config.py#L87) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0003 | [`Settings.assistants`](../backend/app/config.py#L96) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0004 | [`Settings.managers`](../backend/app/config.py#L100) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0005 | [`Settings.tenants_for`](../backend/app/config.py#L104) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) | Tenants an identity may use; None = unrestricted. |
+| F0006 | [`Settings.llm_enabled`](../backend/app/config.py#L113) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0007 | [`Settings.langfuse_enabled`](../backend/app/config.py#L117) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0008 | [`get_settings`](../backend/app/config.py#L122) | function |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
 
 ## backend/app/copilot.py
 
@@ -218,6 +221,181 @@ Deterministic business calculations. LLMs may explain these outputs but never cr
 | F0225 | [`SupplyChainEngine.expiry_risk`](../backend/app/engine.py#L1211) | method |  | used | [annotated](../code_explorer/02_business_logic/aurelia_engine/app_engine.py) |  |
 | F0226 | [`SupplyChainEngine.kpis`](../backend/app/engine.py#L1223) | method |  | used | [annotated](../code_explorer/02_business_logic/aurelia_engine/app_engine.py) |  |
 
+## backend/app/erp/checks.py
+
+Validate All Integrations: real checks, per dependent component, of whether it works on the customer's active ERP snapshot.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2041 | [`_r`](../backend/app/erp/checks.py#L25) | function |  | used | — |  |
+| F2042 | [`_guard`](../backend/app/erp/checks.py#L29) | function |  | used | — |  |
+| F2043 | [`_analyses_since`](../backend/app/erp/checks.py#L36) | function |  | used | — |  |
+| F2044 | [`validate_integrations`](../backend/app/erp/checks.py#L40) | function |  | used | — |  |
+| F2045 | [`validate_integrations.adapter`](../backend/app/erp/checks.py#L48) | nested |  | used | — |  |
+| F2046 | [`validate_integrations.engine`](../backend/app/erp/checks.py#L59) | nested |  | used | — |  |
+| F2047 | [`validate_integrations.flowise`](../backend/app/erp/checks.py#L69) | nested |  | used | — |  |
+| F2048 | [`validate_integrations.langgraph`](../backend/app/erp/checks.py#L107) | nested |  | used | — |  |
+| F2049 | [`validate_integrations.deep_agents`](../backend/app/erp/checks.py#L131) | nested |  | used | — |  |
+| F2050 | [`validate_integrations.rag`](../backend/app/erp/checks.py#L139) | nested |  | used | — |  |
+| F2051 | [`validate_integrations.dashboards`](../backend/app/erp/checks.py#L144) | nested |  | used | — |  |
+| F2052 | [`validate_integrations.outcomes`](../backend/app/erp/checks.py#L151) | nested |  | used | — |  |
+| F2053 | [`validate_integrations.audit`](../backend/app/erp/checks.py#L157) | nested |  | used | — |  |
+| F2054 | [`validate_integrations.scinsight`](../backend/app/erp/checks.py#L162) | nested |  | used | — |  |
+| F2055 | [`_question`](../backend/app/erp/checks.py#L174) | function |  | used | — |  |
+| F2056 | [`save_check`](../backend/app/erp/checks.py#L181) | function |  | used | — |  |
+| F2057 | [`last_check`](../backend/app/erp/checks.py#L186) | function |  | used | — |  |
+
+## backend/app/erp/connectors.py
+
+ERP connectors behind one interface: the existing mock SAP snapshot, and SAP S/4HANA / ECC OData (V2 and V4).
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2058 | [`ErpError`](../backend/app/erp/connectors.py#L39) | class |  | used | — | Safe-to-show error (no secrets, no stack). |
+| F2059 | [`sanitize`](../backend/app/erp/connectors.py#L43) | function |  | used (framework) | — |  |
+| F2060 | [`check_destination`](../backend/app/erp/connectors.py#L50) | function |  | used | — | SSRF guard: scheme, cloud-metadata and link-local addresses, production allow-list and HTT |
+| F2061 | [`ErpConnector`](../backend/app/erp/connectors.py#L76) | class |  | used | — |  |
+| F2062 | [`ErpConnector.get_capabilities`](../backend/app/erp/connectors.py#L79) | method |  | used (framework) | — |  |
+| F2063 | [`ErpConnector.test_connection`](../backend/app/erp/connectors.py#L82) | method |  | used (framework) | — |  |
+| F2064 | [`ErpConnector.discover_entities`](../backend/app/erp/connectors.py#L85) | method |  | used (framework) | — |  |
+| F2065 | [`ErpConnector.read_entity`](../backend/app/erp/connectors.py#L88) | method |  | used (framework) | — |  |
+| F2066 | [`ErpConnector.validate_mapping`](../backend/app/erp/connectors.py#L91) | method |  | used (framework) | — |  |
+| F2067 | [`ErpConnector.sync_data`](../backend/app/erp/connectors.py#L94) | method |  | used (framework) | — |  |
+| F2068 | [`ErpConnector.get_health`](../backend/app/erp/connectors.py#L97) | method |  | used (framework) | — |  |
+| F2069 | [`MockSapConnector`](../backend/app/erp/connectors.py#L102) | class |  | used | — | The customer's existing validated SAP snapshot (data/…json): what SPARC used before any ER |
+| F2070 | [`MockSapConnector.__init__`](../backend/app/erp/connectors.py#L106) | method |  | used (framework) | — |  |
+| F2071 | [`MockSapConnector.get_capabilities`](../backend/app/erp/connectors.py#L109) | method |  | used (framework) | — |  |
+| F2072 | [`MockSapConnector.test_connection`](../backend/app/erp/connectors.py#L112) | method |  | used (framework) | — |  |
+| F2073 | [`MockSapConnector.discover_entities`](../backend/app/erp/connectors.py#L121) | method |  | used (framework) | — |  |
+| F2074 | [`MockSapConnector.read_entity`](../backend/app/erp/connectors.py#L127) | method |  | used (framework) | — |  |
+| F2075 | [`MockSapConnector.validate_mapping`](../backend/app/erp/connectors.py#L134) | method |  | used (framework) | — |  |
+| F2076 | [`MockSapConnector.sync_data`](../backend/app/erp/connectors.py#L137) | method |  | used (framework) | — |  |
+| F2077 | [`SapODataConnector`](../backend/app/erp/connectors.py#L143) | class |  | used | — | SAP S/4HANA or ECC (SAP Gateway) through OData. Only GET reaches SAP; pages with $top/$ski |
+| F2078 | [`SapODataConnector.__init__`](../backend/app/erp/connectors.py#L146) | method |  | used (framework) | — |  |
+| F2079 | [`SapODataConnector._auth`](../backend/app/erp/connectors.py#L151) | method |  | used (framework) | — |  |
+| F2080 | [`SapODataConnector._get`](../backend/app/erp/connectors.py#L168) | method |  | used (framework) | — |  |
+| F2081 | [`SapODataConnector._metadata`](../backend/app/erp/connectors.py#L185) | method |  | used (framework) | — |  |
+| F2082 | [`SapODataConnector._services`](../backend/app/erp/connectors.py#L191) | method |  | used (framework) | — |  |
+| F2083 | [`SapODataConnector.get_capabilities`](../backend/app/erp/connectors.py#L195) | method |  | used (framework) | — |  |
+| F2084 | [`SapODataConnector.test_connection`](../backend/app/erp/connectors.py#L198) | method |  | used (framework) | — | Authorized GET of $metadata for every service the mapping uses (or the first one): proves  |
+| F2085 | [`SapODataConnector.discover_entities`](../backend/app/erp/connectors.py#L219) | method |  | used (framework) | — |  |
+| F2086 | [`SapODataConnector.validate_mapping`](../backend/app/erp/connectors.py#L229) | method |  | used (framework) | — |  |
+| F2087 | [`SapODataConnector._rows`](../backend/app/erp/connectors.py#L239) | method |  | used (framework) | — |  |
+| F2088 | [`SapODataConnector.read_entity`](../backend/app/erp/connectors.py#L251) | method |  | used (framework) | — |  |
+| F2089 | [`SapODataConnector.sync_data`](../backend/app/erp/connectors.py#L260) | method |  | used (framework) | — | Full read of every enabled section into a copy of the current snapshot. Sections not enabl |
+| F2090 | [`parse_metadata`](../backend/app/erp/connectors.py#L298) | function |  | used (framework) | — | {entity set: property and navigation-property names} from an OData V2/V4 $metadata documen |
+| F2091 | [`http_hint`](../backend/app/erp/connectors.py#L309) | function |  | used (framework) | — |  |
+
+## backend/app/erp/emulator.py
+
+SAP S/4HANA OData V2 emulator — DEVELOPMENT AND TEST ONLY (never mounted when APP_ENV is staging or production).
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2092 | [`_odate`](../backend/app/erp/emulator.py#L23) | function |  | used | — |  |
+| F2093 | [`_num`](../backend/app/erp/emulator.py#L30) | function |  | used | — |  |
+| F2094 | [`build_entities`](../backend/app/erp/emulator.py#L34) | function |  | used | — | {service: {entity set: rows}} in SAP shape, from a SPARC snapshot. |
+| F2095 | [`build_entities.d`](../backend/app/erp/emulator.py#L38) | nested |  | used | — |  |
+| F2096 | [`metadata_xml`](../backend/app/erp/emulator.py#L78) | function |  | used | — |  |
+| F2097 | [`respond`](../backend/app/erp/emulator.py#L90) | function |  | used | — | (status, body, content type) for one request; shared by the FastAPI route and the tests' h |
+| F2098 | [`router`](../backend/app/erp/emulator.py#L122) | function |  | used | — |  |
+| F2099 | [`router.odata`](../backend/app/erp/emulator.py#L126) | route | GET /sap/opu/odata/sap/{path:path} | used | — |  |
+
+## backend/app/erp/mapping.py
+
+SAP entity -> SPARC snapshot mapping.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2100 | [`SectionMapping`](../backend/app/erp/mapping.py#L51) | pydantic_model |  | used | — |  |
+| F2101 | [`default_mapping`](../backend/app/erp/mapping.py#L94) | function |  | used (framework) | — |  |
+| F2102 | [`_get`](../backend/app/erp/mapping.py#L101) | function |  | used (framework) | — |  |
+| F2103 | [`resolve`](../backend/app/erp/mapping.py#L113) | function |  | used (framework) | — |  |
+| F2104 | [`convert`](../backend/app/erp/mapping.py#L124) | function |  | used (framework) | — |  |
+| F2105 | [`transform`](../backend/app/erp/mapping.py#L138) | function |  | used (framework) | — | Map SAP rows to SPARC rows; rows missing a required field are rejected with a reason (neve |
+| F2106 | [`validate_mapping`](../backend/app/erp/mapping.py#L163) | function |  | used | — | Problems that block activation. metadata = {entity set: properties + navigation properties |
+
+## backend/app/erp/routes.py
+
+/api/v1/erp: the ERP / SAP Setup page's API. Reads for every signed-in role; changes, tests, syncs, activation and rollback
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2107 | [`ActivateIn`](../backend/app/erp/routes.py#L19) | pydantic_model |  | used | — |  |
+| F2108 | [`PreviewIn`](../backend/app/erp/routes.py#L24) | pydantic_model |  | used | — |  |
+| F2109 | [`SyncIn`](../backend/app/erp/routes.py#L30) | pydantic_model |  | used | — |  |
+| F2110 | [`ValidateAllIn`](../backend/app/erp/routes.py#L35) | pydantic_model |  | used | — |  |
+| F2111 | [`register`](../backend/app/erp/routes.py#L40) | function |  | used | — |  |
+| F2112 | [`register.tenant`](../backend/app/erp/routes.py#L43) | nested |  | used | — |  |
+| F2113 | [`register.run`](../backend/app/erp/routes.py#L46) | nested |  | used | — |  |
+| F2114 | [`register.log`](../backend/app/erp/routes.py#L54) | nested |  | used | — |  |
+| F2115 | [`register.providers`](../backend/app/erp/routes.py#L57) | route | GET /api/v1/erp/providers | used | — |  |
+| F2116 | [`register.connections`](../backend/app/erp/routes.py#L62) | route | GET /api/v1/erp/connections | used | — |  |
+| F2117 | [`register.create`](../backend/app/erp/routes.py#L68) | route | POST /api/v1/erp/connections | used | — |  |
+| F2118 | [`register.get`](../backend/app/erp/routes.py#L74) | route | GET /api/v1/erp/connections/{conn_id} | used | — |  |
+| F2119 | [`register.patch`](../backend/app/erp/routes.py#L79) | route | PATCH /api/v1/erp/connections/{conn_id} | used | — |  |
+| F2120 | [`register.test`](../backend/app/erp/routes.py#L89) | route | POST /api/v1/erp/connections/{conn_id}/test | used | — |  |
+| F2121 | [`register.health`](../backend/app/erp/routes.py#L95) | route | GET /api/v1/erp/connections/{conn_id}/health | used | — |  |
+| F2122 | [`register.entities`](../backend/app/erp/routes.py#L100) | route | GET /api/v1/erp/connections/{conn_id}/entities | used | — |  |
+| F2123 | [`register.mappings`](../backend/app/erp/routes.py#L106) | route | GET /api/v1/erp/connections/{conn_id}/mappings | used | — |  |
+| F2124 | [`register.put_mappings`](../backend/app/erp/routes.py#L111) | route | PUT /api/v1/erp/connections/{conn_id}/mappings | used | — |  |
+| F2125 | [`register.validate`](../backend/app/erp/routes.py#L117) | route | POST /api/v1/erp/connections/{conn_id}/validate | used | — |  |
+| F2126 | [`register.preview`](../backend/app/erp/routes.py#L123) | route | POST /api/v1/erp/connections/{conn_id}/preview | used | — |  |
+| F2127 | [`register.sync`](../backend/app/erp/routes.py#L129) | route | POST /api/v1/erp/connections/{conn_id}/sync | used | — |  |
+| F2128 | [`register.sync_history`](../backend/app/erp/routes.py#L137) | route | GET /api/v1/erp/connections/{conn_id}/sync-history | used | — |  |
+| F2129 | [`register.activate`](../backend/app/erp/routes.py#L142) | route | POST /api/v1/erp/connections/{conn_id}/activate | used | — |  |
+| F2130 | [`register.rollback`](../backend/app/erp/routes.py#L153) | route | POST /api/v1/erp/connections/{conn_id}/rollback | used | — |  |
+| F2131 | [`register.logs`](../backend/app/erp/routes.py#L160) | route | GET /api/v1/erp/connections/{conn_id}/logs | used | — |  |
+| F2132 | [`register.activation_history`](../backend/app/erp/routes.py#L165) | route | GET /api/v1/erp/activation-history | used | — |  |
+| F2133 | [`register.integration_status`](../backend/app/erp/routes.py#L170) | route | GET /api/v1/erp/integration-status | used | — |  |
+| F2134 | [`register.validate_all`](../backend/app/erp/routes.py#L175) | route | POST /api/v1/erp/validate-integrations | used | — |  |
+
+## backend/app/erp/service.py
+
+ERP connections per customer: configuration (versioned), secrets (server-side only), mappings, staged synchronization,
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F2135 | [`_now`](../backend/app/erp/service.py#L59) | function |  | used | — |  |
+| F2136 | [`ConnectionIn`](../backend/app/erp/service.py#L63) | pydantic_model |  | used | — | Connection settings. `secret` is write-only (only with secret_ref="stored"); it is never r |
+| F2137 | [`MappingIn`](../backend/app/erp/service.py#L85) | pydantic_model |  | used | — |  |
+| F2138 | [`ErpService`](../backend/app/erp/service.py#L90) | class |  | used | — |  |
+| F2139 | [`ErpService.__init__`](../backend/app/erp/service.py#L91) | method |  | used (framework) | — |  |
+| F2140 | [`ErpService._row`](../backend/app/erp/service.py#L103) | method |  | used | — |  |
+| F2141 | [`ErpService._secret`](../backend/app/erp/service.py#L109) | method |  | used | — | (secret, source). env:NAME reads the variable a secrets manager injects; stored reads the  |
+| F2142 | [`ErpService.public`](../backend/app/erp/service.py#L119) | method |  | used (framework) | — |  |
+| F2143 | [`ErpService.list`](../backend/app/erp/service.py#L126) | method |  | used (framework) | — |  |
+| F2144 | [`ErpService.get`](../backend/app/erp/service.py#L130) | method |  | used (framework) | — |  |
+| F2145 | [`ErpService._rules`](../backend/app/erp/service.py#L134) | method |  | used (framework) | — |  |
+| F2146 | [`ErpService._save`](../backend/app/erp/service.py#L162) | method |  | used (framework) | — |  |
+| F2147 | [`ErpService.create`](../backend/app/erp/service.py#L192) | method |  | used (framework) | — |  |
+| F2148 | [`ErpService.patch`](../backend/app/erp/service.py#L195) | method |  | used (framework) | — |  |
+| F2149 | [`ErpService.connector`](../backend/app/erp/service.py#L201) | method |  | used | — |  |
+| F2150 | [`ErpService.mapping`](../backend/app/erp/service.py#L211) | method |  | used | — |  |
+| F2151 | [`ErpService.set_mapping`](../backend/app/erp/service.py#L216) | method |  | used | — |  |
+| F2152 | [`ErpService.test`](../backend/app/erp/service.py#L231) | method |  | used (framework) | — |  |
+| F2153 | [`ErpService.discover`](../backend/app/erp/service.py#L243) | method |  | used | — |  |
+| F2154 | [`ErpService.validate`](../backend/app/erp/service.py#L247) | method |  | used (framework) | — |  |
+| F2155 | [`ErpService.preview`](../backend/app/erp/service.py#L253) | method |  | used (framework) | — |  |
+| F2156 | [`ErpService.sync`](../backend/app/erp/service.py#L260) | method |  | used | — |  |
+| F2157 | [`ErpService._smoke`](../backend/app/erp/service.py#L289) | method |  | used | — | The candidate must load and the engine must compute on it before it can ever be activated. |
+| F2158 | [`ErpService._write`](../backend/app/erp/service.py#L304) | method |  | used | — |  |
+| F2159 | [`ErpService.job`](../backend/app/erp/service.py#L310) | method |  | used | — |  |
+| F2160 | [`ErpService.sync_history`](../backend/app/erp/service.py#L317) | method |  | used (framework) | — |  |
+| F2161 | [`ErpService.active`](../backend/app/erp/service.py#L323) | method |  | used (framework) | — |  |
+| F2162 | [`ErpService.activate`](../backend/app/erp/service.py#L326) | method |  | used (framework) | — |  |
+| F2163 | [`ErpService._swap`](../backend/app/erp/service.py#L347) | method |  | used (framework) | — |  |
+| F2164 | [`ErpService._record`](../backend/app/erp/service.py#L351) | method |  | used (framework) | — |  |
+| F2165 | [`ErpService.rollback`](../backend/app/erp/service.py#L362) | method |  | used (framework) | — | Back to the snapshot that was active before the current one (or the customer's built-in sn |
+| F2166 | [`ErpService.activation_history`](../backend/app/erp/service.py#L376) | method |  | used (framework) | — |  |
+| F2167 | [`ErpService.restore`](../backend/app/erp/service.py#L379) | method |  | used (framework) | — | At startup: put every customer back on its last activated snapshot (the database is the so |
+| F2168 | [`ErpService.health`](../backend/app/erp/service.py#L392) | method |  | used (framework) | — |  |
+| F2169 | [`ErpService.logs`](../backend/app/erp/service.py#L410) | method |  | used (framework) | — |  |
+| F2170 | [`ErpService.run_scheduled`](../backend/app/erp/service.py#L415) | method |  | used | — |  |
+| F2171 | [`ErpService.start_scheduler`](../backend/app/erp/service.py#L430) | method |  | used | — |  |
+| F2172 | [`ErpService.start_scheduler.loop`](../backend/app/erp/service.py#L431) | nested |  | used | — |  |
+| F2173 | [`options`](../backend/app/erp/service.py#L441) | function |  | used | — |  |
+
 ## backend/app/forecasting.py
 
 Small deterministic training pipeline using XGBoost for the POC demand forecast.
@@ -304,106 +482,110 @@ the SPARC / Aurelia FastAPI gateway (port 8000): one create_app() factory regist
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F0016 | [`_expectation`](../backend/app/main.py#L71) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Plain-language expected result of one executed action (what the outcome check will look fo |
-| F0017 | [`create_app`](../backend/app/main.py#L81) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0018 | [`create_app.request_context`](../backend/app/main.py#L112) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0019 | [`create_app.principal`](../backend/app/main.py#L132) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0020 | [`create_app.manager`](../backend/app/main.py#L147) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0021 | [`create_app.reader`](../backend/app/main.py#L155) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0022 | [`create_app.watch_owner`](../backend/app/main.py#L158) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0023 | [`create_app.save`](../backend/app/main.py#L161) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0024 | [`create_app.value_error_handler`](../backend/app/main.py#L173) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0025 | [`create_app.health`](../backend/app/main.py#L178) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0026 | [`create_app.ready`](../backend/app/main.py#L182) | route | GET /ready | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0027 | [`create_app.metrics`](../backend/app/main.py#L186) | route | GET /metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0028 | [`create_app.public_config`](../backend/app/main.py#L190) | route | GET /api/v1/config/public | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Non-secret links for the dashboard header. |
-| F0029 | [`create_app.demo_session`](../backend/app/main.py#L220) | route | GET /api/v1/demo/session | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the U |
-| F0030 | [`create_app._public`](../backend/app/main.py#L229) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0031 | [`create_app.status`](../backend/app/main.py#L232) | route | GET /api/v1/status | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0032 | [`create_app.status.probe`](../backend/app/main.py#L236) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0033 | [`create_app.snapshot`](../backend/app/main.py#L268) | route | GET /api/v1/snapshot | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0034 | [`create_app.tenant_catalogue`](../backend/app/main.py#L281) | route | GET /api/v1/tenants | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Industries and customers for the top-bar selector (send the id back as the X-Tenant header |
-| F0035 | [`create_app.network_map`](../backend/app/main.py#L286) | route | GET /api/v1/network/map | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0036 | [`create_app.sap_metadata`](../backend/app/main.py#L291) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0037 | [`create_app.sap_sandbox_documents`](../backend/app/main.py#L296) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0038 | [`create_app.sap_odata`](../backend/app/main.py#L302) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0039 | [`create_app.block_sap_write`](../backend/app/main.py#L317) | route | POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0040 | [`create_app.factory_readiness`](../backend/app/main.py#L324) | route | POST /api/v1/analysis/factory-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0041 | [`create_app.stock_balance`](../backend/app/main.py#L329) | route | POST /api/v1/analysis/stock-balance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0042 | [`create_app.demand_forecast`](../backend/app/main.py#L333) | route | POST /api/v1/analysis/forecast | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0043 | [`create_app.what_if`](../backend/app/main.py#L337) | route | POST /api/v1/analysis/what-if | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0044 | [`create_app.supplier_risk`](../backend/app/main.py#L342) | route | POST /api/v1/analysis/supplier-risk | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0045 | [`create_app.quality`](../backend/app/main.py#L346) | route | POST /api/v1/analysis/quality | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0046 | [`create_app.logistics`](../backend/app/main.py#L350) | route | POST /api/v1/analysis/logistics | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0047 | [`create_app.sales_orders`](../backend/app/main.py#L354) | route | POST /api/v1/analysis/sales-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0048 | [`create_app.stocktake`](../backend/app/main.py#L358) | route | POST /api/v1/analysis/stocktake | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0049 | [`create_app.forecast_vs_actuals`](../backend/app/main.py#L362) | route | GET /api/v1/analysis/forecast-vs-actuals | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0050 | [`create_app.production_overview`](../backend/app/main.py#L367) | route | GET /api/v1/production/overview | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0051 | [`create_app.products`](../backend/app/main.py#L372) | route | GET /api/v1/products | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0052 | [`create_app.product`](../backend/app/main.py#L377) | route | GET /api/v1/products/{material} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0053 | [`create_app.role_catalogue`](../backend/app/main.py#L383) | route | GET /api/v1/roles | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0054 | [`create_app.role_view`](../backend/app/main.py#L388) | route | GET /api/v1/roles/{role} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0055 | [`create_app.north_star`](../backend/app/main.py#L395) | route | GET /api/v1/northstar | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0056 | [`create_app.learning`](../backend/app/main.py#L400) | route | GET /api/v1/learning | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0057 | [`create_app.moat_view`](../backend/app/main.py#L405) | route | GET /api/v1/moat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strengt |
-| F0058 | [`create_app.moat_consent`](../backend/app/main.py#L411) | route | POST /api/v1/moat/consent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | The customer decides whether its data may contribute to industry learning (manager only, a |
-| F0059 | [`create_app.record_outcome`](../backend/app/main.py#L419) | route | POST /api/v1/recommendations/{recommendation_id}/outcome | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Record the real result of an executed recommendation against an SAP document (decision out |
-| F0060 | [`create_app.sales_outlook`](../backend/app/main.py#L433) | route | GET /api/v1/sales/outlook | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0061 | [`create_app.product_brief`](../backend/app/main.py#L438) | route | GET /api/v1/products/{material}/brief | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0062 | [`create_app.sites`](../backend/app/main.py#L443) | route | GET /api/v1/sites | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0063 | [`create_app.site`](../backend/app/main.py#L448) | route | GET /api/v1/sites/{code} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0064 | [`create_app.dashboards_list`](../backend/app/main.py#L453) | route | GET /api/v1/dashboards | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0065 | [`create_app.dashboard`](../backend/app/main.py#L457) | route | GET /api/v1/dashboards/{persona} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0066 | [`create_app.get_insights`](../backend/app/main.py#L462) | route | GET /api/v1/insights | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0067 | [`create_app.watch_kinds`](../backend/app/main.py#L470) | route | GET /api/v1/watches/kinds | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0068 | [`create_app.list_watches`](../backend/app/main.py#L474) | route | GET /api/v1/watches | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0069 | [`create_app.create_watch`](../backend/app/main.py#L478) | route | POST /api/v1/watches | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0070 | [`create_app.delete_watch`](../backend/app/main.py#L488) | route | DELETE /api/v1/watches/{watch_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0071 | [`create_app.evaluate_watches`](../backend/app/main.py#L494) | route | POST /api/v1/watches/evaluate | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0072 | [`create_app.get_analysis`](../backend/app/main.py#L504) | route | GET /api/v1/analyses/{analysis_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0073 | [`create_app.inventory`](../backend/app/main.py#L512) | route | GET /api/v1/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0074 | [`create_app.supplier_scorecard`](../backend/app/main.py#L517) | route | GET /api/v1/suppliers/scorecard | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0075 | [`create_app.kpis`](../backend/app/main.py#L522) | route | GET /api/v1/kpis | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0076 | [`create_app.rag_search`](../backend/app/main.py#L528) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0077 | [`create_app.rag_search_get`](../backend/app/main.py#L533) | route | GET /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escapin |
-| F0078 | [`create_app.embeddings`](../backend/app/main.py#L541) | route | POST /v1/embeddings | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding mo |
-| F0079 | [`create_app.embeddings.encode`](../backend/app/main.py#L550) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0080 | [`create_app.rag_stats`](../backend/app/main.py#L558) | route | GET /api/v1/rag/stats | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0081 | [`create_app.rag_add`](../backend/app/main.py#L563) | route | POST /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F1801 | [`create_app.rag_tuning_proxy`](../backend/app/main.py#L570) | route | GET/POST/PUT /api/v1/rag-tuning/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0985 | [`create_app.code_functions`](../backend/app/main.py#L584) | route | GET /api/v1/code/functions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0986 | [`create_app.code_function`](../backend/app/main.py#L589) | route | GET /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0987 | [`create_app.code_update`](../backend/app/main.py#L597) | route | PUT /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0082 | [`create_app._graph_call`](../backend/app/main.py#L610) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0083 | [`create_app.chat`](../backend/app/main.py#L618) | route | POST /api/v1/chat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0084 | [`create_app._agentflow_view`](../backend/app/main.py#L645) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0085 | [`create_app.langgraph_agentflow`](../backend/app/main.py#L669) | route | POST /api/v1/langgraph/agentflow | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0086 | [`create_app.langgraph_agentflow_resume`](../backend/app/main.py#L676) | route | POST /api/v1/langgraph/agentflow/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0087 | [`create_app.business_start`](../backend/app/main.py#L682) | route | POST /api/v1/workflows/business | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0088 | [`create_app.business_resume`](../backend/app/main.py#L689) | route | POST /api/v1/workflows/business/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0089 | [`create_app.current_harness`](../backend/app/main.py#L702) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0090 | [`create_app.deep_harness`](../backend/app/main.py#L706) | route | GET /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0091 | [`create_app.set_deep_harness`](../backend/app/main.py#L715) | route | PUT /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0092 | [`create_app.supplier_research`](../backend/app/main.py#L721) | route | POST /api/v1/deep-agents/supplier-research | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0093 | [`create_app._flow_id`](../backend/app/main.py#L745) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0094 | [`create_app.flowise_predict`](../backend/app/main.py#L759) | route | POST /api/v1/flowise/{flow}/predict | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0095 | [`create_app.submit_recommendation`](../backend/app/main.py#L797) | route | POST /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0096 | [`create_app.submit_from_agent`](../backend/app/main.py#L806) | route | POST /api/v1/recommendations/from-agent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0097 | [`create_app.recommendations`](../backend/app/main.py#L821) | route | GET /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0098 | [`create_app.decide`](../backend/app/main.py#L826) | route | POST /api/v1/recommendations/{recommendation_id}/decision | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0099 | [`create_app.execute`](../backend/app/main.py#L840) | route | POST /api/v1/recommendations/{recommendation_id}/execute | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents |
-| F0100 | [`create_app.sap_documents`](../backend/app/main.py#L867) | route | GET /api/v1/sap/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0101 | [`create_app.audit`](../backend/app/main.py#L872) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0102 | [`create_app.poc_sap_inventory`](../backend/app/main.py#L881) | route | GET /sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0103 | [`create_app.poc_sap_production_orders`](../backend/app/main.py#L887) | route | GET /sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0104 | [`create_app.poc_forecast_demand`](../backend/app/main.py#L893) | route | POST /forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0105 | [`create_app.poc_forecast_lead_time`](../backend/app/main.py#L897) | route | POST /forecast/supplier-lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0106 | [`create_app.poc_material_readiness`](../backend/app/main.py#L901) | route | POST /optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0107 | [`create_app.poc_warehouse_transfer`](../backend/app/main.py#L906) | route | POST /optimizer/warehouse-transfer | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0108 | [`create_app.poc_decisions`](../backend/app/main.py#L910) | route | POST /decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0109 | [`create_app.poc_human_review`](../backend/app/main.py#L914) | route | POST /decisions/{decision_id}/human-review | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0110 | [`create_app.poc_reconcile`](../backend/app/main.py#L918) | route | POST /outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0111 | [`create_app.poc_model_performance`](../backend/app/main.py#L944) | route | GET /learning/model-performance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0016 | [`_expectation`](../backend/app/main.py#L75) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Plain-language expected result of one executed action (what the outcome check will look fo |
+| F0017 | [`create_app`](../backend/app/main.py#L85) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0018 | [`create_app.request_context`](../backend/app/main.py#L123) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0019 | [`create_app.principal`](../backend/app/main.py#L143) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0020 | [`create_app.manager`](../backend/app/main.py#L158) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0021 | [`create_app.reader`](../backend/app/main.py#L166) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0022 | [`create_app.watch_owner`](../backend/app/main.py#L169) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0023 | [`create_app.save`](../backend/app/main.py#L172) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0024 | [`create_app.value_error_handler`](../backend/app/main.py#L184) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0025 | [`create_app.health`](../backend/app/main.py#L189) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0026 | [`create_app.ready`](../backend/app/main.py#L193) | route | GET /ready | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0027 | [`create_app.metrics`](../backend/app/main.py#L197) | route | GET /metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0028 | [`create_app.public_config`](../backend/app/main.py#L201) | route | GET /api/v1/config/public | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Non-secret links for the dashboard header. |
+| F0029 | [`create_app.demo_session`](../backend/app/main.py#L231) | route | GET /api/v1/demo/session | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Local demo only (DEMO_AUTO_LOGIN=true): returns the demo planner and manager keys so the U |
+| F0030 | [`create_app._public`](../backend/app/main.py#L240) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0031 | [`create_app.status`](../backend/app/main.py#L243) | route | GET /api/v1/status | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0032 | [`create_app.status.probe`](../backend/app/main.py#L247) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0033 | [`create_app.snapshot`](../backend/app/main.py#L279) | route | GET /api/v1/snapshot | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0034 | [`create_app.tenant_catalogue`](../backend/app/main.py#L292) | route | GET /api/v1/tenants | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Industries and customers for the top-bar selector (send the id back as the X-Tenant header |
+| F0035 | [`create_app.network_map`](../backend/app/main.py#L297) | route | GET /api/v1/network/map | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0036 | [`create_app.sap_metadata`](../backend/app/main.py#L302) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/$metadata | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0037 | [`create_app.sap_sandbox_documents`](../backend/app/main.py#L307) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/A_SandboxDocument | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0038 | [`create_app.sap_odata`](../backend/app/main.py#L313) | route | GET /sap/opu/odata/sap/ZSCM_COPILOT_SRV/{entity} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0039 | [`create_app.block_sap_write`](../backend/app/main.py#L328) | route | POST/PUT/PATCH/DELETE /sap/opu/odata/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0040 | [`create_app.factory_readiness`](../backend/app/main.py#L336) | route | POST /api/v1/analysis/factory-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0041 | [`create_app.stock_balance`](../backend/app/main.py#L341) | route | POST /api/v1/analysis/stock-balance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0042 | [`create_app.demand_forecast`](../backend/app/main.py#L345) | route | POST /api/v1/analysis/forecast | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0043 | [`create_app.what_if`](../backend/app/main.py#L349) | route | POST /api/v1/analysis/what-if | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0044 | [`create_app.supplier_risk`](../backend/app/main.py#L354) | route | POST /api/v1/analysis/supplier-risk | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0045 | [`create_app.quality`](../backend/app/main.py#L358) | route | POST /api/v1/analysis/quality | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0046 | [`create_app.logistics`](../backend/app/main.py#L362) | route | POST /api/v1/analysis/logistics | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0047 | [`create_app.sales_orders`](../backend/app/main.py#L366) | route | POST /api/v1/analysis/sales-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0048 | [`create_app.stocktake`](../backend/app/main.py#L370) | route | POST /api/v1/analysis/stocktake | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0049 | [`create_app.forecast_vs_actuals`](../backend/app/main.py#L374) | route | GET /api/v1/analysis/forecast-vs-actuals | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0050 | [`create_app.production_overview`](../backend/app/main.py#L379) | route | GET /api/v1/production/overview | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0051 | [`create_app.products`](../backend/app/main.py#L384) | route | GET /api/v1/products | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0052 | [`create_app.product`](../backend/app/main.py#L389) | route | GET /api/v1/products/{material} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0053 | [`create_app.role_catalogue`](../backend/app/main.py#L395) | route | GET /api/v1/roles | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0054 | [`create_app.role_view`](../backend/app/main.py#L400) | route | GET /api/v1/roles/{role} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0055 | [`create_app.north_star`](../backend/app/main.py#L407) | route | GET /api/v1/northstar | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0056 | [`create_app.learning`](../backend/app/main.py#L412) | route | GET /api/v1/learning | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0057 | [`create_app.moat_view`](../backend/app/main.py#L417) | route | GET /api/v1/moat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Customer data intelligence flywheel, moat evidence, consent gate and the five moat-strengt |
+| F0058 | [`create_app.moat_consent`](../backend/app/main.py#L423) | route | POST /api/v1/moat/consent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | The customer decides whether its data may contribute to industry learning (manager only, a |
+| F0059 | [`create_app.record_outcome`](../backend/app/main.py#L431) | route | POST /api/v1/recommendations/{recommendation_id}/outcome | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Record the real result of an executed recommendation against an SAP document (decision out |
+| F0060 | [`create_app.sales_outlook`](../backend/app/main.py#L445) | route | GET /api/v1/sales/outlook | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0061 | [`create_app.product_brief`](../backend/app/main.py#L450) | route | GET /api/v1/products/{material}/brief | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0062 | [`create_app.sites`](../backend/app/main.py#L455) | route | GET /api/v1/sites | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0063 | [`create_app.site`](../backend/app/main.py#L460) | route | GET /api/v1/sites/{code} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0064 | [`create_app.dashboards_list`](../backend/app/main.py#L465) | route | GET /api/v1/dashboards | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0065 | [`create_app.dashboard`](../backend/app/main.py#L469) | route | GET /api/v1/dashboards/{persona} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0066 | [`create_app.get_insights`](../backend/app/main.py#L474) | route | GET /api/v1/insights | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0067 | [`create_app.watch_kinds`](../backend/app/main.py#L482) | route | GET /api/v1/watches/kinds | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0068 | [`create_app.list_watches`](../backend/app/main.py#L486) | route | GET /api/v1/watches | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0069 | [`create_app.create_watch`](../backend/app/main.py#L490) | route | POST /api/v1/watches | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0070 | [`create_app.delete_watch`](../backend/app/main.py#L500) | route | DELETE /api/v1/watches/{watch_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0071 | [`create_app.evaluate_watches`](../backend/app/main.py#L506) | route | POST /api/v1/watches/evaluate | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0072 | [`create_app.get_analysis`](../backend/app/main.py#L516) | route | GET /api/v1/analyses/{analysis_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0073 | [`create_app.inventory`](../backend/app/main.py#L524) | route | GET /api/v1/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0074 | [`create_app.supplier_scorecard`](../backend/app/main.py#L529) | route | GET /api/v1/suppliers/scorecard | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0075 | [`create_app.kpis`](../backend/app/main.py#L534) | route | GET /api/v1/kpis | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0076 | [`create_app.rag_search`](../backend/app/main.py#L540) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0077 | [`create_app.rag_search_get`](../backend/app/main.py#L545) | route | GET /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Same search via query parameters — used by the Flowise AgentFlow RAG step (no JSON escapin |
+| F0078 | [`create_app.embeddings`](../backend/app/main.py#L553) | route | POST /v1/embeddings | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | Lets Flowise (OpenAI Embeddings Custom node) index and query with exactly the embedding mo |
+| F0079 | [`create_app.embeddings.encode`](../backend/app/main.py#L562) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0080 | [`create_app.rag_stats`](../backend/app/main.py#L570) | route | GET /api/v1/rag/stats | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0081 | [`create_app.rag_add`](../backend/app/main.py#L575) | route | POST /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F1801 | [`create_app.rag_tuning_proxy`](../backend/app/main.py#L583) | route | GET/POST/PUT /api/v1/rag-tuning/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F1950 | [`create_app.code_files`](../backend/app/main.py#L604) | route | GET /api/v1/code/files | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F1951 | [`create_app.code_file`](../backend/app/main.py#L610) | route | GET /api/v1/code/file | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F1955 | [`create_app.code_template`](../backend/app/main.py#L618) | route | GET /api/v1/code/template | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0985 | [`create_app.code_functions`](../backend/app/main.py#L626) | route | GET /api/v1/code/functions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0986 | [`create_app.code_function`](../backend/app/main.py#L631) | route | GET /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0987 | [`create_app.code_update`](../backend/app/main.py#L639) | route | PUT /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0082 | [`create_app._graph_call`](../backend/app/main.py#L652) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0083 | [`create_app.chat`](../backend/app/main.py#L660) | route | POST /api/v1/chat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0084 | [`create_app._agentflow_view`](../backend/app/main.py#L687) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0085 | [`create_app.langgraph_agentflow`](../backend/app/main.py#L711) | route | POST /api/v1/langgraph/agentflow | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0086 | [`create_app.langgraph_agentflow_resume`](../backend/app/main.py#L718) | route | POST /api/v1/langgraph/agentflow/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0087 | [`create_app.business_start`](../backend/app/main.py#L724) | route | POST /api/v1/workflows/business | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0088 | [`create_app.business_resume`](../backend/app/main.py#L731) | route | POST /api/v1/workflows/business/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0089 | [`create_app.current_harness`](../backend/app/main.py#L744) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0090 | [`create_app.deep_harness`](../backend/app/main.py#L748) | route | GET /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0091 | [`create_app.set_deep_harness`](../backend/app/main.py#L757) | route | PUT /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F2038 | [`create_app.erp_audit`](../backend/app/main.py#L771) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0092 | [`create_app.supplier_research`](../backend/app/main.py#L780) | route | POST /api/v1/deep-agents/supplier-research | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0093 | [`create_app._flow_id`](../backend/app/main.py#L804) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0094 | [`create_app.flowise_predict`](../backend/app/main.py#L818) | route | POST /api/v1/flowise/{flow}/predict | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0095 | [`create_app.submit_recommendation`](../backend/app/main.py#L856) | route | POST /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0096 | [`create_app.submit_from_agent`](../backend/app/main.py#L865) | route | POST /api/v1/recommendations/from-agent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0097 | [`create_app.recommendations`](../backend/app/main.py#L880) | route | GET /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0098 | [`create_app.decide`](../backend/app/main.py#L885) | route | POST /api/v1/recommendations/{recommendation_id}/decision | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0099 | [`create_app.execute`](../backend/app/main.py#L899) | route | POST /api/v1/recommendations/{recommendation_id}/execute | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents |
+| F0100 | [`create_app.sap_documents`](../backend/app/main.py#L926) | route | GET /api/v1/sap/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0101 | [`create_app.audit`](../backend/app/main.py#L931) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0102 | [`create_app.poc_sap_inventory`](../backend/app/main.py#L940) | route | GET /sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0103 | [`create_app.poc_sap_production_orders`](../backend/app/main.py#L946) | route | GET /sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0104 | [`create_app.poc_forecast_demand`](../backend/app/main.py#L952) | route | POST /forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0105 | [`create_app.poc_forecast_lead_time`](../backend/app/main.py#L956) | route | POST /forecast/supplier-lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0106 | [`create_app.poc_material_readiness`](../backend/app/main.py#L960) | route | POST /optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0107 | [`create_app.poc_warehouse_transfer`](../backend/app/main.py#L965) | route | POST /optimizer/warehouse-transfer | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0108 | [`create_app.poc_decisions`](../backend/app/main.py#L969) | route | POST /decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0109 | [`create_app.poc_human_review`](../backend/app/main.py#L973) | route | POST /decisions/{decision_id}/human-review | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0110 | [`create_app.poc_reconcile`](../backend/app/main.py#L977) | route | POST /outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0111 | [`create_app.poc_model_performance`](../backend/app/main.py#L1003) | route | GET /learning/model-performance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
 
 ## backend/app/mcp_server.py
 
@@ -686,14 +868,16 @@ Industry / customer tenants: one SAP snapshot and engine stack per customer, sel
 | F0390 | [`TenantContext`](../backend/app/tenants.py#L27) | class |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
 | F0391 | [`TenantRegistry`](../backend/app/tenants.py#L40) | class |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
 | F0392 | [`TenantRegistry.__init__`](../backend/app/tenants.py#L41) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0393 | [`TenantRegistry.get`](../backend/app/tenants.py#L59) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0394 | [`TenantRegistry.catalogue`](../backend/app/tenants.py#L74) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0395 | [`TenantRegistry.activate`](../backend/app/tenants.py#L80) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0396 | [`TenantRegistry.deactivate`](../backend/app/tenants.py#L84) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0397 | [`TenantRegistry.current_id`](../backend/app/tenants.py#L88) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0398 | [`TenantProxy`](../backend/app/tenants.py#L93) | class |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) | Attribute access is forwarded to the active tenant's object (sap / engine / insights / das |
-| F0399 | [`TenantProxy.__init__`](../backend/app/tenants.py#L96) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
-| F0400 | [`TenantProxy.__getattr__`](../backend/app/tenants.py#L100) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F2039 | [`TenantRegistry._build`](../backend/app/tenants.py#L60) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0393 | [`TenantRegistry.get`](../backend/app/tenants.py#L68) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F2040 | [`TenantRegistry.use_snapshot`](../backend/app/tenants.py#L77) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) | Switch one customer to another validated snapshot file (None = its built-in snapshot): ERP |
+| F0394 | [`TenantRegistry.catalogue`](../backend/app/tenants.py#L88) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0395 | [`TenantRegistry.activate`](../backend/app/tenants.py#L94) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0396 | [`TenantRegistry.deactivate`](../backend/app/tenants.py#L98) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0397 | [`TenantRegistry.current_id`](../backend/app/tenants.py#L102) | method |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0398 | [`TenantProxy`](../backend/app/tenants.py#L107) | class |  | used | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) | Attribute access is forwarded to the active tenant's object (sap / engine / insights / das |
+| F0399 | [`TenantProxy.__init__`](../backend/app/tenants.py#L110) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
+| F0400 | [`TenantProxy.__getattr__`](../backend/app/tenants.py#L114) | method |  | used (framework) | [annotated](../code_explorer/03_sap_data/repositories/app_tenants.py) |  |
 
 ## backend/app/tools.py
 
@@ -717,45 +901,45 @@ Read-only LangChain tools shared by the LangGraph Chat Graph, Business Graph and
 
 ## backend/scinsight/app.py
 
-SupplyChain Insight AI — business-tool service (FastAPI, Swagger at /docs).
+SupplyChain Insight AI — the SCInsight API routes (an APIRouter of the ONE FastAPI app, backend/app/main.py).
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F0112 | [`create_app`](../backend/scinsight/app.py#L36) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0113 | [`create_app.principal`](../backend/scinsight/app.py#L59) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0114 | [`create_app.reader`](../backend/scinsight/app.py#L64) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0115 | [`create_app.biz_date`](../backend/scinsight/app.py#L68) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0116 | [`create_app.health`](../backend/scinsight/app.py#L71) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0117 | [`create_app.context`](../backend/scinsight/app.py#L77) | route | GET /api/v1/context | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0118 | [`create_app.validate_context`](../backend/scinsight/app.py#L83) | route | POST /api/v1/context/validate | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0119 | [`create_app.sap_inventory`](../backend/scinsight/app.py#L92) | route | GET /api/v1/sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0120 | [`create_app.sap_bom`](../backend/scinsight/app.py#L97) | route | GET /api/v1/sap/bom/{sku} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0121 | [`create_app.sap_production_orders`](../backend/scinsight/app.py#L101) | route | GET /api/v1/sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0122 | [`create_app.sap_purchase_orders`](../backend/scinsight/app.py#L105) | route | GET /api/v1/sap/purchase-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0123 | [`create_app.sap_warehouses`](../backend/scinsight/app.py#L110) | route | GET /api/v1/sap/warehouses | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0124 | [`create_app.sap_suppliers`](../backend/scinsight/app.py#L114) | route | GET /api/v1/sap/suppliers | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0125 | [`create_app.sap_write_blocked`](../backend/scinsight/app.py#L118) | route | POST/PUT/PATCH/DELETE /api/v1/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0126 | [`create_app.material_readiness`](../backend/scinsight/app.py#L124) | route | POST /api/v1/optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0127 | [`create_app.warehouse_balancing`](../backend/scinsight/app.py#L128) | route | POST /api/v1/optimizer/warehouse-balancing | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0128 | [`create_app.replenishment`](../backend/scinsight/app.py#L132) | route | POST /api/v1/optimizer/replenishment | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0129 | [`create_app.forecast_demand`](../backend/scinsight/app.py#L136) | route | POST /api/v1/forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0130 | [`create_app.forecast_lead_time`](../backend/scinsight/app.py#L140) | route | POST /api/v1/forecast/lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0131 | [`create_app.quality_check`](../backend/scinsight/app.py#L144) | route | POST /api/v1/quality/check-stock | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0132 | [`create_app.calculation`](../backend/scinsight/app.py#L148) | route | GET /api/v1/calculations/{calculation_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0133 | [`create_app.rag_search`](../backend/scinsight/app.py#L153) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0134 | [`create_app.rag_documents`](../backend/scinsight/app.py#L159) | route | GET /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0135 | [`create_app.create_decision`](../backend/scinsight/app.py#L168) | route | POST /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0136 | [`create_app.list_decisions`](../backend/scinsight/app.py#L173) | route | GET /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0137 | [`create_app.get_decision`](../backend/scinsight/app.py#L177) | route | GET /api/v1/decisions/{rec_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0138 | [`create_app.review`](../backend/scinsight/app.py#L181) | route | POST /api/v1/decisions/{rec_id}/review | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0139 | [`create_app.withdraw`](../backend/scinsight/app.py#L185) | route | POST /api/v1/decisions/{rec_id}/withdraw | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0140 | [`create_app.sap_execution`](../backend/scinsight/app.py#L189) | route | POST /api/v1/decisions/{rec_id}/sap-execution | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0141 | [`create_app.reconcile`](../backend/scinsight/app.py#L194) | route | POST /api/v1/outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0142 | [`create_app.learning_metrics`](../backend/scinsight/app.py#L198) | route | GET /api/v1/learning/metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0143 | [`create_app.train`](../backend/scinsight/app.py#L202) | route | POST /api/v1/learning/train-lead-time-model | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0144 | [`create_app.promote`](../backend/scinsight/app.py#L209) | route | POST /api/v1/learning/models/{model_id}/promote | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0145 | [`create_app.retraining`](../backend/scinsight/app.py#L216) | route | POST /api/v1/learning/retraining-requests | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0146 | [`create_app.audit`](../backend/scinsight/app.py#L222) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1993 | [`create_router`](../backend/scinsight/app.py#L37) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) | Database, fixtures, security, RAG and every SCInsight route; backend/app/main.py includes  |
+| F1994 | [`create_router.principal`](../backend/scinsight/app.py#L61) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1995 | [`create_router.reader`](../backend/scinsight/app.py#L66) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1996 | [`create_router.biz_date`](../backend/scinsight/app.py#L70) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1997 | [`create_router.health`](../backend/scinsight/app.py#L73) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1998 | [`create_router.context`](../backend/scinsight/app.py#L79) | route | GET /api/v1/context | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F1999 | [`create_router.validate_context`](../backend/scinsight/app.py#L85) | route | POST /api/v1/context/validate | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2000 | [`create_router.sap_inventory`](../backend/scinsight/app.py#L94) | route | GET /api/v1/sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2001 | [`create_router.sap_bom`](../backend/scinsight/app.py#L99) | route | GET /api/v1/sap/bom/{sku} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2002 | [`create_router.sap_production_orders`](../backend/scinsight/app.py#L103) | route | GET /api/v1/sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2003 | [`create_router.sap_purchase_orders`](../backend/scinsight/app.py#L107) | route | GET /api/v1/sap/purchase-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2004 | [`create_router.sap_warehouses`](../backend/scinsight/app.py#L112) | route | GET /api/v1/sap/warehouses | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2005 | [`create_router.sap_suppliers`](../backend/scinsight/app.py#L116) | route | GET /api/v1/sap/suppliers | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2006 | [`create_router.sap_write_blocked`](../backend/scinsight/app.py#L120) | route | POST/PUT/PATCH/DELETE /api/v1/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2007 | [`create_router.material_readiness`](../backend/scinsight/app.py#L126) | route | POST /api/v1/optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2008 | [`create_router.warehouse_balancing`](../backend/scinsight/app.py#L130) | route | POST /api/v1/optimizer/warehouse-balancing | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2009 | [`create_router.replenishment`](../backend/scinsight/app.py#L134) | route | POST /api/v1/optimizer/replenishment | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2010 | [`create_router.forecast_demand`](../backend/scinsight/app.py#L138) | route | POST /api/v1/forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2011 | [`create_router.forecast_lead_time`](../backend/scinsight/app.py#L142) | route | POST /api/v1/forecast/lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2012 | [`create_router.quality_check`](../backend/scinsight/app.py#L146) | route | POST /api/v1/quality/check-stock | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2013 | [`create_router.calculation`](../backend/scinsight/app.py#L150) | route | GET /api/v1/calculations/{calculation_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2014 | [`create_router.rag_search`](../backend/scinsight/app.py#L155) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2015 | [`create_router.rag_documents`](../backend/scinsight/app.py#L161) | route | GET /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2016 | [`create_router.create_decision`](../backend/scinsight/app.py#L170) | route | POST /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2017 | [`create_router.list_decisions`](../backend/scinsight/app.py#L175) | route | GET /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2018 | [`create_router.get_decision`](../backend/scinsight/app.py#L179) | route | GET /api/v1/decisions/{rec_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2019 | [`create_router.review`](../backend/scinsight/app.py#L183) | route | POST /api/v1/decisions/{rec_id}/review | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2020 | [`create_router.withdraw`](../backend/scinsight/app.py#L187) | route | POST /api/v1/decisions/{rec_id}/withdraw | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2021 | [`create_router.sap_execution`](../backend/scinsight/app.py#L191) | route | POST /api/v1/decisions/{rec_id}/sap-execution | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2022 | [`create_router.reconcile`](../backend/scinsight/app.py#L196) | route | POST /api/v1/outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2023 | [`create_router.learning_metrics`](../backend/scinsight/app.py#L200) | route | GET /api/v1/learning/metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2024 | [`create_router.train`](../backend/scinsight/app.py#L204) | route | POST /api/v1/learning/train-lead-time-model | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2025 | [`create_router.promote`](../backend/scinsight/app.py#L211) | route | POST /api/v1/learning/models/{model_id}/promote | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2026 | [`create_router.retraining`](../backend/scinsight/app.py#L218) | route | POST /api/v1/learning/retraining-requests | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F2027 | [`create_router.audit`](../backend/scinsight/app.py#L224) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
 
 ## backend/scinsight/business.py
 
@@ -1051,11 +1235,11 @@ Knowledge-base inventory and metadata quality checks. Deficiencies are reported 
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F1859 | [`_front_matter`](../backend/scinsight/rag_tuning/documents.py#L17) | function |  | used | — |  |
-| F1860 | [`inventory`](../backend/scinsight/rag_tuning/documents.py#L22) | function |  | used | — | Every source file of the caller's tenant with its metadata, index state and deficiencies ( |
-| F1861 | [`validate_document_metadata`](../backend/scinsight/rag_tuning/documents.py#L56) | function |  | used | — | Checks on one document: missing fields, scope, validity and source quality (severity: erro |
-| F1862 | [`_cross_document_checks`](../backend/scinsight/rag_tuning/documents.py#L83) | function |  | used | — |  |
-| F1863 | [`source_text`](../backend/scinsight/rag_tuning/documents.py#L105) | function |  | used | — | The source document of the caller's tenant (front matter + body) for preview; other tenant |
+| F1859 | [`_front_matter`](../backend/scinsight/rag_tuning/documents.py#L20) | function |  | used | — |  |
+| F1860 | [`inventory`](../backend/scinsight/rag_tuning/documents.py#L25) | function |  | used | — | Every source file of the caller's tenant with its metadata, index state and deficiencies ( |
+| F1861 | [`validate_document_metadata`](../backend/scinsight/rag_tuning/documents.py#L71) | function |  | used | — | Checks on one document: missing fields, scope, validity and source quality (severity: erro |
+| F1862 | [`_cross_document_checks`](../backend/scinsight/rag_tuning/documents.py#L98) | function |  | used | — |  |
+| F1863 | [`source_text`](../backend/scinsight/rag_tuning/documents.py#L120) | function |  | used | — | The source document of the caller's tenant (front matter + body) for preview; other tenant |
 
 ## backend/scinsight/rag_tuning/embeddings.py
 
@@ -1098,12 +1282,12 @@ Keeps the Flowise chatflow's own Company RAG DB in step with the published confi
 | F1882 | [`FlowiseAdapter.configured`](../backend/scinsight/rag_tuning/flowise_adapter.py#L30) | method |  | used (framework) | — |  |
 | F1883 | [`FlowiseAdapter._call`](../backend/scinsight/rag_tuning/flowise_adapter.py#L34) | method |  | used | — |  |
 | F1884 | [`FlowiseAdapter.chatflow`](../backend/scinsight/rag_tuning/flowise_adapter.py#L46) | method |  | used | — |  |
-| F1885 | [`FlowiseAdapter._nodes`](../backend/scinsight/rag_tuning/flowise_adapter.py#L55) | method |  | used | — |  |
+| F1885 | [`FlowiseAdapter._nodes`](../backend/scinsight/rag_tuning/flowise_adapter.py#L55) | method |  | used (framework) | — |  |
 | F1886 | [`FlowiseAdapter.status`](../backend/scinsight/rag_tuning/flowise_adapter.py#L63) | method |  | used (framework) | — | What the live chatflow RAG DB uses right now, and what its table holds. |
-| F1887 | [`FlowiseAdapter.table_rows`](../backend/scinsight/rag_tuning/flowise_adapter.py#L83) | method |  | used | — |  |
+| F1887 | [`FlowiseAdapter.table_rows`](../backend/scinsight/rag_tuning/flowise_adapter.py#L83) | method |  | used (framework) | — |  |
 | F1888 | [`FlowiseAdapter.compatible`](../backend/scinsight/rag_tuning/flowise_adapter.py#L92) | method |  | used | — | Reasons the chatflow RAG DB cannot follow this configuration (empty = it can). |
-| F1889 | [`FlowiseAdapter.sync`](../backend/scinsight/rag_tuning/flowise_adapter.py#L99) | method |  | used | — | Apply chunk size / overlap / top-k and the version tag to the chatflow, re-index it and ve |
-| F1890 | [`FlowiseAdapter.restore`](../backend/scinsight/rag_tuning/flowise_adapter.py#L124) | method |  | used | — |  |
+| F1889 | [`FlowiseAdapter.sync`](../backend/scinsight/rag_tuning/flowise_adapter.py#L99) | method |  | used (framework) | — | Apply chunk size / overlap / top-k and the version tag to the chatflow, re-index it and ve |
+| F1890 | [`FlowiseAdapter.restore`](../backend/scinsight/rag_tuning/flowise_adapter.py#L124) | method |  | used (framework) | — |  |
 
 ## backend/scinsight/rag_tuning/indexing.py
 

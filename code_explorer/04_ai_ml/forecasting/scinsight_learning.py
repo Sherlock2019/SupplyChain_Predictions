@@ -93,7 +93,7 @@ def _features(rows: list[dict], suppliers: list[str]) -> np.ndarray:
 # RAISES:
 #   HTTPException 409 when there are fewer than 20 receipts.
 # CALLED BY:
-#   <- F0143 create_app.train() (calls)
+#   <- F2024 create_router.train() (calls)
 # CALLS:
 #   -> F0418 Database (references)
 #   -> F0532 _rows() (calls)
@@ -147,7 +147,7 @@ def train_lead_time_model(db: Database, tenant: str, user_id: str) -> dict:
 # RAISES:
 #   HTTPException 404 (unknown), 409 (not a candidate / gate failed).
 # CALLED BY:
-#   <- F0144 create_app.promote() (calls)
+#   <- F2025 create_router.promote() (calls)
 # CALLS:
 #   -> F0418 Database (references)
 #   -> F0422 Database.one() (calls)
@@ -209,7 +209,7 @@ def predict_lead_time(db: Database, tenant: str, model_row: dict, supplier_id: s
 # OUTPUT:
 #   dict -> {"id": "RR-...", "status": "pending_human_approval", "evidence", "note"}.
 # CALLED BY:
-#   <- F0145 create_app.retraining() (calls)
+#   <- F2026 create_router.retraining() (calls)
 # CALLS:
 #   -> F0418 Database (references)
 #   -> F0421 Database.query() (calls)

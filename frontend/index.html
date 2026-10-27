@@ -26,6 +26,7 @@
   <symbol id="i-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H14a3 3 0 013 3v0a3 3 0 01-3 3h-4a3 3 0 00-3 3v0a3 3 0 003 3h5.5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/></symbol>
   <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 01-11 0zM12 16.5V21"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></symbol>
   <symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-13.7 5.6M4 12a8 8 0 0113.7-5.6"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
@@ -60,6 +61,7 @@
       <a href="#rag" data-page="rag"><svg class="ico"><use href="#i-search"/></svg>RAG Tuning</a>
       <div class="nav-group">System</div>
       <a href="#platform" data-page="platform"><svg class="ico"><use href="#i-pulse"/></svg>Status &amp; access</a>
+      <a href="#erp" data-page="erp"><svg class="ico"><use href="#i-plug"/></svg>ERP / SAP Setup</a>
       <a href="#code" data-page="code"><svg class="ico"><use href="#i-flow"/></svg>Backend code</a>
     </nav>
   </aside>
@@ -326,14 +328,32 @@
         <div class="grid g2"><div class="card"><h2>Agent backends</h2><div id="backends"></div></div><div class="card"><h2>Workbenches</h2><ul id="links"></ul></div></div>
       </section>
 
+      <!-- ERP / SAP SETUP (connections, mapping, sync, activation, integration checks) -->
+      <section class="page" id="page-erp">
+        <div class="card">
+          <h2>ERP / SAP Setup</h2>
+          <p class="note">Configure once, consumed everywhere: activating a connection switches this customer's SAP snapshot inside FastAPI, so the business engine, dashboards, Flowise tools and LangGraph tools all use it from the next call. Tests and syncs never activate anything; secrets stay on the server; managers make changes; every action is audited.</p>
+          <div id="erp-top"></div>
+        </div>
+        <div class="grid g2">
+          <div class="card" id="erp-config"><div class="empty">Loading…</div></div>
+          <div class="card" id="erp-health"></div>
+        </div>
+        <div class="card" id="erp-mapping"></div>
+        <div class="card" id="erp-sync"></div>
+        <div class="card" id="erp-components"></div>
+        <div class="card" id="erp-exec"></div>
+      </section>
+
       <!-- RAG TUNING (Company RAG Search of the SCInsight chatflow) -->
       <section class="page" id="page-rag">
         <div class="card">
           <h2>RAG Tuning · Company RAG Search</h2>
-          <p class="note">Tunes the real retrieval behind the SCInsight chatflow: the governed policy search (SCInsight API) and, on publish, the chatflow's own RAG DB in Flowise. Managers only; the administrator key stays on the server.</p>
+          <p class="note">Tunes the real retrieval behind the SCInsight chatflow: the governed policy search (SCInsight API) and, on publish, the chatflow's own RAG DB in Flowise. Open to every role; publish and roll back are reserved for managers. Keys stay on the server.</p>
           <div id="rag-active"></div>
           <details class="more"><summary>Retrieval path (audited)</summary><ol id="rag-path" class="note"></ol></details>
         </div>
+        <div id="rag-draftbar"></div>
         <div class="pills" id="rag-tabs" role="tablist">
           <button class="pill on" data-tab="knowledge">1 · Knowledge &amp; metadata</button>
           <button class="pill" data-tab="chunking">2 · Chunking</button>
@@ -349,12 +369,11 @@
       <section class="page" id="page-code">
         <div class="card code-apps">
           <h2>Backend apps that run the POC</h2>
-          <p class="note">Four Python backend apps, all from the same Docker image (<code>aurelia-scm-app:local</code>), defined in <code>docker-compose.yml</code>.</p>
+          <p class="note">Three Python backend services from the same Docker image (<code>aurelia-scm-app:local</code>), defined in <code>docker-compose.yml</code>. One FastAPI app serves both APIs (the SCInsight API is a router of it at <code>/scinsight</code>).</p>
           <div class="scroll"><table>
             <thead><tr><th>Service</th><th>What it is</th><th>Port</th><th>Started with</th><th>Code</th></tr></thead>
             <tbody>
-              <tr><td><b>scinsight-api</b></td><td><b>SCInsight API</b>, the governed backend of the current POC: synthetic SAP data, calculations, policy RAG, recommendations waiting for manager approval, outcome checks, audit. All the Flowise SCInsight tools call it.</td><td><b>8100</b> (Swagger at <code>/docs</code>)</td><td><code>uvicorn backend.scinsight.app:create_app --factory</code></td><td><a href="#code/backend%2Fscinsight%2Fapp.py%3A%3Acreate_app">backend/scinsight/</a></td></tr>
-              <tr><td><b>api</b></td><td><b>SPARC / Aurelia gateway</b> (FastAPI): dashboard UI, SAP OData mock, analytics engine, agents, approvals, <code>/v1/embeddings</code> used by the Flowise RAG, and this Backend code page</td><td><b>8000</b></td><td>the image's default <code>uvicorn backend.app.main:app</code></td><td><a href="#code/backend%2Fapp%2Fmain.py%3A%3Acreate_app">backend/app/main.py</a></td></tr>
+              <tr><td><b>api</b> (FastAPI)</td><td><b>One FastAPI app</b>: the <b>SPARC / Aurelia gateway</b> at the root (dashboard, SAP OData mock, analytics, agents, approvals, <code>/v1/embeddings</code> for the Flowise RAG, these pages) and the <b>SCInsight API</b> routes at <b>/scinsight</b>, the governed backend of the current POC that every Flowise SCInsight tool calls (synthetic SAP data, calculations, policy RAG, recommendations awaiting approval, outcome checks, audit; own keys, roles and database)</td><td><b>8000</b> (one Swagger: <code>/docs</code>)</td><td>the image's default <code>uvicorn backend.app.main:app</code></td><td><a href="#code/backend%2Fapp%2Fmain.py">backend/app/main.py</a> includes the router of <a href="#code/backend%2Fscinsight%2Fapp.py">backend/scinsight/app.py</a></td></tr>
               <tr><td><b>langgraph</b></td><td><b>LangGraph Server</b>: runs the LangGraph graphs listed in <code>langgraph.json</code>, including the LangGraph copies of the SCInsight Flowise flows</td><td><b>8123</b></td><td><code>langgraph dev</code></td><td><a href="#code/backend%2Fscinsight%2Flg%2Fsupervisor.py%3A%3Abuild_supervisor">backend/app/graphs.py, backend/scinsight/lg/</a></td></tr>
               <tr><td><b>mcp</b></td><td><b>MCP server</b>: read-only SAP, analytics and RAG tools for MCP clients</td><td><b>8002</b></td><td><code>python -m backend.app.mcp_server</code></td><td><a href="#code/backend%2Fapp%2Fmcp_server.py%3A%3Acreate_mcp_app">backend/app/mcp_server.py</a></td></tr>
             </tbody>
@@ -371,17 +390,17 @@
                 <tr><td><b>demo-edge</b> (Caddy)</td><td>Local proxy for the demo URLs</td><td>3000 / 3003 (localhost only)</td></tr>
               </tbody>
             </table></div>
-            <p class="note">Flowise chat → SC Agent Manager Agentflow → <b>SCInsight API :8100</b>, which reads SAP data from Postgres and does the calculations, with Qwen explaining the result. The <b>gateway :8000</b> provides the embeddings for the Flowise RAG DB and hosts the dashboard.</p>
+            <p class="note">Flowise chat → SC Agent Manager Agentflow → <b>SCInsight API (/scinsight on :8000)</b>, which reads SAP data from Postgres and does the calculations, with Qwen explaining the result. The same app provides the embeddings for the Flowise RAG DB and hosts the dashboard.</p>
           </details>
         </div>
         <div class="code-layout">
           <div class="card code-list">
             <div class="pills code-apps-pills" id="code-apps" aria-label="Backend apps"></div>
-            <input id="code-q" placeholder="Search function, file or summary…" aria-label="Search backend functions">
+            <input id="code-q" placeholder="Filter files…" aria-label="Filter backend files">
             <p class="note" id="code-count"></p>
             <div id="code-items"></div>
           </div>
-          <div class="card code-detail" id="code-detail"><p class="note">Select a function to see its code, comments, callers and callees.</p></div>
+          <div class="card code-detail" id="code-detail"><p class="note">Select a file to see its full code.</p></div>
         </div>
       </section>
     </main>

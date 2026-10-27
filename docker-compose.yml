@@ -1,7 +1,7 @@
 # SPARC — Smart Supply Chain Performer Copilot (demo customer: Aurelia Cosmetics)
 #
 # Profiles
-#   core           FastAPI + dashboard, MCP server, LangGraph Server (Studio), Flowise
+#   core           FastAPI (dashboard + SCInsight API at /scinsight), MCP server, LangGraph Server (Studio), Flowise
 #   localdb        PostgreSQL 17 + pgvector (cloud uses Amazon RDS / Cloud SQL instead)
 #   local-llm      relay to a host Ollama Qwen (workstations whose GPU vLLM does not support)
 #   gpu            vLLM Qwen on an NVIDIA GPU (cloud GPU VM uses deploy/gpu/docker-compose.yml)
@@ -71,20 +71,15 @@ services:
       MCP_URL: http://mcp:8000
       DEMO_AUTO_LOGIN: ${DEMO_AUTO_LOGIN:-false}
       GRAFANA_URL: ${GRAFANA_INTERNAL_URL:-}
-      # RAG Tuning page: managers' calls are forwarded to the SCInsight API with the director key (never sent to the browser)
-      SCI_API_URL: http://scinsight-api:8100
+      # RAG Tuning page: calls go in-process to the /scinsight routes of this app with server-side keys (never sent to the browser):
+      # managers -> director key (publish / rollback), every other role -> MLOps key (everything except publish / rollback)
       SCI_TUNING_KEY: ${SCI_DIRECTOR_KEY:-}
-    ports: ["${BIND_ADDRESS:-0.0.0.0}:8000:8000"]
-    extra_hosts: ["host.docker.internal:host-gateway"]
-    restart: unless-stopped
-
-  scinsight-api:
-    # SupplyChain Insight AI business tools (FastAPI, Swagger /docs): synthetic SAP, deterministic calculations, human approval,
-    # outcome learning. Used by the SCInsight Flowise Chatflow / Agentflows at http://scinsight-api:8100 (Docker network).
-    image: ${APP_IMAGE:-aurelia-scm-app:local}
-    profiles: [core]
-    command: ["uvicorn", "backend.scinsight.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8100"]
-    environment:
+      SCI_TUNING_READER_KEY: ${SCI_MLOPS_KEY:-}
+      # Backend code page: "Open in VS Code" link prefix (repository path on your machine; see .env.example)
+      CODE_VSCODE_BASE: ${CODE_VSCODE_BASE:-}
+      # ---- SupplyChain Insight AI: routes of this same FastAPI app at /scinsight (one Swagger: /docs): synthetic SAP,
+      # deterministic calculations, human approval, outcome learning, governed RAG. Used by the SCInsight Flowise Chatflow /
+      # Agentflows at http://api:8000/scinsight (Docker network). Own keys, roles, database and audit chain.
       SCI_DATABASE_URL: postgresql://${POSTGRES_USER:-supplychain}:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/scinsight${POSTGRES_SSL_SUFFIX:-}
       SAP_MODE: synthetic
       SAP_WRITE_ENABLED: "false"
@@ -106,16 +101,8 @@ services:
       SCI_FLOWISE_URL: http://flowise:3000
       SCI_FLOWISE_API_KEY: ${FLOWISE_SCI_API_KEY:-}
       SCI_FLOWISE_CHATFLOW_ID: ${FLOWISE_SCI_CHATFLOW_ID:-}
-      QWEN_BASE_URL: ${QWEN_BASE_URL:-http://host.docker.internal:11435/v1}
-      QWEN_MODEL: ${QWEN_MODEL:-qwen2.5-7b-scm}
-      QWEN_API_KEY: ${QWEN_API_KEY:-local-qwen}
+    ports: ["${BIND_ADDRESS:-0.0.0.0}:8000:8000"]
     extra_hosts: ["host.docker.internal:host-gateway"]
-    ports: ["${BIND_ADDRESS:-0.0.0.0}:8100:8100"]
-    healthcheck:
-      test: [CMD, curl, -fsS, http://127.0.0.1:8100/health]
-      interval: 20s
-      timeout: 5s
-      retries: 10
     restart: unless-stopped
 
   mcp:
@@ -146,7 +133,7 @@ services:
       COPILOT_API_URL: http://api:8000
       COPILOT_API_KEY: ${LANGGRAPH_TOOL_KEY}
       # SCInsight LangGraph mirror: same API and agent key as the Flowise flows (agent_service: never reviews)
-      SCI_API_URL: http://scinsight-api:8100
+      SCI_API_URL: http://api:8000/scinsight
       SCI_AGENT_KEY: ${SCI_AGENT_KEY:-}
       LANGSMITH_TRACING: "false"
       LANGGRAPH_CLI_NO_ANALYTICS: "1"

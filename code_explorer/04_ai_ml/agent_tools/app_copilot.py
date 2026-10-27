@@ -630,7 +630,7 @@ class ApiBackend:
     #   -> F0469 ApiBackend._call() (calls)
     #   -> F0076 create_app.rag_search() (http_request)
     #   -> F0077 create_app.rag_search_get() (http_request)
-    #   -> F0133 create_app.rag_search() (http_request)
+    #   -> F2014 create_router.rag_search() (http_request)
     #   -> F0470 ApiBackend._clean() (calls)
     def search_knowledge(self, query: str, top_k: int = 4, category: str | None = None) -> dict:
         return self._call("POST", "/api/v1/rag/search", json=self._clean({"query": query, "top_k": top_k, "category": category}))

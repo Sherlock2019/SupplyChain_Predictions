@@ -132,7 +132,7 @@
     sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
     suppliers: ['Suppliers, quality & logistics', loadSuppliersPage], approvals: ['Approvals & execution', loadApprovals], watches: ['Watchlists', loadWatches],
     chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', loadHarness],
-    platform: ['Status & access', loadPlatform], code: ['Backend code', loadCode], rag: ['RAG Tuning', loadRag],
+    platform: ['Status & access', loadPlatform], erp: ['ERP / SAP Setup', loadErp], code: ['Backend code', loadCode], rag: ['RAG Tuning', loadRag],
   };
   function route() {
     const [page, arg, arg2] = (location.hash || '#command').slice(1).split('/');
@@ -190,68 +190,93 @@
   }
   $('#login').addEventListener('submit', (e) => { e.preventDefault(); const k = $('#api-key').value.trim(); if (k) signIn(k); $('#api-key').value = ''; });
 
-  // ================================================================ BACKEND CODE (view every function; edit on a dev machine)
+  // ================================================================ BACKEND CODE (full source of each backend component + its app-type template; edit in VS Code)
+  state.codeSide = local.get('codeSide') === '1';
   async function loadCode() {
-    const list = await api(`/api/v1/code/functions?q=${encodeURIComponent($('#code-q').value.trim())}`).catch((e) => { toast(e.message); return null; });
-    if (!list) return;
-    state.codeEdit = list.edit_allowed && state.role === 'manager';
-    state.codeApps = Object.fromEntries((list.components || []).map((c) => [c.id, c]));
-    // one pill per backend app (docker-compose service); a file appears under every app that loads it
-    const app = state.codeApp && state.codeApps[state.codeApp] ? state.codeApp : '';
-    $('#code-apps').innerHTML = [['', 'All backend', '']].concat((list.components || []).map((c) => [c.id, c.name, `${c.kind} · :${c.port}`]))
-      .map(([id, name, sub]) => `<button class="pill${id === app ? ' on' : ''}" data-app="${id}" title="${esc(id ? state.codeApps[id].start : '')}">${esc(name)}${sub ? ` <span class="code-id">${esc(sub)}</span>` : ''}</button>`).join('');
-    $$('#code-apps .pill').forEach((b) => b.addEventListener('click', () => { state.codeApp = b.dataset.app; loadCode(); }));
-    const rows = app ? list.functions.filter((f) => (f.apps || []).includes(app)) : list.functions;
-    const c = app && state.codeApps[app];
-    $('#code-count').innerHTML = c
-      ? `<b>${esc(c.name)}</b> (${esc(c.kind)}, port ${c.port}) runs ${c.files.length} files · ${rows.length} functions and classes. Started with <code>${esc(c.start)}</code>. Entry: <a href="#code/${encodeURIComponent(c.entry)}">${esc(c.entry.split('::')[1])}</a>`
-      : `${list.total} functions and classes in backend/` + (list.registry ? '' : ' (code-explorer registry not found: ids and call graph hidden)');
-    let cur = '';
-    $('#code-items').innerHTML = rows.map((f) => {
-      const head = f.file !== cur ? `<div class="code-file" title="Loaded by: ${esc((f.apps || []).join(', ') || 'no app (not imported)')}">${esc(f.file)}</div>` : '';
-      cur = f.file;
-      return `${head}<div class="code-item${f.key === state.codeKey ? ' on' : ''}" data-key="${esc(f.key)}" title="${esc(f.summary || '')}">${f.id ? `<span class="code-id">${esc(f.id)}</span>` : ''}${esc(f.name)}</div>`;
-    }).join('') || '<div class="empty">No match.</div>';
-    $$('#code-items .code-item').forEach((el) => el.addEventListener('click', () => { location.hash = `code/${encodeURIComponent(el.dataset.key)}`; }));
-    if (state.codeKey) showCode(state.codeKey);
+    if (!state.codeIndex) {
+      state.codeIndex = await api('/api/v1/code/files').catch((e) => { toast(e.message); return null; });
+      if (!state.codeIndex) return;
+    }
+    const idx = state.codeIndex;
+    const apps = Object.fromEntries(idx.components.map((c) => [c.id, c]));
+    const app = state.codeApp && apps[state.codeApp] ? state.codeApp : idx.components[0].id;
+    state.codeApp = app;
+    $('#code-apps').innerHTML = idx.components.map((c) => `<button class="pill${c.id === app ? ' on' : ''}" data-app="${c.id}">${esc(c.name)} <span class="code-id">${esc(c.kind)} · :${c.port}</span></button>`).join('');
+    $$('#code-apps .pill').forEach((b) => b.addEventListener('click', () => { state.codeApp = b.dataset.app; state.codeKey = ''; loadCode(); }));
+    const c = apps[app];
+    const q = $('#code-q').value.trim().toLowerCase();
+    const files = idx.files.filter((f) => f.apps.includes(app) && (!q || f.path.toLowerCase().includes(q) || f.summary.toLowerCase().includes(q)));
+    $('#code-count').innerHTML = `<b>${esc(c.name)}</b> (${esc(c.kind)}, port ${c.port}) · ${c.files.length} files · started with <code>${esc(c.start)}</code>
+      <label style="display:block;margin-top:6px"><input type="checkbox" id="code-side" ${state.codeSide ? 'checked' : ''}> show the ${esc(c.kind)} template side by side</label>`;
+    $('#code-side').addEventListener('change', (e) => { state.codeSide = e.target.checked; local.set('codeSide', state.codeSide ? '1' : ''); showCode(state.codeKey || c.entry.split('::')[0]); });
+    // the app-type templates are pinned above the real files
+    $('#code-items').innerHTML = `<div class="code-file">Template${c.templates.length > 1 ? 's' : ''} for a ${esc(c.kind)} app</div>`
+      + c.templates.map((t) => `<div class="code-item code-tpl${state.codeKey === `tpl:${t}` ? ' on' : ''}" data-path="tpl:${esc(t)}">📄 ${esc(t)}</div>`).join('')
+      + `<div class="code-file">Real code (${files.length})</div>`
+      + (files.map((f) => `<div class="code-item${f.path === state.codeKey ? ' on' : ''}" data-path="${esc(f.path)}" title="${esc(f.summary)}">${esc(f.path.replace('backend/', ''))} <span class="code-id">${f.lines}</span></div>`).join('') || '<div class="empty">No match.</div>');
+    $$('#code-items .code-item').forEach((el) => el.addEventListener('click', () => { location.hash = `code/${encodeURIComponent(el.dataset.path)}`; }));
+    const want = state.codeKey && (state.codeKey.startsWith('tpl:') || state.codeKey.endsWith('.py')) ? state.codeKey.split('::')[0] : c.entry.split('::')[0];
+    showCode(want);
   }
   let codeTimer;
-  $('#code-q').addEventListener('input', () => { clearTimeout(codeTimer); codeTimer = setTimeout(loadCode, 250); });
+  $('#code-q').addEventListener('input', () => { clearTimeout(codeTimer); codeTimer = setTimeout(loadCode, 200); });
 
-  async function showCode(key) {
+  const codeLines = (source) => `<pre class="code-view">${source.split('\n').map((line) => `<span>${esc(line) || ' '}</span>`).join('\n')}</pre>`;
+  const vscodeLink = (path) => (state.codeIndex.vscode_base ? `<a class="button" href="${esc(`${state.codeIndex.vscode_base.replace(/\/$/, '')}/${path}`)}">Open in VS Code</a>` : '');
+  async function codePane(path) {
+    // one pane: a real file (backend/...) or a template (tpl:<name>)
+    const tpl = path.startsWith('tpl:');
+    const f = await api(tpl ? `/api/v1/code/template?name=${encodeURIComponent(path.slice(4))}` : `/api/v1/code/file?path=${encodeURIComponent(path)}`);
+    const meta = tpl ? f : (state.codeIndex.files.find((x) => x.path === f.path) || { apps: [] });
+    const names = Object.fromEntries(state.codeIndex.components.map((c) => [c.id, c.name]));
+    const run = tpl ? (f.source.match(/^(?:Run it|Serve it):\s*(.+)$/m) || [])[1] : '';
+    return `<div class="code-pane"><div class="row" style="justify-content:space-between;align-items:center">
+        <div><h2 style="margin:0">${tpl ? `${badge('plan', 'template')} ` : ''}${esc(f.path)}</h2>
+          <p class="sub">${f.lines} lines · ${tpl ? 'starter template, not part of the running app' : `runs in ${meta.apps.map((a) => chip(names[a] || a)).join(' ') || 'no app'}`}${meta.summary ? ` · ${esc(meta.summary)}` : ''}</p>
+          ${run ? `<p class="note">Run it: <code>${esc(run.trim())}</code></p>` : ''}</div>
+        <div class="row">${vscodeLink(f.path)}<button class="ghost small" data-copy="${esc(f.path)}">Copy path</button></div></div>
+      ${codeLines(f.source)}</div>`;
+  }
+  async function showCode(path) {
     const host = $('#code-detail');
-    const f = await api(`/api/v1/code/function?key=${encodeURIComponent(key)}`).catch((e) => { host.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return null; });
-    if (!f) return;
-    $$('#code-items .code-item').forEach((el) => el.classList.toggle('on', el.dataset.key === key));
-    const links = (items) => items.length ? items.map((x) => x.key ? `<a href="#code/${encodeURIComponent(x.key)}">${esc(x.label)}</a>` : esc(x.label)).join('<br>') : '<span class="note">none found</span>';
-    const editable = state.codeEdit;
-    host.innerHTML = `<h2>${f.id ? esc(f.id) + ' · ' : ''}${esc(f.name)}</h2>
-      <p class="sub">${esc(f.file)}:${f.lines[0]}-${f.lines[1]} ${f.status ? badge(f.status.split(' ')[0] === 'used' ? 'ready' : 'plan', f.status) : ''} ${(f.routes || []).map((r) => chip(`${r.method} ${r.path}`)).join(' ')}</p>
-      ${f.summary ? `<p>${esc(f.summary)}</p>` : ''}
-      <p class="note">Runs in: ${(f.apps || []).length ? f.apps.map((a) => chip(state.codeApps && state.codeApps[a] ? `${state.codeApps[a].name} (${state.codeApps[a].kind} :${state.codeApps[a].port})` : a)).join(' ') : 'no backend app imports this file'}${(f.apps || []).length > 1 ? ' · a save changes it for every app listed' : ''}</p>
-      <div class="grid g2"><div><h4>Called by</h4>${links(f.called_by)}</div><div><h4>Calls</h4>${links(f.calls)}</div></div>
-      <div class="pills code-tabs"><button class="pill on" data-tab="source">Source${editable ? ' (editable)' : ''}</button>${f.annotated ? '<button class="pill" data-tab="annotated">Annotated (comments)</button>' : ''}</div>
-      <div data-pane="source"><textarea id="code-src" class="code-box" spellcheck="false" ${editable ? '' : 'readonly'} aria-label="Function source">${esc(f.source)}</textarea>
-        <div class="row">${editable ? '<button id="code-save">Save function</button><button class="ghost" id="code-reset">Undo changes</button>' : `<span class="note">${esc(state.role === 'manager' ? f.reason : 'Read-only: saving needs a manager key' + (f.edit_allowed ? '' : ' and ' + f.reason))}</span>`}</div></div>
-      ${f.annotated ? `<div data-pane="annotated" hidden><pre class="code-box">${esc(f.annotated)}</pre></div>` : ''}`;
-    $$('.code-tabs .pill', host).forEach((b) => b.addEventListener('click', () => {
-      $$('.code-tabs .pill', host).forEach((x) => x.classList.toggle('on', x === b));
-      $$('[data-pane]', host).forEach((p) => { p.hidden = p.dataset.pane !== b.dataset.tab; });
-    }));
-    if (!editable) return;
-    $('#code-reset').addEventListener('click', () => { $('#code-src').value = f.source; });
-    $('#code-save').addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const r = await api('/api/v1/code/function', { method: 'PUT', body: { key, source: $('#code-src').value, expected_sha256: f.sha256 } });
-      toast(r.changed ? `${r.note} Backup: ${r.backup}` : 'No change.');
-      loadCode();
-    }));
+    state.codeKey = path;
+    $$('#code-items .code-item').forEach((el) => el.classList.toggle('on', el.dataset.path === path));
+    const app = state.codeIndex.components.find((c) => c.id === state.codeApp);
+    const side = state.codeSide && !path.startsWith('tpl:') && app?.templates.length;
+    try {
+      const panes = await Promise.all([codePane(path), ...(side ? [codePane(`tpl:${app.templates[0]}`)] : [])]);
+      host.innerHTML = side ? `<div class="code-split">${panes.join('')}</div>` : panes[0];
+    } catch (e) { host.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    $$('[data-copy]', host).forEach((b) => b.addEventListener('click', () => { navigator.clipboard?.writeText(b.dataset.copy).then(() => toast('Path copied.'), () => toast(b.dataset.copy)); }));
   }
 
   // ================================================================ RAG TUNING (Company RAG Search; SCInsight API through the gateway)
   const RAG = '/api/v1/rag-tuning';
   state.ragTab = 'knowledge';
   const ragPane = () => $('#rag-pane');
+  // Every tunable setting, the stage it belongs to and how it is edited. cold = needs a new index, hot = query time.
+  const RAG_FIELDS = {
+    category_filter: { stage: 'knowledge', label: 'Document categories searched', type: 'categories', help: 'Empty = every category the caller may read. Can only narrow access, never widen it.' },
+    chunk_strategy: { stage: 'chunking', label: 'Chunking strategy', type: 'select', options: ['section', 'clause', 'fixed'], help: 'section = split on ## headings, then windows · clause = whole sentences (keeps a rule with its condition) · fixed = windows over the whole document' },
+    chunk_size: { stage: 'chunking', label: 'Chunk size (characters)', type: 'number', min: 50, max: 4000, step: 50, help: 'Presets: small 300 · medium 600 · large 1000 (starting points, not optimal values)' },
+    chunk_overlap: { stage: 'chunking', label: 'Overlap (characters)', type: 'number', min: 0, max: 2000, step: 10, help: 'Repeated between neighbouring chunks; must be smaller than the chunk size' },
+    preserve_headings: { stage: 'chunking', label: 'Prefix "title — section"', type: 'bool', help: 'Gives short sections their context' },
+    preserve_source_ids: { stage: 'chunking', label: 'Prefix [doc id + version]', type: 'bool', help: 'Puts the citation id inside the chunk text' },
+    embedding_model: { stage: 'embeddings', label: 'Embedding model', type: 'model', help: 'Approved models only; another model always gets its own index' },
+    top_k: { stage: 'retrieval', label: 'Top-K passages', type: 'number', min: 1, max: 10, step: 1, help: 'Presets 3 / 5 / 8' },
+    similarity_threshold: { stage: 'retrieval', label: 'Similarity threshold', type: 'nullnum', min: -1, max: 1, step: 0.01, help: 'Blank = none. Cosine similarity of this model (not a probability)' },
+    retrieval_mode: { stage: 'retrieval', label: 'Retrieval mode', type: 'select', options: ['semantic', 'keyword', 'hybrid'], help: 'keyword = query-term overlap · hybrid = weighted mix' },
+    hybrid_alpha: { stage: 'retrieval', label: 'Hybrid semantic weight', type: 'number', min: 0, max: 1, step: 0.05, help: 'Only used in hybrid mode' },
+    rerank: { stage: 'retrieval', label: 'Reranking', type: 'select', options: ['none', 'lexical'], help: 'lexical = deterministic term-overlap reorder of the candidates' },
+    candidate_k: { stage: 'retrieval', label: 'Candidates before filtering', type: 'number', min: 1, max: 100, step: 1, help: 'Scored before access filter / rerank; at least Top-K' },
+    max_context_tokens: { stage: 'retrieval', label: 'Max context tokens', type: 'nullnum', min: 50, max: 8000, step: 50, help: 'Blank = no budget (approximate tokens = characters / 4)' },
+  };
+  const isCold = (f) => (state.rag?.cold_fields || []).includes(f);
+  const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  const fmtVal = (v) => (v === null || v === undefined ? '—' : Array.isArray(v) ? (v.length ? v.join(', ') : 'all') : typeof v === 'boolean' ? (v ? 'yes' : 'no') : String(v));
   const cfgLine = (c) => c ? `${esc(c.chunk_strategy)} ${c.chunk_size}/${c.chunk_overlap} chars · ${esc(c.embedding_model)} · top ${c.top_k} · ${esc(c.retrieval_mode)}${c.similarity_threshold !== null && c.similarity_threshold !== undefined ? ` · threshold ${c.similarity_threshold}` : ''}${c.rerank !== 'none' ? ` · rerank ${esc(c.rerank)}` : ''}` : '—';
+  const diffKeys = (a, b) => Object.keys(RAG_FIELDS).filter((k) => !same(a?.[k], b?.[k]));
+  const diffChips = (c, base) => { const d = diffKeys(base, c); return d.length ? d.map((k) => `<span class="chip rag-chg">${esc(RAG_FIELDS[k].label)}: ${esc(fmtVal(base[k]))} → <b>${esc(fmtVal(c[k]))}</b></span>`).join(' ') : '<span class="note">same as active</span>'; };
   const sev = (s) => pill(s === 'error' ? 'critical' : s === 'warning' ? 'warning' : 'info', s);
   async function pollJob(job, onDone, host) {
     const show = (j) => { if (host) host.innerHTML = `<p class="note">Job ${esc(j.id)} · ${esc(j.kind)} · <b>${esc(j.status)}</b>${j.error ? ` · ${esc(j.error)}` : ''}</p>`; };
@@ -268,16 +293,19 @@
   }
 
   async function loadRag() {
-    if (state.role !== 'manager') { $('#rag-active').innerHTML = ''; ragPane().innerHTML = '<div class="empty">RAG tuning is for administrators: sign in with the manager key.</div>'; return; }
+    if (!state.role) { ragPane().innerHTML = '<div class="empty">Sign in to use RAG tuning.</div>'; return; }
     try {
       state.rag = await api(`${RAG}/config`);
     } catch (e) { ragPane().innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
     const a = state.rag.active;
+    // the working draft starts as a copy of the active configuration and survives tab changes
+    if (!state.ragDraft || state.ragDraftBase !== a.id) { state.ragDraft = JSON.parse(JSON.stringify(a.config)); state.ragDraftBase = a.id; }
     $('#rag-active').innerHTML = `<div class="grid g3">
-      <div><div class="eyebrow">Active configuration</div><b>${esc(a.id)}</b> ${esc(a.name)} ${badge('ready', 'active')}<div class="note">since ${esc(a.published_at || a.created_at)} by ${esc(a.published_by || a.created_by)}</div></div>
+      <div><div class="eyebrow">Active configuration (live)</div><b>${esc(a.id)}</b> ${esc(a.name)} ${badge('ready', 'active')}<div class="note">since ${esc(a.published_at || a.created_at)} by ${esc(a.published_by || a.created_by)}</div></div>
       <div><div class="eyebrow">Index version</div><b>${esc(a.index_version)}</b><div class="note">${cfgLine(a.config)}</div></div>
       <div><div class="eyebrow">Units</div><div class="note">Chunk sizes in <b>${esc(state.rag.chunk_unit)}</b>. Score: ${esc(state.rag.score_metric)}.</div></div></div>`;
     $('#rag-path').innerHTML = state.rag.retrieval_path.map((p) => `<li>${esc(p)}</li>`).join('');
+    renderDraftBar();
     renderRagTab();
   }
   $$('#rag-tabs .pill').forEach((b) => b.addEventListener('click', () => {
@@ -289,23 +317,93 @@
     ({ knowledge: ragKnowledge, chunking: ragChunking, embeddings: ragEmbeddings, retrieval: ragRetrieval, evaluation: ragEvaluation, publish: ragPublish })[state.ragTab]()
       .catch((e) => { ragPane().innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
   }
-  async function ragDocs() { state.ragDocs = state.ragDocs || await api(`${RAG}/documents`); return state.ragDocs; }
+  async function ragDocs(fresh) { if (fresh || !state.ragDocs) state.ragDocs = await api(`${RAG}/documents`); return state.ragDocs; }
+
+  // ---- working draft: one profile edited across every stage, saved as one configuration
+  function renderDraftBar() {
+    const a = state.rag.active.config, d = state.ragDraft;
+    const changed = diffKeys(a, d);
+    const cold = changed.filter(isCold);
+    $('#rag-draftbar').innerHTML = changed.length
+      ? `<div class="card rag-draft"><div class="row" style="justify-content:space-between;align-items:center">
+          <div><b>Working draft</b>: ${changed.length} change${changed.length > 1 ? 's' : ''} vs active ${cold.length ? badge('at_risk', 'needs a new index') : badge('ready', 'query-time only')}<div style="margin-top:6px">${diffChips(d, a)}</div></div>
+          <div class="row"><input id="rag-draft-name" placeholder="Profile name (e.g. threshold 0.66)" style="min-width:240px"><button id="rag-draft-save">Save as profile</button><button class="ghost" id="rag-draft-reset">Reset to active</button></div></div>
+          <div id="rag-draft-msg"></div></div>`
+      : '<p class="note rag-draft-empty">Working draft = active configuration. Edit the settings in any stage below; your changes are collected here and saved as one profile.</p>';
+    if (!changed.length) return;
+    $('#rag-draft-reset').addEventListener('click', () => { state.ragDraft = JSON.parse(JSON.stringify(a)); renderDraftBar(); renderRagTab(); });
+    $('#rag-draft-save').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      if (d.chunk_overlap >= d.chunk_size) { toast('Overlap must be smaller than the chunk size.'); return; }
+      const name = $('#rag-draft-name').value.trim() || changed.map((k) => `${k} ${fmtVal(d[k])}`).join(', ').slice(0, 80);
+      await ragSaveDraft({ ...d, candidate_k: Math.max(d.candidate_k, d.top_k) }, '#rag-draft-msg', name);
+    }));
+  }
+  async function ragSaveDraft(cfg, target, name) {
+    const r = await api(`${RAG}/draft`, { method: 'PUT', body: { config: cfg, name } });
+    const d = r.diff;
+    $(target).innerHTML = `<div class="note" style="margin-top:8px"><b>Profile ${esc(r.id)} · ${esc(r.name)}</b> saved. ${d.needs_new_index
+      ? `It changes index settings (${d.rebuild_required.map(chip).join(' ')}): build its candidate index, then benchmark it.` : 'Query-time change only: it reuses the active index.'}
+      <button class="small" id="rag-build-${esc(r.id)}">Build candidate index</button> <span id="rag-job-${esc(r.id)}"></span></div>`;
+    $(`#rag-build-${r.id}`).addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const job = await api(`${RAG}/index/build-candidate`, { body: { config_id: r.id } });
+      await pollJob(job, (res) => toast(res.reused ? `${r.id} reuses the active index — next: Evaluation lab.` : `Index ${res.index_version}: ${res.documents} documents, ${res.chunks} chunks — next: Evaluation lab.`), $(`#rag-job-${r.id}`));
+    }));
+    return r;
+  }
+  // Editable settings of one stage: active value | working draft | effect | help. Changed rows are highlighted.
+  function settingsCard(stage, extra = {}) {
+    const a = state.rag.active.config, d = state.ragDraft;
+    const input = (k, f) => {
+      const v = d[k];
+      if (f.type === 'select') return `<select data-f="${k}">${f.options.map((o) => `<option ${o === v ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
+      if (f.type === 'model') return `<select data-f="${k}">${(extra.models || [{ id: v }]).map((m) => `<option value="${esc(m.id)}" ${m.id === v ? 'selected' : ''}>${esc(m.id)}${m.dims ? ` (${m.dims} dims${m.installed === false ? ', not installed' : ''})` : ''}</option>`).join('')}</select>`;
+      if (f.type === 'bool') return `<input type="checkbox" data-f="${k}" ${v ? 'checked' : ''}>`;
+      if (f.type === 'categories') return (extra.categories || []).map((c) => `<label class="chip"><input type="checkbox" data-cat="${esc(c)}" ${(v || []).includes(c) ? 'checked' : ''}> ${esc(c)}</label>`).join(' ') || '<span class="note">no categories</span>';
+      return `<input type="number" data-f="${k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${v ?? ''}" ${f.type === 'nullnum' ? 'placeholder="none"' : ''} style="width:120px">`;
+    };
+    const rows = Object.entries(RAG_FIELDS).filter(([, f]) => f.stage === stage);
+    return `<div class="rag-settings"><h4 style="margin-top:0">Current settings — ${esc(stage)} <span class="note">(active ${esc(state.rag.active.id)} · edit the right column; changes go to the working draft)</span></h4>
+      <div class="scroll"><table><thead><tr><th>Setting</th><th>Active (live)</th><th>Working draft</th><th>Takes effect</th><th>Notes</th></tr></thead><tbody>
+      ${rows.map(([k, f]) => `<tr data-row="${k}" class="${same(a[k], d[k]) ? '' : 'rag-changed'}"><td><b>${esc(f.label)}</b><br><span class="note">${k}</span></td><td>${esc(fmtVal(a[k]))}</td><td>${input(k, f)}</td>
+        <td>${isCold(k) ? badge('at_risk', 'new index') : badge('ready', 'query time')}</td><td class="note">${esc(f.help || '')}</td></tr>`).join('')}
+      </tbody></table></div></div>`;
+  }
+  function bindSettings(host) {
+    const update = (k, v) => {
+      state.ragDraft[k] = v;
+      const row = $(`[data-row="${k}"]`, host);
+      if (row) row.classList.toggle('rag-changed', !same(state.rag.active.config[k], v));
+      renderDraftBar();
+    };
+    $$('[data-f]', host).forEach((el) => el.addEventListener('change', () => {
+      const k = el.dataset.f, f = RAG_FIELDS[k];
+      update(k, f.type === 'bool' ? el.checked : f.type === 'number' ? +el.value : f.type === 'nullnum' ? (el.value === '' ? null : +el.value) : el.value);
+    }));
+    $$('[data-cat]', host).forEach((el) => el.addEventListener('change', () => update('category_filter', $$('[data-cat]', host).filter((x) => x.checked).map((x) => x.dataset.cat))));
+  }
 
   // ---- 1. knowledge & metadata
   async function ragKnowledge() {
-    state.ragDocs = null;
-    const inv = await ragDocs();
-    ragPane().innerHTML = `<div class="row" style="justify-content:space-between"><p class="note">${inv.summary.documents} documents of tenant <b>${esc(inv.tenant)}</b> · ${inv.summary.chunks} chunks in index <b>${esc(inv.index_version)}</b> (${esc(inv.embedding_model)}) · ${inv.summary.with_issues} with issues · ${inv.summary.rejected} rejected. Other tenants' documents are never listed.</p>
+    const inv = await ragDocs(true);
+    const categories = [...new Set(inv.documents.map((d) => d.category))].sort();
+    ragPane().innerHTML = `${settingsCard('knowledge', { categories })}
+      <div class="row" style="justify-content:space-between;margin-top:14px"><p class="note">${inv.summary.documents} documents of tenant <b>${esc(inv.tenant)}</b> · ${inv.summary.chunks} chunks in index <b>${esc(inv.index_version)}</b> (${esc(inv.embedding_model)}) · ${inv.summary.with_issues} with issues · ${inv.summary.rejected} rejected. Other tenants' documents are never listed. Metadata comes from each document's front matter (data/scinsight/knowledge).</p>
       <button id="rag-validate">Run metadata &amp; source-quality checks</button></div>
       ${table([['Document', (d) => `<b>${esc(d.doc_id)}</b><br><span class="note">${esc(d.title)}</span>`], ['Source', (d) => `<span class="note">${esc(d.source)}</span>`],
         ['Tenant', (d) => esc(d.tenant)], ['Type', (d) => esc(d.category)], ['Version', (d) => esc(d.version)], ['Effective', (d) => `${esc(d.valid_from)} → ${esc(d.valid_to || 'open')}`],
         ['Approval', (d) => d.approval_status ? esc(d.approval_status) : '<span class="note">missing</span>'], ['Access', (d) => d.access_roles.map(chip).join(' ')],
         ['Ingested', (d) => `<span class="note">${esc(d.ingested_at || 'not indexed')}</span>${d.indexed_sha_matches ? '' : ' ' + badge('at_risk', 'changed since indexing')}`],
-        ['Chunks', (d) => num(d.chunks), 'num'], ['Index', (d) => esc(d.index_version)], ['Flowise RAG DB', (d) => d.in_flowise_rag_db ? 'yes' : 'no (agent key cannot read it)'],
+        ['Metadata used', (d) => `${d.metadata.map((m) => `<span class="chip${m.used_for === 'stored only' ? ' rag-meta-stored' : ''}" title="${esc(m.field)} = ${esc(m.value)} · ${esc(m.used_for)}">${esc(m.field)}</span>`).join(' ')}${d.metadata_missing.length ? `<div class="note">missing: ${esc(d.metadata_missing.join(', '))}</div>` : ''}`],
+        ['Chunks', (d) => num(d.chunks), 'num'], ['Index', (d) => esc(d.index_version)], ['Flowise RAG DB', (d) => d.in_flowise_rag_db ? 'yes' : 'no'],
         ['Issues', (d) => d.issues.length ? d.issues.map((i) => sev(i.severity)).join(' ') : badge('ready', 'none')],
         ['', (d) => `<button class="ghost small" data-src="${esc(d.doc_id)}">Preview</button>`]], inv.documents)}
+      <h4>Metadata by document type</h4>
+      ${table([['Document type', (t) => `<b>${esc(t.category)}</b>`], ['Documents', (t) => t.documents, 'num'],
+        ['Fields used → what the search does with them', (t) => t.fields.map((f) => `<span class="chip${f.used_for === 'stored only' ? ' rag-meta-stored' : ''}">${esc(f.field)} <span class="note">→ ${esc(f.used_for)}</span></span>`).join(' ')],
+        ['Missing (required / recommended)', (t) => t.missing.length ? esc(t.missing.join(', ')) : badge('ready', 'none')]], inv.metadata_by_type)}
       ${inv.rejected.length ? `<h4>Rejected by ingestion</h4>${table([['File', (r) => esc(r.source)], ['Problem', (r) => esc(r.error)], ['Fields present', (r) => esc(r.present_fields.join(', ') || 'none')]], inv.rejected)}` : ''}
       <div id="rag-issues"></div>`;
+    bindSettings(ragPane());
     $$('[data-src]', ragPane()).forEach((b) => b.addEventListener('click', async () => {
       const s = await api(`${RAG}/documents/${encodeURIComponent(b.dataset.src)}/source`).catch((e) => toast(e.message));
       if (s) modal(`${s.doc_id} · ${s.source}`, `<p class="note">${esc(JSON.stringify(s.meta))}</p><pre class="code-box">${esc(s.body)}</pre>`);
@@ -320,97 +418,62 @@
   // ---- 2. chunking
   async function ragChunking() {
     const inv = await ragDocs();
-    const a = state.rag.active.config;
-    ragPane().innerHTML = `<p class="note">Index-building settings: a change here needs a <b>new candidate index</b> (built next to the active one, never published automatically). Sizes are <b>characters</b>; token counts are approximate (characters / 4).</p>
-      <form id="rag-chunk-form" class="grid g3">
-        <label>Strategy <select name="chunk_strategy"><option value="section">section (split on headings, then windows)</option><option value="clause">clause (whole sentences, keeps rules with their conditions)</option><option value="fixed">fixed (windows over the whole document)</option></select></label>
-        <label>Chunk size (characters) <input name="chunk_size" type="number" min="50" max="4000" value="${a.chunk_size}"></label>
-        <label>Overlap (characters) <input name="chunk_overlap" type="number" min="0" max="2000" value="${a.chunk_overlap}"></label>
-        <label><input type="checkbox" name="preserve_headings" ${a.preserve_headings ? 'checked' : ''}> Prefix each chunk with title — section</label>
-        <label><input type="checkbox" name="preserve_source_ids" ${a.preserve_source_ids ? 'checked' : ''}> Prefix each chunk with [doc id + version]</label>
-        <label>Document <select name="doc_id">${inv.documents.map((d) => `<option value="${esc(d.doc_id)}" ${d.doc_id === 'POL-PROC-001' ? 'selected' : ''}>${esc(d.doc_id)} · ${esc(d.title)}</option>`).join('')}</select></label>
-      </form>
-      <div class="row">${Object.entries(state.rag.presets).map(([k, v]) => `<button class="ghost small" data-preset="${k}">${esc(k)} ${v.chunk_size}/${v.chunk_overlap}</button>`).join('')}
-        <span class="note">presets are experimental starting points, not optimal values</span></div>
-      <div class="row"><button id="rag-chunk-preview">Preview vs active</button><button class="ghost" id="rag-chunk-draft">Save as draft</button></div>
-      <div id="rag-chunk-msg"></div><div class="grid g2" id="rag-chunk-out"></div>`;
-    const form = $('#rag-chunk-form');
-    form.chunk_strategy.value = a.chunk_strategy;
-    const current = () => ({ ...a, chunk_strategy: form.chunk_strategy.value, chunk_size: +form.chunk_size.value, chunk_overlap: +form.chunk_overlap.value,
-      preserve_headings: form.preserve_headings.checked, preserve_source_ids: form.preserve_source_ids.checked });
-    $$('[data-preset]').forEach((b) => b.addEventListener('click', () => { const p = state.rag.presets[b.dataset.preset]; form.chunk_size.value = p.chunk_size; form.chunk_overlap.value = p.chunk_overlap; }));
+    ragPane().innerHTML = `${settingsCard('chunking')}
+      <div class="row" style="margin-top:10px">${Object.entries(state.rag.presets).map(([k, v]) => `<button class="ghost small" data-preset="${k}">${esc(k)} ${v.chunk_size}/${v.chunk_overlap}</button>`).join('')}
+        <label>Document <select id="rag-doc">${inv.documents.map((d) => `<option value="${esc(d.doc_id)}" ${d.doc_id === 'POL-PROC-001' ? 'selected' : ''}>${esc(d.doc_id)} · ${esc(d.title)}</option>`).join('')}</select></label>
+        <button id="rag-chunk-preview">Preview working draft vs active</button></div>
+      <p class="note">Preview only: nothing is written. Sizes are characters; token counts are approximate.</p>
+      <div class="grid g2" id="rag-chunk-out"></div>`;
+    bindSettings(ragPane());
+    $$('[data-preset]').forEach((b) => b.addEventListener('click', () => { Object.assign(state.ragDraft, state.rag.presets[b.dataset.preset]); renderDraftBar(); ragChunking(); }));
     const col = (title, p) => `<div><h4>${esc(title)}: ${p.count} chunks · avg ${p.avg_chars} chars</h4>${p.chunks.map((c) => `<div class="card" style="margin:6px 0;padding:10px">
       <div class="note"><b>${esc(c.chunk_id)}</b> · ${esc(c.section)} · ${c.chars} chars · ~${c.approx_tokens} tokens${c.overlap_with_previous ? ` · ${c.overlap_with_previous} chars overlap with previous` : ''}</div>
       <pre class="code-box" style="min-height:0;max-height:180px">${esc(c.text)}</pre></div>`).join('')}</div>`;
     $('#rag-chunk-preview').addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const cfg = current();
+      const cfg = { ...state.ragDraft, candidate_k: Math.max(state.ragDraft.candidate_k, state.ragDraft.top_k) };
       if (cfg.chunk_overlap >= cfg.chunk_size) { toast('Overlap must be smaller than the chunk size.'); return; }
-      const r = await api(`${RAG}/chunks/preview`, { body: { doc_id: form.doc_id.value, config: cfg, compare_with: a } });
-      $('#rag-chunk-out').innerHTML = col('Candidate', r.preview) + col(`Active (${state.rag.active.id})`, r.compare);
+      const r = await api(`${RAG}/chunks/preview`, { body: { doc_id: $('#rag-doc').value, config: cfg, compare_with: state.rag.active.config } });
+      $('#rag-chunk-out').innerHTML = col('Working draft', r.preview) + col(`Active (${state.rag.active.id})`, r.compare);
     }));
-    $('#rag-chunk-draft').addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft(current(), '#rag-chunk-msg', `chunking ${form.chunk_strategy.value} ${form.chunk_size.value}/${form.chunk_overlap.value}`)));
-  }
-  async function ragSaveDraft(cfg, target, name) {
-    const r = await api(`${RAG}/draft`, { method: 'PUT', body: { config: cfg, name } });
-    const d = r.diff;
-    $(target).innerHTML = `<div class="card"><b>Draft ${esc(r.id)}</b> saved. ${d.needs_new_index
-      ? `Needs a new index (changed: ${d.rebuild_required.map(chip).join(' ')}).` : `Query-time change only (${d.query_time.map(chip).join(' ') || 'no change'}): reuses the active index.`}
-      <div class="row"><button id="rag-build-${esc(r.id)}">Build candidate index</button><span class="note">Next: Evaluation lab → benchmark it against the active configuration.</span></div><div id="rag-job-${esc(r.id)}"></div></div>`;
-    $(`#rag-build-${r.id}`).addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const job = await api(`${RAG}/index/build-candidate`, { body: { config_id: r.id } });
-      await pollJob(job, (res) => toast(res.reused ? 'Candidate reuses the active index.' : `Candidate index ${res.index_version}: ${res.documents} documents, ${res.chunks} chunks.`), $(`#rag-job-${r.id}`));
-    }));
-    return r;
   }
 
   // ---- 3. embeddings
   async function ragEmbeddings() {
     const m = await api(`${RAG}/embedding-models`);
-    ragPane().innerHTML = `<p class="note">${esc(m.note)} Changing the model is an index-building change. Only the approved list below can be selected.</p>
+    ragPane().innerHTML = `${settingsCard('embeddings', { models: m.models })}
+      <p class="note" style="margin-top:12px">${esc(m.note)} The Flowise chatflow RAG DB can only follow BAAI/bge-small-en-v1.5 (the model the gateway serves).</p>
       ${table([['Model', (x) => `<b>${esc(x.id)}</b>${x.active ? ' ' + badge('ready', 'active') : ''}<br><span class="note">${esc(x.role)}</span>`], ['Provider', (x) => esc(x.provider)],
         ['Dimensions', (x) => num(x.dims), 'num'], ['Languages', (x) => esc(x.languages)], ['Installed', (x) => x.installed ? badge('ready', 'installed') : badge('not_configured', 'not installed')],
-        ['', (x) => `<button class="ghost small" data-test="${esc(x.id)}">Test loading</button> ${x.active ? '' : `<button class="ghost small" data-model="${esc(x.id)}">Draft with this model</button>`}`]], m.models)}
+        ['', (x) => `<button class="ghost small" data-test="${esc(x.id)}">Test loading</button>`]], m.models)}
       <div id="rag-emb-out"></div>`;
+    bindSettings(ragPane());
     $$('[data-test]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => {
       const job = await api(`${RAG}/embedding-models/test`, { body: { model: b.dataset.test } });
       await pollJob(job, (r) => { $('#rag-emb-out').innerHTML = `<div class="card"><h4>${esc(r.model)}</h4><p>Loaded in ${num(r.load_ms, 1)} ms · ${num(r.embed_ms_per_text, 2)} ms per text · dimensions ${esc(r.dims.join(', '))} (expected ${r.expected_dims}) ${r.dims_ok ? badge('ready', 'dimensions ok') : badge('blocked', 'dimension mismatch')} · norms ${esc(r.norms.join(', '))}</p><p class="note">first values: ${esc(JSON.stringify(r.sample_head))}</p></div>`; }, $('#rag-emb-out'));
     })));
-    $$('[data-model]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft({ ...state.rag.active.config, embedding_model: b.dataset.model }, '#rag-emb-out', `embedding ${b.dataset.model}`))));
   }
 
   // ---- 4. retrieval
   async function ragRetrieval() {
-    const a = state.rag.active.config;
-    const hist = await api(`${RAG}/history`);
-    const usable = hist.versions.filter((v) => v.index_version);
-    ragPane().innerHTML = `<div class="grid g2"><div class="card"><b>Query-time settings</b> (take effect without re-indexing): ${state.rag.hot_fields.map(chip).join(' ')}</div>
-      <div class="card"><b>Index-building settings</b> (need a new index): ${state.rag.cold_fields.map(chip).join(' ')}</div></div>
-      <form id="rag-q" class="grid g3">
+    const pendingCold = diffKeys(state.rag.active.config, state.ragDraft).filter(isCold);
+    ragPane().innerHTML = `${settingsCard('retrieval')}
+      <div class="row" style="margin-top:10px">${state.rag.top_k_presets.map((k) => `<button class="ghost small" data-k="${k}">Top-K ${k}</button>`).join('')}</div>
+      <form id="rag-q" class="grid g3" onsubmit="return false">
         <label style="grid-column:1/-1">Procurement question <input name="query" value="Who must approve a warehouse stock transfer?"></label>
-        <label>Configuration / index <select name="config_id">${usable.map((v) => `<option value="${esc(v.id)}" ${v.status === 'active' ? 'selected' : ''}>${esc(v.id)} · ${esc(v.status)} · ${esc(v.index_version)}</option>`).join('')}</select></label>
-        <label>Top-K <input name="top_k" type="number" min="1" max="10" value="${a.top_k}"></label>
-        <label>Similarity threshold (blank = none) <input name="similarity_threshold" type="number" step="0.01" min="-1" max="1" value="${a.similarity_threshold ?? ''}"></label>
-        <label>Mode <select name="retrieval_mode"><option>semantic</option><option>keyword</option><option>hybrid</option></select></label>
-        <label>Hybrid semantic weight <input name="hybrid_alpha" type="number" step="0.05" min="0" max="1" value="${a.hybrid_alpha}"></label>
-        <label>Reranking <select name="rerank"><option value="none">none</option><option value="lexical">lexical (deterministic term overlap)</option></select></label>
-        <label>Candidates before filtering <input name="candidate_k" type="number" min="1" max="100" value="${a.candidate_k}"></label>
-        <label>Max context tokens (blank = none) <input name="max_context_tokens" type="number" min="50" max="8000" value="${a.max_context_tokens ?? ''}"></label>
-        <label>Role fixture (access test) <select name="role"><option value="">my roles (director)</option>${['planner', 'warehouse_manager', 'procurement_manager', 'quality_manager', 'production_planner', 'agent_service'].map((r) => `<option>${r}</option>`).join('')}</select></label>
+        <label>Retrieve as role (access test) <select name="role">${state.role === 'manager' ? '<option value="">my roles (director)</option>' : ''}${['planner', 'warehouse_manager', 'procurement_manager', 'quality_manager', 'production_planner', 'agent_service'].map((r) => `<option>${r}</option>`).join('')}</select></label>
       </form>
-      <div class="row">${state.rag.top_k_presets.map((k) => `<button class="ghost small" data-k="${k}">Top-K ${k}</button>`).join('')}<button id="rag-run">Retrieve</button><button class="ghost" id="rag-hot-draft">Save as draft</button></div>
-      <div id="rag-r-msg"></div><div id="rag-r-out"></div>`;
+      ${pendingCold.length ? `<p class="note">${badge('at_risk', 'note')} The working draft also changes index settings (${pendingCold.map(chip).join(' ')}): this preview runs on the active index with the draft's query-time settings. Save the profile and build its index to test those.</p>` : ''}
+      <div class="row"><button id="rag-run">Retrieve with the working draft</button></div>
+      <div id="rag-r-out"></div>`;
+    bindSettings(ragPane());
     const f = $('#rag-q');
-    f.retrieval_mode.value = a.retrieval_mode; f.rerank.value = a.rerank;
-    $$('[data-k]').forEach((b) => b.addEventListener('click', () => { f.top_k.value = b.dataset.k; }));
-    const overrides = () => {
-      const o = { top_k: +f.top_k.value, retrieval_mode: f.retrieval_mode.value, hybrid_alpha: +f.hybrid_alpha.value, rerank: f.rerank.value, candidate_k: Math.max(+f.candidate_k.value, +f.top_k.value) };
-      o.similarity_threshold = f.similarity_threshold.value === '' ? null : +f.similarity_threshold.value;
-      o.max_context_tokens = f.max_context_tokens.value === '' ? null : +f.max_context_tokens.value;
-      return o;
-    };
+    $$('[data-k]').forEach((b) => b.addEventListener('click', () => { state.ragDraft.top_k = +b.dataset.k; state.ragDraft.candidate_k = Math.max(state.ragDraft.candidate_k, state.ragDraft.top_k); renderDraftBar(); ragRetrieval(); }));
     $('#rag-run').addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const r = await api(`${RAG}/retrieve/preview`, { body: { query: f.query.value, config_id: f.config_id.value, overrides: overrides(), roles: f.role.value ? [f.role.value] : [] } });
-      $('#rag-r-out').innerHTML = `<p class="note">Config ${esc(r.config_version)} · index ${esc(r.index_version)} · ${esc(r.embedding_model)} · roles ${esc(r.roles_used.join(', '))} · latency: embed ${r.latency_ms.embed} ms, retrieve ${r.latency_ms.retrieve} ms, total ${r.latency_ms.total} ms</p>
+      const d = state.ragDraft;
+      const overrides = Object.fromEntries(state.rag.hot_fields.map((k) => [k, d[k]]));
+      overrides.candidate_k = Math.max(d.candidate_k, d.top_k);
+      const r = await api(`${RAG}/retrieve/preview`, { body: { query: f.query.value, overrides, roles: f.role.value ? [f.role.value] : [] } });
+      $('#rag-r-out').innerHTML = `<p class="note">Index ${esc(r.index_version)} · ${esc(r.embedding_model)} · roles ${esc(r.roles_used.join(', '))} · latency: embed ${r.latency_ms.embed} ms, retrieve ${r.latency_ms.retrieve} ms, total ${r.latency_ms.total} ms</p>
         <p class="note">${esc(r.score_note)}</p>
         ${table([['#', (h) => h._rank, 'num'], ['Document', (h) => `<b>${esc(h.citation.doc_id)}</b> v${esc(h.citation.version)}`], ['Title · section', (h) => `${esc(h.citation.title)}<br><span class="note">${esc(h.citation.section)} · chunk ${h.citation.chunk}</span>`],
           ['Score', (h) => num(h.score, 4), 'num'], ['Semantic', (h) => num(h.semantic_score, 4), 'num'], ['Keyword', (h) => num(h.keyword_score, 2), 'num'], ['Rerank', (h) => h.rerank_score === null ? '—' : num(h.rerank_score, 2), 'num'],
@@ -418,45 +481,72 @@
           ['Metadata', (h) => `${esc(h.category)} · ${esc(h.citation.valid_from)}→${esc(h.citation.valid_to || 'open')} · ~${h.approx_tokens} tok`], ['Access', () => badge('ready', 'allowed')]], r.results.map((h, i) => ({ ...h, _rank: i + 1 })))}
         <h4>Excluded (${r.excluded.length})</h4>${table([['Document', (x) => esc(x.doc_id)], ['Section', (x) => esc(x.section)], ['Score', (x) => num(x.score, 4), 'num'], ['Reason', (x) => badge(x.reason === 'below threshold' || x.reason === 'context budget' ? 'plan' : 'blocked', x.reason)]], r.excluded.slice(0, 30))}`;
     }));
-    $('#rag-hot-draft').addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft({ ...a, ...overrides() }, '#rag-r-msg', `retrieval top${f.top_k.value} ${f.retrieval_mode.value}`)));
   }
 
-  // ---- 5. evaluation lab
+  // ---- 5. evaluation lab: profiles, their settings, their latest results, and a named comparison
+  const METRICS = [
+    ['hit_rate', 'Hit rate@K', 'a relevant policy is among the passages returned', 1], ['recall', 'Recall@K', 'share of the relevant policies found', 1],
+    ['precision', 'Precision@K', 'share of the K slots filled by a relevant policy (fewer passages lower it)', 1], ['mrr', 'MRR', '1 = the first passage is relevant', 1],
+    ['evidence_coverage', 'Evidence', 'expected facts present in the passages', 1], ['no_evidence_pass', 'No-evidence', 'nothing returned when no policy answers the question', 1],
+    ['version_accuracy', 'Version', 'cites the effective policy version', 1], ['leakage', 'Leakage', 'passages the role / tenant must not see (must be 0)', -1],
+    ['latency_mean_ms', 'Mean ms', 'average time per question', -1], ['latency_p95_ms', 'P95 ms', '95% of questions are faster than this', -1],
+    ['answer_fact_coverage', 'Answer facts', 'Qwen answer contains the expected facts', 1], ['citation_correctness', 'Answer citations', 'Qwen cites retrieved, relevant policies', 1],
+  ];
   async function ragEvaluation() {
     const [hist, ex] = await Promise.all([api(`${RAG}/history`), api(`${RAG}/experiments`)]);
-    const cands = hist.versions.filter((v) => ['active', 'candidate', 'draft', 'retired'].includes(v.status));
-    const s = (e, k, d = 3) => num(e.summary[k], d);
-    ragPane().innerHTML = `<p class="note">Benchmark dataset <b>v1</b> (data/scinsight/rag_benchmark/v1.json): 15 labelled synthetic questions incl. no-evidence, other-tenant and role-access cases. Every question runs through the live search function with its role fixture. Hit Rate@K = a relevant document is in the top K; Recall@K = share of relevant documents found; leakage must be 0.</p>
-      <div class="row">${cands.map((v) => `<label class="chip"><input type="checkbox" value="${esc(v.id)}" ${v.status === 'active' ? 'checked' : ''}> ${esc(v.id)} · ${esc(v.status)} · ${esc(v.name)}</label>`).join(' ')}</div>
-      <div class="row"><label><input type="checkbox" id="rag-answers"> also generate answers with Qwen (slow; checked deterministically against the evidence)</label><button id="rag-bench">Run benchmark</button></div>
+    const active = hist.versions.find((v) => v.status === 'active');
+    const profiles = hist.versions.filter((v) => v.status !== 'failed');
+    const latest = {};
+    ex.experiments.forEach((e) => { if (!latest[e.config_id]) latest[e.config_id] = e; });
+    const byId = Object.fromEntries(profiles.map((v) => [v.id, v]));
+    const name = (id) => byId[id] ? `${byId[id].name} (${id})` : id;
+    const s = (e, k, d = 3) => (e ? num(e.summary[k], d) : '—');
+    const candidates = profiles.filter((v) => v.id !== active.id && latest[v.id]);
+    ragPane().innerHTML = `<div class="card rag-explain"><b>How it works.</b> A <b>profile</b> is one saved configuration (chunking + embeddings + retrieval settings). The lab runs the same 15 labelled questions (dataset <b>v1</b>, incl. one the corpus cannot answer, one about another tenant and one a role may not read) through the live search with each profile, then compares the <b>active</b> profile with a <b>candidate</b>.</div>
+      <h4>1 · Profiles and their latest benchmark</h4>
+      ${table([['', (v) => `<input type="checkbox" class="rag-pick" value="${esc(v.id)}" ${v.status === 'active' || !latest[v.id] ? 'checked' : ''}>`],
+        ['Profile', (v) => `<b>${esc(v.name)}</b> ${v.status === 'active' ? badge('ready', 'active') : badge('plan', v.status)}<br><span class="note">${esc(v.id)} · index ${esc(v.index_version || 'not built')}</span>`],
+        ['Settings', (v) => `<span class="note">${cfgLine(v.config)}</span>`], ['Differs from active', (v) => v.id === active.id ? '<span class="note">reference</span>' : diffChips(v.config, active.config)],
+        ['Benchmarked', (v) => latest[v.id] ? `<span class="note">${esc(latest[v.id].created_at)}</span>` : '<span class="note">not yet</span>'],
+        ['Hit@K', (v) => s(latest[v.id], 'hit_rate'), 'num'], ['Recall@K', (v) => s(latest[v.id], 'recall'), 'num'], ['No-evidence', (v) => s(latest[v.id], 'no_evidence_pass'), 'num'],
+        ['Leakage', (v) => (latest[v.id] ? (latest[v.id].summary.leakage ? badge('blocked', String(latest[v.id].summary.leakage)) : '0') : '—'), 'num'], ['P95 ms', (v) => s(latest[v.id], 'latency_p95_ms', 1), 'num']], profiles)}
+      <div class="row"><button id="rag-bench">Benchmark the ticked profiles</button><label><input type="checkbox" id="rag-answers"> also generate answers with Qwen (slow)</label></div>
       <div id="rag-bench-job"></div>
-      <h4>Experiments</h4>
-      ${table([['', (e) => `<input type="radio" name="ra" value="${esc(e.id)}"> A <input type="radio" name="rb" value="${esc(e.id)}"> B`], ['Experiment', (e) => `<b>${esc(e.id)}</b><br><span class="note">${esc(e.created_at)}</span>`], ['Config', (e) => esc(e.config_id)],
-        ['Dataset', (e) => esc(e.dataset_version)], ['K', (e) => e.summary.k, 'num'], ['Hit@K', (e) => s(e, 'hit_rate'), 'num'], ['Recall@K', (e) => s(e, 'recall'), 'num'], ['Precision@K', (e) => s(e, 'precision'), 'num'], ['MRR', (e) => s(e, 'mrr'), 'num'],
-        ['Evidence', (e) => s(e, 'evidence_coverage'), 'num'], ['No-evidence', (e) => s(e, 'no_evidence_pass'), 'num'], ['Leakage', (e) => e.summary.leakage ? badge('blocked', String(e.summary.leakage)) : '0', 'num'],
-        ['Mean ms', (e) => s(e, 'latency_mean_ms', 1), 'num'], ['P95 ms', (e) => s(e, 'latency_p95_ms', 1), 'num'], ['Answers', (e) => e.summary.citation_correctness === undefined ? '—' : `facts ${s(e, 'answer_fact_coverage')} · citations ${s(e, 'citation_correctness')}`]], ex.experiments)}
-      <div class="row"><button class="ghost" id="rag-compare">Compare A (active) vs B (candidate)</button></div><div id="rag-compare-out"></div>
-      <h4>Grid experiment</h4>
-      <div class="row">${Object.keys(state.rag.presets).map((p) => `<label class="chip"><input type="checkbox" data-gp="${p}" checked> ${p}</label>`).join('')} ${state.rag.top_k_presets.map((k) => `<label class="chip"><input type="checkbox" data-gk="${k}" checked> top ${k}</label>`).join('')}
-        <button class="ghost" id="rag-grid">Estimate workload</button></div><div id="rag-grid-out"></div>`;
+      <h4>2 · Compare</h4>
+      <div class="row"><label>Reference <select id="rag-ref">${profiles.filter((v) => latest[v.id]).map((v) => `<option value="${esc(v.id)}" ${v.id === active.id ? 'selected' : ''}>${esc(v.name)} · ${esc(v.status)} (${esc(v.id)})</option>`).join('')}</select></label>
+        <span>vs</span><label>Candidate <select id="rag-cand">${candidates.map((v, i) => `<option value="${esc(v.id)}" ${i === 0 ? 'selected' : ''}>${esc(v.name)} · ${esc(v.status)} (${esc(v.id)})</option>`).join('') || '<option value="">benchmark a candidate first</option>'}</select></label>
+        <button id="rag-compare">Compare latest results</button></div>
+      <div id="rag-compare-out"></div>
+      <details class="more"><summary>All benchmark runs (${ex.experiments.length})</summary>
+        ${table([['Run', (e) => `<b>${esc(e.id)}</b><br><span class="note">${esc(e.created_at)}</span>`], ['Profile', (e) => esc(name(e.config_id))], ['Settings', (e) => `<span class="note">${cfgLine(e.params.config)}</span>`],
+          ...METRICS.slice(0, 10).map(([k, label, , dir]) => [label, (e) => (k === 'leakage' ? String(e.summary.leakage) : s(e, k, dir < 0 ? 1 : 3)), 'num'])], ex.experiments)}</details>
+      <details class="more"><summary>Grid experiment (chunk presets × Top-K)</summary>
+        <div class="row">${Object.keys(state.rag.presets).map((p) => `<label class="chip"><input type="checkbox" data-gp="${p}" checked> ${p}</label>`).join('')} ${state.rag.top_k_presets.map((k) => `<label class="chip"><input type="checkbox" data-gk="${k}" checked> top ${k}</label>`).join('')}
+          <button class="ghost" id="rag-grid">Estimate workload</button></div><div id="rag-grid-out"></div></details>`;
     $('#rag-bench').addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const ids = $$('.row input[type=checkbox][value^="RCFG-"]', ragPane()).filter((x) => x.checked).map((x) => x.value);
-      if (!ids.length) { toast('Select at least one configuration.'); return; }
+      const ids = $$('.rag-pick', ragPane()).filter((x) => x.checked).map((x) => x.value);
+      if (!ids.length) { toast('Tick at least one profile.'); return; }
       const job = await api(`${RAG}/evaluate`, { body: { config_ids: ids, with_answers: $('#rag-answers').checked } });
       await pollJob(job, () => ragEvaluation(), $('#rag-bench-job'));
     }));
     $('#rag-compare').addEventListener('click', (e) => busy(e.currentTarget, async () => {
-      const a = $('input[name=ra]:checked'), b = $('input[name=rb]:checked');
-      if (!a || !b) { toast('Pick experiment A (active) and B (candidate).'); return; }
-      const c = await api(`${RAG}/experiments/compare?active=${a.value}&candidate=${b.value}`);
-      $('#rag-compare-out').innerHTML = `<div class="card"><h4>${c.passed ? badge('ready', 'meets acceptance criteria') : badge('blocked', 'does not meet acceptance criteria')}</h4><p><b>${esc(c.recommendation)}</b></p><p class="note">${esc(c.basis)}</p>
-        ${table([['Metric', (r) => esc(r.metric)], ['Active (A)', (r) => esc(String(r.active ?? 'N/A')), 'num'], ['Candidate (B)', (r) => esc(String(r.candidate ?? 'N/A')), 'num']], c.rows)}
-        ${table([['Check', (x) => esc(x.check)], ['Result', (x) => x.ok ? badge('ready', 'pass') : badge('blocked', 'fail')], ['Detail', (x) => esc(x.detail)]], c.checks)}</div>`;
+      const ref = $('#rag-ref').value, cand = $('#rag-cand').value;
+      if (!ref || !cand || !latest[ref] || !latest[cand]) { toast('Benchmark both profiles first.'); return; }
+      const c = await api(`${RAG}/experiments/compare?active=${latest[ref].id}&candidate=${latest[cand].id}`);
+      const row = Object.fromEntries(c.rows.map((r) => [r.metric, r]));
+      const better = (k, dir) => { const r = row[k]; if (!r || typeof r.active !== 'number' || typeof r.candidate !== 'number' || r.active === r.candidate) return '<span class="note">same</span>'; return (r.candidate - r.active) * dir > 0 ? badge('ready', 'candidate better') : badge('at_risk', 'reference better'); };
+      $('#rag-compare-out').innerHTML = `<div class="card"><h4>${c.passed ? badge('ready', 'meets the publish criteria') : badge('blocked', 'does not meet the publish criteria')} ${esc(byId[cand].name)} vs ${esc(byId[ref].name)}</h4>
+        <p><b>${esc(c.recommendation)}</b></p>
+        <p class="note">What changes: ${diffChips(byId[cand].config, byId[ref].config)}</p>
+        ${table([['Metric', (m) => `<b>${esc(m[1])}</b>`], ['What it means', (m) => `<span class="note">${esc(m[2])}</span>`], [`Reference · ${byId[ref].name}`, (m) => esc(fmtVal(row[m[0]]?.active)), 'num'],
+          [`Candidate · ${byId[cand].name}`, (m) => esc(fmtVal(row[m[0]]?.candidate)), 'num'], ['', (m) => better(m[0], m[3])]], METRICS.filter((m) => row[m[0]]))}
+        <details class="more"><summary>Publish criteria</summary>${table([['Check', (x) => esc(x.check)], ['Result', (x) => x.ok ? badge('ready', 'pass') : badge('blocked', 'fail')], ['Detail', (x) => esc(x.detail)]], c.checks)}</details>
+        <p class="note">${esc(c.basis)}</p></div>`;
     }));
     $('#rag-grid').addEventListener('click', (e) => busy(e.currentTarget, async () => {
       const body = { presets: $$('[data-gp]').filter((x) => x.checked).map((x) => x.dataset.gp), top_k: $$('[data-gk]').filter((x) => x.checked).map((x) => +x.dataset.gk) };
       const w = await api(`${RAG}/evaluate/grid`, { body });
-      $('#rag-grid-out').innerHTML = `<p>${w.workload.configurations} configurations · ${w.workload.index_builds} index builds · ${w.workload.queries} queries · about ${w.workload.estimated_seconds} s (${esc(w.workload.basis)})</p><button id="rag-grid-run">Run this grid</button><div id="rag-grid-job"></div>`;
+      $('#rag-grid-out').innerHTML = `<p>${w.workload.configurations} profiles · ${w.workload.index_builds} index builds · ${w.workload.queries} queries · about ${w.workload.estimated_seconds} s (${esc(w.workload.basis)})</p><button id="rag-grid-run">Run this grid</button><div id="rag-grid-job"></div>`;
       $('#rag-grid-run').addEventListener('click', (ev) => busy(ev.currentTarget, async () => {
         const job = await api(`${RAG}/evaluate/grid`, { body: { ...body, confirm: true } });
         await pollJob(job, () => ragEvaluation(), $('#rag-grid-job'));
@@ -467,18 +557,25 @@
   // ---- 6. publish, history, rollback, monitoring
   async function ragPublish() {
     const [hist, fl, mt] = await Promise.all([api(`${RAG}/history`), api(`${RAG}/flowise`), api(`${RAG}/metrics`)]);
-    ragPane().innerHTML = `<p class="note">Lifecycle: Draft → Preview → Benchmark → Validate → <b>Publish</b> → Monitor → Rollback. Publishing re-indexes the chatflow's RAG DB in Flowise first; the switch happens only after it is verified, otherwise the current configuration stays active. Only the director may publish or roll back.</p>
-      ${table([['Version', (v) => `<b>${esc(v.id)}</b><br><span class="note">${esc(v.name)}</span>`], ['Status', (v) => badge(v.status === 'active' ? 'ready' : v.status === 'failed' ? 'blocked' : 'plan', v.status)], ['Index', (v) => esc(v.index_version || '—')],
-        ['Settings', (v) => `<span class="note">${cfgLine(v.config)}</span>`], ['Created', (v) => `<span class="note">${esc(v.created_at)} · ${esc(v.created_by)}</span>`], ['Published', (v) => `<span class="note">${esc(v.published_at || '—')} ${esc(v.published_by || '')}</span>`],
+    const canPublish = state.role === 'manager';
+    const active = hist.versions.find((v) => v.status === 'active');
+    ragPane().innerHTML = `<p class="note">Lifecycle: Draft → Preview → Benchmark → Validate → <b>Publish</b> → Monitor → Rollback. Publishing re-indexes the chatflow's RAG DB in Flowise first; the switch happens only after it is verified, otherwise the current configuration stays active.</p>
+      ${table([['Profile', (v) => `<b>${esc(v.name)}</b><br><span class="note">${esc(v.id)}</span>`], ['Status', (v) => badge(v.status === 'active' ? 'ready' : v.status === 'failed' ? 'blocked' : 'plan', v.status)], ['Index', (v) => esc(v.index_version || '—')],
+        ['Settings', (v) => `<span class="note">${cfgLine(v.config)}</span>`], ['Differs from active', (v) => v.status === 'active' ? '<span class="note">live</span>' : diffChips(v.config, active.config)],
+        ['Published', (v) => `<span class="note">${esc(v.published_at || '—')} ${esc(v.published_by || '')}</span>`],
         ['Validation', (v) => v.validation ? (v.validation.ok ? badge('ready', 'passed') : badge('blocked', 'failed')) : '—'],
-        ['', (v) => v.status === 'active' ? '' : `<button class="ghost small" data-diff="${esc(v.id)}">Diff</button> <button class="ghost small" data-val="${esc(v.id)}">Validate</button> ${v.status === 'candidate' ? `<button class="small" data-pub="${esc(v.id)}">Publish</button>` : ''} ${v.status === 'retired' && v.published_at ? `<button class="small" data-rb="${esc(v.id)}">Roll back</button>` : ''}`]], hist.versions)}
+        ['', (v) => v.status === 'active' ? '' : `<button class="ghost small" data-load="${esc(v.id)}">Edit as draft</button> <button class="ghost small" data-val="${esc(v.id)}">Validate</button> ${canPublish && v.status === 'candidate' ? `<button class="small" data-pub="${esc(v.id)}">Publish</button>` : ''} ${canPublish && v.status === 'retired' && v.published_at ? `<button class="small" data-rb="${esc(v.id)}">Roll back</button>` : ''}`]], hist.versions)}
+      ${canPublish ? '' : '<p class="note">Publish and roll back are reserved for managers (Supply Chain Director): they change the live Company RAG Search for everyone. Every other step is open to your role.</p>'}
       <div id="rag-pub-out"></div>
       <div class="grid g2"><div class="card"><h4>Flowise chatflow RAG DB</h4>${fl.reachable === false || !fl.configured ? `<p class="note">${esc(fl.detail)}</p>` : `<p>${esc(fl.chatflow)} · tool <code>${esc(fl.retriever_tool)}</code> · splitter ${fl.chunk_size}/${fl.chunk_overlap} chars · top ${fl.top_k} · ${esc(fl.embedding_model)} · table ${esc(fl.table)}</p><p class="note">rows by configuration tag: ${esc(JSON.stringify(fl.table_rows))} · loader tag ${esc(fl.rag_config_version || 'none (deploy settings)')}</p>`}</div>
-        <div class="card"><h4>Monitoring (recent queries)</h4>${table([['Config', (r) => esc(r.config_id)], ['Source', (r) => esc(r.source)], ['Queries', (r) => r.queries, 'num'], ['Empty', (r) => r.empty, 'num'], ['Mean ms', (r) => num(r.latency_mean_ms, 1), 'num']], mt.summary)}</div></div>
-      <h4>Indexes</h4>${table([['Index', (i) => esc(i.index_version)], ['Model', (i) => esc(i.embedding_model)], ['Documents', (i) => i.documents, 'num'], ['Chunks', (i) => i.chunks, 'num'], ['Status', (i) => esc(i.status)], ['Config', (i) => esc(i.config_id || '—')]], hist.indexes)}`;
+        <div class="card"><h4>Monitoring (recent queries)</h4>${table([['Profile', (r) => esc(r.config_id)], ['Source', (r) => esc(r.source)], ['Queries', (r) => r.queries, 'num'], ['Empty', (r) => r.empty, 'num'], ['Mean ms', (r) => num(r.latency_mean_ms, 1), 'num']], mt.summary)}</div></div>
+      <h4>Indexes</h4>${table([['Index', (i) => esc(i.index_version)], ['Model', (i) => esc(i.embedding_model)], ['Documents', (i) => i.documents, 'num'], ['Chunks', (i) => i.chunks, 'num'], ['Status', (i) => esc(i.status)], ['Profile', (i) => esc(i.config_id || '—')]], hist.indexes)}`;
     const out = $('#rag-pub-out');
     const checks = (r) => table([['Check', (x) => esc(x.check)], ['Result', (x) => x.ok ? badge('ready', 'pass') : badge('blocked', 'fail')], ['Detail', (x) => esc(x.detail)]], r.checks || []);
-    $$('[data-diff]').forEach((b) => b.addEventListener('click', async () => { const d = await api(`${RAG}/diff/${b.dataset.diff}`); out.innerHTML = `<div class="card"><h4>${esc(b.dataset.diff)} vs active</h4>${table([['Setting', (r) => esc(r[0])], ['Active', (r) => esc(JSON.stringify(r[1].active))], ['Candidate', (r) => esc(JSON.stringify(r[1].candidate))], ['Effect', (r) => state.rag.cold_fields.includes(r[0]) ? badge('at_risk', 'needs new index') : badge('ready', 'query time')]], Object.entries(d.changed))}</div>`; }));
+    $$('[data-load]').forEach((b) => b.addEventListener('click', () => {
+      const v = hist.versions.find((x) => x.id === b.dataset.load);
+      state.ragDraft = JSON.parse(JSON.stringify(v.config)); renderDraftBar(); toast(`${v.name} loaded into the working draft: edit it in any stage.`);
+    }));
     $$('[data-val]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(`${RAG}/validate`, { body: { config_id: b.dataset.val } }); out.innerHTML = `<div class="card"><h4>${esc(r.config_id)}: ${r.ok ? badge('ready', 'ready to publish') : badge('blocked', 'not ready')}</h4>${checks(r)}</div>`; })));
     const act = (attr, path, verb) => $$(`[${attr}]`).forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => {
       const id = b.getAttribute(attr);
@@ -1616,6 +1713,219 @@
     ]);
     const items = [['API docs (Swagger)', state.cfg.api_docs], ['Flowise', L.flowise], ['LangSmith Studio', L.langsmith_studio], ['LangGraph Server', L.langgraph_api], ['MCP server', L.mcp], ['Grafana', L.grafana], ['Langfuse', L.langfuse]];
     $('#links').innerHTML = items.filter((i) => i[1]).map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a> <span class="note">${esc(u)}</span></li>`).join('');
+  }
+
+  // ================================================================ ERP / SAP SETUP
+  const ERP_STATUS = { pass: 'good', warn: 'warning', fail: 'critical', 'n/a': 'info', connected: 'good', error: 'critical', disconnected: 'warning', not_configured: 'info',
+    validated: 'good', activated: 'good', failed: 'critical', running: 'info', draft: 'info', tested: 'good', active: 'good', inactive: 'info' };
+  const erpBadge = (s, label) => pill(ERP_STATUS[s] || 'info', label ?? String(s).replaceAll('_', ' '));
+  const erpWhen = (iso) => (iso ? esc(iso.slice(0, 16).replace('T', ' ')) : '—');
+  state.erp = { sel: '' };
+  async function loadErp() {
+    try {
+      state.erp.opts = state.erp.opts || await api('/api/v1/erp/providers');
+      state.erp.data = await api('/api/v1/erp/connections');
+    } catch (e) { $('#erp-config').innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    const d = state.erp.data;
+    if (state.erp.sel !== 'new' && !d.connections.some((c) => c.id === state.erp.sel)) state.erp.sel = d.active?.connection_id || d.connections[0]?.id || 'new';
+    const conn = d.connections.find((c) => c.id === state.erp.sel) || null;
+    const active = d.connections.find((c) => c.id === d.active?.connection_id);
+    $('#erp-top').innerHTML = `<div class="row">${chip(`customer: ${state.snapshot?.tenant?.customer || d.tenant}`)}${chip(`active snapshot: ${d.snapshot}`)}
+      ${active ? erpBadge('active', `active connection: ${active.name}`) : chip('active: built-in snapshot (no ERP activation yet)')}</div>
+      <div class="pills" style="margin-top:10px">${d.connections.map((c) => `<button class="pill ${c.id === state.erp.sel ? 'on' : ''}" data-erp="${c.id}">${esc(c.name)} · ${esc(c.status)}</button>`).join('')}
+      ${state.role === 'manager' ? `<button class="pill ${state.erp.sel === 'new' ? 'on' : ''}" data-erp="new">+ New connection</button>` : ''}</div>`;
+    $$('[data-erp]').forEach((b) => b.addEventListener('click', () => { state.erp.sel = b.dataset.erp; loadErp(); }));
+    erpConfig(conn);
+    if (!conn) { ['#erp-health', '#erp-mapping', '#erp-sync'].forEach((s) => { $(s).innerHTML = '<p class="note">Save a connection first.</p>'; }); }
+    else { erpHealth(conn); erpMapping(conn); erpSync(conn); }
+    erpComponents();
+    erpExec();
+  }
+  const erpPath = (conn, p = '') => `/api/v1/erp/connections/${encodeURIComponent(conn.id)}${p}`;
+
+  function erpConfig(conn) {
+    const o = state.erp.opts, c = conn?.config || { environment: 'development', mode: 'mock', protocol: 'snapshot', auth: 'none', timeout_seconds: 15, verify_tls: true, sync_mode: 'manual', sync_interval_minutes: 1440, secret_ref: '' };
+    const manager = state.role === 'manager', dis = manager ? '' : 'disabled';
+    const provider = conn?.provider || 'mock_sap';
+    const sel = (name, map, cur, avail = () => true, label = (k, v) => v.label || k) => `<select name="${name}" ${dis}>${Object.entries(map).map(([k, v]) => `<option value="${k}" ${k === cur ? 'selected' : ''} ${avail(k, v) ? '' : 'disabled'}>${esc(label(k, v))}${avail(k, v) ? '' : ' — not available'}</option>`).join('')}</select>`;
+    const list = (arr) => Object.fromEntries(arr.map((x) => [x, { label: x.replaceAll('_', ' ') }]));
+    const envRef = (c.secret_ref || '').startsWith('env:') ? c.secret_ref.slice(4) : '';
+    $('#erp-config').innerHTML = `<h2>A · ERP connection configuration</h2><p class="sub">${conn ? `${esc(conn.id)} · version ${conn.version} · ${erpBadge(conn.status)}` : 'new connection'}</p>
+      <form id="form-erp" class="harness"><div class="harness-fields">
+        <label>ERP provider${sel('provider', o.providers, provider, (k, v) => v.available)}</label>
+        <label>Connection name<input name="name" value="${esc(conn?.name || '')}" placeholder="Aurelia S/4HANA QA" required ${dis}></label>
+        <label>Tenant / customer<input value="${esc(state.erp.data.tenant)}" disabled><small class="harness-hint">The customer chosen at the top; a connection belongs to one customer.</small></label>
+        <label>Environment${sel('environment', list(o.environments), c.environment)}</label>
+        <label data-live>SAP base URL<input name="base_url" value="${esc(c.base_url || '')}" placeholder="https://my000000-api.s4hana.cloud.sap" ${dis}></label>
+        <label data-live>SAP client<input name="sap_client" value="${esc(c.sap_client || '')}" placeholder="100" maxlength="3" ${dis}></label>
+        <label data-live>Authentication${sel('auth', list(o.auth), c.auth, (k) => k !== 'none')}</label>
+        <label data-auth="basic">User<input name="username" value="${esc(c.username || '')}" autocomplete="off" ${dis}></label>
+        <label data-auth="oauth2_client_credentials">Client ID<input name="client_id" value="${esc(c.client_id || '')}" autocomplete="off" ${dis}></label>
+        <label data-auth="oauth2_client_credentials">Token URL<input name="token_url" value="${esc(c.token_url || '')}" ${dis}></label>
+        <label data-live>Secret reference<select name="secret_kind" ${dis}><option value="env" ${envRef ? 'selected' : ''}>Secrets manager (environment variable)</option><option value="stored" ${c.secret_ref === 'stored' ? 'selected' : ''}>Stored on the server (not for production)</option></select></label>
+        <label data-secret="env">Variable name<input name="secret_env" value="${esc(envRef)}" placeholder="SAP_PROD_CLIENT_SECRET" ${dis}><small class="harness-hint">${conn?.secret_source?.startsWith('env:') ? (conn.secret_set ? 'variable present on the server' : 'variable NOT set on the server') : ''}</small></label>
+        <label data-secret="stored"><span>Secret</span><input name="secret" type="password" autocomplete="new-password" placeholder="${conn?.secret_set && conn.secret_source === 'stored' ? 'stored — leave empty to keep' : 'not set'}" ${dis}></label>
+        <label>API protocol${sel('protocol', list(['snapshot', 'odata_v2', 'odata_v4', 'rest']), c.protocol)}</label>
+        <label>Connection mode${sel('mode', o.modes, c.mode, (k, v) => v.available)}<small class="harness-hint">${esc(o.modes.approved_write.description)}</small></label>
+        <label data-live>Timeout (seconds)<input name="timeout_seconds" type="number" min="3" max="60" value="${c.timeout_seconds}" ${dis}></label>
+        <label data-live class="inline check"><input type="checkbox" name="verify_tls" ${c.verify_tls ? 'checked' : ''} ${dis}>TLS certificate verification</label>
+        <label>Synchronization${sel('sync_mode', { manual: { label: 'Manual' }, scheduled: { label: 'Scheduled' }, event: { label: 'Event-driven (needs SAP Event Mesh)' } }, c.sync_mode, (k) => o.sync_modes[k])}</label>
+        <label>Sync interval (minutes)<input name="sync_interval_minutes" type="number" min="15" max="10080" value="${c.sync_interval_minutes}" ${dis}></label>
+      </div>
+      <div class="row" style="margin:12px 0 0">${manager ? `<button type="submit">Save configuration</button>${conn ? `<button type="button" class="ghost" data-act="test">Test connection</button>
+        <button type="button" class="ghost" data-act="discover">Discover entities</button><button type="button" class="ghost" data-act="preview">Preview data</button>
+        <button type="button" data-act="activate">Activate connection</button>` : ''}` : '<span class="note">Only a manager can change ERP connections.</span>'}
+        ${conn ? '<button type="button" class="ghost" data-act="logs">View logs</button>' : ''}
+        ${manager && !conn ? `<button type="button" class="ghost" id="erp-emu">Fill SAP emulator (dev)</button>` : ''}</div></form><div id="erp-config-out"></div>`;
+    const f = $('#form-erp');
+    const sync = () => {
+      const live = f.provider.value !== 'mock_sap';
+      $$('[data-live]', f).forEach((el) => { el.hidden = !live; });
+      $$('[data-auth]', f).forEach((el) => { el.hidden = !live || el.dataset.auth !== f.auth.value; });
+      $$('[data-secret]', f).forEach((el) => { el.hidden = !live || el.dataset.secret !== f.secret_kind.value; });
+      if (f.environment.value === 'production') { f.verify_tls.checked = true; f.verify_tls.disabled = true; } else if (manager) f.verify_tls.disabled = false;
+      if (!live) { f.mode.value = 'mock'; f.protocol.value = 'snapshot'; } else if (f.mode.value === 'mock') { f.mode.value = 'read_only_live'; f.protocol.value = 'odata_v2'; if (f.auth.value === 'none') f.auth.value = 'basic'; }
+    };
+    ['provider', 'auth', 'secret_kind', 'environment'].forEach((n) => f[n].addEventListener('change', sync)); sync();
+    $('#erp-emu')?.addEventListener('click', () => {
+      f.provider.value = 'sap_s4hana'; sync();
+      f.name.value = 'S/4HANA emulator (dev)'; f.base_url.value = 'http://localhost:8000/erp-emulator';  // called by the API server itself f.sap_client.value = '100'; f.auth.value = 'basic';
+      f.username.value = 'SPARC_COMM'; f.secret_kind.value = 'stored'; sync();
+      toast('Emulator preset: enter its password (ERP_EMULATOR_PASSWORD), then save');
+    });
+    f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const live = f.provider.value !== 'mock_sap';
+      const body = { name: f.name.value.trim(), provider: f.provider.value, environment: f.environment.value, mode: f.mode.value, protocol: f.protocol.value,
+        sync_mode: f.sync_mode.value, sync_interval_minutes: Number(f.sync_interval_minutes.value) };
+      if (live) Object.assign(body, { base_url: f.base_url.value.trim(), sap_client: f.sap_client.value.trim(), auth: f.auth.value, username: f.username.value.trim(),
+        client_id: f.client_id.value.trim(), token_url: f.token_url.value.trim(), timeout_seconds: Number(f.timeout_seconds.value), verify_tls: f.verify_tls.checked,
+        secret_ref: f.secret_kind.value === 'env' ? `env:${f.secret_env.value.trim()}` : 'stored' });
+      if (live && f.secret_kind.value === 'stored' && f.secret.value) body.secret = f.secret.value;
+      if (!live) Object.assign(body, { auth: 'none', base_url: '', secret_ref: '' });
+      busy(e.submitter, async () => {
+        const saved = conn ? await api(erpPath(conn), { method: 'PATCH', body }) : await api('/api/v1/erp/connections', { body });
+        state.erp.sel = saved.id; toast(conn ? `Saved as version ${saved.version} — test it again before activating` : 'Connection created'); loadErp();
+      });
+    });
+    const out = $('#erp-config-out');
+    $$('[data-act]', f).forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+      const act = b.dataset.act;
+      if (act === 'test') { const r = await api(erpPath(conn, '/test'), { method: 'POST' }); out.innerHTML = erpTestHtml(r); toast(r.ok ? 'Connection test passed (not activated)' : 'Connection test failed'); erpHealth({ ...conn }); }
+      if (act === 'discover') out.innerHTML = erpDiscoverHtml(await api(erpPath(conn, '/entities')));
+      if (act === 'preview') $('#erp-preview-section')?.scrollIntoView({ behavior: 'smooth' });
+      if (act === 'activate') {
+        if (!confirm(`Activate "${conn.name}" for ${state.erp.data.tenant}? Every business service, Flowise and LangGraph tool will use its snapshot from the next call.`)) return;
+        const r = await api(erpPath(conn, '/activate'), { method: 'POST', body: {} }); toast(`Active snapshot: ${r.snapshot_id}`); loadErp();
+      }
+      if (act === 'logs') {
+        const r = await api(erpPath(conn, '/logs'));
+        modal(`Logs · ${conn.name}`, table([['When', (x) => erpWhen(x.ts)], ['Action', (x) => esc(x.action.replace('erp.', ''))], ['By', (x) => esc(x.actor)],
+          ['Details', (x) => `<code>${esc(JSON.stringify(Object.fromEntries(Object.entries(x.details).filter(([k]) => !['tenant', 'connection_id'].includes(k)))).slice(0, 220))}</code>`]], r.events));
+      }
+    })));
+  }
+  const erpTestHtml = (r) => `<div class="panel"><p>${r.ok ? erpBadge('connected', 'connection test passed') : erpBadge('error', 'connection test failed')} ${chip(`auth: ${r.auth}`)} ${r.latency_ms != null ? chip(`${r.latency_ms} ms`) : ''} <span class="note">${esc(r.note || '')}</span></p>
+    ${r.error ? `<p class="note">${esc(r.error)}</p>` : ''}${r.checks?.length ? table([['Service / entity', (x) => esc(x.entity)], ['Status', (x) => erpBadge(x.status === 'up' ? 'pass' : 'fail', x.status)], ['Detail', (x) => esc(x.detail)], ['ms', (x) => num(x.ms), 'num']], r.checks) : ''}</div>`;
+  const erpDiscoverHtml = (r) => `<div class="panel"><b>Discovered entities</b>${r.provider === 'mock_sap'
+    ? table([['SAP business data', (x) => esc(x.label)], ['Entity set', (x) => `<code>${esc(x.entity_set)}</code>`], ['Available', (x) => erpBadge(x.available ? 'pass' : 'n/a', x.available ? 'yes' : 'no')], ['Rows', (x) => num(x.rows), 'num']], r.entities)
+    : table([['Service', (x) => `<code>${esc(x.service)}</code>`], ['Entity sets', (x) => (x.error ? `<span class="note">${esc(x.error)}</span>` : esc(x.entity_sets.join(', ')))]], r.entities)}</div>`;
+
+  async function erpHealth(conn) {
+    const box = $('#erp-health');
+    try {
+      const h = await api(erpPath(conn, '/health'));
+      const kv = [['Status', erpBadge(h.status)], ['Provider · environment', `${esc(state.erp.opts.providers[h.provider]?.label || h.provider)} · ${esc(h.environment)} · ${esc(h.mode.replaceAll('_', ' '))}`],
+        ['Active for this customer', h.active ? erpBadge('active', 'yes') : 'no'], ['SAP system', esc(h.system ? `${h.system.id}${h.system.client ? ` · client ${h.system.client}` : ''}${h.system.snapshot ? ` · ${h.system.snapshot}` : ''}` : '—')],
+        ['Last connection test', `${erpWhen(h.last_test_at)} ${h.last_test_ok == null ? '' : h.last_test_ok ? '✓' : '✗'}`], ['Last successful sync', erpWhen(h.last_sync_at)], ['Authentication', esc(h.auth || '—')],
+        ['API latency', h.latency_ms != null ? `${num(h.latency_ms)} ms` : '—'], ['Last error', esc(h.last_error || '—')], ['Mapped entities', num(h.mapped_entities)], ['Records synchronized', num(h.records_synced)],
+        ['Snapshot in use', `${esc(h.tenant_snapshot.id)} · ${esc(h.tenant_snapshot.source_system || '')} · ${num(h.tenant_snapshot.age_hours, 0)} h old`]];
+      box.innerHTML = `<h2>B · SAP connection health</h2><p class="sub">${esc(conn.name)}</p><dl class="kv">${kv.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+        ${state.role === 'manager' ? '<button type="button" id="erp-health-test">Test connection</button>' : ''}<div id="erp-health-out"></div>`;
+      $('#erp-health-test')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(erpPath(conn, '/test'), { method: 'POST' }); erpHealth(conn); setTimeout(() => { $('#erp-health-out').innerHTML = erpTestHtml(r); }, 300); }));
+    } catch (e) { box.innerHTML = `<div class="empty">${esc(e.message)}</div>`; }
+  }
+
+  async function erpMapping(conn) {
+    const box = $('#erp-mapping'), o = state.erp.opts, manager = state.role === 'manager', dis = manager ? '' : 'disabled';
+    if (conn.provider === 'mock_sap') {
+      box.innerHTML = `<h2>C · SAP entity mapping</h2><p class="note">The Mock SAP snapshot is already in SPARC's data model: no mapping needed. Use <b>Discover entities</b> to list what it contains, then <b>Validate</b>.</p>
+        ${manager ? '<div class="row"><button type="button" id="erp-mock-validate">Validate</button></div><div id="erp-map-out"></div>' : ''}`;
+      $('#erp-mock-validate')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(erpPath(conn, '/validate'), { method: 'POST' }); $('#erp-map-out').innerHTML = erpProblems(r); loadErp(); }));
+      return;
+    }
+    const { mapping } = await api(erpPath(conn, '/mappings'));
+    const rows = Object.entries(o.sections).map(([key, spec]) => ({ key, spec, m: mapping[key] || { enabled: false, service: '', entity_set: '', expand: '', filter: '', fields: {} } }));
+    const fieldsText = (r) => [...r.spec.required, ...r.spec.optional].map((fld) => `${fld} = ${r.m.fields[fld] || ''}`).join('\n');
+    box.innerHTML = `<h2>C · SAP entity mapping</h2><p class="note">Per SPARC data set: the OData entity to read and how each SPARC field is built — <code>Property</code>, <code>nav/Property</code> (with <code>$expand</code>), <code>const:value</code> or <code>map:Property|A=x,B=y,*=z</code>. Required fields first. Data sets not used are carried over from the current snapshot. ${conn.mapping_valid == null ? chip('not validated') : conn.mapping_valid ? erpBadge('pass', 'mapping valid') : erpBadge('fail', 'mapping has errors')}</p>
+      <div class="scroll"><table class="erp-map"><thead><tr><th>SAP business data → SPARC usage</th><th>Use</th><th>Service · entity set · $expand · $filter</th><th>Fields (SPARC = SAP)</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr data-sec="${r.key}"><td><b>${esc(r.spec.label)}</b><div class="note">${esc(r.spec.usage)}</div><div class="note">required: ${esc(r.spec.required.join(', '))}</div></td>
+        <td><input type="checkbox" data-f="enabled" ${r.m.enabled ? 'checked' : ''} ${dis}></td>
+        <td><input data-f="service" value="${esc(r.m.service)}" placeholder="/sap/opu/odata/sap/…" ${dis}><input data-f="entity_set" value="${esc(r.m.entity_set)}" placeholder="entity set" ${dis}>
+          <input data-f="expand" value="${esc(r.m.expand)}" placeholder="$expand" ${dis}><input data-f="filter" value="${esc(r.m.filter)}" placeholder="$filter" ${dis}></td>
+        <td><textarea data-f="fields" rows="${r.spec.required.length + r.spec.optional.length}" ${dis}>${esc(fieldsText(r))}</textarea></td></tr>`).join('')}
+      <tr><td><b>Business outcomes</b><div class="note">Verified decision results</div></td><td>—</td><td colspan="2" class="note">Not read from SAP: SPARC's outcome ledger, reconciled against SAP goods receipts.</td></tr>
+      </tbody></table></div>
+      ${manager ? '<div class="row" style="margin-top:10px"><button type="button" id="erp-map-save">Save mapping</button><button type="button" class="ghost" id="erp-map-validate">Validate mapping</button><button type="button" class="ghost" id="erp-map-discover">Discover entities</button></div>' : ''}
+      <div id="erp-map-out"></div>`;
+    const read = () => Object.fromEntries($$('tr[data-sec]', box).map((tr) => {
+      const v = (n) => $(`[data-f="${n}"]`, tr);
+      const fields = Object.fromEntries(v('fields').value.split('\n').map((line) => line.split('=').map((s) => s.trim())).filter(([k]) => k)
+        .map(([k, ...rest]) => [k, rest.join('=').trim()]).filter(([, val]) => val));
+      return [tr.dataset.sec, { enabled: v('enabled').checked, service: v('service').value.trim(), entity_set: v('entity_set').value.trim(), expand: v('expand').value.trim(), filter: v('filter').value.trim(), fields }];
+    }));
+    $('#erp-map-save')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(erpPath(conn, '/mappings'), { method: 'PUT', body: { mapping: read() } }); $('#erp-map-out').innerHTML = erpProblems({ valid: !r.problems.length, problems: r.problems }, 'Saved. Offline checks: '); toast('Mapping saved — validate it against SAP'); }));
+    $('#erp-map-validate')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(erpPath(conn, '/validate'), { method: 'POST' }); $('#erp-map-out').innerHTML = erpProblems(r); state.erp.data.connections.find((x) => x.id === conn.id).mapping_valid = r.valid; }));
+    $('#erp-map-discover')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { $('#erp-map-out').innerHTML = erpDiscoverHtml(await api(erpPath(conn, '/entities'))); }));
+  }
+  const erpProblems = (r, prefix = '') => `<div class="panel">${prefix}${r.valid ? erpBadge('pass', 'mapping valid against the ERP metadata') : erpBadge('fail', `${r.problems.length} problem(s) — activation is blocked`)}${r.problems.length ? `<ul>${r.problems.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}</div>`;
+
+  async function erpSync(conn) {
+    const box = $('#erp-sync'), manager = state.role === 'manager';
+    const [{ jobs }, { history }] = await Promise.all([api(erpPath(conn, '/sync-history')), api('/api/v1/erp/activation-history')]);
+    const total = (j) => Object.values(j.counts || {}).reduce((a, b) => a + b, 0);
+    box.innerHTML = `<h2>D · Synchronization &amp; data preview</h2><p class="note">A sync reads the ERP into a <b>staged</b> snapshot, then validates it (master-data references, required data, and the business engine computing on it). It never replaces the active snapshot: a manager activates a validated sync. Full sync only (incremental sync is not supported yet).</p>
+      ${manager ? `<div class="row"><button type="button" id="erp-run-sync">Run sync now</button><button type="button" class="ghost" id="erp-rollback">Roll back to previous snapshot</button></div>` : ''}
+      ${table([['Sync job', (j) => `<code>${esc(j.id)}</code>${j.retry_of ? `<div class="note">retry of ${esc(j.retry_of)}</div>` : ''}`], ['Status', (j) => erpBadge(j.status)], ['Started', (j) => erpWhen(j.started_at)], ['Records', (j) => num(total(j)), 'num'],
+        ['Errors / warnings', (j) => (j.errors.length || j.warnings.length ? `<details><summary>${j.errors.length} errors · ${j.warnings.length} warnings</summary><ul class="note">${[...j.errors, ...j.warnings].slice(0, 30).map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>` : '—')],
+        ['Snapshot', (j) => esc(j.snapshot_id || '—')], ['', (j) => (!manager ? '' : j.status === 'validated' ? `<button class="small" data-activate="${j.id}">Activate</button>` : j.status === 'failed' ? `<button class="small ghost" data-retry="${j.id}">Retry</button>` : '')]], jobs.slice(0, 10))}
+      <h3 id="erp-preview-section" style="margin-top:16px">Preview mapped ERP records</h3>
+      <form id="form-erp-preview" class="row"><select name="section">${Object.entries(state.erp.opts.sections).map(([k, s]) => `<option value="${k}">${esc(s.label)}</option>`).join('')}</select>
+        <input name="top" type="number" min="1" max="50" value="5" style="width:80px">${manager ? '<button type="submit">Preview</button>' : '<span class="note">Only a manager can read live ERP data.</span>'}</form><div id="erp-preview-out"></div>
+      <details class="more"><summary>Activation history (this customer)</summary>${table([['When', (h) => erpWhen(h.at)], ['Action', (h) => esc(h.action)], ['Snapshot', (h) => esc(h.snapshot_id)], ['Previous', (h) => esc(h.previous_snapshot_id || 'built-in')], ['By', (h) => esc(h.actor)]], history)}</details>`;
+    $('#erp-run-sync')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const j = await api(erpPath(conn, '/sync'), { method: 'POST', body: {} }); toast(j.status === 'validated' ? `Sync validated: ${total(j)} records staged (not active)` : `Sync failed: ${j.errors[0] || ''}`); loadErp(); }));
+    $('#erp-rollback')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { if (!confirm('Roll back to the snapshot that was active before?')) return; const r = await api(erpPath(conn, '/rollback'), { method: 'POST' }); toast(`Rolled back: ${r.snapshot_id}`); loadErp(); }));
+    $$('[data-activate]', box).forEach((b) => b.addEventListener('click', () => busy(b, async () => { if (!confirm('Activate this validated snapshot for the customer?')) return; const r = await api(erpPath(conn, '/activate'), { method: 'POST', body: { sync_job_id: b.dataset.activate } }); toast(`Active snapshot: ${r.snapshot_id}`); loadErp(); })));
+    $$('[data-retry]', box).forEach((b) => b.addEventListener('click', () => busy(b, async () => { await api(erpPath(conn, '/sync'), { method: 'POST', body: { retry_of: b.dataset.retry } }); loadErp(); })));
+    $('#form-erp-preview').addEventListener('submit', (e) => {
+      e.preventDefault();
+      busy(e.submitter, async () => {
+        const r = await api(erpPath(conn, '/preview'), { body: { section: e.target.section.value, top: Number(e.target.top.value) } });
+        const cols = [...new Set(r.rows.flatMap((row) => Object.keys(row)))].slice(0, 12);
+        $('#erp-preview-out').innerHTML = `<p class="note">${esc(r.source)} · ${r.rows.length} mapped rows${r.errors.length ? ` · ${r.errors.length} rows rejected` : ''}</p>${table(cols.map((k) => [k, (row) => esc(row[k] ?? '')]), r.rows)}
+          ${r.errors.length ? `<ul class="note">${r.errors.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+          <details class="more"><summary>Raw ERP rows</summary><pre class="code-view">${esc(JSON.stringify(r.raw, null, 1).slice(0, 6000))}</pre></details>`;
+      });
+    });
+  }
+
+  async function erpComponents() {
+    const box = $('#erp-components'), manager = state.role === 'manager';
+    const s = await api('/api/v1/erp/integration-status').catch(() => ({}));
+    const render = (chk) => (chk ? `<p class="sub">checked ${erpWhen(chk.checked_at)} on snapshot ${esc(chk.snapshot)}${chk.deep ? ' · with live Flowise and LangGraph runs' : ''} · ${chk.ok ? erpBadge('pass', 'all validated') : erpBadge('warn', 'needs attention')}</p>
+      ${table([['Component', (r) => `<b>${esc(r.component)}</b>`], ['Status', (r) => erpBadge(r.status)], ['Result of the check', (r) => esc(r.detail)]], chk.results)}`
+      : '<div class="empty">Never validated for this customer. Statuses are only shown after a real check.</div>');
+    box.innerHTML = `<h2>E · Component integration status</h2><p class="note">Each check calls the component (or the exact endpoint its tools call) and compares the snapshot it answered from with the active one. Not configured = n/a, never green.</p>
+      ${manager ? `<div class="row"><button type="button" id="erp-validate-all">Validate all integrations</button><label class="inline check"><input type="checkbox" id="erp-deep">also run a Flowise Agentflow and a LangGraph question (1–3 min)</label></div>` : ''}
+      <div id="erp-components-out">${render(s.last_check)}</div>`;
+    $('#erp-validate-all')?.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api('/api/v1/erp/validate-integrations', { body: { deep: $('#erp-deep').checked } }); $('#erp-components-out').innerHTML = render(r); }));
+  }
+
+  function erpExec() {
+    const m = state.erp.opts.modes;
+    $('#erp-exec').innerHTML = `<h2>F · SAP execution &amp; human approval</h2><p class="note">SAP writes are disabled by default. Current execution of accepted recommendations: <b>${esc(state.cfg.sap_execution_mode || 'sandbox')}</b> (SAP mock sandbox outbox, never a production SAP system).</p>
+      <div class="grid g3">${Object.entries(m).map(([k, v]) => `<div class="panel"><b>${esc(v.label)}</b> ${v.available ? erpBadge('pass', 'available') : erpBadge('n/a', 'not available')}<p class="note">${esc(v.description)}</p></div>`).join('')}</div>
+      <p class="note"><b>Governance sequence (unchanged):</b> AI recommendation → human review → manager approval → authorized ERP execution (sandbox) → audit → outcome reconciliation. Flowise and LangGraph agents hold assistant keys: they can read and propose, never approve or execute; the gateway answers 405 to every SAP write.</p>`;
   }
 
   // ================================================================ NETWORK MAP

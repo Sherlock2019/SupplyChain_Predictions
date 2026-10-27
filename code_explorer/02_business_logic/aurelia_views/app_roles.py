@@ -236,7 +236,7 @@ def kpi(label, value, unit, target, direction, definition, formula, source, hint
 # FIELDS:
 #   engine, insights, store, dashboards, industry.
 # CALLED BY:
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
 # CALLS:
 #   (none found)
 class RoleCenter:

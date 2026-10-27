@@ -4,6 +4,27 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 
 | ID | Method | Path | Handler | App | Depends / body model | Calls | Called from Flowise |
 |---|---|---|---|---|---|---|---|
+| F2099 | GET | /sap/opu/odata/sap/{path:path} | `odata` | gateway :8000 |  | F2094 build_entities(), F2097 respond() |  |
+| F2115 | GET | /api/v1/erp/providers | `providers` | gateway :8000 |  | F2173 options() |  |
+| F2116 | GET | /api/v1/erp/connections | `connections` | gateway :8000 |  | F2112 register.tenant() |  |
+| F2117 | POST | /api/v1/erp/connections | `create` | gateway :8000 | F2136 ConnectionIn | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2118 | GET | /api/v1/erp/connections/{conn_id} | `get` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant() |  |
+| F2119 | PATCH | /api/v1/erp/connections/{conn_id} | `patch` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2120 | POST | /api/v1/erp/connections/{conn_id}/test | `test` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2121 | GET | /api/v1/erp/connections/{conn_id}/health | `health` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant() |  |
+| F2122 | GET | /api/v1/erp/connections/{conn_id}/entities | `entities` | gateway :8000 |  | F2113 register.run(), F2153 ErpService.discover(), F2112 register.tenant(), F2114 register.log() |  |
+| F2123 | GET | /api/v1/erp/connections/{conn_id}/mappings | `mappings` | gateway :8000 |  | F2113 register.run(), F2150 ErpService.mapping(), F2112 register.tenant() |  |
+| F2124 | PUT | /api/v1/erp/connections/{conn_id}/mappings | `put_mappings` | gateway :8000 | F2137 MappingIn | F2113 register.run(), F2151 ErpService.set_mapping(), F2112 register.tenant(), F2114 register.log() |  |
+| F2125 | POST | /api/v1/erp/connections/{conn_id}/validate | `validate` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2126 | POST | /api/v1/erp/connections/{conn_id}/preview | `preview` | gateway :8000 | F2108 PreviewIn | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2127 | POST | /api/v1/erp/connections/{conn_id}/sync | `sync` | gateway :8000 |  | F2114 register.log(), F2113 register.run(), F2112 register.tenant() |  |
+| F2128 | GET | /api/v1/erp/connections/{conn_id}/sync-history | `sync_history` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant() |  |
+| F2129 | POST | /api/v1/erp/connections/{conn_id}/activate | `activate` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2130 | POST | /api/v1/erp/connections/{conn_id}/rollback | `rollback` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant(), F2114 register.log() |  |
+| F2131 | GET | /api/v1/erp/connections/{conn_id}/logs | `logs` | gateway :8000 |  | F2113 register.run(), F2112 register.tenant() |  |
+| F2132 | GET | /api/v1/erp/activation-history | `activation_history` | gateway :8000 |  | F2112 register.tenant() |  |
+| F2133 | GET | /api/v1/erp/integration-status | `integration_status` | gateway :8000 |  | F2112 register.tenant(), F2057 last_check() |  |
+| F2134 | POST | /api/v1/erp/validate-integrations | `validate_all` | gateway :8000 |  | F2044 validate_integrations(), F2112 register.tenant(), F2056 save_check(), F2114 register.log() |  |
 | F0025 | GET | /health | `health` | gateway :8000 |  |  |  |
 | F0026 | GET | /ready | `ready` | gateway :8000 |  | F0747 MemoryRag.stats(), F0753 PgVectorRag.stats() |  |
 | F0027 | GET | /metrics | `metrics` | gateway :8000 |  |  |  |
@@ -58,8 +79,11 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F0078 | POST | /v1/embeddings | `embeddings` | gateway :8000 | F0168 EmbeddingsRequest | F0019 create_app.principal(), F0079 create_app.embeddings.encode() |  |
 | F0080 | GET | /api/v1/rag/stats | `rag_stats` | gateway :8000 | F0021 create_app.reader() | F0747 MemoryRag.stats(), F0753 PgVectorRag.stats() |  |
 | F0081 | POST | /api/v1/rag/documents | `rag_add` | gateway :8000 | F0020 create_app.manager(), F0159 RagDocument | F0745 MemoryRag.add(), F0752 PgVectorRag.add(), F0358 Store.audit() |  |
-| F1801 | GET/POST/PUT | /api/v1/rag-tuning/{path:path} | `rag_tuning_proxy` | gateway :8000 | F0020 create_app.manager() | F0358 Store.audit() |  |
-| F0985 | GET | /api/v1/code/functions | `code_functions` | gateway :8000 | F0021 create_app.reader() | F1791 CodeEditor.list() |  |
+| F1801 | GET/POST/PUT | /api/v1/rag-tuning/{path:path} | `rag_tuning_proxy` | gateway :8000 | F0021 create_app.reader() | F0358 Store.audit() |  |
+| F1950 | GET | /api/v1/code/files | `code_files` | gateway :8000 | F0021 create_app.reader() | F1952 CodeEditor.files() |  |
+| F1951 | GET | /api/v1/code/file | `code_file` | gateway :8000 | F0021 create_app.reader() | F1953 CodeEditor.file() |  |
+| F1955 | GET | /api/v1/code/template | `code_template` | gateway :8000 | F0021 create_app.reader() | F1956 CodeEditor.template() |  |
+| F0985 | GET | /api/v1/code/functions | `code_functions` | gateway :8000 | F0021 create_app.reader() |  |  |
 | F0986 | GET | /api/v1/code/function | `code_function` | gateway :8000 | F0021 create_app.reader() |  |  |
 | F0987 | PUT | /api/v1/code/function | `code_update` | gateway :8000 | F0020 create_app.manager(), F0988 CodeUpdateRequest | F0358 Store.audit() |  |
 | F0083 | POST | /api/v1/chat | `chat` | gateway :8000 | F0021 create_app.reader(), F0164 ChatRequest | F0082 create_app._graph_call(), F0358 Store.audit() |  |
@@ -89,37 +113,37 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F0110 | POST | /outcomes/reconcile | `poc_reconcile` | gateway :8000 | F0020 create_app.manager(), F0171 ReconcileRequest | F0366 Store.get_recommendation(), F0380 Store.list_outcomes(), F0378 Store.create_outcome(), F0016 _expectation(), F0381 Store.record_outcome(), F0358 Store.aud |  |
 | F0111 | GET | /learning/model-performance | `poc_model_performance` | gateway :8000 | F0021 create_app.reader() | F0290 RoleCenter.learning() |  |
 | F0496 | GET | /health | `health` | gateway :8000 |  |  |  |
-| F0116 | GET | /health | `health` | scinsight :8100 |  |  |  |
-| F0117 | GET | /api/v1/context | `context` | scinsight :8100 | F0114 create_app.reader() | F0313 Service.snapshot() |  |
-| F0118 | POST | /api/v1/context/validate | `validate_context` | scinsight :8100 | F0114 create_app.reader(), F0178 ContextRequest | F0313 Service.snapshot(), F0779 Security.audit(), F0322 Service.catalog() | Decision-Outcome-Learning-Agentflow · 2 · Check access, Factory-Planning-Agentflow · 2 · Check access, Inventory-Optimizer-Agentflow · 2 · Check access, Logisti |
-| F0119 | GET | /api/v1/sap/inventory | `sap_inventory` | scinsight :8100 | F0114 create_app.reader() | F0319 Service.inventory() | Flowise Custom Tool · get_sap_inventory |
-| F0120 | GET | /api/v1/sap/bom/{sku} | `sap_bom` | scinsight :8100 | F0114 create_app.reader() | F0320 Service.bom() | Flowise Custom Tool · get_material_bom |
-| F0121 | GET | /api/v1/sap/production-orders | `sap_production_orders` | scinsight :8100 | F0114 create_app.reader() | F0321 Service.table() | Flowise Custom Tool · get_production_orders, Factory-Planning-Agentflow · 4 · Calculate with SAP data |
-| F0122 | GET | /api/v1/sap/purchase-orders | `sap_purchase_orders` | scinsight :8100 | F0114 create_app.reader() | F0321 Service.table() | Flowise Custom Tool · get_open_purchase_orders |
-| F0123 | GET | /api/v1/sap/warehouses | `sap_warehouses` | scinsight :8100 | F0114 create_app.reader() | F0321 Service.table() |  |
-| F0124 | GET | /api/v1/sap/suppliers | `sap_suppliers` | scinsight :8100 | F0114 create_app.reader() | F0323 Service.suppliers() | Procurement-Agentflow · 4 · Calculate with SAP data |
-| F0125 | POST/PUT/PATCH/DELETE | /api/v1/sap/{path:path} | `sap_write_blocked` | scinsight :8100 | F0113 create_app.principal() | F0779 Security.audit() |  |
-| F0126 | POST | /api/v1/optimizer/material-readiness | `material_readiness` | scinsight :8100 | F0114 create_app.reader(), F0179 MaterialReadinessRequest | F0325 Service.material_readiness() | Flowise Custom Tool · check_material_readiness, Factory-Planning-Agentflow · 4 · Calculate with SAP data |
-| F0127 | POST | /api/v1/optimizer/warehouse-balancing | `warehouse_balancing` | scinsight :8100 | F0114 create_app.reader(), F0181 WarehouseBalancingRequest | F0327 Service.warehouse_balancing() | Flowise Custom Tool · optimize_warehouse_transfer, Logistics-Agentflow · 4 · Calculate with SAP data, Warehouse-Agentflow · 4 · Calculate with SAP data |
-| F0128 | POST | /api/v1/optimizer/replenishment | `replenishment` | scinsight :8100 | F0114 create_app.reader(), F0182 ReplenishmentRequest | F0328 Service.replenishment() | Flowise Custom Tool · calculate_stock_cover, Inventory-Optimizer-Agentflow · 4 · Calculate with SAP data, Procurement-Agentflow · 4 · Calculate with SAP data |
-| F0129 | POST | /api/v1/forecast/demand | `forecast_demand` | scinsight :8100 | F0114 create_app.reader(), F0183 DemandForecastRequest | F0330 Service.forecast_demand() | Flowise Custom Tool · forecast_demand, Inventory-Optimizer-Agentflow · 4 · Calculate with SAP data |
-| F0130 | POST | /api/v1/forecast/lead-time | `forecast_lead_time` | scinsight :8100 | F0114 create_app.reader(), F0184 LeadTimeRequest | F0332 Service.lead_time() | Flowise Custom Tool · get_supplier_reliability, Procurement-Agentflow · 4 · Calculate with SAP data |
-| F0131 | POST | /api/v1/quality/check-stock | `quality_check` | scinsight :8100 | F0114 create_app.reader(), F0185 QualityCheckRequest | F0329 Service.quality_check() | Flowise Custom Tool · check_batch_quality, Quality-Agentflow · 4 · Calculate with SAP data |
-| F0132 | GET | /api/v1/calculations/{calculation_id} | `calculation` | scinsight :8100 | F0114 create_app.reader() | F0315 Service.calculation() |  |
-| F0133 | POST | /api/v1/rag/search | `rag_search` | scinsight :8100 | F0114 create_app.reader(), F0186 RagSearchRequest | F0766 KnowledgeBase.search(), F0115 create_app.biz_date() | Flowise Custom Tool · search_supply_chain_policy, Factory-Planning-Agentflow · 5 · Policy search (RAG), Inventory-Optimizer-Agentflow · 5 · Policy search (RAG), |
-| F0134 | GET | /api/v1/rag/documents | `rag_documents` | scinsight :8100 | F0114 create_app.reader() | F0421 Database.query() |  |
-| F0135 | POST | /api/v1/decisions | `create_decision` | scinsight :8100 | F0114 create_app.reader(), F0187 DecisionCreateRequest | F0777 Security.require(), F0333 Service.create_decision() | Flowise Custom Tool · save_recommendation, Supervisor-Agentflow · 7 · Save recommendation |
-| F0136 | GET | /api/v1/decisions | `list_decisions` | scinsight :8100 | F0114 create_app.reader() | F0336 Service.list_decisions() |  |
-| F0137 | GET | /api/v1/decisions/{rec_id} | `get_decision` | scinsight :8100 | F0114 create_app.reader() | F0335 Service.get_decision() | Flowise Custom Tool · get_decision_status |
-| F0138 | POST | /api/v1/decisions/{rec_id}/review | `review` | scinsight :8100 | F0113 create_app.principal(), F0188 ReviewRequest | F0337 Service.review() |  |
-| F0139 | POST | /api/v1/decisions/{rec_id}/withdraw | `withdraw` | scinsight :8100 | F0114 create_app.reader() | F0339 Service.withdraw() | Supervisor-Agentflow · 10 · Withdraw |
-| F0140 | POST | /api/v1/decisions/{rec_id}/sap-execution | `sap_execution` | scinsight :8100 | F0113 create_app.principal(), F0189 SapExecutionRequest | F0340 Service.record_sap_execution() |  |
-| F0141 | POST | /api/v1/outcomes/reconcile | `reconcile` | scinsight :8100 | F0113 create_app.principal(), F0171 ReconcileRequest | F0341 Service.reconcile() | Decision-Outcome-Learning-Agentflow · 3 · Check the outcome with SAP data |
-| F0142 | GET | /api/v1/learning/metrics | `learning_metrics` | scinsight :8100 | F0114 create_app.reader() | F0343 Service.learning_metrics() | Flowise Custom Tool · get_verified_outcomes, Decision-Outcome-Learning-Agentflow · 3 · Check the outcome with SAP data |
-| F0143 | POST | /api/v1/learning/train-lead-time-model | `train` | scinsight :8100 | F0113 create_app.principal() | F0777 Security.require(), F0534 train_lead_time_model(), F0779 Security.audit() |  |
-| F0144 | POST | /api/v1/learning/models/{model_id}/promote | `promote` | scinsight :8100 | F0113 create_app.principal() | F0777 Security.require(), F0535 promote(), F0779 Security.audit() |  |
-| F0145 | POST | /api/v1/learning/retraining-requests | `retraining` | scinsight :8100 | F0114 create_app.reader(), F0191 RetrainingRequest | F0537 retraining_request(), F0779 Security.audit() |  |
-| F0146 | GET | /api/v1/audit | `audit` | scinsight :8100 | F0113 create_app.principal() | F0777 Security.require(), F0781 Security.verify_chain(), F0421 Database.query() |  |
+| F1997 | GET | /health | `health` | scinsight :8100 |  |  |  |
+| F1998 | GET | /api/v1/context | `context` | scinsight :8100 | F1995 create_router.reader() | F0313 Service.snapshot() |  |
+| F1999 | POST | /api/v1/context/validate | `validate_context` | scinsight :8100 | F1995 create_router.reader(), F0178 ContextRequest | F0313 Service.snapshot(), F0779 Security.audit(), F0322 Service.catalog() | Decision-Outcome-Learning-Agentflow · 2 · Check access, Factory-Planning-Agentflow · 2 · Check access, Inventory-Optimizer-Agentflow · 2 · Check access, Logisti |
+| F2000 | GET | /api/v1/sap/inventory | `sap_inventory` | scinsight :8100 | F1995 create_router.reader() | F0319 Service.inventory() | Flowise Custom Tool · get_sap_inventory |
+| F2001 | GET | /api/v1/sap/bom/{sku} | `sap_bom` | scinsight :8100 | F1995 create_router.reader() | F0320 Service.bom() | Flowise Custom Tool · get_material_bom |
+| F2002 | GET | /api/v1/sap/production-orders | `sap_production_orders` | scinsight :8100 | F1995 create_router.reader() | F0321 Service.table() | Flowise Custom Tool · get_production_orders, Factory-Planning-Agentflow · 4 · Calculate with SAP data |
+| F2003 | GET | /api/v1/sap/purchase-orders | `sap_purchase_orders` | scinsight :8100 | F1995 create_router.reader() | F0321 Service.table() | Flowise Custom Tool · get_open_purchase_orders |
+| F2004 | GET | /api/v1/sap/warehouses | `sap_warehouses` | scinsight :8100 | F1995 create_router.reader() | F0321 Service.table() |  |
+| F2005 | GET | /api/v1/sap/suppliers | `sap_suppliers` | scinsight :8100 | F1995 create_router.reader() | F0323 Service.suppliers() | Procurement-Agentflow · 4 · Calculate with SAP data |
+| F2006 | POST/PUT/PATCH/DELETE | /api/v1/sap/{path:path} | `sap_write_blocked` | scinsight :8100 | F1994 create_router.principal() | F0779 Security.audit() |  |
+| F2007 | POST | /api/v1/optimizer/material-readiness | `material_readiness` | scinsight :8100 | F1995 create_router.reader(), F0179 MaterialReadinessRequest | F0325 Service.material_readiness() | Flowise Custom Tool · check_material_readiness, Factory-Planning-Agentflow · 4 · Calculate with SAP data |
+| F2008 | POST | /api/v1/optimizer/warehouse-balancing | `warehouse_balancing` | scinsight :8100 | F1995 create_router.reader(), F0181 WarehouseBalancingRequest | F0327 Service.warehouse_balancing() | Flowise Custom Tool · optimize_warehouse_transfer, Logistics-Agentflow · 4 · Calculate with SAP data, Warehouse-Agentflow · 4 · Calculate with SAP data |
+| F2009 | POST | /api/v1/optimizer/replenishment | `replenishment` | scinsight :8100 | F1995 create_router.reader(), F0182 ReplenishmentRequest | F0328 Service.replenishment() | Flowise Custom Tool · calculate_stock_cover, Inventory-Optimizer-Agentflow · 4 · Calculate with SAP data, Procurement-Agentflow · 4 · Calculate with SAP data |
+| F2010 | POST | /api/v1/forecast/demand | `forecast_demand` | scinsight :8100 | F1995 create_router.reader(), F0183 DemandForecastRequest | F0330 Service.forecast_demand() | Flowise Custom Tool · forecast_demand, Inventory-Optimizer-Agentflow · 4 · Calculate with SAP data |
+| F2011 | POST | /api/v1/forecast/lead-time | `forecast_lead_time` | scinsight :8100 | F1995 create_router.reader(), F0184 LeadTimeRequest | F0332 Service.lead_time() | Flowise Custom Tool · get_supplier_reliability, Procurement-Agentflow · 4 · Calculate with SAP data |
+| F2012 | POST | /api/v1/quality/check-stock | `quality_check` | scinsight :8100 | F1995 create_router.reader(), F0185 QualityCheckRequest | F0329 Service.quality_check() | Flowise Custom Tool · check_batch_quality, Quality-Agentflow · 4 · Calculate with SAP data |
+| F2013 | GET | /api/v1/calculations/{calculation_id} | `calculation` | scinsight :8100 | F1995 create_router.reader() | F0315 Service.calculation() |  |
+| F2014 | POST | /api/v1/rag/search | `rag_search` | scinsight :8100 | F1995 create_router.reader(), F0186 RagSearchRequest | F0766 KnowledgeBase.search(), F1996 create_router.biz_date() | Flowise Custom Tool · search_supply_chain_policy, Factory-Planning-Agentflow · 5 · Policy search (RAG), Inventory-Optimizer-Agentflow · 5 · Policy search (RAG), |
+| F2015 | GET | /api/v1/rag/documents | `rag_documents` | scinsight :8100 | F1995 create_router.reader() | F0421 Database.query() |  |
+| F2016 | POST | /api/v1/decisions | `create_decision` | scinsight :8100 | F1995 create_router.reader(), F0187 DecisionCreateRequest | F0777 Security.require(), F0333 Service.create_decision() | Flowise Custom Tool · save_recommendation, Supervisor-Agentflow · 7 · Save recommendation |
+| F2017 | GET | /api/v1/decisions | `list_decisions` | scinsight :8100 | F1995 create_router.reader() | F0336 Service.list_decisions() |  |
+| F2018 | GET | /api/v1/decisions/{rec_id} | `get_decision` | scinsight :8100 | F1995 create_router.reader() | F0335 Service.get_decision() | Flowise Custom Tool · get_decision_status |
+| F2019 | POST | /api/v1/decisions/{rec_id}/review | `review` | scinsight :8100 | F1994 create_router.principal(), F0188 ReviewRequest | F0337 Service.review() |  |
+| F2020 | POST | /api/v1/decisions/{rec_id}/withdraw | `withdraw` | scinsight :8100 | F1995 create_router.reader() | F0339 Service.withdraw() | Supervisor-Agentflow · 10 · Withdraw |
+| F2021 | POST | /api/v1/decisions/{rec_id}/sap-execution | `sap_execution` | scinsight :8100 | F1994 create_router.principal(), F0189 SapExecutionRequest | F0340 Service.record_sap_execution() |  |
+| F2022 | POST | /api/v1/outcomes/reconcile | `reconcile` | scinsight :8100 | F1994 create_router.principal(), F0171 ReconcileRequest | F0341 Service.reconcile() | Decision-Outcome-Learning-Agentflow · 3 · Check the outcome with SAP data |
+| F2023 | GET | /api/v1/learning/metrics | `learning_metrics` | scinsight :8100 | F1995 create_router.reader() | F0343 Service.learning_metrics() | Flowise Custom Tool · get_verified_outcomes, Decision-Outcome-Learning-Agentflow · 3 · Check the outcome with SAP data |
+| F2024 | POST | /api/v1/learning/train-lead-time-model | `train` | scinsight :8100 | F1994 create_router.principal() | F0777 Security.require(), F0534 train_lead_time_model(), F0779 Security.audit() |  |
+| F2025 | POST | /api/v1/learning/models/{model_id}/promote | `promote` | scinsight :8100 | F1994 create_router.principal() | F0777 Security.require(), F0535 promote(), F0779 Security.audit() |  |
+| F2026 | POST | /api/v1/learning/retraining-requests | `retraining` | scinsight :8100 | F1995 create_router.reader(), F0191 RetrainingRequest | F0537 retraining_request(), F0779 Security.audit() |  |
+| F2027 | GET | /api/v1/audit | `audit` | scinsight :8100 | F1994 create_router.principal() | F0777 Security.require(), F0781 Security.verify_chain(), F0421 Database.query() |  |
 | F1824 | GET | /api/v1/rag-tuning/config | `get_config` | scinsight :8100 | F1820 register.admin() | F1905 Registry.get_active_rag_config() |  |
 | F1825 | PUT | /api/v1/rag-tuning/draft | `save_draft` | scinsight :8100 | F1820 register.admin(), F1810 DraftRequest | F1908 Registry.save_draft_config(), F1821 register.audit() |  |
 | F1826 | GET | /api/v1/rag-tuning/history | `history` | scinsight :8100 | F1820 register.admin() | F1894 list_indexes() |  |
@@ -143,3 +167,11 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F1845 | POST | /api/v1/rag-tuning/rollback | `rollback` | scinsight :8100 | F1820 register.admin(), F1814 ConfigRef | F0777 Security.require(), F1822 register.cfg_of(), F1899 rollback_rag_config(), F1821 register.audit() |  |
 | F1846 | GET | /api/v1/rag-tuning/flowise | `flowise_status` | scinsight :8100 | F1820 register.admin() |  |  |
 | F1847 | GET | /api/v1/rag-tuning/metrics | `metrics` | scinsight :8100 | F1820 register.admin() | F0421 Database.query() |  |
+| F1964 | GET | /health | `health` | gateway :8000 |  |  |  |
+| F1965 | GET | /api/v1/stock/{sku} | `get_stock` | gateway :8000 | F1962 create_app.reader() |  |  |
+| F1966 | POST | /api/v1/adjustments | `adjust` | gateway :8000 | F1963 create_app.manager(), F1959 ItemRequest |  |  |
+| F1967 | POST/PUT/PATCH/DELETE | /api/v1/sap/{path:path} | `sap_read_only` | gateway :8000 | F1961 create_app.principal() |  |  |
+| F1968 | GET | /api/v1/audit | `read_audit` | gateway :8000 | F1963 create_app.manager() |  |  |
+| F2030 | GET | /health | `health` | gateway :8000 |  |  |  |
+| F2031 | GET | /api/v1/stock/{sku} | `get_stock` | gateway :8000 | F2029 create_inner_router.caller() |  |  |
+| F2033 | GET | /health | `health` | gateway :8000 |  |  |  |

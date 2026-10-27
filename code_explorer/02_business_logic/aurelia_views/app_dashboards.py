@@ -84,7 +84,7 @@ def _in(scope, code: str | None) -> bool:
 #   engine, insights, store.
 # CALLED BY:
 #   <- F0260 RoleCenter.__init__() (references)
-#   <- F0393 TenantRegistry.get() (calls)
+#   <- F2039 TenantRegistry._build() (calls)
 # CALLS:
 #   (none found)
 class Dashboards:

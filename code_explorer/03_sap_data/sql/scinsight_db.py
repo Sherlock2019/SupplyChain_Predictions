@@ -63,7 +63,7 @@ def now_iso() -> str:
 # OUTPUT:
 #   bool -> True when the database was created, False when it already existed.
 # CALLED BY:
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (calls)
 # CALLS:
 #   (none found)
 def ensure_postgres_database(url: str) -> bool:
@@ -99,8 +99,8 @@ def ensure_postgres_database(url: str) -> bool:
 #   _lock: RLock    -> serialises SQLite access (one shared connection) across FastAPI worker threads.
 #   _conn / _pool   -> SQLite connection, or psycopg ConnectionPool (1..10 connections) for PostgreSQL.
 # CALLED BY:
-#   <- F0112 create_app() (references)
-#   <- F0112 create_app() (calls)
+#   <- F1993 create_router() (references)
+#   <- F1993 create_router() (calls)
 #   <- F0432 load() (references)
 #   <- F0532 _rows() (references)
 #   <- F0534 train_lead_time_model() (references)
@@ -183,8 +183,8 @@ class Database:
     # OUTPUT:
     #   list[dict] -> rows.
     # CALLED BY:
-    #   <- F0134 create_app.rag_documents() (calls)
-    #   <- F0146 create_app.audit() (calls)
+    #   <- F2015 create_router.rag_documents() (calls)
+    #   <- F2027 create_router.audit() (calls)
     #   <- F0422 Database.one() (calls)
     #   <- F0429 Database.migrate() (calls)
     #   <- F0532 _rows() (calls)
@@ -411,7 +411,7 @@ class Database:
     # OUTPUT:
     #   list[str] -> versions applied by this call (e.g. ["0001_core", "0002_pgvector.postgres"]).
     # CALLED BY:
-    #   <- F0112 create_app() (calls)
+    #   <- F1993 create_router() (calls)
     # CALLS:
     #   -> F0428 Database._script() (calls)
     #   -> F0421 Database.query() (calls)

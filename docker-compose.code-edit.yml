@@ -1,11 +1,11 @@
 # Local code editing (opt-in, never on a shared or cloud host).
 #
-#   docker compose -f docker-compose.yml -f docker-compose.code-edit.yml --profile core up -d api scinsight-api mcp langgraph
+#   docker compose -f docker-compose.yml -f docker-compose.code-edit.yml --profile core up -d --no-deps api mcp langgraph
 #
-# The four backend apps run the repository's backend/ (bind mount) instead of the copy baked into the image, so a function
-# saved on the dashboard (System -> Backend code, manager key) changes the real file in the repo:
-#   api, scinsight-api  reload by themselves (uvicorn --reload)
-#   mcp, langgraph      pick it up on restart: docker compose restart mcp langgraph
+# The backend apps run the repository's backend/ (bind mount) instead of the copy baked into the image, so code edited in
+# VS Code (or saved from the dashboard) is what runs:
+#   api (dashboard + SCInsight API at /scinsight)  reloads by itself (uvicorn --reload)
+#   mcp, langgraph                                 pick it up on restart: docker compose restart mcp langgraph
 # Only the api container writes (as your host user, HOST_UID / HOST_GID, default 1000); the others mount backend/ read-only.
 # Without this file (start-localdemo.sh) the apps run the image code and editing stays off.
 services:
@@ -20,10 +20,6 @@ services:
       - ./backend:/app/backend
       - ./frontend:/app/frontend:ro
       - ./code_explorer:/app/code_explorer:ro
-
-  scinsight-api:
-    command: ["uvicorn", "backend.scinsight.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8100", "--reload", "--reload-dir", "backend"]
-    volumes: ["./backend:/app/backend:ro"]
 
   mcp:
     volumes: ["./backend:/app/backend:ro"]
