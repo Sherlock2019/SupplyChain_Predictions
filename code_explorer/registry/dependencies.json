@@ -352,25 +352,25 @@
    "from": "F0003",
    "to": "F0002",
    "kind": "calls",
-   "evidence": "backend/app/config.py:79 self method"
+   "evidence": "backend/app/config.py:84 self method"
   },
   {
    "from": "F0004",
    "to": "F0002",
    "kind": "calls",
-   "evidence": "backend/app/config.py:83 self method"
+   "evidence": "backend/app/config.py:88 self method"
   },
   {
    "from": "F0008",
    "to": "F0001",
    "kind": "calls",
-   "evidence": "backend/app/config.py:105 same module"
+   "evidence": "backend/app/config.py:110 same module"
   },
   {
    "from": "F0008",
    "to": "F0001",
    "kind": "references",
-   "evidence": "backend/app/config.py:104 same module (passed as a value)"
+   "evidence": "backend/app/config.py:109 same module (passed as a value)"
   },
   {
    "from": "F0452",
@@ -2674,25 +2674,25 @@
    "from": "F0017",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "backend/app/main.py:570 imported from backend.app.code_editor"
+   "evidence": "backend/app/main.py:582 imported from backend.app.code_editor"
   },
   {
    "from": "F0017",
    "to": "F0172",
    "kind": "references",
-   "evidence": "backend/app/main.py:687 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:699 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0017",
    "to": "F0125",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:855 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
+   "evidence": "backend/app/main.py:867 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
   },
   {
    "from": "F0017",
    "to": "F0146",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:860 HTTP GET /api/v1/audit"
+   "evidence": "backend/app/main.py:872 HTTP GET /api/v1/audit"
   },
   {
    "from": "F0018",
@@ -4495,1234 +4495,1396 @@
    "evidence": "backend/app/main.py:564 body: RagDocument"
   },
   {
+   "from": "F1801",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:571 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F1801",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:571 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1801",
+   "to": "F0358",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:574 typed variable store -> Store"
+  },
+  {
+   "from": "F1801",
+   "to": "F1824",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/config"
+  },
+  {
+   "from": "F1801",
+   "to": "F1825",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP PUT /api/v1/rag-tuning/draft"
+  },
+  {
+   "from": "F1801",
+   "to": "F1826",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/history"
+  },
+  {
+   "from": "F1801",
+   "to": "F1827",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/diff/{config_id}"
+  },
+  {
+   "from": "F1801",
+   "to": "F1828",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/documents"
+  },
+  {
+   "from": "F1801",
+   "to": "F1829",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/metadata/validate"
+  },
+  {
+   "from": "F1801",
+   "to": "F1830",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/documents/{doc_id}/source"
+  },
+  {
+   "from": "F1801",
+   "to": "F1831",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/chunks/preview"
+  },
+  {
+   "from": "F1801",
+   "to": "F1832",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/embedding-models"
+  },
+  {
+   "from": "F1801",
+   "to": "F1833",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/embedding-models/test"
+  },
+  {
+   "from": "F1801",
+   "to": "F1834",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/index/build-candidate"
+  },
+  {
+   "from": "F1801",
+   "to": "F1835",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/jobs/{job_id}"
+  },
+  {
+   "from": "F1801",
+   "to": "F1836",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/retrieve/preview"
+  },
+  {
+   "from": "F1801",
+   "to": "F1838",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/evaluate"
+  },
+  {
+   "from": "F1801",
+   "to": "F1839",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/evaluate/grid"
+  },
+  {
+   "from": "F1801",
+   "to": "F1840",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/experiments"
+  },
+  {
+   "from": "F1801",
+   "to": "F1841",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/experiments/compare"
+  },
+  {
+   "from": "F1801",
+   "to": "F1842",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/experiments/{exp_id}"
+  },
+  {
+   "from": "F1801",
+   "to": "F1843",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/validate"
+  },
+  {
+   "from": "F1801",
+   "to": "F1844",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/publish"
+  },
+  {
+   "from": "F1801",
+   "to": "F1845",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP POST /api/v1/rag-tuning/rollback"
+  },
+  {
+   "from": "F1801",
+   "to": "F1846",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/flowise"
+  },
+  {
+   "from": "F1801",
+   "to": "F1847",
+   "kind": "http_request",
+   "evidence": "backend/app/main.py:576 HTTP GET /api/v1/rag-tuning/metrics"
+  },
+  {
+   "from": "F1801",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:571 Depends(manager) (authorization / validation)"
+  },
+  {
    "from": "F0985",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:573 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:585 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0985",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:573 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:585 sibling closure (passed as a value)"
   },
   {
    "from": "F0985",
    "to": "F1791",
    "kind": "calls",
-   "evidence": "backend/app/main.py:575 inferred: unique method name"
+   "evidence": "backend/app/main.py:587 inferred: unique method name"
   },
   {
    "from": "F0985",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:573 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:585 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0986",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:578 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:590 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0986",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:578 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:590 sibling closure (passed as a value)"
   },
   {
    "from": "F0986",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:578 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:590 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0987",
    "to": "F0988",
    "kind": "references",
-   "evidence": "backend/app/main.py:586 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:598 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0987",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:586 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:598 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0987",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:586 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:598 sibling closure (passed as a value)"
   },
   {
    "from": "F0987",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:593 typed variable store -> Store"
+   "evidence": "backend/app/main.py:605 typed variable store -> Store"
   },
   {
    "from": "F0987",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:586 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:598 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0987",
    "to": "F0988",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:586 body: CodeUpdateRequest"
+   "evidence": "backend/app/main.py:598 body: CodeUpdateRequest"
   },
   {
    "from": "F0083",
    "to": "F0164",
    "kind": "references",
-   "evidence": "backend/app/main.py:607 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:619 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:607 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:619 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:607 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:619 sibling closure (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:611 sibling closure"
+   "evidence": "backend/app/main.py:623 sibling closure"
   },
   {
    "from": "F0083",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:611 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:623 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0083",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:620 typed variable store -> Store"
+   "evidence": "backend/app/main.py:632 typed variable store -> Store"
   },
   {
    "from": "F0083",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:607 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:619 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0083",
    "to": "F0164",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:607 body: ChatRequest"
+   "evidence": "backend/app/main.py:619 body: ChatRequest"
   },
   {
    "from": "F0085",
    "to": "F0164",
    "kind": "references",
-   "evidence": "backend/app/main.py:658 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:670 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:658 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:670 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:658 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:670 sibling closure (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:659 sibling closure"
+   "evidence": "backend/app/main.py:671 sibling closure"
   },
   {
    "from": "F0085",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:659 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:671 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0085",
    "to": "F0084",
    "kind": "calls",
-   "evidence": "backend/app/main.py:660 sibling closure"
+   "evidence": "backend/app/main.py:672 sibling closure"
   },
   {
    "from": "F0085",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:661 typed variable store -> Store"
+   "evidence": "backend/app/main.py:673 typed variable store -> Store"
   },
   {
    "from": "F0085",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:658 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:670 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0085",
    "to": "F0164",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:658 body: ChatRequest"
+   "evidence": "backend/app/main.py:670 body: ChatRequest"
   },
   {
    "from": "F0086",
    "to": "F0167",
    "kind": "references",
-   "evidence": "backend/app/main.py:665 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:677 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0086",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:665 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:677 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0086",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:665 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:677 sibling closure (passed as a value)"
   },
   {
    "from": "F0086",
    "to": "F0084",
    "kind": "calls",
-   "evidence": "backend/app/main.py:666 sibling closure"
+   "evidence": "backend/app/main.py:678 sibling closure"
   },
   {
    "from": "F0086",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:666 sibling closure"
+   "evidence": "backend/app/main.py:678 sibling closure"
   },
   {
    "from": "F0086",
    "to": "F0627",
    "kind": "references",
-   "evidence": "backend/app/main.py:666 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:678 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0086",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:667 typed variable store -> Store"
+   "evidence": "backend/app/main.py:679 typed variable store -> Store"
   },
   {
    "from": "F0086",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:665 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:677 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0086",
    "to": "F0167",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:665 body: ResumeRequest"
+   "evidence": "backend/app/main.py:677 body: ResumeRequest"
   },
   {
    "from": "F0087",
    "to": "F0166",
    "kind": "references",
-   "evidence": "backend/app/main.py:671 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:683 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0087",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:671 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:683 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0087",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:671 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:683 sibling closure (passed as a value)"
   },
   {
    "from": "F0087",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:673 sibling closure"
+   "evidence": "backend/app/main.py:685 sibling closure"
   },
   {
    "from": "F0087",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:673 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:685 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0087",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:674 typed variable store -> Store"
+   "evidence": "backend/app/main.py:686 typed variable store -> Store"
   },
   {
    "from": "F0087",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:671 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:683 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0087",
    "to": "F0166",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:671 body: BusinessWorkflowRequest"
+   "evidence": "backend/app/main.py:683 body: BusinessWorkflowRequest"
   },
   {
    "from": "F0088",
    "to": "F0167",
    "kind": "references",
-   "evidence": "backend/app/main.py:678 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:690 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0088",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:678 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:690 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0088",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:678 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:690 sibling closure (passed as a value)"
   },
   {
    "from": "F0088",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:679 sibling closure"
+   "evidence": "backend/app/main.py:691 sibling closure"
   },
   {
    "from": "F0088",
    "to": "F0627",
    "kind": "references",
-   "evidence": "backend/app/main.py:679 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:691 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0088",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:680 typed variable store -> Store"
+   "evidence": "backend/app/main.py:692 typed variable store -> Store"
   },
   {
    "from": "F0088",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:678 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:690 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0088",
    "to": "F0167",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:678 body: ResumeRequest"
+   "evidence": "backend/app/main.py:690 body: ResumeRequest"
   },
   {
    "from": "F0089",
    "to": "F0386",
    "kind": "calls",
-   "evidence": "backend/app/main.py:691 typed variable store -> Store"
+   "evidence": "backend/app/main.py:703 typed variable store -> Store"
   },
   {
    "from": "F0089",
    "to": "F0172",
    "kind": "calls",
-   "evidence": "backend/app/main.py:692 imported from backend.app.schemas"
+   "evidence": "backend/app/main.py:704 imported from backend.app.schemas"
   },
   {
    "from": "F0090",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:695 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:707 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0090",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:695 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:707 sibling closure (passed as a value)"
   },
   {
    "from": "F0090",
    "to": "F0386",
    "kind": "calls",
-   "evidence": "backend/app/main.py:697 typed variable store -> Store"
+   "evidence": "backend/app/main.py:709 typed variable store -> Store"
   },
   {
    "from": "F0090",
    "to": "F0089",
    "kind": "calls",
-   "evidence": "backend/app/main.py:698 sibling closure"
+   "evidence": "backend/app/main.py:710 sibling closure"
   },
   {
    "from": "F0090",
    "to": "F0172",
    "kind": "calls",
-   "evidence": "backend/app/main.py:698 imported from backend.app.schemas"
+   "evidence": "backend/app/main.py:710 imported from backend.app.schemas"
   },
   {
    "from": "F0090",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:695 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:707 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0091",
    "to": "F0172",
    "kind": "references",
-   "evidence": "backend/app/main.py:704 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:716 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:704 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:716 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:704 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:716 sibling closure (passed as a value)"
   },
   {
    "from": "F0091",
    "to": "F0387",
    "kind": "calls",
-   "evidence": "backend/app/main.py:705 typed variable store -> Store"
+   "evidence": "backend/app/main.py:717 typed variable store -> Store"
   },
   {
    "from": "F0091",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:706 typed variable store -> Store"
+   "evidence": "backend/app/main.py:718 typed variable store -> Store"
   },
   {
    "from": "F0091",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:704 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:716 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0091",
    "to": "F0172",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:704 body: DeepAgentHarness"
+   "evidence": "backend/app/main.py:716 body: DeepAgentHarness"
   },
   {
    "from": "F0092",
    "to": "F0174",
    "kind": "references",
-   "evidence": "backend/app/main.py:710 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:722 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:710 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:722 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:710 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:722 sibling closure (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0089",
    "kind": "calls",
-   "evidence": "backend/app/main.py:712 sibling closure"
+   "evidence": "backend/app/main.py:724 sibling closure"
   },
   {
    "from": "F0092",
    "to": "F0082",
    "kind": "calls",
-   "evidence": "backend/app/main.py:713 sibling closure"
+   "evidence": "backend/app/main.py:725 sibling closure"
   },
   {
    "from": "F0092",
    "to": "F0626",
    "kind": "references",
-   "evidence": "backend/app/main.py:713 typed variable runner -> GraphRunner (passed as a value)"
+   "evidence": "backend/app/main.py:725 typed variable runner -> GraphRunner (passed as a value)"
   },
   {
    "from": "F0092",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:717 typed variable store -> Store"
+   "evidence": "backend/app/main.py:729 typed variable store -> Store"
   },
   {
    "from": "F0092",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:710 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:722 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0092",
    "to": "F0174",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:710 body: SupplierResearchRequest"
+   "evidence": "backend/app/main.py:722 body: SupplierResearchRequest"
   },
   {
    "from": "F0094",
    "to": "F0175",
    "kind": "references",
-   "evidence": "backend/app/main.py:748 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:760 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:748 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:760 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:748 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:760 sibling closure (passed as a value)"
   },
   {
    "from": "F0094",
    "to": "F0093",
    "kind": "calls",
-   "evidence": "backend/app/main.py:751 sibling closure"
+   "evidence": "backend/app/main.py:763 sibling closure"
   },
   {
    "from": "F0094",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:769 typed variable store -> Store"
+   "evidence": "backend/app/main.py:781 typed variable store -> Store"
   },
   {
    "from": "F0094",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:748 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:760 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0094",
    "to": "F0175",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:748 body: FlowisePredictRequest"
+   "evidence": "backend/app/main.py:760 body: FlowisePredictRequest"
   },
   {
    "from": "F0095",
    "to": "F0160",
    "kind": "references",
-   "evidence": "backend/app/main.py:786 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:798 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:786 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:798 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:786 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:798 sibling closure (passed as a value)"
   },
   {
    "from": "F0095",
    "to": "F0364",
    "kind": "calls",
-   "evidence": "backend/app/main.py:788 typed variable store -> Store"
+   "evidence": "backend/app/main.py:800 typed variable store -> Store"
   },
   {
    "from": "F0095",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:791 typed variable store -> Store"
+   "evidence": "backend/app/main.py:803 typed variable store -> Store"
   },
   {
    "from": "F0095",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:786 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:798 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0095",
    "to": "F0160",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:786 body: RecommendationRequest"
+   "evidence": "backend/app/main.py:798 body: RecommendationRequest"
   },
   {
    "from": "F0096",
    "to": "F0161",
    "kind": "references",
-   "evidence": "backend/app/main.py:795 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:807 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:795 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:807 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:795 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:807 sibling closure (passed as a value)"
   },
   {
    "from": "F0096",
    "to": "F0363",
    "kind": "calls",
-   "evidence": "backend/app/main.py:797 typed variable store -> Store"
+   "evidence": "backend/app/main.py:809 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0364",
    "kind": "calls",
-   "evidence": "backend/app/main.py:801 typed variable store -> Store"
+   "evidence": "backend/app/main.py:813 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:802 typed variable store -> Store"
+   "evidence": "backend/app/main.py:814 typed variable store -> Store"
   },
   {
    "from": "F0096",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:795 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:807 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0096",
    "to": "F0161",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:795 body: RecommendationFromTextRequest"
+   "evidence": "backend/app/main.py:807 body: RecommendationFromTextRequest"
   },
   {
    "from": "F0097",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:810 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:822 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:810 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:822 sibling closure (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0367",
    "kind": "calls",
-   "evidence": "backend/app/main.py:812 typed variable store -> Store"
+   "evidence": "backend/app/main.py:824 typed variable store -> Store"
   },
   {
    "from": "F0097",
    "to": "F0031",
    "kind": "references",
-   "evidence": "backend/app/main.py:812 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:824 sibling closure (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:812 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:824 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0097",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:810 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:822 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0098",
    "to": "F0162",
    "kind": "references",
-   "evidence": "backend/app/main.py:815 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:827 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:815 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:827 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:815 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:827 sibling closure (passed as a value)"
   },
   {
    "from": "F0098",
    "to": "F0368",
    "kind": "calls",
-   "evidence": "backend/app/main.py:816 typed variable store -> Store"
+   "evidence": "backend/app/main.py:828 typed variable store -> Store"
   },
   {
    "from": "F0098",
    "to": "F0382",
    "kind": "calls",
-   "evidence": "backend/app/main.py:819 typed variable store -> Store"
+   "evidence": "backend/app/main.py:831 typed variable store -> Store"
   },
   {
    "from": "F0098",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:820 typed variable store -> Store"
+   "evidence": "backend/app/main.py:832 typed variable store -> Store"
   },
   {
    "from": "F0098",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:815 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:827 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0098",
    "to": "F0162",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:815 body: DecisionRequest"
+   "evidence": "backend/app/main.py:827 body: DecisionRequest"
   },
   {
    "from": "F0099",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:829 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:841 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0099",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:829 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:841 sibling closure (passed as a value)"
   },
   {
    "from": "F0099",
    "to": "F0366",
    "kind": "calls",
-   "evidence": "backend/app/main.py:833 typed variable store -> Store"
+   "evidence": "backend/app/main.py:845 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0377",
    "kind": "calls",
-   "evidence": "backend/app/main.py:839 typed variable store -> Store"
+   "evidence": "backend/app/main.py:851 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0375",
    "kind": "calls",
-   "evidence": "backend/app/main.py:841 typed variable store -> Store"
+   "evidence": "backend/app/main.py:853 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0404",
    "kind": "references",
-   "evidence": "backend/app/main.py:846 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:858 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0099",
    "to": "F0016",
    "kind": "calls",
-   "evidence": "backend/app/main.py:847 same module"
+   "evidence": "backend/app/main.py:859 same module"
   },
   {
    "from": "F0099",
    "to": "F0378",
    "kind": "calls",
-   "evidence": "backend/app/main.py:849 typed variable store -> Store"
+   "evidence": "backend/app/main.py:861 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:849 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:861 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0099",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:850 typed variable store -> Store"
+   "evidence": "backend/app/main.py:862 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0376",
    "kind": "calls",
-   "evidence": "backend/app/main.py:852 typed variable store -> Store"
+   "evidence": "backend/app/main.py:864 typed variable store -> Store"
   },
   {
    "from": "F0099",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:829 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:841 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0100",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:856 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:868 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0100",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:856 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:868 sibling closure (passed as a value)"
   },
   {
    "from": "F0100",
    "to": "F0376",
    "kind": "calls",
-   "evidence": "backend/app/main.py:858 typed variable store -> Store"
+   "evidence": "backend/app/main.py:870 typed variable store -> Store"
   },
   {
    "from": "F0100",
    "to": "F0125",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:855 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
+   "evidence": "backend/app/main.py:867 HTTP POST/PUT/PATCH/DELETE /api/v1/sap/{path:path}"
   },
   {
    "from": "F0100",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:856 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:868 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0101",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:861 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:873 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0101",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:861 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:873 sibling closure (passed as a value)"
   },
   {
    "from": "F0101",
    "to": "F0359",
    "kind": "calls",
-   "evidence": "backend/app/main.py:863 typed variable store -> Store"
+   "evidence": "backend/app/main.py:875 typed variable store -> Store"
   },
   {
    "from": "F0101",
    "to": "F0360",
    "kind": "calls",
-   "evidence": "backend/app/main.py:863 typed variable store -> Store"
+   "evidence": "backend/app/main.py:875 typed variable store -> Store"
   },
   {
    "from": "F0101",
    "to": "F0146",
    "kind": "http_request",
-   "evidence": "backend/app/main.py:860 HTTP GET /api/v1/audit"
+   "evidence": "backend/app/main.py:872 HTTP GET /api/v1/audit"
   },
   {
    "from": "F0101",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:861 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:873 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0102",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:870 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:870 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0414",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:872 typed variable sap -> SapRepository"
-  },
-  {
-   "from": "F0102",
-   "to": "F0405",
-   "kind": "references",
-   "evidence": "backend/app/main.py:873 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0102",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:870 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:876 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:876 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0414",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:878 typed variable sap -> SapRepository"
-  },
-  {
-   "from": "F0103",
-   "to": "F0405",
-   "kind": "references",
-   "evidence": "backend/app/main.py:879 typed variable sap -> SapRepository (passed as a value)"
-  },
-  {
-   "from": "F0103",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:876 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0104",
-   "to": "F0150",
-   "kind": "references",
-   "evidence": "backend/app/main.py:882 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0104",
    "to": "F0767",
    "kind": "references",
    "evidence": "backend/app/main.py:882 imported from backend.app.auth (passed as a value)"
   },
   {
-   "from": "F0104",
+   "from": "F0102",
    "to": "F0021",
    "kind": "references",
    "evidence": "backend/app/main.py:882 sibling closure (passed as a value)"
   },
   {
-   "from": "F0104",
-   "to": "F0023",
+   "from": "F0102",
+   "to": "F0414",
    "kind": "calls",
-   "evidence": "backend/app/main.py:883 sibling closure"
+   "evidence": "backend/app/main.py:884 typed variable sap -> SapRepository"
   },
   {
-   "from": "F0104",
-   "to": "F0199",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:883 typed variable engine -> SupplyChainEngine"
+   "from": "F0102",
+   "to": "F0405",
+   "kind": "references",
+   "evidence": "backend/app/main.py:885 typed variable sap -> SapRepository (passed as a value)"
   },
   {
-   "from": "F0104",
+   "from": "F0102",
    "to": "F0021",
    "kind": "depends_on",
    "evidence": "backend/app/main.py:882 Depends(reader) (authorization / validation)"
   },
   {
+   "from": "F0103",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:888 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:888 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0414",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:890 typed variable sap -> SapRepository"
+  },
+  {
+   "from": "F0103",
+   "to": "F0405",
+   "kind": "references",
+   "evidence": "backend/app/main.py:891 typed variable sap -> SapRepository (passed as a value)"
+  },
+  {
+   "from": "F0103",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:888 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0150",
+   "kind": "references",
+   "evidence": "backend/app/main.py:894 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:894 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:894 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0104",
+   "to": "F0023",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:895 sibling closure"
+  },
+  {
+   "from": "F0104",
+   "to": "F0199",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:895 typed variable engine -> SupplyChainEngine"
+  },
+  {
+   "from": "F0104",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:894 Depends(reader) (authorization / validation)"
+  },
+  {
    "from": "F0104",
    "to": "F0150",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:882 body: ForecastRequest"
+   "evidence": "backend/app/main.py:894 body: ForecastRequest"
   },
   {
    "from": "F0105",
    "to": "F0170",
    "kind": "references",
-   "evidence": "backend/app/main.py:886 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:898 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0105",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:886 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:898 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0105",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:886 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:898 sibling closure (passed as a value)"
   },
   {
    "from": "F0105",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:887 sibling closure"
+   "evidence": "backend/app/main.py:899 sibling closure"
   },
   {
    "from": "F0105",
    "to": "F0219",
    "kind": "calls",
-   "evidence": "backend/app/main.py:887 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:899 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0105",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:886 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:898 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0105",
    "to": "F0170",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:886 body: SupplierLeadTimeRequest"
+   "evidence": "backend/app/main.py:898 body: SupplierLeadTimeRequest"
   },
   {
    "from": "F0106",
    "to": "F0148",
    "kind": "references",
-   "evidence": "backend/app/main.py:890 imported from backend.app.schemas (passed as a value)"
+   "evidence": "backend/app/main.py:902 imported from backend.app.schemas (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:890 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:902 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:890 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:902 sibling closure (passed as a value)"
   },
   {
    "from": "F0106",
    "to": "F0197",
    "kind": "calls",
-   "evidence": "backend/app/main.py:891 typed variable engine -> SupplyChainEngine"
+   "evidence": "backend/app/main.py:903 typed variable engine -> SupplyChainEngine"
   },
   {
    "from": "F0106",
    "to": "F0023",
    "kind": "calls",
-   "evidence": "backend/app/main.py:892 sibling closure"
+   "evidence": "backend/app/main.py:904 sibling closure"
   },
   {
    "from": "F0106",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:890 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:902 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0106",
    "to": "F0148",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:890 body: FactoryReadinessRequest"
+   "evidence": "backend/app/main.py:902 body: FactoryReadinessRequest"
   },
   {
    "from": "F0107",
    "to": "F0149",
-   "kind": "references",
-   "evidence": "backend/app/main.py:895 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0107",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:895 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0107",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:895 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0107",
-   "to": "F0023",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:896 sibling closure"
-  },
-  {
-   "from": "F0107",
-   "to": "F0198",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:896 typed variable engine -> SupplyChainEngine"
-  },
-  {
-   "from": "F0107",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:895 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0107",
-   "to": "F0149",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:895 body: StockBalanceRequest"
-  },
-  {
-   "from": "F0108",
-   "to": "F0160",
-   "kind": "references",
-   "evidence": "backend/app/main.py:899 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0108",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:899 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0108",
-   "to": "F0021",
-   "kind": "references",
-   "evidence": "backend/app/main.py:899 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0108",
-   "to": "F0095",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:900 sibling closure"
-  },
-  {
-   "from": "F0108",
-   "to": "F0021",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:899 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0108",
-   "to": "F0160",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:899 body: RecommendationRequest"
-  },
-  {
-   "from": "F0109",
-   "to": "F0162",
-   "kind": "references",
-   "evidence": "backend/app/main.py:903 imported from backend.app.schemas (passed as a value)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0767",
-   "kind": "references",
-   "evidence": "backend/app/main.py:903 imported from backend.app.auth (passed as a value)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0020",
-   "kind": "references",
-   "evidence": "backend/app/main.py:903 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0098",
-   "kind": "calls",
-   "evidence": "backend/app/main.py:904 sibling closure"
-  },
-  {
-   "from": "F0109",
-   "to": "F0020",
-   "kind": "depends_on",
-   "evidence": "backend/app/main.py:903 Depends(manager) (authorization / validation)"
-  },
-  {
-   "from": "F0109",
-   "to": "F0162",
-   "kind": "validates_input",
-   "evidence": "backend/app/main.py:903 body: DecisionRequest"
-  },
-  {
-   "from": "F0110",
-   "to": "F0171",
    "kind": "references",
    "evidence": "backend/app/main.py:907 imported from backend.app.schemas (passed as a value)"
   },
   {
-   "from": "F0110",
+   "from": "F0107",
    "to": "F0767",
    "kind": "references",
    "evidence": "backend/app/main.py:907 imported from backend.app.auth (passed as a value)"
   },
   {
+   "from": "F0107",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:907 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0107",
+   "to": "F0023",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:908 sibling closure"
+  },
+  {
+   "from": "F0107",
+   "to": "F0198",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:908 typed variable engine -> SupplyChainEngine"
+  },
+  {
+   "from": "F0107",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:907 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0107",
+   "to": "F0149",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:907 body: StockBalanceRequest"
+  },
+  {
+   "from": "F0108",
+   "to": "F0160",
+   "kind": "references",
+   "evidence": "backend/app/main.py:911 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0108",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:911 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0108",
+   "to": "F0021",
+   "kind": "references",
+   "evidence": "backend/app/main.py:911 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0108",
+   "to": "F0095",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:912 sibling closure"
+  },
+  {
+   "from": "F0108",
+   "to": "F0021",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:911 Depends(reader) (authorization / validation)"
+  },
+  {
+   "from": "F0108",
+   "to": "F0160",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:911 body: RecommendationRequest"
+  },
+  {
+   "from": "F0109",
+   "to": "F0162",
+   "kind": "references",
+   "evidence": "backend/app/main.py:915 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:915 imported from backend.app.auth (passed as a value)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0020",
+   "kind": "references",
+   "evidence": "backend/app/main.py:915 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0098",
+   "kind": "calls",
+   "evidence": "backend/app/main.py:916 sibling closure"
+  },
+  {
+   "from": "F0109",
+   "to": "F0020",
+   "kind": "depends_on",
+   "evidence": "backend/app/main.py:915 Depends(manager) (authorization / validation)"
+  },
+  {
+   "from": "F0109",
+   "to": "F0162",
+   "kind": "validates_input",
+   "evidence": "backend/app/main.py:915 body: DecisionRequest"
+  },
+  {
+   "from": "F0110",
+   "to": "F0171",
+   "kind": "references",
+   "evidence": "backend/app/main.py:919 imported from backend.app.schemas (passed as a value)"
+  },
+  {
+   "from": "F0110",
+   "to": "F0767",
+   "kind": "references",
+   "evidence": "backend/app/main.py:919 imported from backend.app.auth (passed as a value)"
+  },
+  {
    "from": "F0110",
    "to": "F0020",
    "kind": "references",
-   "evidence": "backend/app/main.py:907 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:919 sibling closure (passed as a value)"
   },
   {
    "from": "F0110",
    "to": "F0366",
    "kind": "calls",
-   "evidence": "backend/app/main.py:908 typed variable store -> Store"
+   "evidence": "backend/app/main.py:920 typed variable store -> Store"
   },
   {
    "from": "F0110",
    "to": "F0404",
    "kind": "references",
-   "evidence": "backend/app/main.py:914 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:926 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0110",
    "to": "F0380",
    "kind": "calls",
-   "evidence": "backend/app/main.py:923 typed variable store -> Store"
+   "evidence": "backend/app/main.py:935 typed variable store -> Store"
   },
   {
    "from": "F0110",
    "to": "F0378",
    "kind": "calls",
-   "evidence": "backend/app/main.py:924 typed variable store -> Store"
+   "evidence": "backend/app/main.py:936 typed variable store -> Store"
   },
   {
    "from": "F0110",
    "to": "F0405",
    "kind": "references",
-   "evidence": "backend/app/main.py:924 typed variable sap -> SapRepository (passed as a value)"
+   "evidence": "backend/app/main.py:936 typed variable sap -> SapRepository (passed as a value)"
   },
   {
    "from": "F0110",
    "to": "F0016",
    "kind": "calls",
-   "evidence": "backend/app/main.py:924 same module"
+   "evidence": "backend/app/main.py:936 same module"
   },
   {
    "from": "F0110",
    "to": "F0381",
    "kind": "calls",
-   "evidence": "backend/app/main.py:925 typed variable store -> Store"
+   "evidence": "backend/app/main.py:937 typed variable store -> Store"
   },
   {
    "from": "F0110",
    "to": "F0358",
    "kind": "calls",
-   "evidence": "backend/app/main.py:928 typed variable store -> Store"
+   "evidence": "backend/app/main.py:940 typed variable store -> Store"
   },
   {
    "from": "F0110",
    "to": "F0020",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:907 Depends(manager) (authorization / validation)"
+   "evidence": "backend/app/main.py:919 Depends(manager) (authorization / validation)"
   },
   {
    "from": "F0110",
    "to": "F0171",
    "kind": "validates_input",
-   "evidence": "backend/app/main.py:907 body: ReconcileRequest"
+   "evidence": "backend/app/main.py:919 body: ReconcileRequest"
   },
   {
    "from": "F0111",
    "to": "F0767",
    "kind": "references",
-   "evidence": "backend/app/main.py:933 imported from backend.app.auth (passed as a value)"
+   "evidence": "backend/app/main.py:945 imported from backend.app.auth (passed as a value)"
   },
   {
    "from": "F0111",
    "to": "F0021",
    "kind": "references",
-   "evidence": "backend/app/main.py:933 sibling closure (passed as a value)"
+   "evidence": "backend/app/main.py:945 sibling closure (passed as a value)"
   },
   {
    "from": "F0111",
    "to": "F0290",
    "kind": "calls",
-   "evidence": "backend/app/main.py:935 typed variable roles -> RoleCenter"
+   "evidence": "backend/app/main.py:947 typed variable roles -> RoleCenter"
   },
   {
    "from": "F0111",
    "to": "F0021",
    "kind": "depends_on",
-   "evidence": "backend/app/main.py:933 Depends(reader) (authorization / validation)"
+   "evidence": "backend/app/main.py:945 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0486",
@@ -8140,1123 +8302,1141 @@
    "from": "F0112",
    "to": "F0013",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:34 imported from backend.scinsight.settings (passed as a value)"
+   "evidence": "backend/scinsight/app.py:36 imported from backend.scinsight.settings (passed as a value)"
   },
   {
    "from": "F0112",
    "to": "F0418",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:34 imported from backend.scinsight.db (passed as a value)"
+   "evidence": "backend/scinsight/app.py:36 imported from backend.scinsight.db (passed as a value)"
   },
   {
    "from": "F0112",
    "to": "F0013",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:35 imported from backend.scinsight.settings"
+   "evidence": "backend/scinsight/app.py:37 imported from backend.scinsight.settings"
   },
   {
    "from": "F0112",
    "to": "F0015",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:40 inferred: unique method name"
+   "evidence": "backend/scinsight/app.py:42 inferred: unique method name"
   },
   {
    "from": "F0112",
    "to": "F0417",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:43 imported from backend.scinsight.db"
+   "evidence": "backend/scinsight/app.py:45 imported from backend.scinsight.db"
   },
   {
    "from": "F0112",
    "to": "F0418",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:44 imported from backend.scinsight.db"
+   "evidence": "backend/scinsight/app.py:46 imported from backend.scinsight.db"
   },
   {
    "from": "F0112",
    "to": "F0429",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:45 typed variable db -> Database"
+   "evidence": "backend/scinsight/app.py:47 typed variable db -> Database"
   },
   {
    "from": "F0112",
    "to": "F0432",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:47 module fixtures"
+   "evidence": "backend/scinsight/app.py:49 module fixtures"
   },
   {
    "from": "F0112",
    "to": "F0014",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:47 inferred: unique method name"
+   "evidence": "backend/scinsight/app.py:49 inferred: unique method name"
   },
   {
    "from": "F0112",
    "to": "F0774",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:48 imported from backend.scinsight.security"
+   "evidence": "backend/scinsight/app.py:50 imported from backend.scinsight.security"
   },
   {
    "from": "F0112",
    "to": "F0311",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:49 imported from backend.scinsight.service"
+   "evidence": "backend/scinsight/app.py:51 imported from backend.scinsight.service"
   },
   {
    "from": "F0112",
    "to": "F0763",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:50 imported from backend.scinsight.rag"
+   "evidence": "backend/scinsight/app.py:52 imported from backend.scinsight.rag"
   },
   {
    "from": "F0112",
    "to": "F0762",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:50 imported from backend.scinsight.rag"
+   "evidence": "backend/scinsight/app.py:52 imported from backend.scinsight.rag"
   },
   {
    "from": "F0112",
    "to": "F0765",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:51 typed variable kb -> KnowledgeBase"
+   "evidence": "backend/scinsight/app.py:53 typed variable kb -> KnowledgeBase"
   },
   {
    "from": "F0112",
    "to": "F0076",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:151 HTTP POST /api/v1/rag/search"
+   "evidence": "backend/scinsight/app.py:153 HTTP POST /api/v1/rag/search"
   },
   {
    "from": "F0112",
    "to": "F0077",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:151 HTTP GET /api/v1/rag/search"
+   "evidence": "backend/scinsight/app.py:153 HTTP GET /api/v1/rag/search"
   },
   {
    "from": "F0112",
    "to": "F0081",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:157 HTTP POST /api/v1/rag/documents"
+   "evidence": "backend/scinsight/app.py:159 HTTP POST /api/v1/rag/documents"
+  },
+  {
+   "from": "F0112",
+   "to": "F1819",
+   "kind": "calls",
+   "evidence": "backend/scinsight/app.py:165 module rag_tuning_api"
+  },
+  {
+   "from": "F0112",
+   "to": "F0113",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:165 nested function (passed as a value)"
+  },
+  {
+   "from": "F0112",
+   "to": "F0115",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:165 nested function (passed as a value)"
   },
   {
    "from": "F0112",
    "to": "F0101",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:217 HTTP GET /api/v1/audit"
+   "evidence": "backend/scinsight/app.py:222 HTTP GET /api/v1/audit"
   },
   {
    "from": "F0113",
    "to": "F0776",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:60 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:62 typed variable security -> Security"
   },
   {
    "from": "F0113",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:58 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:60 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0114",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:62 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:64 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0114",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:62 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:64 sibling closure (passed as a value)"
   },
   {
    "from": "F0114",
    "to": "F0777",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:63 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:65 typed variable security -> Security"
   },
   {
    "from": "F0114",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:62 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:64 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0115",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:66 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:68 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0115",
    "to": "F0313",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:67 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:69 typed variable service -> Service"
   },
   {
    "from": "F0117",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:76 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:78 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0117",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:76 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:78 sibling closure (passed as a value)"
   },
   {
    "from": "F0117",
    "to": "F0313",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:77 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:79 typed variable service -> Service"
   },
   {
    "from": "F0117",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:76 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:78 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0118",
    "to": "F0178",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:82 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:84 module s (passed as a value)"
   },
   {
    "from": "F0118",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:82 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:84 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0118",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:82 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:84 sibling closure (passed as a value)"
   },
   {
    "from": "F0118",
    "to": "F0313",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:83 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:85 typed variable service -> Service"
   },
   {
    "from": "F0118",
    "to": "F0779",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:84 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:86 typed variable security -> Security"
   },
   {
    "from": "F0118",
    "to": "F0322",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:87 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:89 typed variable service -> Service"
   },
   {
    "from": "F0118",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:82 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:84 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0118",
    "to": "F0178",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:82 body: s.ContextRequest"
+   "evidence": "backend/scinsight/app.py:84 body: s.ContextRequest"
   },
   {
    "from": "F0119",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:92 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:94 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0119",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:92 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:94 sibling closure (passed as a value)"
   },
   {
    "from": "F0119",
    "to": "F0319",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:93 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:95 typed variable service -> Service"
   },
   {
    "from": "F0119",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:91 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:93 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0120",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:96 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:98 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0120",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:96 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:98 sibling closure (passed as a value)"
   },
   {
    "from": "F0120",
    "to": "F0320",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:97 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:99 typed variable service -> Service"
   },
   {
    "from": "F0120",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:96 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:98 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0121",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:100 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:102 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0121",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:100 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:102 sibling closure (passed as a value)"
   },
   {
    "from": "F0121",
    "to": "F0321",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:101 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:103 typed variable service -> Service"
   },
   {
    "from": "F0121",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:100 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:102 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0122",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:105 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:107 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0122",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:105 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:107 sibling closure (passed as a value)"
   },
   {
    "from": "F0122",
    "to": "F0321",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:106 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:108 typed variable service -> Service"
   },
   {
    "from": "F0122",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:104 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:106 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0123",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:109 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:111 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0123",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:109 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:111 sibling closure (passed as a value)"
   },
   {
    "from": "F0123",
    "to": "F0321",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:110 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:112 typed variable service -> Service"
   },
   {
    "from": "F0123",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:109 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:111 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0124",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:113 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:115 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0124",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:113 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:115 sibling closure (passed as a value)"
   },
   {
    "from": "F0124",
    "to": "F0323",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:114 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:116 typed variable service -> Service"
   },
   {
    "from": "F0124",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:113 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:115 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0125",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:117 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:119 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0125",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:117 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:119 sibling closure (passed as a value)"
   },
   {
    "from": "F0125",
    "to": "F0779",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:118 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:120 typed variable security -> Security"
   },
   {
    "from": "F0125",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:117 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:119 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0126",
    "to": "F0179",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:123 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:125 module s (passed as a value)"
   },
   {
    "from": "F0126",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:123 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:125 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0126",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:123 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:125 sibling closure (passed as a value)"
   },
   {
    "from": "F0126",
    "to": "F0325",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:124 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:126 typed variable service -> Service"
   },
   {
    "from": "F0126",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:123 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:125 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0126",
    "to": "F0179",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:123 body: s.MaterialReadinessRequest"
+   "evidence": "backend/scinsight/app.py:125 body: s.MaterialReadinessRequest"
   },
   {
    "from": "F0127",
    "to": "F0181",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:127 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:129 module s (passed as a value)"
   },
   {
    "from": "F0127",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:127 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:129 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0127",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:127 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:129 sibling closure (passed as a value)"
   },
   {
    "from": "F0127",
    "to": "F0327",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:128 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:130 typed variable service -> Service"
   },
   {
    "from": "F0127",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:127 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:129 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0127",
    "to": "F0181",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:127 body: s.WarehouseBalancingRequest"
+   "evidence": "backend/scinsight/app.py:129 body: s.WarehouseBalancingRequest"
   },
   {
    "from": "F0128",
    "to": "F0182",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:131 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:133 module s (passed as a value)"
   },
   {
    "from": "F0128",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:131 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:133 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0128",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:131 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:133 sibling closure (passed as a value)"
   },
   {
    "from": "F0128",
    "to": "F0328",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:132 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:134 typed variable service -> Service"
   },
   {
    "from": "F0128",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:131 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:133 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0128",
    "to": "F0182",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:131 body: s.ReplenishmentRequest"
+   "evidence": "backend/scinsight/app.py:133 body: s.ReplenishmentRequest"
   },
   {
    "from": "F0129",
    "to": "F0183",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:135 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:137 module s (passed as a value)"
   },
   {
    "from": "F0129",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:135 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:137 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0129",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:135 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:137 sibling closure (passed as a value)"
   },
   {
    "from": "F0129",
    "to": "F0330",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:136 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:138 typed variable service -> Service"
   },
   {
    "from": "F0129",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:135 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:137 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0129",
    "to": "F0183",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:135 body: s.DemandForecastRequest"
+   "evidence": "backend/scinsight/app.py:137 body: s.DemandForecastRequest"
   },
   {
    "from": "F0130",
    "to": "F0184",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:139 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:141 module s (passed as a value)"
   },
   {
    "from": "F0130",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:139 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:141 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0130",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:139 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:141 sibling closure (passed as a value)"
   },
   {
    "from": "F0130",
    "to": "F0332",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:140 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:142 typed variable service -> Service"
   },
   {
    "from": "F0130",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:139 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:141 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0130",
    "to": "F0184",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:139 body: s.LeadTimeRequest"
+   "evidence": "backend/scinsight/app.py:141 body: s.LeadTimeRequest"
   },
   {
    "from": "F0131",
    "to": "F0185",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:143 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:145 module s (passed as a value)"
   },
   {
    "from": "F0131",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:143 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:145 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0131",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:143 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:145 sibling closure (passed as a value)"
   },
   {
    "from": "F0131",
    "to": "F0329",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:144 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:146 typed variable service -> Service"
   },
   {
    "from": "F0131",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:143 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:145 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0131",
    "to": "F0185",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:143 body: s.QualityCheckRequest"
+   "evidence": "backend/scinsight/app.py:145 body: s.QualityCheckRequest"
   },
   {
    "from": "F0132",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:147 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:149 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0132",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:147 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:149 sibling closure (passed as a value)"
   },
   {
    "from": "F0132",
    "to": "F0315",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:148 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:150 typed variable service -> Service"
   },
   {
    "from": "F0132",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:147 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:149 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0133",
    "to": "F0186",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:152 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:154 module s (passed as a value)"
   },
   {
    "from": "F0133",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:152 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:154 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0133",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:152 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:154 sibling closure (passed as a value)"
   },
   {
    "from": "F0133",
    "to": "F0766",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:155 typed variable kb -> KnowledgeBase"
+   "evidence": "backend/scinsight/app.py:157 typed variable kb -> KnowledgeBase"
   },
   {
    "from": "F0133",
    "to": "F0115",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:155 sibling closure"
+   "evidence": "backend/scinsight/app.py:157 sibling closure"
   },
   {
    "from": "F0133",
    "to": "F0076",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:151 HTTP POST /api/v1/rag/search"
+   "evidence": "backend/scinsight/app.py:153 HTTP POST /api/v1/rag/search"
   },
   {
    "from": "F0133",
    "to": "F0077",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:151 HTTP GET /api/v1/rag/search"
+   "evidence": "backend/scinsight/app.py:153 HTTP GET /api/v1/rag/search"
   },
   {
    "from": "F0133",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:152 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:154 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0133",
    "to": "F0186",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:152 body: s.RagSearchRequest"
+   "evidence": "backend/scinsight/app.py:154 body: s.RagSearchRequest"
   },
   {
    "from": "F0134",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:158 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:160 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0134",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:158 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:160 sibling closure (passed as a value)"
   },
   {
    "from": "F0134",
    "to": "F0421",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:159 typed variable db -> Database"
+   "evidence": "backend/scinsight/app.py:161 typed variable db -> Database"
   },
   {
    "from": "F0134",
    "to": "F0081",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:157 HTTP POST /api/v1/rag/documents"
+   "evidence": "backend/scinsight/app.py:159 HTTP POST /api/v1/rag/documents"
   },
   {
    "from": "F0134",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:158 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:160 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0135",
    "to": "F0187",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:164 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:169 module s (passed as a value)"
   },
   {
    "from": "F0135",
-   "to": "F0772",
-   "kind": "references",
-   "evidence": "backend/scinsight/app.py:164 imported from backend.scinsight.security (passed as a value)"
-  },
-  {
-   "from": "F0135",
-   "to": "F0114",
-   "kind": "references",
-   "evidence": "backend/scinsight/app.py:164 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0135",
-   "to": "F0777",
-   "kind": "calls",
-   "evidence": "backend/scinsight/app.py:165 typed variable security -> Security"
-  },
-  {
-   "from": "F0135",
-   "to": "F0333",
-   "kind": "calls",
-   "evidence": "backend/scinsight/app.py:166 typed variable service -> Service"
-  },
-  {
-   "from": "F0135",
-   "to": "F0114",
-   "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:164 Depends(reader) (authorization / validation)"
-  },
-  {
-   "from": "F0135",
-   "to": "F0187",
-   "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:164 body: s.DecisionCreateRequest"
-  },
-  {
-   "from": "F0136",
    "to": "F0772",
    "kind": "references",
    "evidence": "backend/scinsight/app.py:169 imported from backend.scinsight.security (passed as a value)"
   },
   {
-   "from": "F0136",
+   "from": "F0135",
    "to": "F0114",
    "kind": "references",
    "evidence": "backend/scinsight/app.py:169 sibling closure (passed as a value)"
   },
   {
-   "from": "F0136",
-   "to": "F0336",
+   "from": "F0135",
+   "to": "F0777",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:170 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:170 typed variable security -> Security"
   },
   {
-   "from": "F0136",
+   "from": "F0135",
+   "to": "F0333",
+   "kind": "calls",
+   "evidence": "backend/scinsight/app.py:171 typed variable service -> Service"
+  },
+  {
+   "from": "F0135",
    "to": "F0114",
    "kind": "depends_on",
    "evidence": "backend/scinsight/app.py:169 Depends(reader) (authorization / validation)"
   },
   {
+   "from": "F0135",
+   "to": "F0187",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/app.py:169 body: s.DecisionCreateRequest"
+  },
+  {
+   "from": "F0136",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:174 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F0136",
+   "to": "F0114",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:174 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0136",
+   "to": "F0336",
+   "kind": "calls",
+   "evidence": "backend/scinsight/app.py:175 typed variable service -> Service"
+  },
+  {
+   "from": "F0136",
+   "to": "F0114",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/app.py:174 Depends(reader) (authorization / validation)"
+  },
+  {
    "from": "F0137",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:173 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:178 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0137",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:173 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:178 sibling closure (passed as a value)"
   },
   {
    "from": "F0137",
    "to": "F0335",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:174 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:179 typed variable service -> Service"
   },
   {
    "from": "F0137",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:173 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:178 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0138",
    "to": "F0188",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:177 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:182 module s (passed as a value)"
   },
   {
    "from": "F0138",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:177 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:182 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0138",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:177 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:182 sibling closure (passed as a value)"
   },
   {
    "from": "F0138",
    "to": "F0337",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:178 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:183 typed variable service -> Service"
   },
   {
    "from": "F0138",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:177 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:182 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0138",
    "to": "F0188",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:177 body: s.ReviewRequest"
+   "evidence": "backend/scinsight/app.py:182 body: s.ReviewRequest"
   },
   {
    "from": "F0139",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:181 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:186 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0139",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:181 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:186 sibling closure (passed as a value)"
   },
   {
    "from": "F0139",
    "to": "F0339",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:182 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:187 typed variable service -> Service"
   },
   {
    "from": "F0139",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:181 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:186 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0140",
    "to": "F0189",
-   "kind": "references",
-   "evidence": "backend/scinsight/app.py:185 module s (passed as a value)"
-  },
-  {
-   "from": "F0140",
-   "to": "F0772",
-   "kind": "references",
-   "evidence": "backend/scinsight/app.py:185 imported from backend.scinsight.security (passed as a value)"
-  },
-  {
-   "from": "F0140",
-   "to": "F0113",
-   "kind": "references",
-   "evidence": "backend/scinsight/app.py:185 sibling closure (passed as a value)"
-  },
-  {
-   "from": "F0140",
-   "to": "F0340",
-   "kind": "calls",
-   "evidence": "backend/scinsight/app.py:186 typed variable service -> Service"
-  },
-  {
-   "from": "F0140",
-   "to": "F0113",
-   "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:185 Depends(principal) (authorization / validation)"
-  },
-  {
-   "from": "F0140",
-   "to": "F0189",
-   "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:185 body: s.SapExecutionRequest"
-  },
-  {
-   "from": "F0141",
-   "to": "F0190",
    "kind": "references",
    "evidence": "backend/scinsight/app.py:190 module s (passed as a value)"
   },
   {
-   "from": "F0141",
+   "from": "F0140",
    "to": "F0772",
    "kind": "references",
    "evidence": "backend/scinsight/app.py:190 imported from backend.scinsight.security (passed as a value)"
   },
   {
-   "from": "F0141",
+   "from": "F0140",
    "to": "F0113",
    "kind": "references",
    "evidence": "backend/scinsight/app.py:190 sibling closure (passed as a value)"
   },
   {
-   "from": "F0141",
-   "to": "F0341",
+   "from": "F0140",
+   "to": "F0340",
    "kind": "calls",
    "evidence": "backend/scinsight/app.py:191 typed variable service -> Service"
   },
   {
-   "from": "F0141",
+   "from": "F0140",
    "to": "F0113",
    "kind": "depends_on",
    "evidence": "backend/scinsight/app.py:190 Depends(principal) (authorization / validation)"
   },
   {
+   "from": "F0140",
+   "to": "F0189",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/app.py:190 body: s.SapExecutionRequest"
+  },
+  {
+   "from": "F0141",
+   "to": "F0190",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:195 module s (passed as a value)"
+  },
+  {
+   "from": "F0141",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:195 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F0141",
+   "to": "F0113",
+   "kind": "references",
+   "evidence": "backend/scinsight/app.py:195 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F0141",
+   "to": "F0341",
+   "kind": "calls",
+   "evidence": "backend/scinsight/app.py:196 typed variable service -> Service"
+  },
+  {
+   "from": "F0141",
+   "to": "F0113",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/app.py:195 Depends(principal) (authorization / validation)"
+  },
+  {
    "from": "F0141",
    "to": "F0171",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:190 body: s.ReconcileRequest"
+   "evidence": "backend/scinsight/app.py:195 body: s.ReconcileRequest"
   },
   {
    "from": "F0142",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:194 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:199 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0142",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:194 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:199 sibling closure (passed as a value)"
   },
   {
    "from": "F0142",
    "to": "F0343",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:195 typed variable service -> Service"
+   "evidence": "backend/scinsight/app.py:200 typed variable service -> Service"
   },
   {
    "from": "F0142",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:194 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:199 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0143",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:198 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:203 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0143",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:198 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:203 sibling closure (passed as a value)"
   },
   {
    "from": "F0143",
    "to": "F0777",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:199 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:204 typed variable security -> Security"
   },
   {
    "from": "F0143",
    "to": "F0534",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:200 module learning"
+   "evidence": "backend/scinsight/app.py:205 module learning"
   },
   {
    "from": "F0143",
    "to": "F0779",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:201 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:206 typed variable security -> Security"
   },
   {
    "from": "F0143",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:198 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:203 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0144",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:205 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:210 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0144",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:205 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:210 sibling closure (passed as a value)"
   },
   {
    "from": "F0144",
    "to": "F0777",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:206 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:211 typed variable security -> Security"
   },
   {
    "from": "F0144",
    "to": "F0535",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:207 module learning"
+   "evidence": "backend/scinsight/app.py:212 module learning"
   },
   {
    "from": "F0144",
    "to": "F0779",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:208 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:213 typed variable security -> Security"
   },
   {
    "from": "F0144",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:205 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:210 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0145",
    "to": "F0191",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:212 module s (passed as a value)"
+   "evidence": "backend/scinsight/app.py:217 module s (passed as a value)"
   },
   {
    "from": "F0145",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:212 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:217 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0145",
    "to": "F0114",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:212 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:217 sibling closure (passed as a value)"
   },
   {
    "from": "F0145",
    "to": "F0537",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:213 module learning"
+   "evidence": "backend/scinsight/app.py:218 module learning"
   },
   {
    "from": "F0145",
    "to": "F0779",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:214 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:219 typed variable security -> Security"
   },
   {
    "from": "F0145",
    "to": "F0114",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:212 Depends(reader) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:217 Depends(reader) (authorization / validation)"
   },
   {
    "from": "F0145",
    "to": "F0191",
    "kind": "validates_input",
-   "evidence": "backend/scinsight/app.py:212 body: s.RetrainingRequest"
+   "evidence": "backend/scinsight/app.py:217 body: s.RetrainingRequest"
   },
   {
    "from": "F0146",
    "to": "F0772",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:218 imported from backend.scinsight.security (passed as a value)"
+   "evidence": "backend/scinsight/app.py:223 imported from backend.scinsight.security (passed as a value)"
   },
   {
    "from": "F0146",
    "to": "F0113",
    "kind": "references",
-   "evidence": "backend/scinsight/app.py:218 sibling closure (passed as a value)"
+   "evidence": "backend/scinsight/app.py:223 sibling closure (passed as a value)"
   },
   {
    "from": "F0146",
    "to": "F0777",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:219 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:224 typed variable security -> Security"
   },
   {
    "from": "F0146",
    "to": "F0781",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:220 typed variable security -> Security"
+   "evidence": "backend/scinsight/app.py:225 typed variable security -> Security"
   },
   {
    "from": "F0146",
    "to": "F0421",
    "kind": "calls",
-   "evidence": "backend/scinsight/app.py:221 typed variable db -> Database"
+   "evidence": "backend/scinsight/app.py:226 typed variable db -> Database"
   },
   {
    "from": "F0146",
    "to": "F0101",
    "kind": "http_request",
-   "evidence": "backend/scinsight/app.py:217 HTTP GET /api/v1/audit"
+   "evidence": "backend/scinsight/app.py:222 HTTP GET /api/v1/audit"
   },
   {
    "from": "F0146",
    "to": "F0113",
    "kind": "depends_on",
-   "evidence": "backend/scinsight/app.py:218 Depends(principal) (authorization / validation)"
+   "evidence": "backend/scinsight/app.py:223 Depends(principal) (authorization / validation)"
   },
   {
    "from": "F0297",
@@ -11008,103 +11188,2155 @@
    "from": "F0758",
    "to": "F0757",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:35 same module"
+   "evidence": "backend/scinsight/rag.py:45 same module"
+  },
+  {
+   "from": "F0759",
+   "to": "F1854",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:67 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F0759",
+   "to": "F1851",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:68 imported from backend.scinsight.rag_tuning.chunking"
   },
   {
    "from": "F0762",
    "to": "F0760",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:97 same module"
+   "evidence": "backend/scinsight/rag.py:89 same module"
   },
   {
    "from": "F0762",
-   "to": "F0737",
+   "to": "F1868",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:100 imported from backend.app.rag"
+   "evidence": "backend/scinsight/rag.py:92 imported from backend.scinsight.rag_tuning.embeddings"
   },
   {
    "from": "F0764",
    "to": "F0418",
    "kind": "references",
-   "evidence": "backend/scinsight/rag.py:104 imported from backend.scinsight.db (passed as a value)"
+   "evidence": "backend/scinsight/rag.py:100 imported from backend.scinsight.db (passed as a value)"
   },
   {
-   "from": "F0765",
-   "to": "F0758",
+   "from": "F1804",
+   "to": "F1868",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:111 same module"
+   "evidence": "backend/scinsight/rag.py:109 imported from backend.scinsight.rag_tuning.embeddings"
   },
   {
-   "from": "F0765",
-   "to": "F0757",
+   "from": "F1805",
+   "to": "F1856",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:112 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1805",
+   "to": "F1854",
    "kind": "references",
-   "evidence": "backend/scinsight/rag.py:112 same module (passed as a value)"
+   "evidence": "backend/scinsight/rag.py:111 imported from backend.scinsight.rag_tuning.config (passed as a value)"
   },
   {
-   "from": "F0765",
+   "from": "F1806",
    "to": "F0422",
    "kind": "calls",
    "evidence": "backend/scinsight/rag.py:116 typed attribute self.db -> Database"
   },
   {
-   "from": "F0765",
-   "to": "F0759",
+   "from": "F1806",
+   "to": "F1805",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:120 same module"
+   "evidence": "backend/scinsight/rag.py:118 self method"
+  },
+  {
+   "from": "F1806",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:119 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1807",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:122 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1807",
+   "to": "F1851",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:123 imported from backend.scinsight.rag_tuning.chunking"
+  },
+  {
+   "from": "F1807",
+   "to": "F1804",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:124 self method"
+  },
+  {
+   "from": "F1807",
+   "to": "F1803",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:135 same module"
   },
   {
    "from": "F0765",
-   "to": "F0736",
+   "to": "F0758",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:121 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "evidence": "backend/scinsight/rag.py:143 same module"
   },
   {
    "from": "F0765",
-   "to": "F0732",
-   "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:121 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "to": "F0757",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:144 same module (passed as a value)"
   },
   {
    "from": "F0765",
-   "to": "F0761",
+   "to": "F1806",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:121 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "evidence": "backend/scinsight/rag.py:148 self method"
+  },
+  {
+   "from": "F0765",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:149 typed attribute self.db -> Database"
   },
   {
    "from": "F0765",
    "to": "F0416",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:128 imported from backend.scinsight.db"
+   "evidence": "backend/scinsight/rag.py:160 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F0765",
+   "to": "F1807",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:161 self method"
   },
   {
    "from": "F0765",
    "to": "F0425",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:135 typed attribute self.db -> Database"
+   "evidence": "backend/scinsight/rag.py:162 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1808",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:166 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1808",
+   "to": "F0758",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:171 same module"
+  },
+  {
+   "from": "F1808",
+   "to": "F0757",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:172 same module (passed as a value)"
+  },
+  {
+   "from": "F1808",
+   "to": "F1807",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:176 self method"
+  },
+  {
+   "from": "F1808",
+   "to": "F0425",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:177 typed attribute self.db -> Database"
   },
   {
    "from": "F0766",
-   "to": "F0736",
-   "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:140 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag.py:183 imported from backend.scinsight.rag_tuning.config (passed as a value)"
   },
   {
    "from": "F0766",
-   "to": "F0732",
+   "to": "F1806",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:140 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "evidence": "backend/scinsight/rag.py:188 self method"
   },
   {
    "from": "F0766",
-   "to": "F0761",
+   "to": "F1804",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:140 typed attribute self.embedder -> FastEmbedder|HashEmbedder"
+   "evidence": "backend/scinsight/rag.py:193 self method"
   },
   {
    "from": "F0766",
    "to": "F0421",
    "kind": "calls",
-   "evidence": "backend/scinsight/rag.py:141 typed attribute self.db -> Database"
+   "evidence": "backend/scinsight/rag.py:196 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F0766",
+   "to": "F1803",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:211 same module"
+  },
+  {
+   "from": "F0766",
+   "to": "F1918",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:214 module retrieval"
+  },
+  {
+   "from": "F0766",
+   "to": "F1809",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:257 self method"
+  },
+  {
+   "from": "F1809",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:262 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1809",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag.py:264 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1817",
+   "to": "F1818",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:96 nested function (passed as a value)"
+  },
+  {
+   "from": "F1819",
+   "to": "F1902",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:100 imported from backend.scinsight.rag_tuning.registry"
+  },
+  {
+   "from": "F1819",
+   "to": "F1880",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:101 imported from backend.scinsight.rag_tuning.flowise_adapter"
+  },
+  {
+   "from": "F1819",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:124 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1820",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:106 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1820",
+   "to": "F0777",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:107 typed variable security -> Security"
+  },
+  {
+   "from": "F1821",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:110 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1821",
+   "to": "F0779",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:111 typed variable security -> Security"
+  },
+  {
+   "from": "F1822",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:113 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1822",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:115 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1822",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:118 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1823",
+   "to": "F1910",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:121 inferred: unique method name"
+  },
+  {
+   "from": "F1824",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:125 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1824",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:125 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1824",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:126 inferred: unique method name"
+  },
+  {
+   "from": "F1824",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:136 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1824",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:124 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1824",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:125 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1825",
+   "to": "F1810",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:139 same module (passed as a value)"
+  },
+  {
+   "from": "F1825",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:139 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1825",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:139 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1825",
+   "to": "F1908",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:140 inferred: unique method name"
+  },
+  {
+   "from": "F1825",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:141 sibling closure"
+  },
+  {
+   "from": "F1825",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:138 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1825",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:139 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1825",
+   "to": "F1810",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:139 body: DraftRequest"
+  },
+  {
+   "from": "F1826",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:145 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1826",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:145 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1826",
+   "to": "F1894",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:146 module indexing"
+  },
+  {
+   "from": "F1826",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:144 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1826",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:145 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1827",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:149 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1827",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:149 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1827",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:150 sibling closure"
+  },
+  {
+   "from": "F1827",
+   "to": "F1857",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:151 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1827",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:151 inferred: unique method name"
+  },
+  {
+   "from": "F1827",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:148 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1827",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:149 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1828",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:155 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1828",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:155 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1828",
+   "to": "F1860",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:156 module documents"
+  },
+  {
+   "from": "F1828",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:154 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1828",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:155 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1829",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:159 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1829",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:159 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1829",
+   "to": "F1860",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:160 module documents"
+  },
+  {
+   "from": "F1829",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:158 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1829",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:159 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1830",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:167 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1830",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:167 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1830",
+   "to": "F1863",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:169 module documents"
+  },
+  {
+   "from": "F1830",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:166 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1830",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:167 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1831",
+   "to": "F1811",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:175 same module (passed as a value)"
+  },
+  {
+   "from": "F1831",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:175 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1831",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:175 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1831",
+   "to": "F1863",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:177 module documents"
+  },
+  {
+   "from": "F1831",
+   "to": "F1853",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:181 imported from backend.scinsight.rag_tuning.chunking"
+  },
+  {
+   "from": "F1831",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:174 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1831",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:175 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1831",
+   "to": "F1811",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:175 body: PreviewRequest"
+  },
+  {
+   "from": "F1832",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:188 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1832",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:188 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1832",
+   "to": "F1806",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:189 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1832",
+   "to": "F1867",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:190 module embeddings"
+  },
+  {
+   "from": "F1832",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:187 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1832",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:188 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1833",
+   "to": "F1813",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:194 same module (passed as a value)"
+  },
+  {
+   "from": "F1833",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:194 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1833",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:194 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1833",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:195 module embeddings"
+  },
+  {
+   "from": "F1833",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:197 sibling closure"
+  },
+  {
+   "from": "F1833",
+   "to": "F1823",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:199 sibling closure"
+  },
+  {
+   "from": "F1833",
+   "to": "F1869",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:199 module embeddings"
+  },
+  {
+   "from": "F1833",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:193 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1833",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:194 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1833",
+   "to": "F1813",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:194 body: ModelTestRequest"
+  },
+  {
+   "from": "F1834",
+   "to": "F1814",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:203 same module (passed as a value)"
+  },
+  {
+   "from": "F1834",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:203 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1834",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:203 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1834",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:204 sibling closure"
+  },
+  {
+   "from": "F1834",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:205 sibling closure"
+  },
+  {
+   "from": "F1834",
+   "to": "F1823",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:206 sibling closure"
+  },
+  {
+   "from": "F1834",
+   "to": "F1892",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:207 module indexing"
+  },
+  {
+   "from": "F1834",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:202 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1834",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:203 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1834",
+   "to": "F1814",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:203 body: ConfigRef"
+  },
+  {
+   "from": "F1835",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:210 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1835",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:210 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1835",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:209 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1835",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:210 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1836",
+   "to": "F1812",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:218 same module (passed as a value)"
+  },
+  {
+   "from": "F1836",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:218 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1836",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:218 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1836",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:221 sibling closure"
+  },
+  {
+   "from": "F1836",
+   "to": "F1806",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:224 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1836",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:228 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1836",
+   "to": "F0766",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:233 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1836",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:217 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1836",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:218 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1836",
+   "to": "F1812",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:218 body: RetrieveRequest"
+  },
+  {
+   "from": "F1837",
+   "to": "F1817",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:240 same module"
+  },
+  {
+   "from": "F1837",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:245 sibling closure"
+  },
+  {
+   "from": "F1837",
+   "to": "F1892",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:247 module indexing"
+  },
+  {
+   "from": "F1837",
+   "to": "F1874",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:249 module evaluation"
+  },
+  {
+   "from": "F1837",
+   "to": "F1913",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:250 inferred: unique method name"
+  },
+  {
+   "from": "F1838",
+   "to": "F1815",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:256 same module (passed as a value)"
+  },
+  {
+   "from": "F1838",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:256 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1838",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:256 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1838",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:258 sibling closure"
+  },
+  {
+   "from": "F1838",
+   "to": "F1870",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:259 module evaluation"
+  },
+  {
+   "from": "F1838",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:260 sibling closure"
+  },
+  {
+   "from": "F1838",
+   "to": "F1823",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:261 sibling closure"
+  },
+  {
+   "from": "F1838",
+   "to": "F1837",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:261 sibling closure"
+  },
+  {
+   "from": "F1838",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:255 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1838",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:256 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1838",
+   "to": "F1815",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:256 body: EvaluateRequest"
+  },
+  {
+   "from": "F1839",
+   "to": "F1816",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:264 same module (passed as a value)"
+  },
+  {
+   "from": "F1839",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:264 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1839",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:264 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1839",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:266 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1839",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:266 inferred: unique method name"
+  },
+  {
+   "from": "F1839",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:268 module embeddings"
+  },
+  {
+   "from": "F1839",
+   "to": "F1858",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:274 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1839",
+   "to": "F1870",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:275 module evaluation"
+  },
+  {
+   "from": "F1839",
+   "to": "F1914",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:276 inferred: unique method name"
+  },
+  {
+   "from": "F1839",
+   "to": "F1908",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:283 inferred: unique method name"
+  },
+  {
+   "from": "F1839",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:284 sibling closure"
+  },
+  {
+   "from": "F1839",
+   "to": "F1823",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:285 sibling closure"
+  },
+  {
+   "from": "F1839",
+   "to": "F1837",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:285 sibling closure"
+  },
+  {
+   "from": "F1839",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:263 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1839",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:264 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1839",
+   "to": "F1816",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:264 body: GridRequest"
+  },
+  {
+   "from": "F1840",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:288 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1840",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:288 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1840",
+   "to": "F1914",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:289 inferred: unique method name"
+  },
+  {
+   "from": "F1840",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:287 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1840",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:288 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1841",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:292 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1841",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:292 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1841",
+   "to": "F1877",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:294 module evaluation"
+  },
+  {
+   "from": "F1841",
+   "to": "F1915",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:294 inferred: unique method name"
+  },
+  {
+   "from": "F1841",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:291 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1841",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:292 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1842",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:299 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1842",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:299 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1842",
+   "to": "F1915",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:301 inferred: unique method name"
+  },
+  {
+   "from": "F1842",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:298 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1842",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:299 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1843",
+   "to": "F1814",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:307 same module (passed as a value)"
+  },
+  {
+   "from": "F1843",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:307 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1843",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:307 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1843",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:308 sibling closure"
+  },
+  {
+   "from": "F1843",
+   "to": "F1895",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:309 module publishing"
+  },
+  {
+   "from": "F1843",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:306 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1843",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:307 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1843",
+   "to": "F1814",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:307 body: ConfigRef"
+  },
+  {
+   "from": "F1844",
+   "to": "F1814",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:312 same module (passed as a value)"
+  },
+  {
+   "from": "F1844",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:312 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1844",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:312 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1844",
+   "to": "F0777",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:313 typed variable security -> Security"
+  },
+  {
+   "from": "F1844",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:316 sibling closure"
+  },
+  {
+   "from": "F1844",
+   "to": "F1898",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:318 module publishing"
+  },
+  {
+   "from": "F1844",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:320 sibling closure"
+  },
+  {
+   "from": "F1844",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:311 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1844",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:312 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1844",
+   "to": "F1814",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:312 body: ConfigRef"
+  },
+  {
+   "from": "F1845",
+   "to": "F1814",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:326 same module (passed as a value)"
+  },
+  {
+   "from": "F1845",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:326 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1845",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:326 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1845",
+   "to": "F0777",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:327 typed variable security -> Security"
+  },
+  {
+   "from": "F1845",
+   "to": "F1822",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:330 sibling closure"
+  },
+  {
+   "from": "F1845",
+   "to": "F1899",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:332 module publishing"
+  },
+  {
+   "from": "F1845",
+   "to": "F1821",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:334 sibling closure"
+  },
+  {
+   "from": "F1845",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:325 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1845",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:326 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1845",
+   "to": "F1814",
+   "kind": "validates_input",
+   "evidence": "backend/scinsight/rag_tuning/api.py:326 body: ConfigRef"
+  },
+  {
+   "from": "F1846",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:341 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1846",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:341 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1846",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:340 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1846",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:341 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1847",
+   "to": "F0772",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:345 imported from backend.scinsight.security (passed as a value)"
+  },
+  {
+   "from": "F1847",
+   "to": "F1820",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/api.py:345 sibling closure (passed as a value)"
+  },
+  {
+   "from": "F1847",
+   "to": "F0421",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/api.py:346 typed variable db -> Database"
+  },
+  {
+   "from": "F1847",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "backend/scinsight/rag_tuning/api.py:344 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1847",
+   "to": "F1820",
+   "kind": "depends_on",
+   "evidence": "backend/scinsight/rag_tuning/api.py:345 Depends(admin) (authorization / validation)"
+  },
+  {
+   "from": "F1850",
+   "to": "F1849",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:54 same module"
+  },
+  {
+   "from": "F1851",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:71 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1851",
+   "to": "F1849",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:76 same module"
+  },
+  {
+   "from": "F1851",
+   "to": "F1850",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:79 same module (passed as a value)"
+  },
+  {
+   "from": "F1851",
+   "to": "F1849",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:79 same module (passed as a value)"
+  },
+  {
+   "from": "F1851",
+   "to": "F1848",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:80 same module"
+  },
+  {
+   "from": "F1853",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:97 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1853",
+   "to": "F1851",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:99 same module"
+  },
+  {
+   "from": "F1853",
+   "to": "F1852",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/chunking.py:105 same module"
+  },
+  {
+   "from": "F1855",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/config.py:49 same module (passed as a value)"
+  },
+  {
+   "from": "F1856",
+   "to": "F1854",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/config.py:60 same module"
+  },
+  {
+   "from": "F1856",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/config.py:58 same module (passed as a value)"
+  },
+  {
+   "from": "F1858",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/config.py:70 same module (passed as a value)"
+  },
+  {
+   "from": "F1860",
+   "to": "F1806",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:24 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1860",
+   "to": "F0421",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:25 typed variable db -> Database"
+  },
+  {
+   "from": "F1860",
+   "to": "F1859",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:31 same module"
+  },
+  {
+   "from": "F1860",
+   "to": "F0758",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:35 imported from backend.scinsight.rag"
+  },
+  {
+   "from": "F1860",
+   "to": "F0757",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:36 imported from backend.scinsight.rag (passed as a value)"
+  },
+  {
+   "from": "F1860",
+   "to": "F1861",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:41 same module"
+  },
+  {
+   "from": "F1860",
+   "to": "F1862",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:50 same module"
+  },
+  {
+   "from": "F1863",
+   "to": "F0758",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:109 imported from backend.scinsight.rag"
+  },
+  {
+   "from": "F1863",
+   "to": "F0757",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/documents.py:110 imported from backend.scinsight.rag (passed as a value)"
+  },
+  {
+   "from": "F1867",
+   "to": "F1866",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:49 same module"
+  },
+  {
+   "from": "F1867",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:50 same module"
+  },
+  {
+   "from": "F1868",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:58 same module"
+  },
+  {
+   "from": "F1868",
+   "to": "F1864",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:60 same module"
+  },
+  {
+   "from": "F1868",
+   "to": "F0760",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:65 imported from backend.scinsight.rag"
+  },
+  {
+   "from": "F1868",
+   "to": "F1866",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:67 same module"
+  },
+  {
+   "from": "F1868",
+   "to": "F0737",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:72 imported from backend.app.rag"
+  },
+  {
+   "from": "F1869",
+   "to": "F1868",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:83 same module"
+  },
+  {
+   "from": "F1869",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/embeddings.py:89 same module"
+  },
+  {
+   "from": "F1874",
+   "to": "F1870",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:85 same module"
+  },
+  {
+   "from": "F1874",
+   "to": "F0766",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:90 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1874",
+   "to": "F1872",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:92 same module"
+  },
+  {
+   "from": "F1874",
+   "to": "F1873",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:98 same module"
+  },
+  {
+   "from": "F1874",
+   "to": "F1875",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:100 same module"
+  },
+  {
+   "from": "F1875",
+   "to": "F1876",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:108 nested function"
+  },
+  {
+   "from": "F1875",
+   "to": "F1871",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:111 same module"
+  },
+  {
+   "from": "F1877",
+   "to": "F1878",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/evaluation.py:139 nested function"
+  },
+  {
+   "from": "F1883",
+   "to": "F1879",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:42 same module"
+  },
+  {
+   "from": "F1884",
+   "to": "F1883",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:48 self method"
+  },
+  {
+   "from": "F1884",
+   "to": "F1879",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:51 same module"
+  },
+  {
+   "from": "F1886",
+   "to": "F1882",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:65 self method (passed as a value)"
+  },
+  {
+   "from": "F1886",
+   "to": "F1884",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:68 self method"
+  },
+  {
+   "from": "F1886",
+   "to": "F1879",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:69 same module (passed as a value)"
+  },
+  {
+   "from": "F1886",
+   "to": "F1885",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:71 self method"
+  },
+  {
+   "from": "F1886",
+   "to": "F1887",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:81 self method"
+  },
+  {
+   "from": "F1887",
+   "to": "F0421",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:87 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1889",
+   "to": "F1884",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:101 self method"
+  },
+  {
+   "from": "F1889",
+   "to": "F1885",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:104 self method"
+  },
+  {
+   "from": "F1889",
+   "to": "F1883",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:111 self method"
+  },
+  {
+   "from": "F1889",
+   "to": "F1887",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:114 self method"
+  },
+  {
+   "from": "F1889",
+   "to": "F1879",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:116 same module"
+  },
+  {
+   "from": "F1889",
+   "to": "F1890",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:118 self method"
+  },
+  {
+   "from": "F1890",
+   "to": "F1884",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:125 self method"
+  },
+  {
+   "from": "F1890",
+   "to": "F1883",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:126 self method"
+  },
+  {
+   "from": "F1890",
+   "to": "F1887",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/flowise_adapter.py:128 self method"
+  },
+  {
+   "from": "F1891",
+   "to": "F0758",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:19 imported from backend.scinsight.rag"
+  },
+  {
+   "from": "F1891",
+   "to": "F0757",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:20 imported from backend.scinsight.rag (passed as a value)"
+  },
+  {
+   "from": "F1892",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:29 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1892",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:32 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1892",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:33 inferred: unique method name"
+  },
+  {
+   "from": "F1892",
+   "to": "F1857",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:35 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1892",
+   "to": "F1909",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:36 inferred: unique method name"
+  },
+  {
+   "from": "F1892",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:39 imported from backend.scinsight.rag_tuning.embeddings"
+  },
+  {
+   "from": "F1892",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:42 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1892",
+   "to": "F1808",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:45 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1892",
+   "to": "F1893",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:47 same module"
+  },
+  {
+   "from": "F1893",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:61 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1893",
+   "to": "F1891",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:65 same module"
+  },
+  {
+   "from": "F1893",
+   "to": "F1865",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/indexing.py:74 imported from backend.scinsight.rag_tuning.embeddings"
+  },
+  {
+   "from": "F1895",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:17 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1895",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:18 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1895",
+   "to": "F1896",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:23 nested function"
+  },
+  {
+   "from": "F1895",
+   "to": "F1893",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:25 imported from backend.scinsight.rag_tuning.indexing"
+  },
+  {
+   "from": "F1895",
+   "to": "F1804",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:30 typed variable kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1895",
+   "to": "F1888",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:35 inferred: unique method name"
+  },
+  {
+   "from": "F1895",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:38 inferred: unique method name"
+  },
+  {
+   "from": "F1895",
+   "to": "F1914",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:39 inferred: unique method name"
+  },
+  {
+   "from": "F1895",
+   "to": "F1877",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:46 imported from backend.scinsight.rag_tuning.evaluation"
+  },
+  {
+   "from": "F1895",
+   "to": "F1909",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:49 inferred: unique method name"
+  },
+  {
+   "from": "F1895",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:49 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1897",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:54 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1897",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:55 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1897",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:56 inferred: unique method name"
+  },
+  {
+   "from": "F1897",
+   "to": "F1884",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:63 inferred: unique method name"
+  },
+  {
+   "from": "F1897",
+   "to": "F1890",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:64 inferred: unique method name"
+  },
+  {
+   "from": "F1897",
+   "to": "F1889",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:66 inferred: unique method name"
+  },
+  {
+   "from": "F1897",
+   "to": "F0425",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:69 inferred: unique method name"
+  },
+  {
+   "from": "F1897",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:73 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1898",
+   "to": "F1895",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:79 same module"
+  },
+  {
+   "from": "F1898",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:82 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1898",
+   "to": "F1897",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:84 same module"
+  },
+  {
+   "from": "F1899",
+   "to": "F0393",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:89 typed variable registry -> TenantRegistry"
+  },
+  {
+   "from": "F1899",
+   "to": "F1895",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:92 same module"
+  },
+  {
+   "from": "F1899",
+   "to": "F1897",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/publishing.py:95 same module"
+  },
+  {
+   "from": "F1903",
+   "to": "F0418",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:29 imported from backend.scinsight.db (passed as a value)"
+  },
+  {
+   "from": "F1904",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:35 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1904",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:36 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1904",
+   "to": "F1900",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:38 same module"
+  },
+  {
+   "from": "F1904",
+   "to": "F1805",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:38 typed attribute self.kb -> KnowledgeBase"
+  },
+  {
+   "from": "F1904",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:39 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1905",
+   "to": "F1904",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:42 self method"
+  },
+  {
+   "from": "F1905",
+   "to": "F1901",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:43 same module"
+  },
+  {
+   "from": "F1905",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:43 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1906",
+   "to": "F1901",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:46 same module"
+  },
+  {
+   "from": "F1906",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:46 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1907",
+   "to": "F1904",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:52 self method"
+  },
+  {
+   "from": "F1907",
+   "to": "F1901",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:53 same module"
+  },
+  {
+   "from": "F1907",
+   "to": "F0421",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:53 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1908",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:55 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1908",
+   "to": "F1905",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:57 self method"
+  },
+  {
+   "from": "F1908",
+   "to": "F1857",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:58 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1908",
+   "to": "F1900",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:61 same module"
+  },
+  {
+   "from": "F1908",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:62 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1908",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:63 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1908",
+   "to": "F1906",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:64 self method"
+  },
+  {
+   "from": "F1909",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:69 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1910",
+   "to": "F1900",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:74 same module"
+  },
+  {
+   "from": "F1910",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:75 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1910",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:76 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1910",
+   "to": "F1911",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:87 nested function"
+  },
+  {
+   "from": "F1910",
+   "to": "F1911",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:89 nested function (passed as a value)"
+  },
+  {
+   "from": "F1910",
+   "to": "F1912",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:90 self method"
+  },
+  {
+   "from": "F1911",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:81 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1911",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:81 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1912",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:93 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1913",
+   "to": "F1900",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:100 same module"
+  },
+  {
+   "from": "F1913",
+   "to": "F0423",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:101 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1913",
+   "to": "F0416",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:102 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1914",
+   "to": "F0421",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:106 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1915",
+   "to": "F0422",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/registry.py:111 typed attribute self.db -> Database"
+  },
+  {
+   "from": "F1917",
+   "to": "F1916",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/retrieval.py:26 same module"
+  },
+  {
+   "from": "F1918",
+   "to": "F1854",
+   "kind": "references",
+   "evidence": "backend/scinsight/rag_tuning/retrieval.py:32 imported from backend.scinsight.rag_tuning.config (passed as a value)"
+  },
+  {
+   "from": "F1918",
+   "to": "F1916",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/retrieval.py:34 same module"
+  },
+  {
+   "from": "F1918",
+   "to": "F1917",
+   "kind": "calls",
+   "evidence": "backend/scinsight/rag_tuning/retrieval.py:42 same module"
   },
   {
    "from": "F0180",
@@ -12217,6 +14449,60 @@
    "evidence": "scripts/langgraph_assistants.py:114 same module"
   },
   {
+   "from": "F1923",
+   "to": "F1922",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:57 self method"
+  },
+  {
+   "from": "F1923",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "scripts/rag_tuning.py:57 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1923",
+   "to": "F1835",
+   "kind": "http_request",
+   "evidence": "scripts/rag_tuning.py:57 HTTP GET /api/v1/rag-tuning/jobs/{job_id}"
+  },
+  {
+   "from": "F1925",
+   "to": "F1919",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:68 same module"
+  },
+  {
+   "from": "F1925",
+   "to": "F1920",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:112 same module"
+  },
+  {
+   "from": "F1925",
+   "to": "F1924",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:116 same module"
+  },
+  {
+   "from": "F1925",
+   "to": "F1926",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:158 same module"
+  },
+  {
+   "from": "F1926",
+   "to": "F1920",
+   "kind": "references",
+   "evidence": "scripts/rag_tuning.py:162 same module (passed as a value)"
+  },
+  {
+   "from": "F1926",
+   "to": "F1924",
+   "kind": "calls",
+   "evidence": "scripts/rag_tuning.py:196 same module"
+  },
+  {
    "from": "F0515",
    "to": "F0514",
    "kind": "calls",
@@ -12713,12 +14999,6 @@
    "to": "F0883",
    "kind": "calls",
    "evidence": "scripts/smoke.py:241 same module"
-  },
-  {
-   "from": "F0903",
-   "to": "F0886",
-   "kind": "calls",
-   "evidence": "scripts/smoke.py:262 inferred: unique method name"
   },
   {
    "from": "F0904",
@@ -13585,6 +15865,312 @@
    "evidence": "tests/scinsight/test_langgraph_mirror.py:158 module common"
   },
   {
+   "from": "F1928",
+   "to": "F0112",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:32 imported from backend.scinsight.app"
+  },
+  {
+   "from": "F1928",
+   "to": "F1927",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:32 same module (passed as a value)"
+  },
+  {
+   "from": "F1928",
+   "to": "F0418",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:32 imported from backend.scinsight.db"
+  },
+  {
+   "from": "F1929",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:36 same module (passed as a value)"
+  },
+  {
+   "from": "F1930",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:42 same module (passed as a value)"
+  },
+  {
+   "from": "F1931",
+   "to": "F1854",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:50 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1931",
+   "to": "F1857",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:55 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1932",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:60 same module (passed as a value)"
+  },
+  {
+   "from": "F1933",
+   "to": "F1853",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:70 imported from backend.scinsight.rag_tuning.chunking"
+  },
+  {
+   "from": "F1933",
+   "to": "F1854",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:70 imported from backend.scinsight.rag_tuning.config"
+  },
+  {
+   "from": "F1933",
+   "to": "F1851",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:75 imported from backend.scinsight.rag_tuning.chunking"
+  },
+  {
+   "from": "F1934",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:81 same module (passed as a value)"
+  },
+  {
+   "from": "F1935",
+   "to": "F1927",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:92 same module (passed as a value)"
+  },
+  {
+   "from": "F1935",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:96 same module (passed as a value)"
+  },
+  {
+   "from": "F1936",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:110 same module (passed as a value)"
+  },
+  {
+   "from": "F1936",
+   "to": "F1930",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:113 same module"
+  },
+  {
+   "from": "F1937",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:119 same module (passed as a value)"
+  },
+  {
+   "from": "F1937",
+   "to": "F0076",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:119 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1937",
+   "to": "F0077",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:119 HTTP GET /api/v1/rag/search"
+  },
+  {
+   "from": "F1937",
+   "to": "F0133",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:119 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1937",
+   "to": "F1929",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:120 same module"
+  },
+  {
+   "from": "F1937",
+   "to": "F1930",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:121 same module"
+  },
+  {
+   "from": "F1938",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:132 same module (passed as a value)"
+  },
+  {
+   "from": "F1939",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:144 same module (passed as a value)"
+  },
+  {
+   "from": "F1939",
+   "to": "F0076",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:144 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1939",
+   "to": "F0077",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:144 HTTP GET /api/v1/rag/search"
+  },
+  {
+   "from": "F1939",
+   "to": "F0133",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:144 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1940",
+   "to": "F1872",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:156 module evaluation"
+  },
+  {
+   "from": "F1941",
+   "to": "F1873",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:163 module evaluation"
+  },
+  {
+   "from": "F1942",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:170 same module (passed as a value)"
+  },
+  {
+   "from": "F1942",
+   "to": "F1930",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:171 same module"
+  },
+  {
+   "from": "F1942",
+   "to": "F1870",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:175 module evaluation"
+  },
+  {
+   "from": "F1943",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:181 same module (passed as a value)"
+  },
+  {
+   "from": "F1944",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:187 same module (passed as a value)"
+  },
+  {
+   "from": "F1944",
+   "to": "F1929",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:188 same module"
+  },
+  {
+   "from": "F1944",
+   "to": "F1930",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:190 same module"
+  },
+  {
+   "from": "F1944",
+   "to": "F0076",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:197 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1944",
+   "to": "F0077",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:197 HTTP GET /api/v1/rag/search"
+  },
+  {
+   "from": "F1944",
+   "to": "F0133",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:197 HTTP POST /api/v1/rag/search"
+  },
+  {
+   "from": "F1944",
+   "to": "F0101",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:202 HTTP GET /api/v1/audit"
+  },
+  {
+   "from": "F1944",
+   "to": "F0146",
+   "kind": "http_request",
+   "evidence": "tests/scinsight/test_rag_tuning.py:202 HTTP GET /api/v1/audit"
+  },
+  {
+   "from": "F1945",
+   "to": "F1929",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:207 same module"
+  },
+  {
+   "from": "F1945",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:207 same module (passed as a value)"
+  },
+  {
+   "from": "F1945",
+   "to": "F0763",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:211 module rag (passed as a value)"
+  },
+  {
+   "from": "F1945",
+   "to": "F1946",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:211 nested function (passed as a value)"
+  },
+  {
+   "from": "F1947",
+   "to": "F1929",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:220 same module"
+  },
+  {
+   "from": "F1947",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:220 same module (passed as a value)"
+  },
+  {
+   "from": "F1948",
+   "to": "F1929",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:226 same module"
+  },
+  {
+   "from": "F1948",
+   "to": "F1928",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:226 same module (passed as a value)"
+  },
+  {
+   "from": "F1948",
+   "to": "F1930",
+   "kind": "calls",
+   "evidence": "tests/scinsight/test_rag_tuning.py:227 same module"
+  },
+  {
+   "from": "F1948",
+   "to": "F1927",
+   "kind": "references",
+   "evidence": "tests/scinsight/test_rag_tuning.py:228 same module (passed as a value)"
+  },
+  {
    "from": "F0845",
    "to": "F0119",
    "kind": "http_request",
@@ -14233,40 +16819,52 @@
    "evidence": "tests/test_code_editor.py:41 HTTP PUT /api/v1/code/function"
   },
   {
+   "from": "F1949",
+   "to": "F1801",
+   "kind": "http_request",
+   "evidence": "tests/test_code_editor.py:50 HTTP GET/POST/PUT /api/v1/rag-tuning/{path:path}"
+  },
+  {
+   "from": "F1949",
+   "to": "F1824",
+   "kind": "http_request",
+   "evidence": "tests/test_code_editor.py:50 HTTP GET /api/v1/rag-tuning/config"
+  },
+  {
    "from": "F1797",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:50 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:56 imported from backend.app.code_editor"
   },
   {
    "from": "F1797",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:50 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:56 same module (passed as a value)"
   },
   {
    "from": "F1798",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:68 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:74 imported from backend.app.code_editor"
   },
   {
    "from": "F1798",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:68 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:74 same module (passed as a value)"
   },
   {
    "from": "F1799",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:76 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:82 imported from backend.app.code_editor"
   },
   {
    "from": "F1799",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:76 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:82 same module (passed as a value)"
   },
   {
    "from": "F0922",

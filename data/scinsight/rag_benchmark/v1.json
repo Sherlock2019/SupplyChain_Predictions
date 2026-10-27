@@ -1,0 +1,271 @@
+{
+ "dataset": "scinsight-company-rag",
+ "version": "v1",
+ "tenant": "scinsight-cosmetics",
+ "created": "2026-10-27",
+ "synthetic": true,
+ "description": "Labelled supply-chain policy questions over the governed Belleva corpus (data/scinsight/knowledge). relevant_doc_ids = documents that contain the answer; expected_facts = phrases that must appear in the retrieved evidence; forbidden_doc_ids = documents that must never be returned to the fixture role (other tenant, role without access).",
+ "cases": [
+  {
+   "id": "Q01",
+   "category": "approval",
+   "question": "Who must approve a warehouse stock transfer?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [
+    "POL-WH-020"
+   ],
+   "expected_facts": [
+    "approved by the warehouse manager"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-WH-020"
+   ]
+  },
+  {
+   "id": "Q02",
+   "category": "safety_stock",
+   "question": "What safety stock must the sending warehouse keep after a transfer?",
+   "roles": [
+    "warehouse_manager"
+   ],
+   "relevant_doc_ids": [
+    "POL-WH-020"
+   ],
+   "expected_facts": [
+    "14 days of cover"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-WH-020"
+   ]
+  },
+  {
+   "id": "Q03",
+   "category": "approval",
+   "question": "When does a purchase request need the procurement manager's approval?",
+   "roles": [
+    "procurement_manager"
+   ],
+   "relevant_doc_ids": [
+    "POL-PROC-001"
+   ],
+   "expected_facts": [
+    "EUR 10,000"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-PROC-001"
+   ]
+  },
+  {
+   "id": "Q04",
+   "category": "emergency_supplier",
+   "question": "Which policy applies if we need an emergency supplier that is not approved yet?",
+   "roles": [
+    "procurement_manager"
+   ],
+   "relevant_doc_ids": [
+    "POL-PROC-001"
+   ],
+   "expected_facts": [
+    "supplier qualification",
+    "quality agreement"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-PROC-001"
+   ]
+  },
+  {
+   "id": "Q05",
+   "category": "approval",
+   "question": "Can stock reserved for a customer order be transferred without approval?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [
+    "POL-ALLOC-030"
+   ],
+   "expected_facts": [
+    "sales director's consent"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-ALLOC-030"
+   ]
+  },
+  {
+   "id": "Q06",
+   "category": "shortage",
+   "question": "What should the planner do when a production component is short?",
+   "roles": [
+    "production_planner"
+   ],
+   "relevant_doc_ids": [
+    "SOP-PROD-010"
+   ],
+   "expected_facts": [
+    "expedite or reorder"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "SOP-PROD-010"
+   ]
+  },
+  {
+   "id": "Q07",
+   "category": "shelf_life",
+   "question": "How much remaining shelf life must batches have to be transferred?",
+   "roles": [
+    "warehouse_manager"
+   ],
+   "relevant_doc_ids": [
+    "POL-WH-020"
+   ],
+   "expected_facts": [
+    "60 days of remaining shelf life"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-WH-020"
+   ]
+  },
+  {
+   "id": "Q08",
+   "category": "supplier_terms",
+   "question": "What is the contract lead time for Alpine Dispensing pump dispensers?",
+   "roles": [
+    "procurement_manager"
+   ],
+   "relevant_doc_ids": [
+    "AGR-SUP-A-002"
+   ],
+   "expected_facts": [
+    "5 working days"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "AGR-SUP-A-002"
+   ]
+  },
+  {
+   "id": "Q09",
+   "category": "production",
+   "question": "How many working days before production start is material readiness checked?",
+   "roles": [
+    "production_planner"
+   ],
+   "relevant_doc_ids": [
+    "SOP-PROD-010"
+   ],
+   "expected_facts": [
+    "10 working days"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "SOP-PROD-010"
+   ]
+  },
+  {
+   "id": "Q10",
+   "category": "quality",
+   "question": "Can batches that are still in quality inspection be shipped?",
+   "roles": [
+    "quality_manager"
+   ],
+   "relevant_doc_ids": [
+    "SOP-QA-040"
+   ],
+   "expected_facts": [
+    "must not be used, shipped or planned"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "SOP-QA-040"
+   ]
+  },
+  {
+   "id": "Q11",
+   "category": "expiry",
+   "question": "What happens to expired batches?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [
+    "POL-QA-045"
+   ],
+   "expected_facts": [
+    "blocked for destruction review"
+   ],
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-QA-045"
+   ]
+  },
+  {
+   "id": "Q12",
+   "category": "versioning",
+   "question": "Which version of the warehouse transfer policy is currently effective?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [
+    "POL-WH-020"
+   ],
+   "expected_facts": [],
+   "expected_citation_versions": {
+    "POL-WH-020": "2.4"
+   },
+   "expected_behavior": "answer",
+   "expected_citations": [
+    "POL-WH-020"
+   ]
+  },
+  {
+   "id": "Q13",
+   "category": "no_evidence",
+   "question": "What is the company policy on employee travel expenses and per diem rates?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [],
+   "expected_facts": [],
+   "expected_behavior": "insufficient_evidence",
+   "expected_citations": []
+  },
+  {
+   "id": "Q14",
+   "category": "tenant_isolation",
+   "question": "What does the Northwind confidential distribution policy require for cold-chain transfers?",
+   "roles": [
+    "planner"
+   ],
+   "relevant_doc_ids": [],
+   "forbidden_doc_ids": [
+    "POL-NW-001"
+   ],
+   "expected_facts": [],
+   "expected_behavior": "no_forbidden_evidence",
+   "expected_citations": []
+  },
+  {
+   "id": "Q15",
+   "category": "access_control",
+   "question": "What approval does a purchase request above EUR 10,000 need?",
+   "roles": [
+    "warehouse_manager"
+   ],
+   "relevant_doc_ids": [],
+   "forbidden_doc_ids": [
+    "POL-PROC-001"
+   ],
+   "expected_facts": [],
+   "expected_behavior": "no_forbidden_evidence",
+   "expected_citations": [],
+   "note": "the warehouse manager has no access to the procurement policy: the answer must not come from it"
+  }
+ ]
+}

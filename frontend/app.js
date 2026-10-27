@@ -132,7 +132,7 @@
     sales: ['Sales order management', loadSales], stocktake: ['Stocktake management', loadStocktake], production: ['Production readiness', loadProduction],
     suppliers: ['Suppliers, quality & logistics', loadSuppliersPage], approvals: ['Approvals & execution', loadApprovals], watches: ['Watchlists', loadWatches],
     chat: ['Copilot chat', null], compare: ['Flowise ⇄ LangGraph', null], workflow: ['Business workflow (LangGraph)', null], research: ['Deep Agent research', loadHarness],
-    platform: ['Status & access', loadPlatform], code: ['Backend code', loadCode],
+    platform: ['Status & access', loadPlatform], code: ['Backend code', loadCode], rag: ['RAG Tuning', loadRag],
   };
   function route() {
     const [page, arg, arg2] = (location.hash || '#command').slice(1).split('/');
@@ -245,6 +245,251 @@
       toast(r.changed ? `${r.note} Backup: ${r.backup}` : 'No change.');
       loadCode();
     }));
+  }
+
+  // ================================================================ RAG TUNING (Company RAG Search; SCInsight API through the gateway)
+  const RAG = '/api/v1/rag-tuning';
+  state.ragTab = 'knowledge';
+  const ragPane = () => $('#rag-pane');
+  const cfgLine = (c) => c ? `${esc(c.chunk_strategy)} ${c.chunk_size}/${c.chunk_overlap} chars · ${esc(c.embedding_model)} · top ${c.top_k} · ${esc(c.retrieval_mode)}${c.similarity_threshold !== null && c.similarity_threshold !== undefined ? ` · threshold ${c.similarity_threshold}` : ''}${c.rerank !== 'none' ? ` · rerank ${esc(c.rerank)}` : ''}` : '—';
+  const sev = (s) => pill(s === 'error' ? 'critical' : s === 'warning' ? 'warning' : 'info', s);
+  async function pollJob(job, onDone, host) {
+    const show = (j) => { if (host) host.innerHTML = `<p class="note">Job ${esc(j.id)} · ${esc(j.kind)} · <b>${esc(j.status)}</b>${j.error ? ` · ${esc(j.error)}` : ''}</p>`; };
+    let j = job;
+    for (let i = 0; i < 400 && (j.status === 'running' || j.status === 'queued'); i += 1) {
+      show(j);
+      await new Promise((r) => setTimeout(r, 1500));
+      j = await api(`${RAG}/jobs/${j.id}`);
+    }
+    show(j);
+    if (j.status === 'failed') { toast(`${j.kind} failed: ${j.error}`); return null; }
+    if (onDone) onDone(j.result);
+    return j.result;
+  }
+
+  async function loadRag() {
+    if (state.role !== 'manager') { $('#rag-active').innerHTML = ''; ragPane().innerHTML = '<div class="empty">RAG tuning is for administrators: sign in with the manager key.</div>'; return; }
+    try {
+      state.rag = await api(`${RAG}/config`);
+    } catch (e) { ragPane().innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    const a = state.rag.active;
+    $('#rag-active').innerHTML = `<div class="grid g3">
+      <div><div class="eyebrow">Active configuration</div><b>${esc(a.id)}</b> ${esc(a.name)} ${badge('ready', 'active')}<div class="note">since ${esc(a.published_at || a.created_at)} by ${esc(a.published_by || a.created_by)}</div></div>
+      <div><div class="eyebrow">Index version</div><b>${esc(a.index_version)}</b><div class="note">${cfgLine(a.config)}</div></div>
+      <div><div class="eyebrow">Units</div><div class="note">Chunk sizes in <b>${esc(state.rag.chunk_unit)}</b>. Score: ${esc(state.rag.score_metric)}.</div></div></div>`;
+    $('#rag-path').innerHTML = state.rag.retrieval_path.map((p) => `<li>${esc(p)}</li>`).join('');
+    renderRagTab();
+  }
+  $$('#rag-tabs .pill').forEach((b) => b.addEventListener('click', () => {
+    state.ragTab = b.dataset.tab;
+    $$('#rag-tabs .pill').forEach((x) => x.classList.toggle('on', x === b));
+    renderRagTab();
+  }));
+  function renderRagTab() {
+    ({ knowledge: ragKnowledge, chunking: ragChunking, embeddings: ragEmbeddings, retrieval: ragRetrieval, evaluation: ragEvaluation, publish: ragPublish })[state.ragTab]()
+      .catch((e) => { ragPane().innerHTML = `<div class="empty">${esc(e.message)}</div>`; });
+  }
+  async function ragDocs() { state.ragDocs = state.ragDocs || await api(`${RAG}/documents`); return state.ragDocs; }
+
+  // ---- 1. knowledge & metadata
+  async function ragKnowledge() {
+    state.ragDocs = null;
+    const inv = await ragDocs();
+    ragPane().innerHTML = `<div class="row" style="justify-content:space-between"><p class="note">${inv.summary.documents} documents of tenant <b>${esc(inv.tenant)}</b> · ${inv.summary.chunks} chunks in index <b>${esc(inv.index_version)}</b> (${esc(inv.embedding_model)}) · ${inv.summary.with_issues} with issues · ${inv.summary.rejected} rejected. Other tenants' documents are never listed.</p>
+      <button id="rag-validate">Run metadata &amp; source-quality checks</button></div>
+      ${table([['Document', (d) => `<b>${esc(d.doc_id)}</b><br><span class="note">${esc(d.title)}</span>`], ['Source', (d) => `<span class="note">${esc(d.source)}</span>`],
+        ['Tenant', (d) => esc(d.tenant)], ['Type', (d) => esc(d.category)], ['Version', (d) => esc(d.version)], ['Effective', (d) => `${esc(d.valid_from)} → ${esc(d.valid_to || 'open')}`],
+        ['Approval', (d) => d.approval_status ? esc(d.approval_status) : '<span class="note">missing</span>'], ['Access', (d) => d.access_roles.map(chip).join(' ')],
+        ['Ingested', (d) => `<span class="note">${esc(d.ingested_at || 'not indexed')}</span>${d.indexed_sha_matches ? '' : ' ' + badge('at_risk', 'changed since indexing')}`],
+        ['Chunks', (d) => num(d.chunks), 'num'], ['Index', (d) => esc(d.index_version)], ['Flowise RAG DB', (d) => d.in_flowise_rag_db ? 'yes' : 'no (agent key cannot read it)'],
+        ['Issues', (d) => d.issues.length ? d.issues.map((i) => sev(i.severity)).join(' ') : badge('ready', 'none')],
+        ['', (d) => `<button class="ghost small" data-src="${esc(d.doc_id)}">Preview</button>`]], inv.documents)}
+      ${inv.rejected.length ? `<h4>Rejected by ingestion</h4>${table([['File', (r) => esc(r.source)], ['Problem', (r) => esc(r.error)], ['Fields present', (r) => esc(r.present_fields.join(', ') || 'none')]], inv.rejected)}` : ''}
+      <div id="rag-issues"></div>`;
+    $$('[data-src]', ragPane()).forEach((b) => b.addEventListener('click', async () => {
+      const s = await api(`${RAG}/documents/${encodeURIComponent(b.dataset.src)}/source`).catch((e) => toast(e.message));
+      if (s) modal(`${s.doc_id} · ${s.source}`, `<p class="note">${esc(JSON.stringify(s.meta))}</p><pre class="code-box">${esc(s.body)}</pre>`);
+    }));
+    $('#rag-validate').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const r = await api(`${RAG}/metadata/validate`, { method: 'POST' });
+      $('#rag-issues').innerHTML = `<h4>Checks on ${esc(r.business_date)}: ${r.errors} errors, ${r.warnings} warnings</h4><p class="note">${Object.entries(r.by_check).map(([k, v]) => `${esc(k)}: ${v}`).join(' · ')}</p>
+        ${table([['Document', (i) => esc(i.doc_id)], ['Severity', (i) => sev(i.severity)], ['Check', (i) => esc(i.check)], ['Detail', (i) => esc(i.detail)]], r.issues)}`;
+    }));
+  }
+
+  // ---- 2. chunking
+  async function ragChunking() {
+    const inv = await ragDocs();
+    const a = state.rag.active.config;
+    ragPane().innerHTML = `<p class="note">Index-building settings: a change here needs a <b>new candidate index</b> (built next to the active one, never published automatically). Sizes are <b>characters</b>; token counts are approximate (characters / 4).</p>
+      <form id="rag-chunk-form" class="grid g3">
+        <label>Strategy <select name="chunk_strategy"><option value="section">section (split on headings, then windows)</option><option value="clause">clause (whole sentences, keeps rules with their conditions)</option><option value="fixed">fixed (windows over the whole document)</option></select></label>
+        <label>Chunk size (characters) <input name="chunk_size" type="number" min="50" max="4000" value="${a.chunk_size}"></label>
+        <label>Overlap (characters) <input name="chunk_overlap" type="number" min="0" max="2000" value="${a.chunk_overlap}"></label>
+        <label><input type="checkbox" name="preserve_headings" ${a.preserve_headings ? 'checked' : ''}> Prefix each chunk with title — section</label>
+        <label><input type="checkbox" name="preserve_source_ids" ${a.preserve_source_ids ? 'checked' : ''}> Prefix each chunk with [doc id + version]</label>
+        <label>Document <select name="doc_id">${inv.documents.map((d) => `<option value="${esc(d.doc_id)}" ${d.doc_id === 'POL-PROC-001' ? 'selected' : ''}>${esc(d.doc_id)} · ${esc(d.title)}</option>`).join('')}</select></label>
+      </form>
+      <div class="row">${Object.entries(state.rag.presets).map(([k, v]) => `<button class="ghost small" data-preset="${k}">${esc(k)} ${v.chunk_size}/${v.chunk_overlap}</button>`).join('')}
+        <span class="note">presets are experimental starting points, not optimal values</span></div>
+      <div class="row"><button id="rag-chunk-preview">Preview vs active</button><button class="ghost" id="rag-chunk-draft">Save as draft</button></div>
+      <div id="rag-chunk-msg"></div><div class="grid g2" id="rag-chunk-out"></div>`;
+    const form = $('#rag-chunk-form');
+    form.chunk_strategy.value = a.chunk_strategy;
+    const current = () => ({ ...a, chunk_strategy: form.chunk_strategy.value, chunk_size: +form.chunk_size.value, chunk_overlap: +form.chunk_overlap.value,
+      preserve_headings: form.preserve_headings.checked, preserve_source_ids: form.preserve_source_ids.checked });
+    $$('[data-preset]').forEach((b) => b.addEventListener('click', () => { const p = state.rag.presets[b.dataset.preset]; form.chunk_size.value = p.chunk_size; form.chunk_overlap.value = p.chunk_overlap; }));
+    const col = (title, p) => `<div><h4>${esc(title)}: ${p.count} chunks · avg ${p.avg_chars} chars</h4>${p.chunks.map((c) => `<div class="card" style="margin:6px 0;padding:10px">
+      <div class="note"><b>${esc(c.chunk_id)}</b> · ${esc(c.section)} · ${c.chars} chars · ~${c.approx_tokens} tokens${c.overlap_with_previous ? ` · ${c.overlap_with_previous} chars overlap with previous` : ''}</div>
+      <pre class="code-box" style="min-height:0;max-height:180px">${esc(c.text)}</pre></div>`).join('')}</div>`;
+    $('#rag-chunk-preview').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const cfg = current();
+      if (cfg.chunk_overlap >= cfg.chunk_size) { toast('Overlap must be smaller than the chunk size.'); return; }
+      const r = await api(`${RAG}/chunks/preview`, { body: { doc_id: form.doc_id.value, config: cfg, compare_with: a } });
+      $('#rag-chunk-out').innerHTML = col('Candidate', r.preview) + col(`Active (${state.rag.active.id})`, r.compare);
+    }));
+    $('#rag-chunk-draft').addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft(current(), '#rag-chunk-msg', `chunking ${form.chunk_strategy.value} ${form.chunk_size.value}/${form.chunk_overlap.value}`)));
+  }
+  async function ragSaveDraft(cfg, target, name) {
+    const r = await api(`${RAG}/draft`, { method: 'PUT', body: { config: cfg, name } });
+    const d = r.diff;
+    $(target).innerHTML = `<div class="card"><b>Draft ${esc(r.id)}</b> saved. ${d.needs_new_index
+      ? `Needs a new index (changed: ${d.rebuild_required.map(chip).join(' ')}).` : `Query-time change only (${d.query_time.map(chip).join(' ') || 'no change'}): reuses the active index.`}
+      <div class="row"><button id="rag-build-${esc(r.id)}">Build candidate index</button><span class="note">Next: Evaluation lab → benchmark it against the active configuration.</span></div><div id="rag-job-${esc(r.id)}"></div></div>`;
+    $(`#rag-build-${r.id}`).addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const job = await api(`${RAG}/index/build-candidate`, { body: { config_id: r.id } });
+      await pollJob(job, (res) => toast(res.reused ? 'Candidate reuses the active index.' : `Candidate index ${res.index_version}: ${res.documents} documents, ${res.chunks} chunks.`), $(`#rag-job-${r.id}`));
+    }));
+    return r;
+  }
+
+  // ---- 3. embeddings
+  async function ragEmbeddings() {
+    const m = await api(`${RAG}/embedding-models`);
+    ragPane().innerHTML = `<p class="note">${esc(m.note)} Changing the model is an index-building change. Only the approved list below can be selected.</p>
+      ${table([['Model', (x) => `<b>${esc(x.id)}</b>${x.active ? ' ' + badge('ready', 'active') : ''}<br><span class="note">${esc(x.role)}</span>`], ['Provider', (x) => esc(x.provider)],
+        ['Dimensions', (x) => num(x.dims), 'num'], ['Languages', (x) => esc(x.languages)], ['Installed', (x) => x.installed ? badge('ready', 'installed') : badge('not_configured', 'not installed')],
+        ['', (x) => `<button class="ghost small" data-test="${esc(x.id)}">Test loading</button> ${x.active ? '' : `<button class="ghost small" data-model="${esc(x.id)}">Draft with this model</button>`}`]], m.models)}
+      <div id="rag-emb-out"></div>`;
+    $$('[data-test]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const job = await api(`${RAG}/embedding-models/test`, { body: { model: b.dataset.test } });
+      await pollJob(job, (r) => { $('#rag-emb-out').innerHTML = `<div class="card"><h4>${esc(r.model)}</h4><p>Loaded in ${num(r.load_ms, 1)} ms · ${num(r.embed_ms_per_text, 2)} ms per text · dimensions ${esc(r.dims.join(', '))} (expected ${r.expected_dims}) ${r.dims_ok ? badge('ready', 'dimensions ok') : badge('blocked', 'dimension mismatch')} · norms ${esc(r.norms.join(', '))}</p><p class="note">first values: ${esc(JSON.stringify(r.sample_head))}</p></div>`; }, $('#rag-emb-out'));
+    })));
+    $$('[data-model]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft({ ...state.rag.active.config, embedding_model: b.dataset.model }, '#rag-emb-out', `embedding ${b.dataset.model}`))));
+  }
+
+  // ---- 4. retrieval
+  async function ragRetrieval() {
+    const a = state.rag.active.config;
+    const hist = await api(`${RAG}/history`);
+    const usable = hist.versions.filter((v) => v.index_version);
+    ragPane().innerHTML = `<div class="grid g2"><div class="card"><b>Query-time settings</b> (take effect without re-indexing): ${state.rag.hot_fields.map(chip).join(' ')}</div>
+      <div class="card"><b>Index-building settings</b> (need a new index): ${state.rag.cold_fields.map(chip).join(' ')}</div></div>
+      <form id="rag-q" class="grid g3">
+        <label style="grid-column:1/-1">Procurement question <input name="query" value="Who must approve a warehouse stock transfer?"></label>
+        <label>Configuration / index <select name="config_id">${usable.map((v) => `<option value="${esc(v.id)}" ${v.status === 'active' ? 'selected' : ''}>${esc(v.id)} · ${esc(v.status)} · ${esc(v.index_version)}</option>`).join('')}</select></label>
+        <label>Top-K <input name="top_k" type="number" min="1" max="10" value="${a.top_k}"></label>
+        <label>Similarity threshold (blank = none) <input name="similarity_threshold" type="number" step="0.01" min="-1" max="1" value="${a.similarity_threshold ?? ''}"></label>
+        <label>Mode <select name="retrieval_mode"><option>semantic</option><option>keyword</option><option>hybrid</option></select></label>
+        <label>Hybrid semantic weight <input name="hybrid_alpha" type="number" step="0.05" min="0" max="1" value="${a.hybrid_alpha}"></label>
+        <label>Reranking <select name="rerank"><option value="none">none</option><option value="lexical">lexical (deterministic term overlap)</option></select></label>
+        <label>Candidates before filtering <input name="candidate_k" type="number" min="1" max="100" value="${a.candidate_k}"></label>
+        <label>Max context tokens (blank = none) <input name="max_context_tokens" type="number" min="50" max="8000" value="${a.max_context_tokens ?? ''}"></label>
+        <label>Role fixture (access test) <select name="role"><option value="">my roles (director)</option>${['planner', 'warehouse_manager', 'procurement_manager', 'quality_manager', 'production_planner', 'agent_service'].map((r) => `<option>${r}</option>`).join('')}</select></label>
+      </form>
+      <div class="row">${state.rag.top_k_presets.map((k) => `<button class="ghost small" data-k="${k}">Top-K ${k}</button>`).join('')}<button id="rag-run">Retrieve</button><button class="ghost" id="rag-hot-draft">Save as draft</button></div>
+      <div id="rag-r-msg"></div><div id="rag-r-out"></div>`;
+    const f = $('#rag-q');
+    f.retrieval_mode.value = a.retrieval_mode; f.rerank.value = a.rerank;
+    $$('[data-k]').forEach((b) => b.addEventListener('click', () => { f.top_k.value = b.dataset.k; }));
+    const overrides = () => {
+      const o = { top_k: +f.top_k.value, retrieval_mode: f.retrieval_mode.value, hybrid_alpha: +f.hybrid_alpha.value, rerank: f.rerank.value, candidate_k: Math.max(+f.candidate_k.value, +f.top_k.value) };
+      o.similarity_threshold = f.similarity_threshold.value === '' ? null : +f.similarity_threshold.value;
+      o.max_context_tokens = f.max_context_tokens.value === '' ? null : +f.max_context_tokens.value;
+      return o;
+    };
+    $('#rag-run').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const r = await api(`${RAG}/retrieve/preview`, { body: { query: f.query.value, config_id: f.config_id.value, overrides: overrides(), roles: f.role.value ? [f.role.value] : [] } });
+      $('#rag-r-out').innerHTML = `<p class="note">Config ${esc(r.config_version)} · index ${esc(r.index_version)} · ${esc(r.embedding_model)} · roles ${esc(r.roles_used.join(', '))} · latency: embed ${r.latency_ms.embed} ms, retrieve ${r.latency_ms.retrieve} ms, total ${r.latency_ms.total} ms</p>
+        <p class="note">${esc(r.score_note)}</p>
+        ${table([['#', (h) => h._rank, 'num'], ['Document', (h) => `<b>${esc(h.citation.doc_id)}</b> v${esc(h.citation.version)}`], ['Title · section', (h) => `${esc(h.citation.title)}<br><span class="note">${esc(h.citation.section)} · chunk ${h.citation.chunk}</span>`],
+          ['Score', (h) => num(h.score, 4), 'num'], ['Semantic', (h) => num(h.semantic_score, 4), 'num'], ['Keyword', (h) => num(h.keyword_score, 2), 'num'], ['Rerank', (h) => h.rerank_score === null ? '—' : num(h.rerank_score, 2), 'num'],
+          ['Text', (h) => `<span class="note">${esc(h.text.slice(0, 260))}${h.text.length > 260 ? '…' : ''}</span>${h.flags.length ? ' ' + badge('at_risk', 'instruction-like text') : ''}`],
+          ['Metadata', (h) => `${esc(h.category)} · ${esc(h.citation.valid_from)}→${esc(h.citation.valid_to || 'open')} · ~${h.approx_tokens} tok`], ['Access', () => badge('ready', 'allowed')]], r.results.map((h, i) => ({ ...h, _rank: i + 1 })))}
+        <h4>Excluded (${r.excluded.length})</h4>${table([['Document', (x) => esc(x.doc_id)], ['Section', (x) => esc(x.section)], ['Score', (x) => num(x.score, 4), 'num'], ['Reason', (x) => badge(x.reason === 'below threshold' || x.reason === 'context budget' ? 'plan' : 'blocked', x.reason)]], r.excluded.slice(0, 30))}`;
+    }));
+    $('#rag-hot-draft').addEventListener('click', (e) => busy(e.currentTarget, () => ragSaveDraft({ ...a, ...overrides() }, '#rag-r-msg', `retrieval top${f.top_k.value} ${f.retrieval_mode.value}`)));
+  }
+
+  // ---- 5. evaluation lab
+  async function ragEvaluation() {
+    const [hist, ex] = await Promise.all([api(`${RAG}/history`), api(`${RAG}/experiments`)]);
+    const cands = hist.versions.filter((v) => ['active', 'candidate', 'draft', 'retired'].includes(v.status));
+    const s = (e, k, d = 3) => num(e.summary[k], d);
+    ragPane().innerHTML = `<p class="note">Benchmark dataset <b>v1</b> (data/scinsight/rag_benchmark/v1.json): 15 labelled synthetic questions incl. no-evidence, other-tenant and role-access cases. Every question runs through the live search function with its role fixture. Hit Rate@K = a relevant document is in the top K; Recall@K = share of relevant documents found; leakage must be 0.</p>
+      <div class="row">${cands.map((v) => `<label class="chip"><input type="checkbox" value="${esc(v.id)}" ${v.status === 'active' ? 'checked' : ''}> ${esc(v.id)} · ${esc(v.status)} · ${esc(v.name)}</label>`).join(' ')}</div>
+      <div class="row"><label><input type="checkbox" id="rag-answers"> also generate answers with Qwen (slow; checked deterministically against the evidence)</label><button id="rag-bench">Run benchmark</button></div>
+      <div id="rag-bench-job"></div>
+      <h4>Experiments</h4>
+      ${table([['', (e) => `<input type="radio" name="ra" value="${esc(e.id)}"> A <input type="radio" name="rb" value="${esc(e.id)}"> B`], ['Experiment', (e) => `<b>${esc(e.id)}</b><br><span class="note">${esc(e.created_at)}</span>`], ['Config', (e) => esc(e.config_id)],
+        ['Dataset', (e) => esc(e.dataset_version)], ['K', (e) => e.summary.k, 'num'], ['Hit@K', (e) => s(e, 'hit_rate'), 'num'], ['Recall@K', (e) => s(e, 'recall'), 'num'], ['Precision@K', (e) => s(e, 'precision'), 'num'], ['MRR', (e) => s(e, 'mrr'), 'num'],
+        ['Evidence', (e) => s(e, 'evidence_coverage'), 'num'], ['No-evidence', (e) => s(e, 'no_evidence_pass'), 'num'], ['Leakage', (e) => e.summary.leakage ? badge('blocked', String(e.summary.leakage)) : '0', 'num'],
+        ['Mean ms', (e) => s(e, 'latency_mean_ms', 1), 'num'], ['P95 ms', (e) => s(e, 'latency_p95_ms', 1), 'num'], ['Answers', (e) => e.summary.citation_correctness === undefined ? '—' : `facts ${s(e, 'answer_fact_coverage')} · citations ${s(e, 'citation_correctness')}`]], ex.experiments)}
+      <div class="row"><button class="ghost" id="rag-compare">Compare A (active) vs B (candidate)</button></div><div id="rag-compare-out"></div>
+      <h4>Grid experiment</h4>
+      <div class="row">${Object.keys(state.rag.presets).map((p) => `<label class="chip"><input type="checkbox" data-gp="${p}" checked> ${p}</label>`).join('')} ${state.rag.top_k_presets.map((k) => `<label class="chip"><input type="checkbox" data-gk="${k}" checked> top ${k}</label>`).join('')}
+        <button class="ghost" id="rag-grid">Estimate workload</button></div><div id="rag-grid-out"></div>`;
+    $('#rag-bench').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const ids = $$('.row input[type=checkbox][value^="RCFG-"]', ragPane()).filter((x) => x.checked).map((x) => x.value);
+      if (!ids.length) { toast('Select at least one configuration.'); return; }
+      const job = await api(`${RAG}/evaluate`, { body: { config_ids: ids, with_answers: $('#rag-answers').checked } });
+      await pollJob(job, () => ragEvaluation(), $('#rag-bench-job'));
+    }));
+    $('#rag-compare').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const a = $('input[name=ra]:checked'), b = $('input[name=rb]:checked');
+      if (!a || !b) { toast('Pick experiment A (active) and B (candidate).'); return; }
+      const c = await api(`${RAG}/experiments/compare?active=${a.value}&candidate=${b.value}`);
+      $('#rag-compare-out').innerHTML = `<div class="card"><h4>${c.passed ? badge('ready', 'meets acceptance criteria') : badge('blocked', 'does not meet acceptance criteria')}</h4><p><b>${esc(c.recommendation)}</b></p><p class="note">${esc(c.basis)}</p>
+        ${table([['Metric', (r) => esc(r.metric)], ['Active (A)', (r) => esc(String(r.active ?? 'N/A')), 'num'], ['Candidate (B)', (r) => esc(String(r.candidate ?? 'N/A')), 'num']], c.rows)}
+        ${table([['Check', (x) => esc(x.check)], ['Result', (x) => x.ok ? badge('ready', 'pass') : badge('blocked', 'fail')], ['Detail', (x) => esc(x.detail)]], c.checks)}</div>`;
+    }));
+    $('#rag-grid').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const body = { presets: $$('[data-gp]').filter((x) => x.checked).map((x) => x.dataset.gp), top_k: $$('[data-gk]').filter((x) => x.checked).map((x) => +x.dataset.gk) };
+      const w = await api(`${RAG}/evaluate/grid`, { body });
+      $('#rag-grid-out').innerHTML = `<p>${w.workload.configurations} configurations · ${w.workload.index_builds} index builds · ${w.workload.queries} queries · about ${w.workload.estimated_seconds} s (${esc(w.workload.basis)})</p><button id="rag-grid-run">Run this grid</button><div id="rag-grid-job"></div>`;
+      $('#rag-grid-run').addEventListener('click', (ev) => busy(ev.currentTarget, async () => {
+        const job = await api(`${RAG}/evaluate/grid`, { body: { ...body, confirm: true } });
+        await pollJob(job, () => ragEvaluation(), $('#rag-grid-job'));
+      }));
+    }));
+  }
+
+  // ---- 6. publish, history, rollback, monitoring
+  async function ragPublish() {
+    const [hist, fl, mt] = await Promise.all([api(`${RAG}/history`), api(`${RAG}/flowise`), api(`${RAG}/metrics`)]);
+    ragPane().innerHTML = `<p class="note">Lifecycle: Draft → Preview → Benchmark → Validate → <b>Publish</b> → Monitor → Rollback. Publishing re-indexes the chatflow's RAG DB in Flowise first; the switch happens only after it is verified, otherwise the current configuration stays active. Only the director may publish or roll back.</p>
+      ${table([['Version', (v) => `<b>${esc(v.id)}</b><br><span class="note">${esc(v.name)}</span>`], ['Status', (v) => badge(v.status === 'active' ? 'ready' : v.status === 'failed' ? 'blocked' : 'plan', v.status)], ['Index', (v) => esc(v.index_version || '—')],
+        ['Settings', (v) => `<span class="note">${cfgLine(v.config)}</span>`], ['Created', (v) => `<span class="note">${esc(v.created_at)} · ${esc(v.created_by)}</span>`], ['Published', (v) => `<span class="note">${esc(v.published_at || '—')} ${esc(v.published_by || '')}</span>`],
+        ['Validation', (v) => v.validation ? (v.validation.ok ? badge('ready', 'passed') : badge('blocked', 'failed')) : '—'],
+        ['', (v) => v.status === 'active' ? '' : `<button class="ghost small" data-diff="${esc(v.id)}">Diff</button> <button class="ghost small" data-val="${esc(v.id)}">Validate</button> ${v.status === 'candidate' ? `<button class="small" data-pub="${esc(v.id)}">Publish</button>` : ''} ${v.status === 'retired' && v.published_at ? `<button class="small" data-rb="${esc(v.id)}">Roll back</button>` : ''}`]], hist.versions)}
+      <div id="rag-pub-out"></div>
+      <div class="grid g2"><div class="card"><h4>Flowise chatflow RAG DB</h4>${fl.reachable === false || !fl.configured ? `<p class="note">${esc(fl.detail)}</p>` : `<p>${esc(fl.chatflow)} · tool <code>${esc(fl.retriever_tool)}</code> · splitter ${fl.chunk_size}/${fl.chunk_overlap} chars · top ${fl.top_k} · ${esc(fl.embedding_model)} · table ${esc(fl.table)}</p><p class="note">rows by configuration tag: ${esc(JSON.stringify(fl.table_rows))} · loader tag ${esc(fl.rag_config_version || 'none (deploy settings)')}</p>`}</div>
+        <div class="card"><h4>Monitoring (recent queries)</h4>${table([['Config', (r) => esc(r.config_id)], ['Source', (r) => esc(r.source)], ['Queries', (r) => r.queries, 'num'], ['Empty', (r) => r.empty, 'num'], ['Mean ms', (r) => num(r.latency_mean_ms, 1), 'num']], mt.summary)}</div></div>
+      <h4>Indexes</h4>${table([['Index', (i) => esc(i.index_version)], ['Model', (i) => esc(i.embedding_model)], ['Documents', (i) => i.documents, 'num'], ['Chunks', (i) => i.chunks, 'num'], ['Status', (i) => esc(i.status)], ['Config', (i) => esc(i.config_id || '—')]], hist.indexes)}`;
+    const out = $('#rag-pub-out');
+    const checks = (r) => table([['Check', (x) => esc(x.check)], ['Result', (x) => x.ok ? badge('ready', 'pass') : badge('blocked', 'fail')], ['Detail', (x) => esc(x.detail)]], r.checks || []);
+    $$('[data-diff]').forEach((b) => b.addEventListener('click', async () => { const d = await api(`${RAG}/diff/${b.dataset.diff}`); out.innerHTML = `<div class="card"><h4>${esc(b.dataset.diff)} vs active</h4>${table([['Setting', (r) => esc(r[0])], ['Active', (r) => esc(JSON.stringify(r[1].active))], ['Candidate', (r) => esc(JSON.stringify(r[1].candidate))], ['Effect', (r) => state.rag.cold_fields.includes(r[0]) ? badge('at_risk', 'needs new index') : badge('ready', 'query time')]], Object.entries(d.changed))}</div>`; }));
+    $$('[data-val]').forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => { const r = await api(`${RAG}/validate`, { body: { config_id: b.dataset.val } }); out.innerHTML = `<div class="card"><h4>${esc(r.config_id)}: ${r.ok ? badge('ready', 'ready to publish') : badge('blocked', 'not ready')}</h4>${checks(r)}</div>`; })));
+    const act = (attr, path, verb) => $$(`[${attr}]`).forEach((b) => b.addEventListener('click', (e) => busy(e.currentTarget, async () => {
+      const id = b.getAttribute(attr);
+      if (!window.confirm(`${verb} ${id}? This changes the live Company RAG Search (API and Flowise chatflow RAG DB).`)) return;
+      const r = await api(`${RAG}/${path}`, { body: { config_id: id, confirm: true } });
+      toast(`${verb}: ${r.active} is active (previous ${r.previous}).`);
+      out.innerHTML = `<div class="card"><h4>${esc(verb)} done</h4><pre class="code-box" style="min-height:0">${esc(JSON.stringify(r.flowise, null, 1))}</pre></div>`;
+      await loadRag();
+    })));
+    act('data-pub', 'publish', 'Publish');
+    act('data-rb', 'rollback', 'Roll back');
   }
 
   // ================================================================ COMMAND CENTER

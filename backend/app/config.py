@@ -61,6 +61,11 @@ class Settings(BaseSettings):
     # CODE_EDITOR_ENABLED=true and APP_ENV=development|test (never enable it on a shared or cloud deployment).
     code_editor_enabled: bool = False
 
+    # RAG Tuning page: the gateway forwards a MANAGER's calls to the SCInsight API with this administrator key (supply_chain_director).
+    # The key stays on the server; the browser never sees it, and the SCInsight API derives tenant and roles from it.
+    sci_api_url: str = "http://scinsight-api:8100"
+    sci_tuning_key: str = ""
+
     log_level: str = "INFO"
     data_file: Path = ROOT / "data" / "sap_mock.json"
     knowledge_dir: Path = ROOT / "data" / "knowledge"

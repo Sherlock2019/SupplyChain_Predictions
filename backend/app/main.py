@@ -566,6 +566,18 @@ def create_app(settings: Settings | None = None, store: Store | None = None, run
         store.audit(who.identity, who.role, "rag.document_added", {"title": body.title, "chunks": chunks}, request.state.correlation_id)
         return {"chunks_added": chunks, "added_by": who.identity}
 
+    # -------------------------------------------------- RAG Tuning page -> SCInsight API (managers only; key held server-side)
+    @app.api_route("/api/v1/rag-tuning/{path:path}", methods=["GET", "POST", "PUT"], include_in_schema=False)
+    async def rag_tuning_proxy(path: str, request: Request, who: Principal = Depends(manager)) -> Response:
+        if not settings.sci_tuning_key:
+            raise HTTPException(status_code=503, detail="RAG tuning is not configured on the gateway (SCI_TUNING_KEY)")
+        store.audit(who.identity, who.role, "rag_tuning.proxy", {"method": request.method, "path": path[:120]}, request.state.correlation_id)
+        async with httpx.AsyncClient(timeout=120) as client:
+            upstream = await client.request(request.method, f"{settings.sci_api_url.rstrip('/')}/api/v1/rag-tuning/{path}",
+                                            params=dict(request.query_params), content=await request.body(),
+                                            headers={"X-API-Key": settings.sci_tuning_key, "Content-Type": "application/json"})
+        return Response(content=upstream.content, status_code=upstream.status_code, media_type="application/json")
+
     # -------------------------------------------------- backend code section (read: any key; save: manager + dev flag)
     code = CodeEditor(ROOT, settings.code_editor_enabled, settings.app_env)
 

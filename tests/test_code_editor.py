@@ -46,6 +46,12 @@ def test_api_lists_and_shows_backend_functions_read_only_by_default(client, assi
     assert client.get("/api/v1/code/function", params={"key": "backend/../.env::x"}, headers=assistant_headers).status_code == 404
 
 
+def test_rag_tuning_proxy_is_for_managers_and_needs_the_server_side_key(client, assistant_headers, manager_headers):
+    assert client.get("/api/v1/rag-tuning/config", headers=assistant_headers).status_code == 403  # planners never reach the console
+    r = client.get("/api/v1/rag-tuning/config", headers=manager_headers)
+    assert r.status_code == 503 and "SCI_TUNING_KEY" in r.text  # not configured in tests: no key, no forwarding
+
+
 def test_edit_replaces_only_the_selected_method_and_keeps_a_backup(repo):
     editor = CodeEditor(repo, enabled=True, app_env="development")
     key = "backend/app/demo.py::Box.size"

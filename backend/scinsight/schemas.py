@@ -66,7 +66,7 @@ class QualityCheckRequest(Strict):
 
 class RagSearchRequest(Strict):
     query: str = Field(min_length=2, max_length=1000)
-    top_k: int = Field(default=4, ge=1, le=10)
+    top_k: int | None = Field(default=None, ge=1, le=10)  # None = the active RAG configuration's top_k (4 before tuning)
 
 
 class DecisionCreateRequest(Strict):

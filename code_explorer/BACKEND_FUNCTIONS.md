@@ -1,6 +1,6 @@
 # Backend functions (generated)
 
-Every function, method, class and route under `backend/`: **778** definitions in **39** modules, **115** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
+Every function, method, class and route under `backend/`: **896** definitions in **50** modules, **139** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
 
 Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 
@@ -65,13 +65,13 @@ configuration of the SPARC / Aurelia gateway (backend/app), read from environmen
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
 | F0001 | [`Settings`](../backend/app/config.py#L11) | pydantic_model |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0002 | [`Settings.parse_keys`](../backend/app/config.py#L68) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0003 | [`Settings.assistants`](../backend/app/config.py#L77) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0004 | [`Settings.managers`](../backend/app/config.py#L81) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0005 | [`Settings.tenants_for`](../backend/app/config.py#L85) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) | Tenants an identity may use; None = unrestricted. |
-| F0006 | [`Settings.llm_enabled`](../backend/app/config.py#L94) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0007 | [`Settings.langfuse_enabled`](../backend/app/config.py#L98) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
-| F0008 | [`get_settings`](../backend/app/config.py#L103) | function |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0002 | [`Settings.parse_keys`](../backend/app/config.py#L73) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0003 | [`Settings.assistants`](../backend/app/config.py#L82) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0004 | [`Settings.managers`](../backend/app/config.py#L86) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0005 | [`Settings.tenants_for`](../backend/app/config.py#L90) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) | Tenants an identity may use; None = unrestricted. |
+| F0006 | [`Settings.llm_enabled`](../backend/app/config.py#L99) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0007 | [`Settings.langfuse_enabled`](../backend/app/config.py#L103) | method |  | used (framework) | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
+| F0008 | [`get_settings`](../backend/app/config.py#L108) | function |  | used | [annotated](../code_explorer/01_fastapi/app_setup/app_config.py) |  |
 
 ## backend/app/copilot.py
 
@@ -370,39 +370,40 @@ the SPARC / Aurelia FastAPI gateway (port 8000): one create_app() factory regist
 | F0079 | [`create_app.embeddings.encode`](../backend/app/main.py#L550) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
 | F0080 | [`create_app.rag_stats`](../backend/app/main.py#L558) | route | GET /api/v1/rag/stats | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
 | F0081 | [`create_app.rag_add`](../backend/app/main.py#L563) | route | POST /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0985 | [`create_app.code_functions`](../backend/app/main.py#L572) | route | GET /api/v1/code/functions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0986 | [`create_app.code_function`](../backend/app/main.py#L577) | route | GET /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0987 | [`create_app.code_update`](../backend/app/main.py#L585) | route | PUT /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0082 | [`create_app._graph_call`](../backend/app/main.py#L598) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0083 | [`create_app.chat`](../backend/app/main.py#L606) | route | POST /api/v1/chat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0084 | [`create_app._agentflow_view`](../backend/app/main.py#L633) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0085 | [`create_app.langgraph_agentflow`](../backend/app/main.py#L657) | route | POST /api/v1/langgraph/agentflow | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0086 | [`create_app.langgraph_agentflow_resume`](../backend/app/main.py#L664) | route | POST /api/v1/langgraph/agentflow/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0087 | [`create_app.business_start`](../backend/app/main.py#L670) | route | POST /api/v1/workflows/business | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0088 | [`create_app.business_resume`](../backend/app/main.py#L677) | route | POST /api/v1/workflows/business/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0089 | [`create_app.current_harness`](../backend/app/main.py#L690) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0090 | [`create_app.deep_harness`](../backend/app/main.py#L694) | route | GET /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0091 | [`create_app.set_deep_harness`](../backend/app/main.py#L703) | route | PUT /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0092 | [`create_app.supplier_research`](../backend/app/main.py#L709) | route | POST /api/v1/deep-agents/supplier-research | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0093 | [`create_app._flow_id`](../backend/app/main.py#L733) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0094 | [`create_app.flowise_predict`](../backend/app/main.py#L747) | route | POST /api/v1/flowise/{flow}/predict | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0095 | [`create_app.submit_recommendation`](../backend/app/main.py#L785) | route | POST /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0096 | [`create_app.submit_from_agent`](../backend/app/main.py#L794) | route | POST /api/v1/recommendations/from-agent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0097 | [`create_app.recommendations`](../backend/app/main.py#L809) | route | GET /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0098 | [`create_app.decide`](../backend/app/main.py#L814) | route | POST /api/v1/recommendations/{recommendation_id}/decision | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0099 | [`create_app.execute`](../backend/app/main.py#L828) | route | POST /api/v1/recommendations/{recommendation_id}/execute | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents |
-| F0100 | [`create_app.sap_documents`](../backend/app/main.py#L855) | route | GET /api/v1/sap/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0101 | [`create_app.audit`](../backend/app/main.py#L860) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0102 | [`create_app.poc_sap_inventory`](../backend/app/main.py#L869) | route | GET /sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0103 | [`create_app.poc_sap_production_orders`](../backend/app/main.py#L875) | route | GET /sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0104 | [`create_app.poc_forecast_demand`](../backend/app/main.py#L881) | route | POST /forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0105 | [`create_app.poc_forecast_lead_time`](../backend/app/main.py#L885) | route | POST /forecast/supplier-lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0106 | [`create_app.poc_material_readiness`](../backend/app/main.py#L889) | route | POST /optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0107 | [`create_app.poc_warehouse_transfer`](../backend/app/main.py#L894) | route | POST /optimizer/warehouse-transfer | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0108 | [`create_app.poc_decisions`](../backend/app/main.py#L898) | route | POST /decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0109 | [`create_app.poc_human_review`](../backend/app/main.py#L902) | route | POST /decisions/{decision_id}/human-review | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0110 | [`create_app.poc_reconcile`](../backend/app/main.py#L906) | route | POST /outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
-| F0111 | [`create_app.poc_model_performance`](../backend/app/main.py#L932) | route | GET /learning/model-performance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F1801 | [`create_app.rag_tuning_proxy`](../backend/app/main.py#L570) | route | GET/POST/PUT /api/v1/rag-tuning/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0985 | [`create_app.code_functions`](../backend/app/main.py#L584) | route | GET /api/v1/code/functions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0986 | [`create_app.code_function`](../backend/app/main.py#L589) | route | GET /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0987 | [`create_app.code_update`](../backend/app/main.py#L597) | route | PUT /api/v1/code/function | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0082 | [`create_app._graph_call`](../backend/app/main.py#L610) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0083 | [`create_app.chat`](../backend/app/main.py#L618) | route | POST /api/v1/chat | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0084 | [`create_app._agentflow_view`](../backend/app/main.py#L645) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0085 | [`create_app.langgraph_agentflow`](../backend/app/main.py#L669) | route | POST /api/v1/langgraph/agentflow | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0086 | [`create_app.langgraph_agentflow_resume`](../backend/app/main.py#L676) | route | POST /api/v1/langgraph/agentflow/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0087 | [`create_app.business_start`](../backend/app/main.py#L682) | route | POST /api/v1/workflows/business | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0088 | [`create_app.business_resume`](../backend/app/main.py#L689) | route | POST /api/v1/workflows/business/{thread_id}/resume | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0089 | [`create_app.current_harness`](../backend/app/main.py#L702) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0090 | [`create_app.deep_harness`](../backend/app/main.py#L706) | route | GET /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0091 | [`create_app.set_deep_harness`](../backend/app/main.py#L715) | route | PUT /api/v1/deep-agents/harness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0092 | [`create_app.supplier_research`](../backend/app/main.py#L721) | route | POST /api/v1/deep-agents/supplier-research | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0093 | [`create_app._flow_id`](../backend/app/main.py#L745) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0094 | [`create_app.flowise_predict`](../backend/app/main.py#L759) | route | POST /api/v1/flowise/{flow}/predict | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0095 | [`create_app.submit_recommendation`](../backend/app/main.py#L797) | route | POST /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0096 | [`create_app.submit_from_agent`](../backend/app/main.py#L806) | route | POST /api/v1/recommendations/from-agent | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0097 | [`create_app.recommendations`](../backend/app/main.py#L821) | route | GET /api/v1/recommendations | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0098 | [`create_app.decide`](../backend/app/main.py#L826) | route | POST /api/v1/recommendations/{recommendation_id}/decision | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0099 | [`create_app.execute`](../backend/app/main.py#L840) | route | POST /api/v1/recommendations/{recommendation_id}/execute | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) | 1-click execution of an ACCEPTED recommendation into the SAP sandbox (manager only; agents |
+| F0100 | [`create_app.sap_documents`](../backend/app/main.py#L867) | route | GET /api/v1/sap/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0101 | [`create_app.audit`](../backend/app/main.py#L872) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0102 | [`create_app.poc_sap_inventory`](../backend/app/main.py#L881) | route | GET /sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0103 | [`create_app.poc_sap_production_orders`](../backend/app/main.py#L887) | route | GET /sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0104 | [`create_app.poc_forecast_demand`](../backend/app/main.py#L893) | route | POST /forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0105 | [`create_app.poc_forecast_lead_time`](../backend/app/main.py#L897) | route | POST /forecast/supplier-lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0106 | [`create_app.poc_material_readiness`](../backend/app/main.py#L901) | route | POST /optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0107 | [`create_app.poc_warehouse_transfer`](../backend/app/main.py#L906) | route | POST /optimizer/warehouse-transfer | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0108 | [`create_app.poc_decisions`](../backend/app/main.py#L910) | route | POST /decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0109 | [`create_app.poc_human_review`](../backend/app/main.py#L914) | route | POST /decisions/{decision_id}/human-review | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0110 | [`create_app.poc_reconcile`](../backend/app/main.py#L918) | route | POST /outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
+| F0111 | [`create_app.poc_model_performance`](../backend/app/main.py#L944) | route | GET /learning/model-performance | used | [annotated](../code_explorer/01_fastapi/endpoints/app_main.py) |  |
 
 ## backend/app/mcp_server.py
 
@@ -720,41 +721,41 @@ SupplyChain Insight AI — business-tool service (FastAPI, Swagger at /docs).
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F0112 | [`create_app`](../backend/scinsight/app.py#L34) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0113 | [`create_app.principal`](../backend/scinsight/app.py#L57) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0114 | [`create_app.reader`](../backend/scinsight/app.py#L62) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0115 | [`create_app.biz_date`](../backend/scinsight/app.py#L66) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0116 | [`create_app.health`](../backend/scinsight/app.py#L69) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0117 | [`create_app.context`](../backend/scinsight/app.py#L75) | route | GET /api/v1/context | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0118 | [`create_app.validate_context`](../backend/scinsight/app.py#L81) | route | POST /api/v1/context/validate | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0119 | [`create_app.sap_inventory`](../backend/scinsight/app.py#L90) | route | GET /api/v1/sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0120 | [`create_app.sap_bom`](../backend/scinsight/app.py#L95) | route | GET /api/v1/sap/bom/{sku} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0121 | [`create_app.sap_production_orders`](../backend/scinsight/app.py#L99) | route | GET /api/v1/sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0122 | [`create_app.sap_purchase_orders`](../backend/scinsight/app.py#L103) | route | GET /api/v1/sap/purchase-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0123 | [`create_app.sap_warehouses`](../backend/scinsight/app.py#L108) | route | GET /api/v1/sap/warehouses | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0124 | [`create_app.sap_suppliers`](../backend/scinsight/app.py#L112) | route | GET /api/v1/sap/suppliers | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0125 | [`create_app.sap_write_blocked`](../backend/scinsight/app.py#L116) | route | POST/PUT/PATCH/DELETE /api/v1/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0126 | [`create_app.material_readiness`](../backend/scinsight/app.py#L122) | route | POST /api/v1/optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0127 | [`create_app.warehouse_balancing`](../backend/scinsight/app.py#L126) | route | POST /api/v1/optimizer/warehouse-balancing | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0128 | [`create_app.replenishment`](../backend/scinsight/app.py#L130) | route | POST /api/v1/optimizer/replenishment | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0129 | [`create_app.forecast_demand`](../backend/scinsight/app.py#L134) | route | POST /api/v1/forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0130 | [`create_app.forecast_lead_time`](../backend/scinsight/app.py#L138) | route | POST /api/v1/forecast/lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0131 | [`create_app.quality_check`](../backend/scinsight/app.py#L142) | route | POST /api/v1/quality/check-stock | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0132 | [`create_app.calculation`](../backend/scinsight/app.py#L146) | route | GET /api/v1/calculations/{calculation_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0133 | [`create_app.rag_search`](../backend/scinsight/app.py#L151) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0134 | [`create_app.rag_documents`](../backend/scinsight/app.py#L157) | route | GET /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0135 | [`create_app.create_decision`](../backend/scinsight/app.py#L163) | route | POST /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0136 | [`create_app.list_decisions`](../backend/scinsight/app.py#L168) | route | GET /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0137 | [`create_app.get_decision`](../backend/scinsight/app.py#L172) | route | GET /api/v1/decisions/{rec_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0138 | [`create_app.review`](../backend/scinsight/app.py#L176) | route | POST /api/v1/decisions/{rec_id}/review | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0139 | [`create_app.withdraw`](../backend/scinsight/app.py#L180) | route | POST /api/v1/decisions/{rec_id}/withdraw | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0140 | [`create_app.sap_execution`](../backend/scinsight/app.py#L184) | route | POST /api/v1/decisions/{rec_id}/sap-execution | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0141 | [`create_app.reconcile`](../backend/scinsight/app.py#L189) | route | POST /api/v1/outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0142 | [`create_app.learning_metrics`](../backend/scinsight/app.py#L193) | route | GET /api/v1/learning/metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0143 | [`create_app.train`](../backend/scinsight/app.py#L197) | route | POST /api/v1/learning/train-lead-time-model | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0144 | [`create_app.promote`](../backend/scinsight/app.py#L204) | route | POST /api/v1/learning/models/{model_id}/promote | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0145 | [`create_app.retraining`](../backend/scinsight/app.py#L211) | route | POST /api/v1/learning/retraining-requests | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
-| F0146 | [`create_app.audit`](../backend/scinsight/app.py#L217) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0112 | [`create_app`](../backend/scinsight/app.py#L36) | function |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0113 | [`create_app.principal`](../backend/scinsight/app.py#L59) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0114 | [`create_app.reader`](../backend/scinsight/app.py#L64) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0115 | [`create_app.biz_date`](../backend/scinsight/app.py#L68) | nested |  | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0116 | [`create_app.health`](../backend/scinsight/app.py#L71) | route | GET /health | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0117 | [`create_app.context`](../backend/scinsight/app.py#L77) | route | GET /api/v1/context | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0118 | [`create_app.validate_context`](../backend/scinsight/app.py#L83) | route | POST /api/v1/context/validate | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0119 | [`create_app.sap_inventory`](../backend/scinsight/app.py#L92) | route | GET /api/v1/sap/inventory | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0120 | [`create_app.sap_bom`](../backend/scinsight/app.py#L97) | route | GET /api/v1/sap/bom/{sku} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0121 | [`create_app.sap_production_orders`](../backend/scinsight/app.py#L101) | route | GET /api/v1/sap/production-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0122 | [`create_app.sap_purchase_orders`](../backend/scinsight/app.py#L105) | route | GET /api/v1/sap/purchase-orders | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0123 | [`create_app.sap_warehouses`](../backend/scinsight/app.py#L110) | route | GET /api/v1/sap/warehouses | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0124 | [`create_app.sap_suppliers`](../backend/scinsight/app.py#L114) | route | GET /api/v1/sap/suppliers | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0125 | [`create_app.sap_write_blocked`](../backend/scinsight/app.py#L118) | route | POST/PUT/PATCH/DELETE /api/v1/sap/{path:path} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0126 | [`create_app.material_readiness`](../backend/scinsight/app.py#L124) | route | POST /api/v1/optimizer/material-readiness | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0127 | [`create_app.warehouse_balancing`](../backend/scinsight/app.py#L128) | route | POST /api/v1/optimizer/warehouse-balancing | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0128 | [`create_app.replenishment`](../backend/scinsight/app.py#L132) | route | POST /api/v1/optimizer/replenishment | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0129 | [`create_app.forecast_demand`](../backend/scinsight/app.py#L136) | route | POST /api/v1/forecast/demand | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0130 | [`create_app.forecast_lead_time`](../backend/scinsight/app.py#L140) | route | POST /api/v1/forecast/lead-time | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0131 | [`create_app.quality_check`](../backend/scinsight/app.py#L144) | route | POST /api/v1/quality/check-stock | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0132 | [`create_app.calculation`](../backend/scinsight/app.py#L148) | route | GET /api/v1/calculations/{calculation_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0133 | [`create_app.rag_search`](../backend/scinsight/app.py#L153) | route | POST /api/v1/rag/search | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0134 | [`create_app.rag_documents`](../backend/scinsight/app.py#L159) | route | GET /api/v1/rag/documents | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0135 | [`create_app.create_decision`](../backend/scinsight/app.py#L168) | route | POST /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0136 | [`create_app.list_decisions`](../backend/scinsight/app.py#L173) | route | GET /api/v1/decisions | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0137 | [`create_app.get_decision`](../backend/scinsight/app.py#L177) | route | GET /api/v1/decisions/{rec_id} | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0138 | [`create_app.review`](../backend/scinsight/app.py#L181) | route | POST /api/v1/decisions/{rec_id}/review | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0139 | [`create_app.withdraw`](../backend/scinsight/app.py#L185) | route | POST /api/v1/decisions/{rec_id}/withdraw | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0140 | [`create_app.sap_execution`](../backend/scinsight/app.py#L189) | route | POST /api/v1/decisions/{rec_id}/sap-execution | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0141 | [`create_app.reconcile`](../backend/scinsight/app.py#L194) | route | POST /api/v1/outcomes/reconcile | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0142 | [`create_app.learning_metrics`](../backend/scinsight/app.py#L198) | route | GET /api/v1/learning/metrics | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0143 | [`create_app.train`](../backend/scinsight/app.py#L202) | route | POST /api/v1/learning/train-lead-time-model | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0144 | [`create_app.promote`](../backend/scinsight/app.py#L209) | route | POST /api/v1/learning/models/{model_id}/promote | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0145 | [`create_app.retraining`](../backend/scinsight/app.py#L216) | route | POST /api/v1/learning/retraining-requests | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
+| F0146 | [`create_app.audit`](../backend/scinsight/app.py#L222) | route | GET /api/v1/audit | used | [annotated](../code_explorer/01_fastapi/endpoints/scinsight_app.py) |  |
 
 ## backend/scinsight/business.py
 
@@ -955,16 +956,210 @@ Private RAG: Document -> Validate -> Extract -> Chunk -> Embed -> Store -> Retri
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F0757 | [`DocumentError`](../backend/scinsight/rag.py#L27) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0758 | [`parse_document`](../backend/scinsight/rag.py#L31) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0759 | [`chunk_document`](../backend/scinsight/rag.py#L54) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | Split on '## ' sections, then into <= CHUNK_CHARS windows with OVERLAP; each chunk carries |
-| F0760 | [`HashEmbedder`](../backend/scinsight/rag.py#L80) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0761 | [`HashEmbedder.embed`](../backend/scinsight/rag.py#L83) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0762 | [`make_embedder`](../backend/scinsight/rag.py#L95) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0763 | [`KnowledgeBase`](../backend/scinsight/rag.py#L103) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0764 | [`KnowledgeBase.__init__`](../backend/scinsight/rag.py#L104) | method |  | used (framework) | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0765 | [`KnowledgeBase.ingest_dir`](../backend/scinsight/rag.py#L107) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
-| F0766 | [`KnowledgeBase.search`](../backend/scinsight/rag.py#L139) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0757 | [`DocumentError`](../backend/scinsight/rag.py#L37) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0758 | [`parse_document`](../backend/scinsight/rag.py#L41) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0759 | [`chunk_document`](../backend/scinsight/rag.py#L64) | function |  | unused? | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | Split on '## ' sections, then into <= size windows with overlap; each chunk carries its se |
+| F0760 | [`HashEmbedder`](../backend/scinsight/rag.py#L71) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F1802 | [`HashEmbedder.__init__`](../backend/scinsight/rag.py#L72) | method |  | used (framework) | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0761 | [`HashEmbedder.embed`](../backend/scinsight/rag.py#L75) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0762 | [`make_embedder`](../backend/scinsight/rag.py#L87) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F1803 | [`_vec`](../backend/scinsight/rag.py#L95) | function |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0763 | [`KnowledgeBase`](../backend/scinsight/rag.py#L99) | class |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0764 | [`KnowledgeBase.__init__`](../backend/scinsight/rag.py#L100) | method |  | used (framework) | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F1804 | [`KnowledgeBase.embedder_for`](../backend/scinsight/rag.py#L104) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | The embedder of an index: the service's own model, or another approved model (never a sile |
+| F1805 | [`KnowledgeBase.baseline`](../backend/scinsight/rag.py#L111) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F1806 | [`KnowledgeBase.active`](../backend/scinsight/rag.py#L114) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | (config version id, configuration, index version) used by live search for this tenant. |
+| F1807 | [`KnowledgeBase._chunk_statements`](../backend/scinsight/rag.py#L122) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+| F0765 | [`KnowledgeBase.ingest_dir`](../backend/scinsight/rag.py#L138) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | Validate and (re)index changed documents into each tenant's ACTIVE index (baseline when no |
+| F1808 | [`KnowledgeBase.build_index`](../backend/scinsight/rag.py#L166) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | Write a complete index version for one tenant (the active index is never touched). |
+| F0766 | [`KnowledgeBase.search`](../backend/scinsight/rag.py#L183) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) | Tenant-, role- and date-filtered retrieval with citations, using the active configuration  |
+| F1809 | [`KnowledgeBase._log`](../backend/scinsight/rag.py#L260) | method |  | used | [annotated](../code_explorer/04_ai_ml/rag/scinsight_rag.py) |  |
+
+## backend/scinsight/rag_tuning/api.py
+
+FastAPI routes of the RAG Tuning Console (SCInsight API, prefix /api/v1/rag-tuning).
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1810 | [`DraftRequest`](../backend/scinsight/rag_tuning/api.py#L38) | pydantic_model |  | used | — |  |
+| F1811 | [`PreviewRequest`](../backend/scinsight/rag_tuning/api.py#L44) | pydantic_model |  | used | — |  |
+| F1812 | [`RetrieveRequest`](../backend/scinsight/rag_tuning/api.py#L50) | pydantic_model |  | used | — |  |
+| F1813 | [`ModelTestRequest`](../backend/scinsight/rag_tuning/api.py#L57) | pydantic_model |  | used | — |  |
+| F1814 | [`ConfigRef`](../backend/scinsight/rag_tuning/api.py#L61) | pydantic_model |  | used | — |  |
+| F1815 | [`EvaluateRequest`](../backend/scinsight/rag_tuning/api.py#L66) | pydantic_model |  | used | — |  |
+| F1816 | [`GridRequest`](../backend/scinsight/rag_tuning/api.py#L72) | pydantic_model |  | used | — |  |
+| F1817 | [`_llm_answer_fn`](../backend/scinsight/rag_tuning/api.py#L80) | function |  | used | — | OpenAI-compatible chat call (the same Qwen endpoint as the agents). Returns (answer, usage |
+| F1818 | [`_llm_answer_fn.answer`](../backend/scinsight/rag_tuning/api.py#L85) | nested |  | used | — |  |
+| F1819 | [`register`](../backend/scinsight/rag_tuning/api.py#L99) | function |  | used | — |  |
+| F1820 | [`register.admin`](../backend/scinsight/rag_tuning/api.py#L106) | nested |  | used | — |  |
+| F1821 | [`register.audit`](../backend/scinsight/rag_tuning/api.py#L110) | nested |  | used | — |  |
+| F1822 | [`register.cfg_of`](../backend/scinsight/rag_tuning/api.py#L113) | nested |  | used | — |  |
+| F1823 | [`register.job`](../backend/scinsight/rag_tuning/api.py#L120) | nested |  | used | — |  |
+| F1824 | [`register.get_config`](../backend/scinsight/rag_tuning/api.py#L124) | route | GET /api/v1/rag-tuning/config | used | — |  |
+| F1825 | [`register.save_draft`](../backend/scinsight/rag_tuning/api.py#L138) | route | PUT /api/v1/rag-tuning/draft | used | — |  |
+| F1826 | [`register.history`](../backend/scinsight/rag_tuning/api.py#L144) | route | GET /api/v1/rag-tuning/history | used | — |  |
+| F1827 | [`register.config_diff`](../backend/scinsight/rag_tuning/api.py#L148) | route | GET /api/v1/rag-tuning/diff/{config_id} | used | — |  |
+| F1828 | [`register.list_documents`](../backend/scinsight/rag_tuning/api.py#L154) | route | GET /api/v1/rag-tuning/documents | used | — |  |
+| F1829 | [`register.validate_metadata`](../backend/scinsight/rag_tuning/api.py#L158) | route | POST /api/v1/rag-tuning/metadata/validate | used | — |  |
+| F1830 | [`register.document_source`](../backend/scinsight/rag_tuning/api.py#L166) | route | GET /api/v1/rag-tuning/documents/{doc_id}/source | used | — |  |
+| F1831 | [`register.chunk_preview`](../backend/scinsight/rag_tuning/api.py#L174) | route | POST /api/v1/rag-tuning/chunks/preview | used | — |  |
+| F1832 | [`register.embedding_models`](../backend/scinsight/rag_tuning/api.py#L187) | route | GET /api/v1/rag-tuning/embedding-models | used | — |  |
+| F1833 | [`register.test_model`](../backend/scinsight/rag_tuning/api.py#L193) | route | POST /api/v1/rag-tuning/embedding-models/test | used | — |  |
+| F1834 | [`register.build_candidate`](../backend/scinsight/rag_tuning/api.py#L202) | route | POST /api/v1/rag-tuning/index/build-candidate | used | — |  |
+| F1835 | [`register.get_job`](../backend/scinsight/rag_tuning/api.py#L209) | route | GET /api/v1/rag-tuning/jobs/{job_id} | used | — |  |
+| F1836 | [`register.retrieve_preview`](../backend/scinsight/rag_tuning/api.py#L217) | route | POST /api/v1/rag-tuning/retrieve/preview | used | — | retrieve_with_config: the live search function with a stored configuration and/or hot over |
+| F1837 | [`register._benchmark`](../backend/scinsight/rag_tuning/api.py#L239) | nested |  | used | — |  |
+| F1838 | [`register.evaluate`](../backend/scinsight/rag_tuning/api.py#L255) | route | POST /api/v1/rag-tuning/evaluate | used | — |  |
+| F1839 | [`register.evaluate_grid`](../backend/scinsight/rag_tuning/api.py#L263) | route | POST /api/v1/rag-tuning/evaluate/grid | used | — | Shows the workload first; runs only when confirm=true (no silent Cartesian products). |
+| F1840 | [`register.list_experiments`](../backend/scinsight/rag_tuning/api.py#L287) | route | GET /api/v1/rag-tuning/experiments | used | — |  |
+| F1841 | [`register.compare`](../backend/scinsight/rag_tuning/api.py#L291) | route | GET /api/v1/rag-tuning/experiments/compare | used | — |  |
+| F1842 | [`register.get_experiment`](../backend/scinsight/rag_tuning/api.py#L298) | route | GET /api/v1/rag-tuning/experiments/{exp_id} | used | — |  |
+| F1843 | [`register.validate`](../backend/scinsight/rag_tuning/api.py#L306) | route | POST /api/v1/rag-tuning/validate | used | — |  |
+| F1844 | [`register.publish`](../backend/scinsight/rag_tuning/api.py#L311) | route | POST /api/v1/rag-tuning/publish | used | — |  |
+| F1845 | [`register.rollback`](../backend/scinsight/rag_tuning/api.py#L325) | route | POST /api/v1/rag-tuning/rollback | used | — |  |
+| F1846 | [`register.flowise_status`](../backend/scinsight/rag_tuning/api.py#L340) | route | GET /api/v1/rag-tuning/flowise | used | — |  |
+| F1847 | [`register.metrics`](../backend/scinsight/rag_tuning/api.py#L344) | route | GET /api/v1/rag-tuning/metrics | used | — |  |
+
+## backend/scinsight/rag_tuning/chunking.py
+
+Splitters for the governed documents. Sizes are characters.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1848 | [`_sections`](../backend/scinsight/rag_tuning/chunking.py#L18) | function |  | used | — |  |
+| F1849 | [`_windows`](../backend/scinsight/rag_tuning/chunking.py#L33) | function |  | used | — |  |
+| F1850 | [`_clauses`](../backend/scinsight/rag_tuning/chunking.py#L44) | function |  | used | — |  |
+| F1851 | [`chunk`](../backend/scinsight/rag_tuning/chunking.py#L71) | function |  | used | — | Chunks of one document: [{chunk_index, section, text (as indexed), content (without prefix |
+| F1852 | [`overlap_chars`](../backend/scinsight/rag_tuning/chunking.py#L89) | function |  | used | — | Characters at the end of `left` repeated at the start of `right` (what the overlap actuall |
+| F1853 | [`preview_document_chunks`](../backend/scinsight/rag_tuning/chunking.py#L97) | function |  | used | — | What the configuration would index for one document (nothing is written). |
+
+## backend/scinsight/rag_tuning/config.py
+
+The tunable RAG configuration: one validated object per configuration version.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1854 | [`RagTuningConfig`](../backend/scinsight/rag_tuning/config.py#L26) | pydantic_model |  | used | — | One RAG configuration version. Cold fields define the index; hot fields only change how it |
+| F1855 | [`RagTuningConfig.validate_chunking`](../backend/scinsight/rag_tuning/config.py#L48) | method |  | used (framework) | — |  |
+| F1856 | [`baseline_config`](../backend/scinsight/rag_tuning/config.py#L58) | function |  | used | — | The configuration the service ran with before tuning existed (backend/scinsight/rag.py: 90 |
+| F1857 | [`diff`](../backend/scinsight/rag_tuning/config.py#L63) | function |  | used | — | Changed settings, split into those that need a rebuild (cold) and those that apply at quer |
+| F1858 | [`index_signature`](../backend/scinsight/rag_tuning/config.py#L70) | function |  | used | — | The cold settings: two configurations with the same signature can share one index. |
+
+## backend/scinsight/rag_tuning/documents.py
+
+Knowledge-base inventory and metadata quality checks. Deficiencies are reported as found; no value is ever invented.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1859 | [`_front_matter`](../backend/scinsight/rag_tuning/documents.py#L17) | function |  | used | — |  |
+| F1860 | [`inventory`](../backend/scinsight/rag_tuning/documents.py#L22) | function |  | used | — | Every source file of the caller's tenant with its metadata, index state and deficiencies ( |
+| F1861 | [`validate_document_metadata`](../backend/scinsight/rag_tuning/documents.py#L56) | function |  | used | — | Checks on one document: missing fields, scope, validity and source quality (severity: erro |
+| F1862 | [`_cross_document_checks`](../backend/scinsight/rag_tuning/documents.py#L83) | function |  | used | — |  |
+| F1863 | [`source_text`](../backend/scinsight/rag_tuning/documents.py#L105) | function |  | used | — | The source document of the caller's tenant (front matter + body) for preview; other tenant |
+
+## backend/scinsight/rag_tuning/embeddings.py
+
+Backend-approved embedding models. The console can only pick from this list: a model id typed in the browser never
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1864 | [`ModelUnavailable`](../backend/scinsight/rag_tuning/embeddings.py#L30) | class |  | used | — |  |
+| F1865 | [`approved`](../backend/scinsight/rag_tuning/embeddings.py#L34) | function |  | used | — |  |
+| F1866 | [`_installed`](../backend/scinsight/rag_tuning/embeddings.py#L38) | function |  | used | — |  |
+| F1867 | [`list_supported_embedding_models`](../backend/scinsight/rag_tuning/embeddings.py#L47) | function |  | used | — | The approved list with what is actually known about each model (installed, dimensions, lan |
+| F1868 | [`get_embedder`](../backend/scinsight/rag_tuning/embeddings.py#L56) | function |  | used | — | Embedder for an approved model. Raises ModelUnavailable instead of substituting a differen |
+| F1869 | [`test_model`](../backend/scinsight/rag_tuning/embeddings.py#L80) | function |  | used | — | Load the model (downloading it if allowed), embed sample texts, check dimensions and measu |
+
+## backend/scinsight/rag_tuning/evaluation.py
+
+Benchmark of a configuration on the versioned question set, through the real KnowledgeBase.search.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1870 | [`load_dataset`](../backend/scinsight/rag_tuning/evaluation.py#L29) | function |  | used | — |  |
+| F1871 | [`_p95`](../backend/scinsight/rag_tuning/evaluation.py#L35) | function |  | used | — |  |
+| F1872 | [`score_case`](../backend/scinsight/rag_tuning/evaluation.py#L42) | function |  | used | — | Deterministic retrieval scores of one case. |
+| F1873 | [`score_answer`](../backend/scinsight/rag_tuning/evaluation.py#L64) | function |  | used | — | Checks of an LLM answer against the retrieved evidence (deterministic; the model's confide |
+| F1874 | [`run_rag_benchmark`](../backend/scinsight/rag_tuning/evaluation.py#L82) | function |  | used | — | Every case through KnowledgeBase.search (the function behind /api/v1/rag/search) with the  |
+| F1875 | [`summarize`](../backend/scinsight/rag_tuning/evaluation.py#L103) | function |  | used | — |  |
+| F1876 | [`summarize.mean`](../backend/scinsight/rag_tuning/evaluation.py#L104) | nested |  | used | — |  |
+| F1877 | [`compare_experiments`](../backend/scinsight/rag_tuning/evaluation.py#L127) | function |  | used | — | Side-by-side measured metrics and a recommendation from the acceptance criteria (no invent |
+| F1878 | [`compare_experiments.check`](../backend/scinsight/rag_tuning/evaluation.py#L136) | nested |  | used | — |  |
+
+## backend/scinsight/rag_tuning/flowise_adapter.py
+
+Keeps the Flowise chatflow's own Company RAG DB in step with the published configuration.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1879 | [`FlowiseError`](../backend/scinsight/rag_tuning/flowise_adapter.py#L22) | class |  | used | — |  |
+| F1880 | [`FlowiseAdapter`](../backend/scinsight/rag_tuning/flowise_adapter.py#L26) | class |  | used | — |  |
+| F1881 | [`FlowiseAdapter.__init__`](../backend/scinsight/rag_tuning/flowise_adapter.py#L27) | method |  | used (framework) | — |  |
+| F1882 | [`FlowiseAdapter.configured`](../backend/scinsight/rag_tuning/flowise_adapter.py#L30) | method |  | used (framework) | — |  |
+| F1883 | [`FlowiseAdapter._call`](../backend/scinsight/rag_tuning/flowise_adapter.py#L34) | method |  | used | — |  |
+| F1884 | [`FlowiseAdapter.chatflow`](../backend/scinsight/rag_tuning/flowise_adapter.py#L46) | method |  | used | — |  |
+| F1885 | [`FlowiseAdapter._nodes`](../backend/scinsight/rag_tuning/flowise_adapter.py#L55) | method |  | used | — |  |
+| F1886 | [`FlowiseAdapter.status`](../backend/scinsight/rag_tuning/flowise_adapter.py#L63) | method |  | used (framework) | — | What the live chatflow RAG DB uses right now, and what its table holds. |
+| F1887 | [`FlowiseAdapter.table_rows`](../backend/scinsight/rag_tuning/flowise_adapter.py#L83) | method |  | used | — |  |
+| F1888 | [`FlowiseAdapter.compatible`](../backend/scinsight/rag_tuning/flowise_adapter.py#L92) | method |  | used | — | Reasons the chatflow RAG DB cannot follow this configuration (empty = it can). |
+| F1889 | [`FlowiseAdapter.sync`](../backend/scinsight/rag_tuning/flowise_adapter.py#L99) | method |  | used | — | Apply chunk size / overlap / top-k and the version tag to the chatflow, re-index it and ve |
+| F1890 | [`FlowiseAdapter.restore`](../backend/scinsight/rag_tuning/flowise_adapter.py#L124) | method |  | used | — |  |
+
+## backend/scinsight/rag_tuning/indexing.py
+
+Candidate indexes: built next to the active index (separate index_version rows), validated, never published here.
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1891 | [`current_docs_sha`](../backend/scinsight/rag_tuning/indexing.py#L14) | function |  | used | — | doc_id:version -> sha256 of the source files that an index of this tenant must contain. |
+| F1892 | [`build_candidate_index`](../backend/scinsight/rag_tuning/indexing.py#L27) | function |  | used | — | Index the tenant's documents with the configuration's cold settings under a new index vers |
+| F1893 | [`validate_index`](../backend/scinsight/rag_tuning/indexing.py#L61) | function |  | used | — | Complete, single-model, right dimensions, and built from the current documents (not stale) |
+| F1894 | [`list_indexes`](../backend/scinsight/rag_tuning/indexing.py#L86) | function |  | used | — |  |
+
+## backend/scinsight/rag_tuning/publishing.py
+
+Controlled publication: validate -> sync the Flowise chatflow RAG DB -> switch the active pointer. Rollback re-activates a
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1895 | [`validate_config`](../backend/scinsight/rag_tuning/publishing.py#L14) | function |  | used | — | Every check a configuration must pass before it can become active. |
+| F1896 | [`validate_config.check`](../backend/scinsight/rag_tuning/publishing.py#L21) | nested |  | used | — |  |
+| F1897 | [`_activate`](../backend/scinsight/rag_tuning/publishing.py#L53) | function |  | used | — |  |
+| F1898 | [`publish_rag_config`](../backend/scinsight/rag_tuning/publishing.py#L78) | function |  | used | — |  |
+| F1899 | [`rollback_rag_config`](../backend/scinsight/rag_tuning/publishing.py#L87) | function |  | used | — | Re-activate a version that was published before (its index is kept); refused if that index |
+
+## backend/scinsight/rag_tuning/registry.py
+
+Configuration versions, background jobs and experiment records (tables from migration 0003_rag_tuning.sql).
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1900 | [`_id`](../backend/scinsight/rag_tuning/registry.py#L13) | function |  | used | — |  |
+| F1901 | [`_row`](../backend/scinsight/rag_tuning/registry.py#L17) | function |  | used | — |  |
+| F1902 | [`Registry`](../backend/scinsight/rag_tuning/registry.py#L28) | class |  | used | — |  |
+| F1903 | [`Registry.__init__`](../backend/scinsight/rag_tuning/registry.py#L29) | method |  | used (framework) | — |  |
+| F1904 | [`Registry.ensure_baseline`](../backend/scinsight/rag_tuning/registry.py#L33) | method |  | used | — |  |
+| F1905 | [`Registry.get_active_rag_config`](../backend/scinsight/rag_tuning/registry.py#L41) | method |  | used | — |  |
+| F1906 | [`Registry.get`](../backend/scinsight/rag_tuning/registry.py#L45) | method |  | used | — |  |
+| F1907 | [`Registry.history`](../backend/scinsight/rag_tuning/registry.py#L51) | method |  | used (framework) | — |  |
+| F1908 | [`Registry.save_draft_config`](../backend/scinsight/rag_tuning/registry.py#L55) | method |  | used | — | Store a validated draft and say how it differs from the active configuration (and whether  |
+| F1909 | [`Registry.set_status`](../backend/scinsight/rag_tuning/registry.py#L66) | method |  | used | — |  |
+| F1910 | [`Registry.start_job`](../backend/scinsight/rag_tuning/registry.py#L72) | method |  | used | — | Run fn() in a background thread (HTTP returns at once; the console polls the job). |
+| F1911 | [`Registry.start_job.run`](../backend/scinsight/rag_tuning/registry.py#L78) | nested |  | used | — |  |
+| F1912 | [`Registry.job`](../backend/scinsight/rag_tuning/registry.py#L92) | method |  | used | — |  |
+| F1913 | [`Registry.save_experiment`](../backend/scinsight/rag_tuning/registry.py#L99) | method |  | used | — |  |
+| F1914 | [`Registry.experiments`](../backend/scinsight/rag_tuning/registry.py#L105) | method |  | used | — |  |
+| F1915 | [`Registry.experiment`](../backend/scinsight/rag_tuning/registry.py#L110) | method |  | used | — |  |
+
+## backend/scinsight/rag_tuning/retrieval.py
+
+Ranking stage shared by live search and the tuning console (one implementation, so a preview equals production).
+
+| ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
+|---|---|---|---|---|---|---|
+| F1916 | [`terms`](../backend/scinsight/rag_tuning/retrieval.py#L19) | function |  | used | — |  |
+| F1917 | [`keyword_score`](../backend/scinsight/rag_tuning/retrieval.py#L23) | function |  | used | — |  |
+| F1918 | [`rank`](../backend/scinsight/rag_tuning/retrieval.py#L32) | function |  | used | — | Score and order chunk rows; returns copies with semantic / keyword / rerank / score fields |
 
 ## backend/scinsight/schemas.py
 
@@ -1052,5 +1247,5 @@ Runtime settings for the SupplyChain Insight AI service (environment variables; 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
 | F0013 | [`SciSettings`](../backend/scinsight/settings.py#L13) | pydantic_model |  | used | [annotated](../code_explorer/01_fastapi/app_setup/scinsight_settings.py) |  |
-| F0014 | [`SciSettings.user_keys`](../backend/scinsight/settings.py#L42) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/scinsight_settings.py) |  |
-| F0015 | [`SciSettings.missing_keys`](../backend/scinsight/settings.py#L45) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/scinsight_settings.py) |  |
+| F0014 | [`SciSettings.user_keys`](../backend/scinsight/settings.py#L52) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/scinsight_settings.py) |  |
+| F0015 | [`SciSettings.missing_keys`](../backend/scinsight/settings.py#L55) | method |  | used | [annotated](../code_explorer/01_fastapi/app_setup/scinsight_settings.py) |  |

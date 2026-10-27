@@ -56,6 +56,8 @@
       <a href="#workflow" data-page="workflow"><svg class="ico"><use href="#i-flow"/></svg>Business workflow</a>
       <a href="#research" data-page="research"><svg class="ico"><use href="#i-search"/></svg>Deep research</a>
       <a href="#moat" data-page="moat"><svg class="ico"><use href="#i-loop"/></svg>Intelligence moat</a>
+      <div class="nav-group">AI / RAG</div>
+      <a href="#rag" data-page="rag"><svg class="ico"><use href="#i-search"/></svg>RAG Tuning</a>
       <div class="nav-group">System</div>
       <a href="#platform" data-page="platform"><svg class="ico"><use href="#i-pulse"/></svg>Status &amp; access</a>
       <a href="#code" data-page="code"><svg class="ico"><use href="#i-flow"/></svg>Backend code</a>
@@ -322,6 +324,25 @@
       <section class="page" id="page-platform">
         <div class="card"><h2>Platform status <span class="note" id="runtime"></span></h2><div id="status"></div></div>
         <div class="grid g2"><div class="card"><h2>Agent backends</h2><div id="backends"></div></div><div class="card"><h2>Workbenches</h2><ul id="links"></ul></div></div>
+      </section>
+
+      <!-- RAG TUNING (Company RAG Search of the SCInsight chatflow) -->
+      <section class="page" id="page-rag">
+        <div class="card">
+          <h2>RAG Tuning · Company RAG Search</h2>
+          <p class="note">Tunes the real retrieval behind the SCInsight chatflow: the governed policy search (SCInsight API) and, on publish, the chatflow's own RAG DB in Flowise. Managers only; the administrator key stays on the server.</p>
+          <div id="rag-active"></div>
+          <details class="more"><summary>Retrieval path (audited)</summary><ol id="rag-path" class="note"></ol></details>
+        </div>
+        <div class="pills" id="rag-tabs" role="tablist">
+          <button class="pill on" data-tab="knowledge">1 · Knowledge &amp; metadata</button>
+          <button class="pill" data-tab="chunking">2 · Chunking</button>
+          <button class="pill" data-tab="embeddings">3 · Embeddings</button>
+          <button class="pill" data-tab="retrieval">4 · Retrieval</button>
+          <button class="pill" data-tab="evaluation">5 · Evaluation lab</button>
+          <button class="pill" data-tab="publish">6 · Publish &amp; history</button>
+        </div>
+        <div class="card" id="rag-pane"><div class="empty">Loading…</div></div>
       </section>
 
       <!-- BACKEND CODE -->

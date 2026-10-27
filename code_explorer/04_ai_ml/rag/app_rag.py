@@ -59,8 +59,6 @@ class HashEmbedder:
     #   <- F0746 MemoryRag.search() (calls)
     #   <- F0752 PgVectorRag.add() (calls)
     #   <- F0755 PgVectorRag.search() (calls)
-    #   <- F0765 KnowledgeBase.ingest_dir() (calls)
-    #   <- F0766 KnowledgeBase.search() (calls)
     # CALLS:
     #   -> F0733 HashEmbedder._one() (calls)
     def embed(self, texts: list[str]) -> list[list[float]]:
@@ -133,8 +131,6 @@ class FastEmbedder:
     #   <- F0746 MemoryRag.search() (calls)
     #   <- F0752 PgVectorRag.add() (calls)
     #   <- F0755 PgVectorRag.search() (calls)
-    #   <- F0765 KnowledgeBase.ingest_dir() (calls)
-    #   <- F0766 KnowledgeBase.search() (calls)
     # CALLS:
     #   (none found)
     def embed(self, texts: list[str]) -> list[list[float]]:
@@ -156,7 +152,7 @@ _embedders: dict[str, object] = {}
 #   FastEmbedder | HashEmbedder.
 # CALLED BY:
 #   <- F0756 create_rag() (calls)
-#   <- F0762 make_embedder() (calls)
+#   <- F1868 get_embedder() (calls)
 # CALLS:
 #   -> F0734 FastEmbedder (calls)
 #   -> F0731 HashEmbedder (calls)

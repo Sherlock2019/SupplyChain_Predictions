@@ -127,6 +127,12 @@ class TenantRegistry:
     #   <- F0253 MoatEngine._series() (calls)
     #   <- F0254 MoatEngine.model_comparison() (calls)
     #   <- F0255 MoatEngine.view() (calls)
+    #   <- F1822 register.cfg_of() (calls)
+    #   <- F1892 build_candidate_index() (calls)
+    #   <- F1895 validate_config() (calls)
+    #   <- F1897 _activate() (calls)
+    #   <- F1898 publish_rag_config() (calls)
+    #   <- F1899 rollback_rag_config() (calls)
     # CALLS:
     #   -> F0401 SapRepository (calls)
     #   -> F0192 SupplyChainEngine (calls)

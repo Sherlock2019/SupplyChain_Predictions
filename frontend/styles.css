@@ -251,6 +251,12 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--surf
 .focus-bar label { color: var(--ink-2); font-size: 13px; }
 .focus-bar select { min-width: 260px; font-weight: 600; }
 .agent-note { margin-bottom: 16px; }
+/* RAG tuning */
+#page-rag .eyebrow { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 4px; }
+#page-rag form label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+#page-rag form label:has(input[type=checkbox]) { flex-direction: row; align-items: center; }
+#rag-pane .chip input { margin-right: 4px; }
+#rag-pane h4 { margin-top: 18px; }
 /* backend code section */
 .code-apps { margin-bottom: 20px; }
 .code-apps td { vertical-align: top; }

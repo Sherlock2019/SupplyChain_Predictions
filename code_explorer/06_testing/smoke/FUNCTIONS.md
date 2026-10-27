@@ -8,7 +8,7 @@ Modules: `scripts/smoke.py`
 | F0883 | `Smoke` | class | used | [scripts/smoke.py:36](../../../scripts/smoke.py#L36) | — |  |
 | F0884 | `Smoke.__init__` | method | used (framework) | [scripts/smoke.py:37](../../../scripts/smoke.py#L37) | — |  |
 | F0885 | `Smoke.api` | method | used (framework) | [scripts/smoke.py:45](../../../scripts/smoke.py#L45) | — |  |
-| F0886 | `Smoke.check` | method | used | [scripts/smoke.py:48](../../../scripts/smoke.py#L48) | — |  |
+| F0886 | `Smoke.check` | method | used (framework) | [scripts/smoke.py:48](../../../scripts/smoke.py#L48) | — |  |
 | F0887 | `Smoke.platform` | method | used (framework) | [scripts/smoke.py:59](../../../scripts/smoke.py#L59) | — |  |
 | F0888 | `Smoke.security` | method | used (framework) | [scripts/smoke.py:67](../../../scripts/smoke.py#L67) | — |  |
 | F0889 | `Smoke.analytics` | method | used (framework) | [scripts/smoke.py:75](../../../scripts/smoke.py#L75) | — |  |

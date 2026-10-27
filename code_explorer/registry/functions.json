@@ -11,7 +11,7 @@
    "file": "backend/app/config.py",
    "lines": [
     11,
-    100
+    105
    ],
    "signature": "class Settings(BaseSettings)",
    "async": false,
@@ -50,8 +50,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    68,
-    75
+    73,
+    80
    ],
    "signature": "def parse_keys(raw: str) -> dict[str, str]",
    "async": false,
@@ -78,8 +78,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    77,
-    79
+    82,
+    84
    ],
    "signature": "def assistants(self) -> dict[str, str]",
    "async": false,
@@ -105,8 +105,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    81,
-    83
+    86,
+    88
    ],
    "signature": "def managers(self) -> dict[str, str]",
    "async": false,
@@ -136,8 +136,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    85,
-    92
+    90,
+    97
    ],
    "signature": "def tenants_for(self, identity: str) -> set[str] | None",
    "async": false,
@@ -161,8 +161,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    94,
-    96
+    99,
+    101
    ],
    "signature": "def llm_enabled(self) -> bool",
    "async": false,
@@ -186,8 +186,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    98,
-    100
+    103,
+    105
    ],
    "signature": "def langfuse_enabled(self) -> bool",
    "async": false,
@@ -211,8 +211,8 @@
    "subfolder": "app_setup",
    "file": "backend/app/config.py",
    "lines": [
-    103,
-    105
+    108,
+    110
    ],
    "signature": "def get_settings() -> Settings",
    "async": false,
@@ -368,7 +368,7 @@
    "file": "backend/scinsight/settings.py",
    "lines": [
     13,
-    46
+    56
    ],
    "signature": "class SciSettings(BaseSettings)",
    "async": false,
@@ -398,8 +398,8 @@
    "subfolder": "app_setup",
    "file": "backend/scinsight/settings.py",
    "lines": [
-    42,
-    43
+    52,
+    53
    ],
    "signature": "def user_keys(self) -> dict[str, str]",
    "async": false,
@@ -423,8 +423,8 @@
    "subfolder": "app_setup",
    "file": "backend/scinsight/settings.py",
    "lines": [
-    45,
-    46
+    55,
+    56
    ],
    "signature": "def missing_keys(self) -> list[str]",
    "async": false,
@@ -476,7 +476,7 @@
    "file": "backend/app/main.py",
    "lines": [
     81,
-    941
+    953
    ],
    "signature": "def create_app(settings: Settings | None=None, store: Store | None=None, runner: GraphRunner | None=None) -> FastAPI",
    "async": false,
@@ -514,6 +514,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/scinsight/conftest.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py"
@@ -620,6 +621,8 @@
     "F0059",
     "F0081",
     "F0081",
+    "F1801",
+    "F1801",
     "F0987",
     "F0987",
     "F0091",
@@ -639,9 +642,9 @@
     "tests/conftest.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py",
-    "tests/test_flowise_flows.py",
-    "tests/test_graphs_and_agents.py"
+    "tests/test_flowise_flows.py"
    ]
   },
   {
@@ -1159,8 +1162,8 @@
     "tests/scinsight/test_business_rules.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
-    "tests/scinsight/test_security.py",
-    "tests/test_api.py"
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/scinsight/test_security.py"
    ]
   },
   {
@@ -3018,6 +3021,9 @@
     "F0678",
     "F0890",
     "F0844",
+    "F1937",
+    "F1939",
+    "F1944",
     "F0868",
     "F0819",
     "flowise:tool:search_supply_chain_policy",
@@ -3072,6 +3078,9 @@
     "F0678",
     "F0890",
     "F0844",
+    "F1937",
+    "F1939",
+    "F1944",
     "F0868",
     "F0819"
    ],
@@ -3111,7 +3120,8 @@
    ],
    "called_by": [],
    "tests": [
-    "tests/conftest.py"
+    "tests/conftest.py",
+    "tests/scinsight/test_rag_tuning.py"
    ]
   },
   {
@@ -3232,8 +3242,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    598,
-    604
+    610,
+    616
    ],
    "signature": "def _graph_call(fn, *args) -> dict",
    "async": false,
@@ -3264,8 +3274,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    606,
-    631
+    618,
+    643
    ],
    "signature": "def chat(body: ChatRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3312,8 +3322,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    633,
-    655
+    645,
+    667
    ],
    "signature": "def _agentflow_view(result: dict) -> dict",
    "async": false,
@@ -3338,8 +3348,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    657,
-    662
+    669,
+    674
    ],
    "signature": "def langgraph_agentflow(body: ChatRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3381,8 +3391,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    664,
-    668
+    676,
+    680
    ],
    "signature": "def langgraph_agentflow_resume(thread_id: str, body: ResumeRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3424,8 +3434,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    670,
-    675
+    682,
+    687
    ],
    "signature": "def business_start(body: BusinessWorkflowRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3466,8 +3476,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    677,
-    681
+    689,
+    693
    ],
    "signature": "def business_resume(thread_id: str, body: ResumeRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3508,8 +3518,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    690,
-    692
+    702,
+    704
    ],
    "signature": "def current_harness() -> dict",
    "async": false,
@@ -3537,8 +3547,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    694,
-    701
+    706,
+    713
    ],
    "signature": "def deep_harness(who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3576,8 +3586,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    703,
-    707
+    715,
+    719
    ],
    "signature": "def set_deep_harness(body: DeepAgentHarness, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -3616,8 +3626,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    709,
-    730
+    721,
+    742
    ],
    "signature": "def supplier_research(body: SupplierResearchRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3658,8 +3668,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    733,
-    745
+    745,
+    757
    ],
    "signature": "async def _flow_id(flow: str) -> str",
    "async": true,
@@ -3685,8 +3695,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    747,
-    782
+    759,
+    794
    ],
    "signature": "async def flowise_predict(flow: str, body: FlowisePredictRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": true,
@@ -3728,8 +3738,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    785,
-    792
+    797,
+    804
    ],
    "signature": "def submit_recommendation(body: RecommendationRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3778,8 +3788,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    794,
-    807
+    806,
+    819
    ],
    "signature": "def submit_from_agent(body: RecommendationFromTextRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -3828,8 +3838,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    809,
-    812
+    821,
+    824
    ],
    "signature": "def recommendations(status: str | None=None, who: Principal=Depends(reader)) -> list[dict]",
    "async": false,
@@ -3881,8 +3891,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    814,
-    821
+    826,
+    833
    ],
    "signature": "def decide(recommendation_id: int, body: DecisionRequest, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -3933,8 +3943,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    828,
-    853
+    840,
+    865
    ],
    "signature": "def execute(recommendation_id: int, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -3990,8 +4000,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    855,
-    858
+    867,
+    870
    ],
    "signature": "def sap_documents(who: Principal=Depends(reader)) -> list[dict]",
    "async": false,
@@ -4026,8 +4036,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    860,
-    863
+    872,
+    875
    ],
    "signature": "def audit(limit: int=Query(default=100, ge=1, le=1000), who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -4055,6 +4065,7 @@
     "F0112",
     "F0146",
     "F0901",
+    "F1944",
     "F0848",
     "F0862",
     "F0865",
@@ -4062,6 +4073,7 @@
     "F0878"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py",
@@ -4077,8 +4089,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    869,
-    873
+    881,
+    885
    ],
    "signature": "def poc_sap_inventory(plant: str | None=None, material: str | None=None, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4117,8 +4129,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    875,
-    879
+    887,
+    891
    ],
    "signature": "def poc_sap_production_orders(plant: str | None=None, material: str | None=None, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4156,8 +4168,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    881,
-    883
+    893,
+    895
    ],
    "signature": "def poc_forecast_demand(body: ForecastRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4197,8 +4209,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    885,
-    887
+    897,
+    899
    ],
    "signature": "def poc_forecast_lead_time(body: SupplierLeadTimeRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4238,8 +4250,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    889,
-    892
+    901,
+    904
    ],
    "signature": "def poc_material_readiness(body: FactoryReadinessRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4279,8 +4291,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    894,
-    896
+    906,
+    908
    ],
    "signature": "def poc_warehouse_transfer(body: StockBalanceRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4321,8 +4333,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    898,
-    900
+    910,
+    912
    ],
    "signature": "def poc_decisions(body: RecommendationRequest, request: Request, who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4358,8 +4370,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    902,
-    904
+    914,
+    916
    ],
    "signature": "def poc_human_review(decision_id: int, body: DecisionRequest, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -4398,8 +4410,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    906,
-    930
+    918,
+    942
    ],
    "signature": "def poc_reconcile(body: ReconcileRequest, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -4447,8 +4459,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    932,
-    936
+    944,
+    948
    ],
    "signature": "def poc_model_performance(who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4485,8 +4497,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    34,
-    223
+    36,
+    228
    ],
    "signature": "def create_app(settings: SciSettings | None=None, db: Database | None=None) -> FastAPI",
    "async": false,
@@ -4516,10 +4528,14 @@
     "F0076",
     "F0077",
     "F0081",
+    "F1819",
+    "F0113",
+    "F0115",
     "F0101"
    ],
    "called_by": [
     "F0909",
+    "F1928",
     "F0846",
     "F0847",
     "F0851",
@@ -4528,6 +4544,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/scinsight/conftest.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py"
@@ -4542,8 +4559,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    57,
-    60
+    59,
+    62
    ],
    "signature": "def principal(request: Request, x_api_key: str | None=Header(default=None), authorization: str | None=Header(default=None), x_tenant: str | None=Header(default=None)) -> Principal",
    "async": false,
@@ -4557,6 +4574,7 @@
     "F0772"
    ],
    "called_by": [
+    "F0112",
     "F0114",
     "F0114",
     "F0125",
@@ -4585,8 +4603,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    62,
-    64
+    64,
+    66
    ],
    "signature": "def reader(p: Principal=Depends(principal)) -> Principal",
    "async": false,
@@ -4660,8 +4678,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    66,
-    67
+    68,
+    69
    ],
    "signature": "def biz_date(p: Principal) -> date",
    "async": false,
@@ -4675,6 +4693,7 @@
     "F0313"
    ],
    "called_by": [
+    "F0112",
     "F0133"
    ],
    "tests": []
@@ -4688,8 +4707,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    69,
-    72
+    71,
+    74
    ],
    "signature": "def health() -> dict",
    "async": false,
@@ -4722,8 +4741,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    75,
-    79
+    77,
+    81
    ],
    "signature": "def context(p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4759,8 +4778,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    81,
-    87
+    83,
+    89
    ],
    "signature": "def validate_context(body: s.ContextRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4808,8 +4827,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    90,
-    93
+    92,
+    95
    ],
    "signature": "def sap_inventory(location: str | None=Query(default=None, pattern=s.CODE), item_id: str | None=Query(default=None, pattern=s.CODE), include_unusable: bool=True, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4848,8 +4867,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    95,
-    97
+    97,
+    99
    ],
    "signature": "def sap_bom(sku: str, on: date | None=None, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4885,8 +4904,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    99,
-    101
+    101,
+    103
    ],
    "signature": "def sap_production_orders(sku: str | None=Query(default=None, pattern=s.CODE), status: str | None=None, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4924,8 +4943,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    103,
-    106
+    105,
+    108
    ],
    "signature": "def sap_purchase_orders(material_id: str | None=Query(default=None, pattern=s.CODE), supplier_id: str | None=Query(default=None, pattern=s.CODE), status: str | None=None, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -4963,8 +4982,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    108,
-    110
+    110,
+    112
    ],
    "signature": "def sap_warehouses(p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5001,8 +5020,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    112,
-    114
+    114,
+    116
    ],
    "signature": "def sap_suppliers(p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5039,8 +5058,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    116,
-    119
+    118,
+    121
    ],
    "signature": "def sap_write_blocked(path: str, request: Request, p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5088,8 +5107,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    122,
-    124
+    124,
+    126
    ],
    "signature": "def material_readiness(body: s.MaterialReadinessRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5138,8 +5157,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    126,
-    128
+    128,
+    130
    ],
    "signature": "def warehouse_balancing(body: s.WarehouseBalancingRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5187,8 +5206,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    130,
-    132
+    132,
+    134
    ],
    "signature": "def replenishment(body: s.ReplenishmentRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5233,8 +5252,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    134,
-    136
+    136,
+    138
    ],
    "signature": "def forecast_demand(body: s.DemandForecastRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5277,8 +5296,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    138,
-    140
+    140,
+    142
    ],
    "signature": "def forecast_lead_time(body: s.LeadTimeRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5319,8 +5338,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    142,
-    144
+    144,
+    146
    ],
    "signature": "def quality_check(body: s.QualityCheckRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5363,8 +5382,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    146,
-    148
+    148,
+    150
    ],
    "signature": "def calculation(calculation_id: str, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5406,8 +5425,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    151,
-    155
+    153,
+    157
    ],
    "signature": "def rag_search(body: s.RagSearchRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5445,6 +5464,9 @@
     "F0678",
     "F0890",
     "F0844",
+    "F1937",
+    "F1939",
+    "F1944",
     "F0868",
     "F0819",
     "flowise:tool:search_supply_chain_policy",
@@ -5466,8 +5488,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    157,
-    160
+    159,
+    162
    ],
    "signature": "def rag_documents(p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5506,8 +5528,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    163,
-    166
+    168,
+    171
    ],
    "signature": "def create_decision(body: s.DecisionCreateRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5555,8 +5577,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    168,
-    170
+    173,
+    175
    ],
    "signature": "def list_decisions(status: str | None=Query(default=None, pattern='^[a-z_]+$'), p: Principal=Depends(reader)) -> list[dict]",
    "async": false,
@@ -5599,8 +5621,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    172,
-    174
+    177,
+    179
    ],
    "signature": "def get_decision(rec_id: str, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5653,8 +5675,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    176,
-    178
+    181,
+    183
    ],
    "signature": "def review(rec_id: str, body: s.ReviewRequest, p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5713,8 +5735,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    180,
-    182
+    185,
+    187
    ],
    "signature": "def withdraw(rec_id: str, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5767,8 +5789,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    184,
-    186
+    189,
+    191
    ],
    "signature": "def sap_execution(rec_id: str, body: s.SapExecutionRequest, p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5822,8 +5844,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    189,
-    191
+    194,
+    196
    ],
    "signature": "def reconcile(body: s.ReconcileRequest, p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5871,8 +5893,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    193,
-    195
+    198,
+    200
    ],
    "signature": "def learning_metrics(p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -5913,8 +5935,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    197,
-    202
+    202,
+    207
    ],
    "signature": "def train(p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5954,8 +5976,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    204,
-    209
+    209,
+    214
    ],
    "signature": "def promote(model_id: str, p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -5995,8 +6017,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    211,
-    215
+    216,
+    220
    ],
    "signature": "def retraining(body: s.RetrainingRequest, p: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -6037,8 +6059,8 @@
    "subfolder": "endpoints",
    "file": "backend/scinsight/app.py",
    "lines": [
-    217,
-    221
+    222,
+    226
    ],
    "signature": "def audit(limit: int=Query(default=50, ge=1, le=500), p: Principal=Depends(principal)) -> dict",
    "async": false,
@@ -6067,6 +6089,7 @@
     "F0017",
     "F0101",
     "F0901",
+    "F1944",
     "F0848",
     "F0862",
     "F0865",
@@ -6074,6 +6097,7 @@
     "F0878"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py",
@@ -8672,7 +8696,9 @@
     "F0065",
     "F0280"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0233",
@@ -9168,6 +9194,7 @@
     "F0939"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_mentana_features.py"
    ]
   },
@@ -9870,7 +9897,9 @@
    "called_by": [
     "F0054"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0273",
@@ -12304,6 +12333,7 @@
    ],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py"
    ]
   },
@@ -12439,6 +12469,7 @@
    ],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py"
    ]
   },
@@ -12547,9 +12578,9 @@
     "tests/conftest.py",
     "tests/scinsight/conftest.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
-    "tests/test_api.py",
-    "tests/test_poc_contract.py"
+    "tests/test_api.py"
    ]
   },
   {
@@ -12615,6 +12646,7 @@
     "F0059",
     "F0069",
     "F0081",
+    "F1801",
     "F0987",
     "F0083",
     "F0085",
@@ -12632,6 +12664,7 @@
     "F0952"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py",
@@ -13717,7 +13750,13 @@
     "F0033",
     "F0253",
     "F0254",
-    "F0255"
+    "F0255",
+    "F1822",
+    "F1892",
+    "F1895",
+    "F1897",
+    "F1898",
+    "F1899"
    ],
    "tests": []
   },
@@ -14480,6 +14519,7 @@
     "F0036"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py"
    ]
   },
@@ -14510,6 +14550,15 @@
     "F0535",
     "F0537",
     "F0765",
+    "F1809",
+    "F1892",
+    "F1895",
+    "F1897",
+    "F1904",
+    "F1908",
+    "F1910",
+    "F1911",
+    "F1913",
     "F0779",
     "F0314",
     "F0333",
@@ -14575,15 +14624,18 @@
     "F0536",
     "F0537",
     "F0764",
+    "F1903",
     "F0775",
     "F0312",
     "F0909",
+    "F1928",
     "F0846",
     "F0851",
     "F0852"
    ],
    "tests": [
     "tests/scinsight/conftest.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py"
    ]
   },
@@ -14673,6 +14725,11 @@
     "F0532",
     "F0537",
     "F0766",
+    "F1847",
+    "F1860",
+    "F1887",
+    "F1907",
+    "F1914",
     "F0776",
     "F0781",
     "F0316",
@@ -14694,6 +14751,7 @@
    ],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py"
    ]
   },
@@ -14723,7 +14781,13 @@
     "F0432",
     "F0535",
     "F0536",
+    "F1806",
     "F0765",
+    "F1904",
+    "F1905",
+    "F1906",
+    "F1912",
+    "F1915",
     "F0776",
     "F0313",
     "F0315",
@@ -14766,6 +14830,13 @@
     "F0534",
     "F0535",
     "F0537",
+    "F1809",
+    "F1904",
+    "F1908",
+    "F1909",
+    "F1910",
+    "F1911",
+    "F1913",
     "F0314",
     "F0333",
     "F0339",
@@ -14839,6 +14910,8 @@
     "F0428",
     "F0535",
     "F0765",
+    "F1808",
+    "F1897",
     "F0340"
    ],
    "tests": []
@@ -15147,7 +15220,9 @@
    "called_by": [
     "F0437"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0437",
@@ -19521,9 +19596,9 @@
     "tests/scinsight/test_api_scenarios.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
-    "tests/test_api.py",
-    "tests/test_flowise_flows.py"
+    "tests/test_api.py"
    ]
   },
   {
@@ -19808,6 +19883,7 @@
    ],
    "called_by": [],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_graphs_and_agents.py"
    ]
   },
@@ -20246,6 +20322,7 @@
    "called_by": [],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py",
     "tests/test_rag_mcp_store.py"
    ]
@@ -21207,9 +21284,9 @@
     "tests/conftest.py",
     "tests/scinsight/conftest.py",
     "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
-    "tests/test_api.py",
-    "tests/test_code_editor.py"
+    "tests/test_api.py"
    ]
   },
   {
@@ -21285,6 +21362,7 @@
    ],
    "tests": [
     "tests/scinsight/test_flowise_e2e.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
@@ -22469,7 +22547,9 @@
     "F0635",
     "F0681"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0681",
@@ -24005,11 +24085,10 @@
     "F0745",
     "F0746",
     "F0752",
-    "F0755",
-    "F0765",
-    "F0766"
+    "F0755"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_flowise_flows.py"
    ]
   },
@@ -24117,11 +24196,10 @@
     "F0745",
     "F0746",
     "F0752",
-    "F0755",
-    "F0765",
-    "F0766"
+    "F0755"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_flowise_flows.py"
    ]
   },
@@ -24150,7 +24228,7 @@
    ],
    "called_by": [
     "F0756",
-    "F0762"
+    "F1868"
    ],
    "tests": []
   },
@@ -24420,9 +24498,9 @@
     "tests/scinsight/test_api_scenarios.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py",
-    "tests/test_flowise_flows.py",
-    "tests/test_rag_mcp_store.py"
+    "tests/test_flowise_flows.py"
    ]
   },
   {
@@ -24710,9 +24788,9 @@
     "tests/scinsight/test_api_scenarios.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py",
-    "tests/test_flowise_flows.py",
-    "tests/test_rag_mcp_store.py"
+    "tests/test_flowise_flows.py"
    ]
   },
   {
@@ -24756,8 +24834,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    27,
-    28
+    37,
+    38
    ],
    "signature": "class DocumentError(ValueError)",
    "async": false,
@@ -24769,7 +24847,11 @@
    "calls": [],
    "called_by": [
     "F0758",
-    "F0765"
+    "F0765",
+    "F1808",
+    "F1860",
+    "F1863",
+    "F1891"
    ],
    "tests": []
   },
@@ -24782,8 +24864,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    31,
-    51
+    41,
+    61
    ],
    "signature": "def parse_document(path: Path) -> tuple[dict, str]",
    "async": false,
@@ -24798,7 +24880,11 @@
     "F0757"
    ],
    "called_by": [
-    "F0765"
+    "F0765",
+    "F1808",
+    "F1860",
+    "F1863",
+    "F1891"
    ],
    "tests": []
   },
@@ -24806,25 +24892,26 @@
    "id": "F0759",
    "name": "chunk_document",
    "kind": "function",
-   "status": "used",
+   "status": "unused?",
    "category": "04_ai_ml",
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    54,
-    77
+    64,
+    68
    ],
-   "signature": "def chunk_document(title: str, body: str) -> list[tuple[str, str]]",
+   "signature": "def chunk_document(title: str, body: str, size: int=CHUNK_CHARS, overlap: int=OVERLAP) -> list[tuple[str, str]]",
    "async": false,
    "decorators": [],
    "routes": [],
    "raises": [],
-   "summary": "Split on '## ' sections, then into <= CHUNK_CHARS windows with OVERLAP; each chunk carries its section heading.",
+   "summary": "Split on '## ' sections, then into <= size windows with overlap; each chunk carries its section heading.",
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
-   "calls": [],
-   "called_by": [
-    "F0765"
+   "calls": [
+    "F1854",
+    "F1851"
    ],
+   "called_by": [],
    "tests": []
   },
   {
@@ -24836,8 +24923,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    80,
-    92
+    71,
+    84
    ],
    "signature": "class HashEmbedder",
    "async": false,
@@ -24848,7 +24935,8 @@
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
    "calls": [],
    "called_by": [
-    "F0762"
+    "F0762",
+    "F1868"
    ],
    "tests": [
     "tests/test_rag_mcp_store.py"
@@ -24863,8 +24951,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    83,
-    92
+    75,
+    84
    ],
    "signature": "def embed(self, texts: list[str]) -> list[list[float]]",
    "async": false,
@@ -24878,11 +24966,10 @@
     "F0745",
     "F0746",
     "F0752",
-    "F0755",
-    "F0765",
-    "F0766"
+    "F0755"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_flowise_flows.py"
    ]
   },
@@ -24895,8 +24982,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    95,
-    100
+    87,
+    92
    ],
    "signature": "def make_embedder(backend: str)",
    "async": false,
@@ -24907,7 +24994,7 @@
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
    "calls": [
     "F0760",
-    "F0737"
+    "F1868"
    ],
    "called_by": [
     "F0112"
@@ -24923,8 +25010,8 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    103,
-    165
+    99,
+    265
    ],
    "signature": "class KnowledgeBase",
    "async": false,
@@ -24935,9 +25022,12 @@
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
    "calls": [],
    "called_by": [
-    "F0112"
+    "F0112",
+    "F1945"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0764",
@@ -24948,10 +25038,10 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    104,
-    105
+    100,
+    101
    ],
-   "signature": "def __init__(self, db: Database, embedder)",
+   "signature": "def __init__(self, db: Database, embedder, backend: str='fastembed')",
    "async": false,
    "decorators": [],
    "routes": [],
@@ -24975,25 +25065,23 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    107,
-    137
+    138,
+    164
    ],
    "signature": "def ingest_dir(self, directory: Path) -> dict",
    "async": false,
    "decorators": [],
    "routes": [],
    "raises": [],
-   "summary": "",
+   "summary": "Validate and (re)index changed documents into each tenant's ACTIVE index (baseline when nothing was published).",
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
    "calls": [
     "F0758",
     "F0757",
+    "F1806",
     "F0422",
-    "F0759",
-    "F0736",
-    "F0732",
-    "F0761",
     "F0416",
+    "F1807",
     "F0425"
    ],
    "called_by": [
@@ -25010,32 +25098,37 @@
    "subfolder": "rag",
    "file": "backend/scinsight/rag.py",
    "lines": [
-    139,
-    165
+    183,
+    258
    ],
-   "signature": "def search(self, tenant_id: str, roles: frozenset[str], query: str, top_k: int, on: date) -> dict",
+   "signature": "def search(self, tenant_id: str, roles: frozenset[str], query: str, top_k: int | None, on: date, *, cfg: RagTuningConfig | None=None, index_version: str | None=None, config_id: str | None=None, explain: bool=False, source: str='api') -> dict",
    "async": false,
    "decorators": [],
    "routes": [],
    "raises": [],
-   "summary": "",
+   "summary": "Tenant-, role- and date-filtered retrieval with citations, using the active configuration unless one is given.",
    "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
    "calls": [
-    "F0736",
-    "F0732",
-    "F0761",
-    "F0421"
+    "F1854",
+    "F1806",
+    "F1804",
+    "F0421",
+    "F1803",
+    "F1918",
+    "F1809"
    ],
    "called_by": [
-    "F0133"
+    "F0133",
+    "F1836",
+    "F1874"
    ],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
     "tests/scinsight/test_flowise_e2e.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py",
-    "tests/test_flowise_flows.py",
-    "tests/test_rag_mcp_store.py"
+    "tests/test_flowise_flows.py"
    ]
   },
   {
@@ -25114,6 +25207,7 @@
     "F0077",
     "F0080",
     "F0081",
+    "F1801",
     "F0985",
     "F0986",
     "F0987",
@@ -25316,6 +25410,32 @@
     "F0144",
     "F0145",
     "F0146",
+    "F1820",
+    "F1821",
+    "F1822",
+    "F1824",
+    "F1825",
+    "F1826",
+    "F1827",
+    "F1828",
+    "F1829",
+    "F1830",
+    "F1831",
+    "F1832",
+    "F1833",
+    "F1834",
+    "F1835",
+    "F1836",
+    "F1838",
+    "F1839",
+    "F1840",
+    "F1841",
+    "F1842",
+    "F1843",
+    "F1844",
+    "F1845",
+    "F1846",
+    "F1847",
     "F0776",
     "F0776",
     "F0777",
@@ -25489,6 +25609,9 @@
     "F0143",
     "F0144",
     "F0146",
+    "F1820",
+    "F1844",
+    "F1845",
     "F0340",
     "F0341"
    ],
@@ -25554,6 +25677,7 @@
     "F0143",
     "F0144",
     "F0145",
+    "F1821",
     "F0776",
     "F0778",
     "F0314",
@@ -25564,6 +25688,7 @@
     "F0341"
    ],
    "tests": [
+    "tests/scinsight/test_rag_tuning.py",
     "tests/scinsight/test_security.py",
     "tests/test_api.py",
     "tests/test_poc_contract.py",
@@ -28523,7 +28648,7 @@
    "id": "F0886",
    "name": "Smoke.check",
    "kind": "method",
-   "status": "used",
+   "status": "used (framework)",
    "category": "06_testing",
    "subfolder": "smoke",
    "file": "scripts/smoke.py",
@@ -28539,12 +28664,11 @@
    "summary": "",
    "annotated_copy": null,
    "calls": [],
-   "called_by": [
-    "F0903"
-   ],
+   "called_by": [],
    "tests": [
     "tests/scinsight/test_api_scenarios.py",
     "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
     "tests/test_api.py"
    ]
   },
@@ -29018,8 +29142,7 @@
    "annotated_copy": null,
    "calls": [
     "F0882",
-    "F0883",
-    "F0886"
+    "F0883"
    ],
    "called_by": [],
    "tests": [
@@ -31120,7 +31243,9 @@
    "called_by": [
     "F0984"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F0979",
@@ -31299,8 +31424,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    572,
-    575
+    584,
+    587
    ],
    "signature": "def code_functions(q: str=Query(default='', max_length=200), who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -31336,8 +31461,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    577,
-    583
+    589,
+    595
    ],
    "signature": "def code_function(key: str=Query(min_length=5, max_length=400), who: Principal=Depends(reader)) -> dict",
    "async": false,
@@ -31374,8 +31499,8 @@
    "subfolder": "endpoints",
    "file": "backend/app/main.py",
    "lines": [
-    585,
-    595
+    597,
+    607
    ],
    "signature": "def code_update(body: CodeUpdateRequest, request: Request, who: Principal=Depends(manager)) -> dict",
    "async": false,
@@ -31457,7 +31582,9 @@
    "called_by": [
     "F1783"
    ],
-   "tests": []
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
   },
   {
    "id": "F1782",
@@ -31901,8 +32028,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    49,
-    59
+    55,
+    65
    ],
    "signature": "def test_edit_replaces_only_the_selected_method_and_keeps_a_backup(repo)",
    "async": false,
@@ -31927,8 +32054,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    62,
-    71
+    68,
+    77
    ],
    "signature": "def test_invalid_edits_are_refused_and_the_file_is_untouched(repo, source, error)",
    "async": false,
@@ -31955,8 +32082,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    74,
-    79
+    80,
+    85
    ],
    "signature": "def test_editing_is_off_outside_development_and_stale_saves_are_refused(repo)",
    "async": false,
@@ -31996,6 +32123,4782 @@
     "F1791",
     "F1793"
    ],
+   "tests": []
+  },
+  {
+   "id": "F1801",
+   "name": "create_app.rag_tuning_proxy",
+   "kind": "route",
+   "status": "used",
+   "category": "01_fastapi",
+   "subfolder": "endpoints",
+   "file": "backend/app/main.py",
+   "lines": [
+    570,
+    579
+   ],
+   "signature": "async def rag_tuning_proxy(path: str, request: Request, who: Principal=Depends(manager)) -> Response",
+   "async": true,
+   "decorators": [
+    "app.api_route('/api/v1/rag-tuning/{path:path}', methods=['GET', 'POST', 'PUT'], include_in_schema=False)"
+   ],
+   "routes": [
+    {
+     "method": "GET/POST/PUT",
+     "path": "/api/v1/rag-tuning/{path:path}"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": "code_explorer/01_fastapi/endpoints/app_main.py",
+   "calls": [
+    "F0767",
+    "F0020",
+    "F0358",
+    "F1824",
+    "F1825",
+    "F1826",
+    "F1827",
+    "F1828",
+    "F1829",
+    "F1830",
+    "F1831",
+    "F1832",
+    "F1833",
+    "F1834",
+    "F1835",
+    "F1836",
+    "F1838",
+    "F1839",
+    "F1840",
+    "F1841",
+    "F1842",
+    "F1843",
+    "F1844",
+    "F1845",
+    "F1846",
+    "F1847",
+    "F0020"
+   ],
+   "called_by": [
+    "F1819",
+    "F1824",
+    "F1825",
+    "F1826",
+    "F1827",
+    "F1828",
+    "F1829",
+    "F1830",
+    "F1831",
+    "F1832",
+    "F1833",
+    "F1834",
+    "F1835",
+    "F1836",
+    "F1838",
+    "F1839",
+    "F1840",
+    "F1841",
+    "F1842",
+    "F1843",
+    "F1844",
+    "F1845",
+    "F1846",
+    "F1847",
+    "F1923",
+    "F1949"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1802",
+   "name": "HashEmbedder.__init__",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    72,
+    73
+   ],
+   "signature": "def __init__(self, dims: int=384, name: str='hash-bow-384')",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_langgraph_mirror.py"
+   ]
+  },
+  {
+   "id": "F1803",
+   "name": "_vec",
+   "kind": "function",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    95,
+    96
+   ],
+   "signature": "def _vec(v: list[float]) -> str",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [],
+   "called_by": [
+    "F1807",
+    "F0766"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1804",
+   "name": "KnowledgeBase.embedder_for",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    104,
+    109
+   ],
+   "signature": "def embedder_for(self, model: str)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "The embedder of an index: the service's own model, or another approved model (never a silent substitute).",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F1868"
+   ],
+   "called_by": [
+    "F1807",
+    "F0766",
+    "F1895"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1805",
+   "name": "KnowledgeBase.baseline",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    111,
+    112
+   ],
+   "signature": "def baseline(self) -> RagTuningConfig",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F1856",
+    "F1854"
+   ],
+   "called_by": [
+    "F1806",
+    "F1904"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1806",
+   "name": "KnowledgeBase.active",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    114,
+    119
+   ],
+   "signature": "def active(self, tenant_id: str) -> tuple[str | None, RagTuningConfig, str]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "(config version id, configuration, index version) used by live search for this tenant.",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F0422",
+    "F1805",
+    "F1854"
+   ],
+   "called_by": [
+    "F0765",
+    "F0766",
+    "F1832",
+    "F1836",
+    "F1860"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_engine.py",
+    "tests/test_mentana_features.py"
+   ]
+  },
+  {
+   "id": "F1807",
+   "name": "KnowledgeBase._chunk_statements",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    122,
+    136
+   ],
+   "signature": "def _chunk_statements(self, meta: dict, body: str, cfg: RagTuningConfig, index_version: str) -> tuple[list, int]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F1854",
+    "F1851",
+    "F1804",
+    "F1803"
+   ],
+   "called_by": [
+    "F0765",
+    "F1808"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1808",
+   "name": "KnowledgeBase.build_index",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    166,
+    180
+   ],
+   "signature": "def build_index(self, directory: Path, tenant_id: str, cfg: RagTuningConfig, index_version: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Write a complete index version for one tenant (the active index is never touched).",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F1854",
+    "F0758",
+    "F0757",
+    "F1807",
+    "F0425"
+   ],
+   "called_by": [
+    "F1892"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1809",
+   "name": "KnowledgeBase._log",
+   "kind": "method",
+   "status": "used",
+   "category": "04_ai_ml",
+   "subfolder": "rag",
+   "file": "backend/scinsight/rag.py",
+   "lines": [
+    260,
+    265
+   ],
+   "signature": "def _log(self, tenant_id, config_id, index_version, query, k, mode, hits, total_ms, source) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": "code_explorer/04_ai_ml/rag/scinsight_rag.py",
+   "calls": [
+    "F0423",
+    "F0416"
+   ],
+   "called_by": [
+    "F0766"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1810",
+   "name": "DraftRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    38,
+    41
+   ],
+   "signature": "class DraftRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1825",
+    "F1825"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1811",
+   "name": "PreviewRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    44,
+    47
+   ],
+   "signature": "class PreviewRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1831",
+    "F1831"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1812",
+   "name": "RetrieveRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    50,
+    54
+   ],
+   "signature": "class RetrieveRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1836",
+    "F1836"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1813",
+   "name": "ModelTestRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    57,
+    58
+   ],
+   "signature": "class ModelTestRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1833",
+    "F1833"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1814",
+   "name": "ConfigRef",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    61,
+    63
+   ],
+   "signature": "class ConfigRef(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1834",
+    "F1834",
+    "F1843",
+    "F1843",
+    "F1844",
+    "F1844",
+    "F1845",
+    "F1845"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1815",
+   "name": "EvaluateRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    66,
+    69
+   ],
+   "signature": "class EvaluateRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1838",
+    "F1838"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1816",
+   "name": "GridRequest",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    72,
+    77
+   ],
+   "signature": "class GridRequest(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1839",
+    "F1839"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1817",
+   "name": "_llm_answer_fn",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    80,
+    96
+   ],
+   "signature": "def _llm_answer_fn(settings)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "OpenAI-compatible chat call (the same Qwen endpoint as the agents). Returns (answer, usage).",
+   "annotated_copy": null,
+   "calls": [
+    "F1818"
+   ],
+   "called_by": [
+    "F1837"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1818",
+   "name": "_llm_answer_fn.answer",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    85,
+    95
+   ],
+   "signature": "def answer(question: str, hits: list[dict])",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1817"
+   ],
+   "tests": [
+    "tests/scinsight/test_flowise_e2e.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_api.py"
+   ]
+  },
+  {
+   "id": "F1819",
+   "name": "register",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    99,
+    355
+   ],
+   "signature": "def register(app: FastAPI, *, db, kb, security, settings, principal_dep, biz_date) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "HTTPException",
+    "ValueError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1902",
+    "F1880",
+    "F1801"
+   ],
+   "called_by": [
+    "F0112"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1820",
+   "name": "register.admin",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    106,
+    108
+   ],
+   "signature": "def admin(p: Principal=Depends(principal_dep)) -> Principal",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F0777"
+   ],
+   "called_by": [
+    "F1824",
+    "F1824",
+    "F1825",
+    "F1825",
+    "F1826",
+    "F1826",
+    "F1827",
+    "F1827",
+    "F1828",
+    "F1828",
+    "F1829",
+    "F1829",
+    "F1830",
+    "F1830",
+    "F1831",
+    "F1831",
+    "F1832",
+    "F1832",
+    "F1833",
+    "F1833",
+    "F1834",
+    "F1834",
+    "F1835",
+    "F1835",
+    "F1836",
+    "F1836",
+    "F1838",
+    "F1838",
+    "F1839",
+    "F1839",
+    "F1840",
+    "F1840",
+    "F1841",
+    "F1841",
+    "F1842",
+    "F1842",
+    "F1843",
+    "F1843",
+    "F1844",
+    "F1844",
+    "F1845",
+    "F1845",
+    "F1846",
+    "F1846",
+    "F1847",
+    "F1847"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1821",
+   "name": "register.audit",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    110,
+    111
+   ],
+   "signature": "def audit(p: Principal, action: str, details: dict) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F0779"
+   ],
+   "called_by": [
+    "F1825",
+    "F1833",
+    "F1834",
+    "F1838",
+    "F1839",
+    "F1844",
+    "F1845"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/scinsight/test_security.py",
+    "tests/test_api.py",
+    "tests/test_poc_contract.py",
+    "tests/test_rag_mcp_store.py"
+   ]
+  },
+  {
+   "id": "F1822",
+   "name": "register.cfg_of",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    113,
+    118
+   ],
+   "signature": "def cfg_of(p: Principal, config_id: str) -> tuple[dict, RagTuningConfig]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F0393",
+    "F1854"
+   ],
+   "called_by": [
+    "F1827",
+    "F1834",
+    "F1836",
+    "F1837",
+    "F1838",
+    "F1843",
+    "F1844",
+    "F1845"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1823",
+   "name": "register.job",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    120,
+    121
+   ],
+   "signature": "def job(p, kind, params, fn)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1910"
+   ],
+   "called_by": [
+    "F1833",
+    "F1834",
+    "F1838",
+    "F1839"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1824",
+   "name": "register.get_config",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    124,
+    136
+   ],
+   "signature": "def get_config(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/config', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/config"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1905",
+    "F1854",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801",
+    "F1949"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1825",
+   "name": "register.save_draft",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    138,
+    142
+   ],
+   "signature": "def save_draft(body: DraftRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.put('/api/v1/rag-tuning/draft', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "PUT",
+     "path": "/api/v1/rag-tuning/draft"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1810",
+    "F0772",
+    "F1820",
+    "F1908",
+    "F1821",
+    "F1801",
+    "F1820",
+    "F1810"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1826",
+   "name": "register.history",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    144,
+    146
+   ],
+   "signature": "def history(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/history', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/history"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1894",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_graphs_and_agents.py"
+   ]
+  },
+  {
+   "id": "F1827",
+   "name": "register.config_diff",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    148,
+    151
+   ],
+   "signature": "def config_diff(config_id: str, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/diff/{config_id}', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/diff/{config_id}"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1822",
+    "F1857",
+    "F1905",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1828",
+   "name": "register.list_documents",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    154,
+    156
+   ],
+   "signature": "def list_documents(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/documents', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/documents"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1860",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1829",
+   "name": "register.validate_metadata",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    158,
+    164
+   ],
+   "signature": "def validate_metadata(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/metadata/validate', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/metadata/validate"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1860",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1830",
+   "name": "register.document_source",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    166,
+    171
+   ],
+   "signature": "def document_source(doc_id: str, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/documents/{doc_id}/source', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/documents/{doc_id}/source"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1863",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1831",
+   "name": "register.chunk_preview",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    174,
+    184
+   ],
+   "signature": "def chunk_preview(body: PreviewRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/chunks/preview', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/chunks/preview"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1811",
+    "F0772",
+    "F1820",
+    "F1863",
+    "F1853",
+    "F1801",
+    "F1820",
+    "F1811"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1832",
+   "name": "register.embedding_models",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    187,
+    191
+   ],
+   "signature": "def embedding_models(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/embedding-models', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/embedding-models"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1806",
+    "F1867",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1833",
+   "name": "register.test_model",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    193,
+    199
+   ],
+   "signature": "def test_model(body: ModelTestRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/embedding-models/test', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/embedding-models/test"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1813",
+    "F0772",
+    "F1820",
+    "F1865",
+    "F1821",
+    "F1823",
+    "F1869",
+    "F1801",
+    "F1820",
+    "F1813"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1834",
+   "name": "register.build_candidate",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    202,
+    207
+   ],
+   "signature": "def build_candidate(body: ConfigRef, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/index/build-candidate', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/index/build-candidate"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1814",
+    "F0772",
+    "F1820",
+    "F1822",
+    "F1821",
+    "F1823",
+    "F1892",
+    "F1801",
+    "F1820",
+    "F1814"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1835",
+   "name": "register.get_job",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    209,
+    214
+   ],
+   "signature": "def get_job(job_id: str, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/jobs/{job_id}', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/jobs/{job_id}"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801",
+    "F1923"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1836",
+   "name": "register.retrieve_preview",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    217,
+    236
+   ],
+   "signature": "def retrieve_preview(body: RetrieveRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/retrieve/preview', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/retrieve/preview"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "retrieve_with_config: the live search function with a stored configuration and/or hot overrides.",
+   "annotated_copy": null,
+   "calls": [
+    "F1812",
+    "F0772",
+    "F1820",
+    "F1822",
+    "F1806",
+    "F1854",
+    "F0766",
+    "F1801",
+    "F1820",
+    "F1812"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1837",
+   "name": "register._benchmark",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    239,
+    253
+   ],
+   "signature": "def _benchmark(p, config_ids, dataset_version, with_answers)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1817",
+    "F1822",
+    "F1892",
+    "F1874",
+    "F1913"
+   ],
+   "called_by": [
+    "F1838",
+    "F1839"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1838",
+   "name": "register.evaluate",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    255,
+    261
+   ],
+   "signature": "def evaluate(body: EvaluateRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/evaluate', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/evaluate"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1815",
+    "F0772",
+    "F1820",
+    "F1822",
+    "F1870",
+    "F1821",
+    "F1823",
+    "F1837",
+    "F1801",
+    "F1820",
+    "F1815"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_mentana_features.py"
+   ]
+  },
+  {
+   "id": "F1839",
+   "name": "register.evaluate_grid",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    263,
+    285
+   ],
+   "signature": "def evaluate_grid(body: GridRequest, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/evaluate/grid', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/evaluate/grid"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "Shows the workload first; runs only when confirm=true (no silent Cartesian products).",
+   "annotated_copy": null,
+   "calls": [
+    "F1816",
+    "F0772",
+    "F1820",
+    "F1854",
+    "F1905",
+    "F1865",
+    "F1858",
+    "F1870",
+    "F1914",
+    "F1908",
+    "F1821",
+    "F1823",
+    "F1837",
+    "F1801",
+    "F1820",
+    "F1816"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1840",
+   "name": "register.list_experiments",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    287,
+    289
+   ],
+   "signature": "def list_experiments(config_id: str | None=Query(default=None, pattern='^RCFG-[0-9A-F]{8}$'), p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/experiments', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/experiments"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1914",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1841",
+   "name": "register.compare",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    291,
+    296
+   ],
+   "signature": "def compare(active: str=Query(pattern='^EXP-[0-9A-F]{8}$'), candidate: str=Query(pattern='^EXP-[0-9A-F]{8}$'), p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/experiments/compare', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/experiments/compare"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1877",
+    "F1915",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1842",
+   "name": "register.get_experiment",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    298,
+    303
+   ],
+   "signature": "def get_experiment(exp_id: str, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/experiments/{exp_id}', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/experiments/{exp_id}"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1915",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1843",
+   "name": "register.validate",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    306,
+    309
+   ],
+   "signature": "def validate(body: ConfigRef, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/validate', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/validate"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1814",
+    "F0772",
+    "F1820",
+    "F1822",
+    "F1895",
+    "F1801",
+    "F1820",
+    "F1814"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_graphs_and_agents.py"
+   ]
+  },
+  {
+   "id": "F1844",
+   "name": "register.publish",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    311,
+    323
+   ],
+   "signature": "def publish(body: ConfigRef, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/publish', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/publish"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1814",
+    "F0772",
+    "F1820",
+    "F0777",
+    "F1822",
+    "F1898",
+    "F1821",
+    "F1801",
+    "F1820",
+    "F1814"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1845",
+   "name": "register.rollback",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    325,
+    337
+   ],
+   "signature": "def rollback(body: ConfigRef, p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.post('/api/v1/rag-tuning/rollback', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "POST",
+     "path": "/api/v1/rag-tuning/rollback"
+    }
+   ],
+   "raises": [
+    "HTTPException"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1814",
+    "F0772",
+    "F1820",
+    "F0777",
+    "F1822",
+    "F1899",
+    "F1821",
+    "F1801",
+    "F1820",
+    "F1814"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1846",
+   "name": "register.flowise_status",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    340,
+    342
+   ],
+   "signature": "def flowise_status(p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/flowise', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/flowise"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1847",
+   "name": "register.metrics",
+   "kind": "route",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/api.py",
+   "lines": [
+    344,
+    355
+   ],
+   "signature": "def metrics(limit: int=Query(default=50, ge=1, le=500), p: Principal=Depends(admin)) -> dict",
+   "async": false,
+   "decorators": [
+    "app.get('/api/v1/rag-tuning/metrics', tags=['rag-tuning'])"
+   ],
+   "routes": [
+    {
+     "method": "GET",
+     "path": "/api/v1/rag-tuning/metrics"
+    }
+   ],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0772",
+    "F1820",
+    "F0421",
+    "F1801",
+    "F1820"
+   ],
+   "called_by": [
+    "F1801"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_flowise_e2e.py",
+    "tests/test_api.py",
+    "tests/test_roles_and_moat.py"
+   ]
+  },
+  {
+   "id": "F1848",
+   "name": "_sections",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    18,
+    30
+   ],
+   "signature": "def _sections(body: str) -> list[tuple[str, str]]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1851"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1849",
+   "name": "_windows",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    33,
+    41
+   ],
+   "signature": "def _windows(text: str, size: int, overlap: int) -> list[tuple[int, int]]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1850",
+    "F1851",
+    "F1851"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1850",
+   "name": "_clauses",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    44,
+    68
+   ],
+   "signature": "def _clauses(text: str, size: int, overlap: int) -> list[tuple[int, int]]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1849"
+   ],
+   "called_by": [
+    "F1851"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1851",
+   "name": "chunk",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    71,
+    86
+   ],
+   "signature": "def chunk(title: str, body: str, cfg: RagTuningConfig, doc_id: str='', version: str='') -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Chunks of one document: [{chunk_index, section, text (as indexed), content (without prefix), start, end}].",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1849",
+    "F1850",
+    "F1849",
+    "F1848"
+   ],
+   "called_by": [
+    "F0759",
+    "F1807",
+    "F1853",
+    "F1933"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_flowise_flows.py"
+   ]
+  },
+  {
+   "id": "F1852",
+   "name": "overlap_chars",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    89,
+    94
+   ],
+   "signature": "def overlap_chars(left: str, right: str) -> int",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Characters at the end of `left` repeated at the start of `right` (what the overlap actually duplicated).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1853"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1853",
+   "name": "preview_document_chunks",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/chunking.py",
+   "lines": [
+    97,
+    107
+   ],
+   "signature": "def preview_document_chunks(title: str, body: str, cfg: RagTuningConfig, doc_id: str, version: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "What the configuration would index for one document (nothing is written).",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1851",
+    "F1852"
+   ],
+   "called_by": [
+    "F1831",
+    "F1933"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1854",
+   "name": "RagTuningConfig",
+   "kind": "pydantic_model",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/config.py",
+   "lines": [
+    26,
+    55
+   ],
+   "signature": "class RagTuningConfig(BaseModel)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "One RAG configuration version. Cold fields define the index; hot fields only change how it is queried.",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F0759",
+    "F1805",
+    "F1806",
+    "F1807",
+    "F1808",
+    "F0766",
+    "F1822",
+    "F1824",
+    "F1836",
+    "F1839",
+    "F1851",
+    "F1853",
+    "F1855",
+    "F1856",
+    "F1856",
+    "F1858",
+    "F1892",
+    "F1893",
+    "F1895",
+    "F1897",
+    "F1908",
+    "F1918",
+    "F1931",
+    "F1933"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1855",
+   "name": "RagTuningConfig.validate_chunking",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/config.py",
+   "lines": [
+    48,
+    55
+   ],
+   "signature": "def validate_chunking(self) -> RagTuningConfig",
+   "async": false,
+   "decorators": [
+    "model_validator(mode='after')"
+   ],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1854"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1856",
+   "name": "baseline_config",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/config.py",
+   "lines": [
+    58,
+    60
+   ],
+   "signature": "def baseline_config(embedding_model: str) -> RagTuningConfig",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "The configuration the service ran with before tuning existed (backend/scinsight/rag.py: 900/120 section chunks, top 4).",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1854"
+   ],
+   "called_by": [
+    "F1805"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1857",
+   "name": "diff",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/config.py",
+   "lines": [
+    63,
+    67
+   ],
+   "signature": "def diff(active: dict, candidate: dict) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Changed settings, split into those that need a rebuild (cold) and those that apply at query time (hot).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1827",
+    "F1892",
+    "F1908",
+    "F1931"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1858",
+   "name": "index_signature",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/config.py",
+   "lines": [
+    70,
+    72
+   ],
+   "signature": "def index_signature(cfg: RagTuningConfig) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "The cold settings: two configurations with the same signature can share one index.",
+   "annotated_copy": null,
+   "calls": [
+    "F1854"
+   ],
+   "called_by": [
+    "F1839"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1859",
+   "name": "_front_matter",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/documents.py",
+   "lines": [
+    17,
+    19
+   ],
+   "signature": "def _front_matter(text: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1860"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1860",
+   "name": "inventory",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/documents.py",
+   "lines": [
+    22,
+    53
+   ],
+   "signature": "def inventory(db, kb, knowledge_dir: Path, tenant_id: str, on: date) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Every source file of the caller's tenant with its metadata, index state and deficiencies (other tenants are not listed).",
+   "annotated_copy": null,
+   "calls": [
+    "F1806",
+    "F0421",
+    "F1859",
+    "F0758",
+    "F0757",
+    "F1861",
+    "F1862"
+   ],
+   "called_by": [
+    "F1828",
+    "F1829"
+   ],
+   "tests": [
+    "tests/scinsight/test_security.py",
+    "tests/test_api.py",
+    "tests/test_mentana_features.py",
+    "tests/test_poc_contract.py"
+   ]
+  },
+  {
+   "id": "F1861",
+   "name": "validate_document_metadata",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/documents.py",
+   "lines": [
+    56,
+    80
+   ],
+   "signature": "def validate_document_metadata(meta: dict, front_matter: dict, body: str, on: date) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Checks on one document: missing fields, scope, validity and source quality (severity: error | warning | info).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1860"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1862",
+   "name": "_cross_document_checks",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/documents.py",
+   "lines": [
+    83,
+    102
+   ],
+   "signature": "def _cross_document_checks(docs: list[dict], on: date) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1860"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1863",
+   "name": "source_text",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/documents.py",
+   "lines": [
+    105,
+    114
+   ],
+   "signature": "def source_text(knowledge_dir: Path, tenant_id: str, doc_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "KeyError"
+   ],
+   "summary": "The source document of the caller's tenant (front matter + body) for preview; other tenants' documents are not found.",
+   "annotated_copy": null,
+   "calls": [
+    "F0758",
+    "F0757"
+   ],
+   "called_by": [
+    "F1830",
+    "F1831"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1864",
+   "name": "ModelUnavailable",
+   "kind": "class",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    30,
+    31
+   ],
+   "signature": "class ModelUnavailable(RuntimeError)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1868"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1865",
+   "name": "approved",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    34,
+    35
+   ],
+   "signature": "def approved(backend: str) -> dict[str, dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1833",
+    "F1839",
+    "F1867",
+    "F1868",
+    "F1869",
+    "F1892",
+    "F1893"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_business_rules.py",
+    "tests/scinsight/test_flowise_e2e.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/scinsight/test_security.py"
+   ]
+  },
+  {
+   "id": "F1866",
+   "name": "_installed",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    38,
+    44
+   ],
+   "signature": "def _installed(model: str, backend: str) -> bool",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1867",
+    "F1868"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1867",
+   "name": "list_supported_embedding_models",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    47,
+    50
+   ],
+   "signature": "def list_supported_embedding_models(backend: str, active_model: str) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "The approved list with what is actually known about each model (installed, dimensions, languages).",
+   "annotated_copy": null,
+   "calls": [
+    "F1866",
+    "F1865"
+   ],
+   "called_by": [
+    "F1832"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1868",
+   "name": "get_embedder",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    56,
+    77
+   ],
+   "signature": "def get_embedder(model: str, backend: str, allow_download: bool=False)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ModelUnavailable"
+   ],
+   "summary": "Embedder for an approved model. Raises ModelUnavailable instead of substituting a different model.",
+   "annotated_copy": null,
+   "calls": [
+    "F1865",
+    "F1864",
+    "F0760",
+    "F1866",
+    "F0737"
+   ],
+   "called_by": [
+    "F0762",
+    "F1804",
+    "F1869"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1869",
+   "name": "test_model",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/embeddings.py",
+   "lines": [
+    80,
+    93
+   ],
+   "signature": "def test_model(model: str, backend: str, samples: list[str]) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Load the model (downloading it if allowed), embed sample texts, check dimensions and measure latency.",
+   "annotated_copy": null,
+   "calls": [
+    "F1868",
+    "F1865"
+   ],
+   "called_by": [
+    "F1833"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1870",
+   "name": "load_dataset",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    29,
+    32
+   ],
+   "signature": "def load_dataset(version: str='v1') -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1838",
+    "F1839",
+    "F1874",
+    "F1942"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1871",
+   "name": "_p95",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    35,
+    39
+   ],
+   "signature": "def _p95(values: list[float]) -> float",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1875"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1872",
+   "name": "score_case",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    42,
+    61
+   ],
+   "signature": "def score_case(case: dict, result: dict, k: int) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Deterministic retrieval scores of one case.",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1874",
+    "F1940"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1873",
+   "name": "score_answer",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    64,
+    79
+   ],
+   "signature": "def score_answer(case: dict, answer: str, result: dict) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Checks of an LLM answer against the retrieved evidence (deterministic; the model's confidence is not used).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1874",
+    "F1941"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1874",
+   "name": "run_rag_benchmark",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    82,
+    100
+   ],
+   "signature": "def run_rag_benchmark(kb, tenant_id: str, cfg, index_version: str, config_id: str, on: date, dataset_version: str='v1', answer_fn=None) -> tuple[dict, list[dict]]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "Every case through KnowledgeBase.search (the function behind /api/v1/rag/search) with the case's role fixture.",
+   "annotated_copy": null,
+   "calls": [
+    "F1870",
+    "F0766",
+    "F1872",
+    "F1873",
+    "F1875"
+   ],
+   "called_by": [
+    "F1837"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1875",
+   "name": "summarize",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    103,
+    121
+   ],
+   "signature": "def summarize(cases: list[dict], k: int, with_answers: bool) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1876",
+    "F1871"
+   ],
+   "called_by": [
+    "F1874"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1876",
+   "name": "summarize.mean",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    104,
+    106
+   ],
+   "signature": "def mean(key)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1875"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1877",
+   "name": "compare_experiments",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    127,
+    156
+   ],
+   "signature": "def compare_experiments(active: dict, candidate: dict, criteria: dict | None=None) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Side-by-side measured metrics and a recommendation from the acceptance criteria (no invented numbers).",
+   "annotated_copy": null,
+   "calls": [
+    "F1878"
+   ],
+   "called_by": [
+    "F1841",
+    "F1895"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1878",
+   "name": "compare_experiments.check",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/evaluation.py",
+   "lines": [
+    136,
+    137
+   ],
+   "signature": "def check(name, ok, detail)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1877"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_api.py"
+   ]
+  },
+  {
+   "id": "F1879",
+   "name": "FlowiseError",
+   "kind": "class",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    22,
+    23
+   ],
+   "signature": "class FlowiseError(RuntimeError)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1883",
+    "F1884",
+    "F1886",
+    "F1889"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1880",
+   "name": "FlowiseAdapter",
+   "kind": "class",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    26,
+    128
+   ],
+   "signature": "class FlowiseAdapter",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1819"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1881",
+   "name": "FlowiseAdapter.__init__",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    27,
+    28
+   ],
+   "signature": "def __init__(self, url: str, api_key: str, chatflow_id: str, chatflow_name: str, db, table: str='scinsight_flowise_rag')",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_langgraph_mirror.py"
+   ]
+  },
+  {
+   "id": "F1882",
+   "name": "FlowiseAdapter.configured",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    30,
+    32
+   ],
+   "signature": "def configured(self) -> bool",
+   "async": false,
+   "decorators": [
+    "property"
+   ],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1886"
+   ],
+   "tests": [
+    "tests/test_code_editor.py"
+   ]
+  },
+  {
+   "id": "F1883",
+   "name": "FlowiseAdapter._call",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    34,
+    44
+   ],
+   "signature": "def _call(self, method: str, path: str, body: dict | None=None, timeout: int=300)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "FlowiseError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1879"
+   ],
+   "called_by": [
+    "F1884",
+    "F1889",
+    "F1890"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1884",
+   "name": "FlowiseAdapter.chatflow",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    46,
+    53
+   ],
+   "signature": "def chatflow(self) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "FlowiseError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1883",
+    "F1879"
+   ],
+   "called_by": [
+    "F1886",
+    "F1889",
+    "F1890",
+    "F1897"
+   ],
+   "tests": [
+    "tests/scinsight/test_flowise_e2e.py",
+    "tests/test_flowise_flows.py"
+   ]
+  },
+  {
+   "id": "F1885",
+   "name": "FlowiseAdapter._nodes",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    55,
+    61
+   ],
+   "signature": "def _nodes(flow_data: dict) -> dict",
+   "async": false,
+   "decorators": [
+    "staticmethod"
+   ],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1886",
+    "F1889"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1886",
+   "name": "FlowiseAdapter.status",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    63,
+    81
+   ],
+   "signature": "def status(self) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "What the live chatflow RAG DB uses right now, and what its table holds.",
+   "annotated_copy": null,
+   "calls": [
+    "F1882",
+    "F1884",
+    "F1879",
+    "F1885",
+    "F1887"
+   ],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_business_rules.py",
+    "tests/scinsight/test_flowise_e2e.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/scinsight/test_security.py"
+   ]
+  },
+  {
+   "id": "F1887",
+   "name": "FlowiseAdapter.table_rows",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    83,
+    90
+   ],
+   "signature": "def table_rows(self) -> dict | None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0421"
+   ],
+   "called_by": [
+    "F1886",
+    "F1889",
+    "F1890"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1888",
+   "name": "FlowiseAdapter.compatible",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    92,
+    97
+   ],
+   "signature": "def compatible(self, cfg) -> list[str]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Reasons the chatflow RAG DB cannot follow this configuration (empty = it can).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1895"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1889",
+   "name": "FlowiseAdapter.sync",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    99,
+    122
+   ],
+   "signature": "def sync(self, cfg, config_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "FlowiseError"
+   ],
+   "summary": "Apply chunk size / overlap / top-k and the version tag to the chatflow, re-index it and verify the table.",
+   "annotated_copy": null,
+   "calls": [
+    "F1884",
+    "F1885",
+    "F1883",
+    "F1887",
+    "F1879",
+    "F1890"
+   ],
+   "called_by": [
+    "F1897"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1890",
+   "name": "FlowiseAdapter.restore",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/flowise_adapter.py",
+   "lines": [
+    124,
+    128
+   ],
+   "signature": "def restore(self, backup: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1884",
+    "F1883",
+    "F1887"
+   ],
+   "called_by": [
+    "F1889",
+    "F1897"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1891",
+   "name": "current_docs_sha",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/indexing.py",
+   "lines": [
+    14,
+    24
+   ],
+   "signature": "def current_docs_sha(knowledge_dir: Path, tenant_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "doc_id:version -> sha256 of the source files that an index of this tenant must contain.",
+   "annotated_copy": null,
+   "calls": [
+    "F0758",
+    "F0757"
+   ],
+   "called_by": [
+    "F1893"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1892",
+   "name": "build_candidate_index",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/indexing.py",
+   "lines": [
+    27,
+    58
+   ],
+   "signature": "def build_candidate_index(registry, kb, knowledge_dir: Path, tenant_id: str, config_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "Index the tenant's documents with the configuration's cold settings under a new index version.",
+   "annotated_copy": null,
+   "calls": [
+    "F0393",
+    "F1854",
+    "F1905",
+    "F1857",
+    "F1909",
+    "F1865",
+    "F0416",
+    "F1808",
+    "F1893"
+   ],
+   "called_by": [
+    "F1834",
+    "F1837"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1893",
+   "name": "validate_index",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/indexing.py",
+   "lines": [
+    61,
+    83
+   ],
+   "signature": "def validate_index(kb, knowledge_dir: Path, tenant_id: str, index_version: str, cfg: RagTuningConfig) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Complete, single-model, right dimensions, and built from the current documents (not stale).",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1891",
+    "F1865"
+   ],
+   "called_by": [
+    "F1892",
+    "F1895"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1894",
+   "name": "list_indexes",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/indexing.py",
+   "lines": [
+    86,
+    94
+   ],
+   "signature": "def list_indexes(kb, tenant_id: str) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1826"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1895",
+   "name": "validate_config",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/publishing.py",
+   "lines": [
+    14,
+    50
+   ],
+   "signature": "def validate_config(registry, kb, flowise, knowledge_dir: Path, tenant_id: str, config_id: str, dataset_version: str='v1', require_benchmark: bool=True) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Every check a configuration must pass before it can become active.",
+   "annotated_copy": null,
+   "calls": [
+    "F0393",
+    "F1854",
+    "F1896",
+    "F1893",
+    "F1804",
+    "F1888",
+    "F1905",
+    "F1914",
+    "F1877",
+    "F1909",
+    "F0416"
+   ],
+   "called_by": [
+    "F1843",
+    "F1898",
+    "F1899"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1896",
+   "name": "validate_config.check",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/publishing.py",
+   "lines": [
+    21,
+    22
+   ],
+   "signature": "def check(name, ok, detail)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1895"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_api.py"
+   ]
+  },
+  {
+   "id": "F1897",
+   "name": "_activate",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/publishing.py",
+   "lines": [
+    53,
+    75
+   ],
+   "signature": "def _activate(registry, kb, flowise, tenant_id: str, config_id: str, user_id: str, action: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0393",
+    "F1854",
+    "F1905",
+    "F1884",
+    "F1890",
+    "F1889",
+    "F0425",
+    "F0416"
+   ],
+   "called_by": [
+    "F1898",
+    "F1899"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1898",
+   "name": "publish_rag_config",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/publishing.py",
+   "lines": [
+    78,
+    84
+   ],
+   "signature": "def publish_rag_config(registry, kb, flowise, knowledge_dir: Path, tenant_id: str, config_id: str, user_id: str, dataset_version: str='v1') -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1895",
+    "F0393",
+    "F1897"
+   ],
+   "called_by": [
+    "F1844"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1899",
+   "name": "rollback_rag_config",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/publishing.py",
+   "lines": [
+    87,
+    95
+   ],
+   "signature": "def rollback_rag_config(registry, kb, flowise, knowledge_dir: Path, tenant_id: str, config_id: str, user_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "ValueError"
+   ],
+   "summary": "Re-activate a version that was published before (its index is kept); refused if that index is stale or incomplete.",
+   "annotated_copy": null,
+   "calls": [
+    "F0393",
+    "F1895",
+    "F1897"
+   ],
+   "called_by": [
+    "F1845"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1900",
+   "name": "_id",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    13,
+    14
+   ],
+   "signature": "def _id(prefix: str) -> str",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1904",
+    "F1908",
+    "F1910",
+    "F1913"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1901",
+   "name": "_row",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    17,
+    25
+   ],
+   "signature": "def _row(r: dict | None) -> dict | None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1905",
+    "F1906",
+    "F1907"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1902",
+   "name": "Registry",
+   "kind": "class",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    28,
+    114
+   ],
+   "signature": "class Registry",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1819"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1903",
+   "name": "Registry.__init__",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    29,
+    30
+   ],
+   "signature": "def __init__(self, db: Database, kb)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0418"
+   ],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_langgraph_mirror.py"
+   ]
+  },
+  {
+   "id": "F1904",
+   "name": "Registry.ensure_baseline",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    33,
+    39
+   ],
+   "signature": "def ensure_baseline(self, tenant_id: str) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0422",
+    "F0423",
+    "F1900",
+    "F1805",
+    "F0416"
+   ],
+   "called_by": [
+    "F1905",
+    "F1907"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1905",
+   "name": "Registry.get_active_rag_config",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    41,
+    43
+   ],
+   "signature": "def get_active_rag_config(self, tenant_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1904",
+    "F1901",
+    "F0422"
+   ],
+   "called_by": [
+    "F1824",
+    "F1827",
+    "F1839",
+    "F1892",
+    "F1895",
+    "F1897",
+    "F1908"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1906",
+   "name": "Registry.get",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    45,
+    49
+   ],
+   "signature": "def get(self, tenant_id: str, config_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "KeyError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1901",
+    "F0422"
+   ],
+   "called_by": [
+    "F1908"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1907",
+   "name": "Registry.history",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    51,
+    53
+   ],
+   "signature": "def history(self, tenant_id: str) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1904",
+    "F1901",
+    "F0421"
+   ],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py",
+    "tests/test_graphs_and_agents.py"
+   ]
+  },
+  {
+   "id": "F1908",
+   "name": "Registry.save_draft_config",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    55,
+    64
+   ],
+   "signature": "def save_draft_config(self, tenant_id: str, user_id: str, cfg: RagTuningConfig, name: str, notes: str='') -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Store a validated draft and say how it differs from the active configuration (and whether it needs a new index).",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1905",
+    "F1857",
+    "F1900",
+    "F0423",
+    "F0416",
+    "F1906"
+   ],
+   "called_by": [
+    "F1825",
+    "F1839"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1909",
+   "name": "Registry.set_status",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    66,
+    69
+   ],
+   "signature": "def set_status(self, config_id: str, status: str, **fields) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0423"
+   ],
+   "called_by": [
+    "F1892",
+    "F1895"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1910",
+   "name": "Registry.start_job",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    72,
+    90
+   ],
+   "signature": "def start_job(self, tenant_id: str, user_id: str, kind: str, params: dict, fn, inline: bool=False) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Run fn() in a background thread (HTTP returns at once; the console polls the job).",
+   "annotated_copy": null,
+   "calls": [
+    "F1900",
+    "F0423",
+    "F0416",
+    "F1911",
+    "F1911",
+    "F1912"
+   ],
+   "called_by": [
+    "F1823"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1911",
+   "name": "Registry.start_job.run",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    78,
+    85
+   ],
+   "signature": "def run()",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0423",
+    "F0416"
+   ],
+   "called_by": [
+    "F1910",
+    "F1910"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1912",
+   "name": "Registry.job",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    92,
+    96
+   ],
+   "signature": "def job(self, tenant_id: str, job_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "KeyError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0422"
+   ],
+   "called_by": [
+    "F1910"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1913",
+   "name": "Registry.save_experiment",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    99,
+    103
+   ],
+   "signature": "def save_experiment(self, tenant_id: str, user_id: str, config_id: str, dataset_version: str, params: dict, summary: dict, cases: list) -> str",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1900",
+    "F0423",
+    "F0416"
+   ],
+   "called_by": [
+    "F1837"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1914",
+   "name": "Registry.experiments",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    105,
+    108
+   ],
+   "signature": "def experiments(self, tenant_id: str, config_id: str | None=None) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0421"
+   ],
+   "called_by": [
+    "F1839",
+    "F1840",
+    "F1895"
+   ],
+   "tests": [
+    "tests/scinsight/test_rag_tuning.py"
+   ]
+  },
+  {
+   "id": "F1915",
+   "name": "Registry.experiment",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/registry.py",
+   "lines": [
+    110,
+    114
+   ],
+   "signature": "def experiment(self, tenant_id: str, exp_id: str) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "KeyError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0422"
+   ],
+   "called_by": [
+    "F1841",
+    "F1842"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1916",
+   "name": "terms",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/retrieval.py",
+   "lines": [
+    19,
+    20
+   ],
+   "signature": "def terms(text: str) -> set[str]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1917",
+    "F1918"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1917",
+   "name": "keyword_score",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/retrieval.py",
+   "lines": [
+    23,
+    29
+   ],
+   "signature": "def keyword_score(query_terms: set[str], text: str) -> float",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1916"
+   ],
+   "called_by": [
+    "F1918"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1918",
+   "name": "rank",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/scinsight/rag_tuning/retrieval.py",
+   "lines": [
+    32,
+    54
+   ],
+   "signature": "def rank(rows: list[dict], qvec: list[float], query: str, cfg: RagTuningConfig) -> list[dict]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "Score and order chunk rows; returns copies with semantic / keyword / rerank / score fields, best first.",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1916",
+    "F1917"
+   ],
+   "called_by": [
+    "F0766"
+   ],
+   "tests": [
+    "tests/test_product_brief_outlook.py"
+   ]
+  },
+  {
+   "id": "F1919",
+   "name": "env",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    35,
+    37
+   ],
+   "signature": "def env() -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1925"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1920",
+   "name": "Client",
+   "kind": "class",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    40,
+    60
+   ],
+   "signature": "class Client",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1925",
+    "F1926"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1921",
+   "name": "Client.__init__",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    41,
+    42
+   ],
+   "signature": "def __init__(self, base: str, key: str)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [],
+   "tests": [
+    "tests/scinsight/test_langgraph_mirror.py"
+   ]
+  },
+  {
+   "id": "F1922",
+   "name": "Client.call",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    44,
+    51
+   ],
+   "signature": "def call(self, method: str, path: str, body: dict | None=None)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1923"
+   ],
+   "tests": [
+    "tests/scinsight/test_api_scenarios.py",
+    "tests/scinsight/test_langgraph_mirror.py",
+    "tests/test_graphs_and_agents.py"
+   ]
+  },
+  {
+   "id": "F1923",
+   "name": "Client.job",
+   "kind": "method",
+   "status": "used (framework)",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    53,
+    60
+   ],
+   "signature": "def job(self, job: dict) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1922",
+    "F1801",
+    "F1835"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1924",
+   "name": "show",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    63,
+    64
+   ],
+   "signature": "def show(data) -> None",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1925",
+    "F1926"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1925",
+   "name": "main",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    67,
+    159
+   ],
+   "signature": "def main() -> int",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1919",
+    "F1920",
+    "F1924",
+    "F1926"
+   ],
+   "called_by": [],
+   "tests": [
+    "tests/conftest.py",
+    "tests/test_api.py",
+    "tests/test_code_editor.py",
+    "tests/test_poc_contract.py"
+   ]
+  },
+  {
+   "id": "F1926",
+   "name": "verify",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "scripts/rag_tuning.py",
+   "lines": [
+    162,
+    197
+   ],
+   "signature": "def verify(api: Client, base: str, e: dict, question: str, flowise_url: str) -> int",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "End to end: ask the live Flowise chatflow, then check which configuration answered on both RAG paths.",
+   "annotated_copy": null,
+   "calls": [
+    "F1920",
+    "F1924"
+   ],
+   "called_by": [
+    "F1925"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1927",
+   "name": "kdir",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    23,
+    27
+   ],
+   "signature": "def kdir(tmp_path: Path) -> Path",
+   "async": false,
+   "decorators": [
+    "pytest.fixture()"
+   ],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1928",
+    "F1935",
+    "F1948"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1928",
+   "name": "client",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    30,
+    32
+   ],
+   "signature": "def client(kdir) -> TestClient",
+   "async": false,
+   "decorators": [
+    "pytest.fixture()"
+   ],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F0112",
+    "F1927",
+    "F0418"
+   ],
+   "called_by": [
+    "F1929",
+    "F1930",
+    "F1932",
+    "F1934",
+    "F1935",
+    "F1936",
+    "F1937",
+    "F1938",
+    "F1939",
+    "F1942",
+    "F1943",
+    "F1944",
+    "F1945",
+    "F1947",
+    "F1948"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1929",
+   "name": "draft",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    35,
+    38
+   ],
+   "signature": "def draft(client, name='t', **cfg) -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [
+    "F1937",
+    "F1944",
+    "F1945",
+    "F1947",
+    "F1948"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1930",
+   "name": "run_job",
+   "kind": "function",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    41,
+    44
+   ],
+   "signature": "def run_job(client, path, body, who='mlops') -> dict",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [
+    "F1936",
+    "F1937",
+    "F1942",
+    "F1944",
+    "F1948"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1931",
+   "name": "test_config_validation_rejects_overlap_not_smaller_than_size_and_negative_overlap",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    48,
+    56
+   ],
+   "signature": "def test_config_validation_rejects_overlap_not_smaller_than_size_and_negative_overlap()",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1854",
+    "F1857"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1932",
+   "name": "test_only_admins_see_the_console_and_tenant_comes_from_the_key",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    59,
+    64
+   ],
+   "signature": "def test_only_admins_see_the_console_and_tenant_comes_from_the_key(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1933",
+   "name": "test_chunk_preview_sizes_overlap_and_clause_boundaries",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    68,
+    77
+   ],
+   "signature": "def test_chunk_preview_sizes_overlap_and_clause_boundaries()",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1853",
+    "F1854",
+    "F1851"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1934",
+   "name": "test_chunk_preview_endpoint_compares_without_writing",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    80,
+    87
+   ],
+   "signature": "def test_chunk_preview_endpoint_compares_without_writing(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1935",
+   "name": "test_metadata_checks_report_missing_expired_and_superseded_without_inventing",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    91,
+    105
+   ],
+   "signature": "def test_metadata_checks_report_missing_expired_and_superseded_without_inventing(client, kdir)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1927",
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1936",
+   "name": "test_embedding_models_are_an_approved_list_and_dimensions_are_checked",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    109,
+    114
+   ],
+   "signature": "def test_embedding_models_are_an_approved_list_and_dimensions_are_checked(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928",
+    "F1930"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1937",
+   "name": "test_candidate_index_is_separate_and_active_search_is_unchanged",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    117,
+    126
+   ],
+   "signature": "def test_candidate_index_is_separate_and_active_search_is_unchanged(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928",
+    "F0076",
+    "F0077",
+    "F0133",
+    "F1929",
+    "F1930"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1938",
+   "name": "test_top_k_threshold_and_access_control_in_retrieval_preview",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    129,
+    140
+   ],
+   "signature": "def test_top_k_threshold_and_access_control_in_retrieval_preview(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1939",
+   "name": "test_unauthorized_tenant_never_sees_other_documents",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    143,
+    147
+   ],
+   "signature": "def test_unauthorized_tenant_never_sees_other_documents(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928",
+    "F0076",
+    "F0077",
+    "F0133"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1940",
+   "name": "test_metrics_definitions_hit_recall_precision_mrr_and_leakage",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    151,
+    157
+   ],
+   "signature": "def test_metrics_definitions_hit_recall_precision_mrr_and_leakage()",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1872"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1941",
+   "name": "test_answer_checks_catch_wrong_citations_and_unsupported_numbers",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    160,
+    166
+   ],
+   "signature": "def test_answer_checks_catch_wrong_citations_and_unsupported_numbers()",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1873"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1942",
+   "name": "test_benchmark_runs_the_real_search_and_is_reproducible",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    169,
+    177
+   ],
+   "signature": "def test_benchmark_runs_the_real_search_and_is_reproducible(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928",
+    "F1930",
+    "F1870"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1943",
+   "name": "test_grid_shows_workload_before_running",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    180,
+    182
+   ],
+   "signature": "def test_grid_shows_workload_before_running(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1944",
+   "name": "test_publish_needs_director_benchmark_and_confirm_then_rollback",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    186,
+    202
+   ],
+   "signature": "def test_publish_needs_director_benchmark_and_confirm_then_rollback(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1928",
+    "F1929",
+    "F1930",
+    "F0076",
+    "F0077",
+    "F0133",
+    "F0101",
+    "F0146"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1945",
+   "name": "test_candidate_index_failure_keeps_the_active_configuration",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    205,
+    216
+   ],
+   "signature": "def test_candidate_index_failure_keeps_the_active_configuration(client, monkeypatch)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "RuntimeError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1929",
+    "F1928",
+    "F0763",
+    "F1946"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1946",
+   "name": "test_candidate_index_failure_keeps_the_active_configuration.boom",
+   "kind": "nested",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    209,
+    210
+   ],
+   "signature": "def boom(*a, **k)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [
+    "RuntimeError"
+   ],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1945"
+   ],
+   "tests": []
+  },
+  {
+   "id": "F1947",
+   "name": "test_rollback_only_to_previously_published_versions",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    219,
+    222
+   ],
+   "signature": "def test_rollback_only_to_previously_published_versions(client)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1929",
+    "F1928"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1948",
+   "name": "test_stale_index_is_detected_when_documents_change",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/scinsight/test_rag_tuning.py",
+   "lines": [
+    225,
+    231
+   ],
+   "signature": "def test_stale_index_is_detected_when_documents_change(client, kdir)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1929",
+    "F1928",
+    "F1930",
+    "F1927"
+   ],
+   "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1949",
+   "name": "test_rag_tuning_proxy_is_for_managers_and_needs_the_server_side_key",
+   "kind": "test",
+   "status": "test",
+   "category": "06_testing",
+   "subfolder": "unit_tests",
+   "file": "tests/test_code_editor.py",
+   "lines": [
+    49,
+    52
+   ],
+   "signature": "def test_rag_tuning_proxy_is_for_managers_and_needs_the_server_side_key(client, assistant_headers, manager_headers)",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "",
+   "annotated_copy": null,
+   "calls": [
+    "F1801",
+    "F1824"
+   ],
+   "called_by": [],
    "tests": []
   }
  ],

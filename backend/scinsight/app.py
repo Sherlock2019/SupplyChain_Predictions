@@ -15,6 +15,7 @@ from backend.scinsight import fixtures, learning
 from backend.scinsight import schemas as s
 from backend.scinsight.db import Database, ensure_postgres_database
 from backend.scinsight.rag import KnowledgeBase, make_embedder
+from backend.scinsight.rag_tuning import api as rag_tuning_api
 from backend.scinsight.security import READ_ROLES, Principal, Security
 from backend.scinsight.service import Service
 from backend.scinsight.settings import SciSettings
@@ -28,6 +29,7 @@ TAGS = [
     {"name": "rag", "description": "Private, tenant-scoped knowledge retrieval with citations."},
     {"name": "decisions", "description": "Recommendations from stored calculations, authorised human review, SAP execution records."},
     {"name": "learning", "description": "Outcome reconciliation, learning records, metrics, governed model training and promotion."},
+    {"name": "rag-tuning", "description": "RAG Tuning Console (administrators): chunking, embeddings, retrieval, benchmark, publish and rollback of the Company RAG Search."},
 ]
 
 
@@ -47,7 +49,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
         fixtures.load(db, settings.user_keys())
     security = Security(db)
     service = Service(db, settings, security)
-    kb = KnowledgeBase(db, make_embedder(settings.sci_embedding_backend))
+    kb = KnowledgeBase(db, make_embedder(settings.sci_embedding_backend), settings.sci_embedding_backend)
     ingest_report = kb.ingest_dir(settings.sci_knowledge_dir) if settings.rag_enabled else {}
 
     app = FastAPI(title="SupplyChain Insight AI — business tools", version="1.0.0", openapi_tags=TAGS,
@@ -158,6 +160,9 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     def rag_documents(p: Principal = Depends(reader)) -> dict:
         return {"documents": db.query("select doc_id, version, title, category, valid_from, valid_to, flags, source_path from rag_documents where tenant_id=?", (p.tenant_id,)),
                 "last_ingestion": ingest_report}
+
+    # ------------------------------------------------------------------ RAG tuning console (administrators)
+    rag_tuning_api.register(app, db=db, kb=kb, security=security, settings=settings, principal_dep=principal, biz_date=biz_date)
 
     # ------------------------------------------------------------------ decisions
     @app.post("/api/v1/decisions", tags=["decisions"], status_code=201)

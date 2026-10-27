@@ -4,8 +4,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     FASTEMBED_CACHE_PATH=/opt/fastembed HF_HUB_DISABLE_TELEMETRY=1
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends curl libgomp1 && rm -rf /var/lib/apt/lists/*
-# Dependencies first (cached layer), application code second.
-COPY pyproject.toml README.md ./
+# Dependencies first (cached layer), application code second. Only pyproject.toml here: copying README.md as well made every
+# README edit reinstall all dependencies (several minutes, ~1 GB of wheels).
+COPY pyproject.toml ./
 RUN pip install --upgrade pip \
  && python -c "import tomllib;print('\n'.join(tomllib.load(open('pyproject.toml','rb'))['project']['dependencies']))" > /tmp/requirements.txt \
  && pip install -r /tmp/requirements.txt

@@ -37,6 +37,7 @@ from backend.scinsight import schemas as s
 from backend.scinsight.db import Database, ensure_postgres_database
 # Private RAG knowledge base and the embedding-model factory.
 from backend.scinsight.rag import KnowledgeBase, make_embedder
+from backend.scinsight.rag_tuning import api as rag_tuning_api
 # Security: READ_ROLES (who may read), Principal (the authenticated caller), Security (auth + roles + audit chain).
 from backend.scinsight.security import READ_ROLES, Principal, Security
 # Service = all use cases (calculations, decisions, learning) called by the routes below.
@@ -54,12 +55,13 @@ TAGS = [
     {"name": "rag", "description": "Private, tenant-scoped knowledge retrieval with citations."},
     {"name": "decisions", "description": "Recommendations from stored calculations, authorised human review, SAP execution records."},
     {"name": "learning", "description": "Outcome reconciliation, learning records, metrics, governed model training and promotion."},
+    {"name": "rag-tuning", "description": "RAG Tuning Console (administrators): chunking, embeddings, retrieval, benchmark, publish and rollback of the Company RAG Search."},
 ]
 
 
 # ===== FUNCTION: create_app() =====
 # ID: F0112 · function · used
-# ORIGINAL FILE: backend/scinsight/app.py:34-223
+# ORIGINAL FILE: backend/scinsight/app.py:36-228
 # ROLE: Application factory. Builds the database, loads the synthetic SAP data, creates the Security, Service and
 #       KnowledgeBase objects, ingests the policy documents, then declares all 33 HTTP routes as nested functions
 #       (closures) that share those objects. Tests call it with their own settings/database; uvicorn calls it with none.
@@ -72,6 +74,7 @@ TAGS = [
 #   RuntimeError when SAP writes are enabled (forbidden in Phase 1) or when deployment API keys are missing.
 # CALLED BY:
 #   <- F0909 app() (calls)
+#   <- F1928 client() (calls)
 #   <- F0846 test_configured_keys_rotate_out_stored_dev_keys() (calls)
 #   <- F0847 test_postgres_deployment_refuses_to_start_without_all_keys() (calls)
 #   <- F0851 test_sap_write_enabled_refuses_to_start() (calls)
@@ -115,8 +118,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # Create the shared service objects (one instance each for the whole app, captured by the route closures below).
     security = Security(db)
     service = Service(db, settings, security)
-    # Knowledge base with the configured embedding model ("fastembed" bge-small, or "hash" in offline tests).
-    kb = KnowledgeBase(db, make_embedder(settings.sci_embedding_backend))
+    kb = KnowledgeBase(db, make_embedder(settings.sci_embedding_backend), settings.sci_embedding_backend)
     # Ingest the governed policy documents at start-up (skipped documents keep their stored chunks). {} = RAG disabled.
     ingest_report = kb.ingest_dir(settings.sci_knowledge_dir) if settings.rag_enabled else {}
 
@@ -128,7 +130,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.principal() =====
     # ID: F0113 · nested · used
-    # ORIGINAL FILE: backend/scinsight/app.py:57-60
+    # ORIGINAL FILE: backend/scinsight/app.py:59-62
     # ROLE: FastAPI dependency that authenticates EVERY request: turns the API key into a Principal (user, tenant, roles).
     # INPUTS:
     #   request: Request             -> the HTTP request (required by FastAPI's signature, not read here).
@@ -138,6 +140,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # OUTPUT:
     #   Principal -> frozen dataclass (user_id, tenant_id, roles, name). 401 if no/invalid key, 403 if the tenant is forged.
     # CALLED BY:
+    #   <- F0112 create_app() (references)
     #   <- F0114 create_app.reader() (references)
     #   <- F0114 create_app.reader() (depends_on)
     #   <- F0125 create_app.sap_write_blocked() (references)
@@ -149,7 +152,6 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     #   <- F0141 create_app.reconcile() (references)
     #   <- F0141 create_app.reconcile() (depends_on)
     #   <- F0143 create_app.train() (references)
-    #   <- F0143 create_app.train() (depends_on)
     # CALLS:
     #   -> F0776 Security.authenticate() (calls)
     #   -> F0772 Principal (references)
@@ -162,7 +164,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.reader() =====
     # ID: F0114 · nested · used
-    # ORIGINAL FILE: backend/scinsight/app.py:62-64
+    # ORIGINAL FILE: backend/scinsight/app.py:64-66
     # ROLE: Second-level dependency: an authenticated caller that ALSO has a read role (humans, agent_service, mlops_engineer).
     # INPUTS:
     #   p: Principal -> injected by FastAPI: Depends(principal) runs principal() first and passes its result here.
@@ -193,13 +195,14 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.biz_date() =====
     # ID: F0115 · nested · used
-    # ORIGINAL FILE: backend/scinsight/app.py:66-67
+    # ORIGINAL FILE: backend/scinsight/app.py:68-69
     # ROLE: Business date of the caller's tenant = the "as of" day of its current SAP snapshot (used to filter RAG by validity).
     # INPUTS:
     #   p: Principal -> the caller (only its tenant_id is used).
     # OUTPUT:
     #   date -> snapshot as-of date (409 from service.snapshot when no fresh snapshot exists).
     # CALLED BY:
+    #   <- F0112 create_app() (references)
     #   <- F0133 create_app.rag_search() (calls)
     # CALLS:
     #   -> F0772 Principal (references)
@@ -209,7 +212,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.health() =====
     # ID: F0116 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:69-72
+    # ORIGINAL FILE: backend/scinsight/app.py:71-74
     # ROLE: Liveness probe (no authentication): shows the safety switches so an operator can see SAP is read-only.
     # INPUTS:
     #   none.
@@ -229,7 +232,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # ------------------------------------------------------------------ context
     # ===== FUNCTION: create_app.context() =====
     # ID: F0117 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:75-79
+    # ORIGINAL FILE: backend/scinsight/app.py:77-81
     # ROLE: "Who am I?" — identity, tenant, roles and the freshness of the tenant's SAP snapshot.
     # INPUTS:
     #   p: Principal -> injected by Depends(reader) (authenticated + read role).
@@ -252,7 +255,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.validate_context() =====
     # ID: F0118 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:81-87
+    # ORIGINAL FILE: backend/scinsight/app.py:83-89
     # ROLE: Context check that EVERY Flowise / LangGraph run performs first ("2 · Check access"): validates the caller,
     #       audits the session, and returns the identifier catalog the LLM uses to map names to codes.
     # INPUTS:
@@ -293,7 +296,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # ------------------------------------------------------------------ SAP (read-only)
     # ===== FUNCTION: create_app.sap_inventory() =====
     # ID: F0119 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:90-93
+    # ORIGINAL FILE: backend/scinsight/app.py:92-95
     # ROLE: Read-only SAP stock by batch, with a per (location, item) summary of usable vs excluded stock.
     # INPUTS:
     #   location: str | None    -> query ?location=WH-B (validated by the regex s.CODE, else 422).
@@ -321,7 +324,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_bom() =====
     # ID: F0120 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:95-97
+    # ORIGINAL FILE: backend/scinsight/app.py:97-99
     # ROLE: Read-only bill of materials of a finished good, plus the requirements for ONE unit from the valid approved version.
     # INPUTS:
     #   sku: str          -> path parameter /api/v1/sap/bom/{sku}.
@@ -342,7 +345,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_production_orders() =====
     # ID: F0121 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:99-101
+    # ORIGINAL FILE: backend/scinsight/app.py:101-103
     # ROLE: Read-only SAP production orders, optionally filtered by SKU and status.
     # INPUTS:
     #   sku: str | None     -> query ?sku= (regex-validated).
@@ -366,7 +369,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_purchase_orders() =====
     # ID: F0122 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:103-106
+    # ORIGINAL FILE: backend/scinsight/app.py:105-108
     # ROLE: Read-only SAP purchase orders, filtered by material, supplier and/or status.
     # INPUTS:
     #   material_id, supplier_id: str | None -> regex-validated query parameters.
@@ -390,7 +393,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_warehouses() =====
     # ID: F0123 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:108-110
+    # ORIGINAL FILE: backend/scinsight/app.py:110-112
     # ROLE: Read-only list of the tenant's sites (factory + warehouses with target cover days).
     # INPUTS:
     #   p: Principal -> injected by Depends(reader).
@@ -411,7 +414,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_suppliers() =====
     # ID: F0124 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:112-114
+    # ORIGINAL FILE: backend/scinsight/app.py:114-116
     # ROLE: Read-only suppliers with their supplier items (price, MOQ, contract lead time).
     # INPUTS:
     #   p: Principal -> injected by Depends(reader).
@@ -431,7 +434,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_write_blocked() =====
     # ID: F0125 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:116-119
+    # ORIGINAL FILE: backend/scinsight/app.py:118-121
     # ROLE: Safety net: ANY write verb on /api/v1/sap/... is refused with 405 and audited (SAP is read-only in Phase 1).
     # INPUTS:
     #   path: str        -> everything after /api/v1/sap/ ("{path:path}" lets the parameter contain slashes).
@@ -467,7 +470,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # ------------------------------------------------------------------ calculations
     # ===== FUNCTION: create_app.material_readiness() =====
     # ID: F0126 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:122-124
+    # ORIGINAL FILE: backend/scinsight/app.py:124-126
     # ROLE: Factory material readiness: BOM explosion + usable stock + purchase orders -> shortages, supply options, actions.
     # INPUTS:
     #   body: s.MaterialReadinessRequest -> production_order_id ALONE, or sku + quantity + need_date (model validator enforces it).
@@ -499,7 +502,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.warehouse_balancing() =====
     # ID: F0127 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:126-128
+    # ORIGINAL FILE: backend/scinsight/app.py:128-130
     # ROLE: Three-warehouse balancing for one SKU: days of cover, donor surplus, lanes, non-transferable batches.
     # INPUTS:
     #   body: s.WarehouseBalancingRequest -> {"sku", optional "target_warehouse"}.
@@ -529,7 +532,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.replenishment() =====
     # ID: F0128 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:130-132
+    # ORIGINAL FILE: backend/scinsight/app.py:132-134
     # ROLE: Replenishment: for a product -> warehouse balancing; for a material (+ quantity) -> ranked approved suppliers.
     # INPUTS:
     #   body: s.ReplenishmentRequest -> {"item_id", optional "location", "quantity", "need_date"}.
@@ -556,7 +559,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.forecast_demand() =====
     # ID: F0129 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:134-136
+    # ORIGINAL FILE: backend/scinsight/app.py:136-138
     # ROLE: Baseline daily demand forecast (28-day mean x weekday index) with a 14-day back-test (WAPE vs naive).
     # INPUTS:
     #   body: s.DemandForecastRequest -> {"sku", "warehouse", "horizon_days" 1-90 (default 14)}.
@@ -584,7 +587,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.forecast_lead_time() =====
     # ID: F0130 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:138-140
+    # ORIGINAL FILE: backend/scinsight/app.py:140-142
     # ROLE: Supplier lead time from goods receipts (mean, p90, on-time rate) or from the promoted ML model.
     # INPUTS:
     #   body: s.LeadTimeRequest -> {"supplier_id", optional "material_id", "quantity"}.
@@ -609,7 +612,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.quality_check() =====
     # ID: F0131 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:142-144
+    # ORIGINAL FILE: backend/scinsight/app.py:144-146
     # ROLE: Quality check of stock: usable vs excluded batches (with reasons), expiry risks, FEFO order.
     # INPUTS:
     #   body: s.QualityCheckRequest -> {"item_id", optional "location", "horizon_days" (default 90)}.
@@ -634,7 +637,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.calculation() =====
     # ID: F0132 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:146-148
+    # ORIGINAL FILE: backend/scinsight/app.py:148-150
     # ROLE: Read back a stored calculation by id (used by the supervisor "Save recommendation" step to verify a CALC id).
     # INPUTS:
     #   calculation_id: str -> path parameter, e.g. CALC-4DC2A103412B.
@@ -658,7 +661,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # ------------------------------------------------------------------ RAG
     # ===== FUNCTION: create_app.rag_search() =====
     # ID: F0133 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:151-155
+    # ORIGINAL FILE: backend/scinsight/app.py:153-157
     # ROLE: Governed policy search: tenant-, role- and validity-filtered retrieval with citations and injection flags.
     # INPUTS:
     #   body: s.RagSearchRequest -> {"query" 2-1000 chars, "top_k" 1-10 (default 4)}.
@@ -674,10 +677,10 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     #   <- F0678 policy() (http_request)
     #   <- F0890 Smoke.rag() (http_request)
     #   <- F0844 test_rag_is_tenant_scoped_cited_and_flags_injection() (http_request)
+    #   <- F1937 test_candidate_index_is_separate_and_active_search_is_unchanged() (http_request)
+    #   <- F1939 test_unauthorized_tenant_never_sees_other_documents() (http_request)
+    #   <- F1944 test_publish_needs_director_benchmark_and_confirm_then_rollback() (http_request)
     #   <- F0868 test_rag_search_and_manager_only_ingest() (http_request)
-    #   <- F0819 test_agentflow_full_workflow_sap_rag_nine_roles_and_human_input() (http_request)
-    #   <- Flowise Custom Tool · search_supply_chain_policy (http_request)
-    #   <- Factory-Planning-Agentflow · 5 · Policy search (RAG) (http_request)
     # CALLS:
     #   -> F0186 RagSearchRequest (references)
     #   -> F0772 Principal (references)
@@ -698,7 +701,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.rag_documents() =====
     # ID: F0134 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:157-160
+    # ORIGINAL FILE: backend/scinsight/app.py:159-162
     # ROLE: List the ingested documents of the caller's tenant and the last ingestion report.
     # INPUTS:
     #   p: Principal -> injected by Depends(reader).
@@ -720,10 +723,13 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
         return {"documents": db.query("select doc_id, version, title, category, valid_from, valid_to, flags, source_path from rag_documents where tenant_id=?", (p.tenant_id,)),
                 "last_ingestion": ingest_report}
 
+    # ------------------------------------------------------------------ RAG tuning console (administrators)
+    rag_tuning_api.register(app, db=db, kb=kb, security=security, settings=settings, principal_dep=principal, biz_date=biz_date)
+
     # ------------------------------------------------------------------ decisions
     # ===== FUNCTION: create_app.create_decision() =====
     # ID: F0135 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:163-166
+    # ORIGINAL FILE: backend/scinsight/app.py:168-171
     # ROLE: Create a recommendation (status pending_review) FROM a stored calculation; quantities are copied server-side.
     # INPUTS:
     #   body: s.DecisionCreateRequest -> {"calculation_id", optional "title", "idempotency_key", "po_id"}.
@@ -758,7 +764,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.list_decisions() =====
     # ID: F0136 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:168-170
+    # ORIGINAL FILE: backend/scinsight/app.py:173-175
     # ROLE: List recommendations of the tenant, optionally by status.
     # INPUTS:
     #   status: str | None -> query ?status=pending_review (regex ^[a-z_]+$).
@@ -785,7 +791,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.get_decision() =====
     # ID: F0137 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:172-174
+    # ORIGINAL FILE: backend/scinsight/app.py:177-179
     # ROLE: Read one recommendation with its verified human reviews, SAP execution record and observed outcomes.
     # INPUTS:
     #   rec_id: str  -> path parameter REC-...
@@ -816,7 +822,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.review() =====
     # ID: F0138 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:176-178
+    # ORIGINAL FILE: backend/scinsight/app.py:181-183
     # ROLE: THE human approval: an authorised human reviewer records approve / reject / modify / defer.
     # INPUTS:
     #   rec_id: str             -> path parameter REC-...
@@ -850,7 +856,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.withdraw() =====
     # ID: F0139 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:180-182
+    # ORIGINAL FILE: backend/scinsight/app.py:185-187
     # ROLE: Withdraw a pending recommendation (creator or director only). Used by the supervisor "Reject" branch.
     # INPUTS:
     #   rec_id: str  -> path parameter REC-...
@@ -881,7 +887,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.sap_execution() =====
     # ID: F0140 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:184-186
+    # ORIGINAL FILE: backend/scinsight/app.py:189-191
     # ROLE: Record that an authorised SAP user executed an approved recommendation manually in SAP (document number).
     # INPUTS:
     #   rec_id: str                  -> path parameter REC-...
@@ -916,7 +922,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     # ------------------------------------------------------------------ learning
     # ===== FUNCTION: create_app.reconcile() =====
     # ID: F0141 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:189-191
+    # ORIGINAL FILE: backend/scinsight/app.py:194-196
     # ROLE: Compare an executed recommendation's prediction with the SAP goods receipt; create the learning record.
     # INPUTS:
     #   body: s.ReconcileRequest -> {"recommendation_id": "REC-..."}.
@@ -944,7 +950,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.learning_metrics() =====
     # ID: F0142 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:193-195
+    # ORIGINAL FILE: backend/scinsight/app.py:198-200
     # ROLE: Learning metrics computed ONLY from verified outcomes (lead-time MAE, WAPE, acceptance / execution rates, models).
     # INPUTS:
     #   p: Principal -> injected by Depends(reader).
@@ -968,7 +974,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.train() =====
     # ID: F0143 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:197-202
+    # ORIGINAL FILE: backend/scinsight/app.py:202-207
     # ROLE: Train a candidate supplier lead-time model (MLOps engineer only) and audit it.
     # INPUTS:
     #   p: Principal -> Depends(principal) + explicit role check below.
@@ -992,7 +998,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.promote() =====
     # ID: F0144 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:204-209
+    # ORIGINAL FILE: backend/scinsight/app.py:209-214
     # ROLE: Manual promotion gate: the supply-chain director promotes a candidate model (only if it beats the best baseline).
     # INPUTS:
     #   model_id: str -> path parameter MV-...
@@ -1017,7 +1023,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.retraining() =====
     # ID: F0145 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:211-215
+    # ORIGINAL FILE: backend/scinsight/app.py:216-220
     # ROLE: File a retraining request (evidence = verified learning records); training itself stays a separate, manual step.
     # INPUTS:
     #   body: s.RetrainingRequest -> {"reason": 10-1000 chars}.
@@ -1042,7 +1048,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
 
     # ===== FUNCTION: create_app.audit() =====
     # ID: F0146 · route · used
-    # ORIGINAL FILE: backend/scinsight/app.py:217-221
+    # ORIGINAL FILE: backend/scinsight/app.py:222-226
     # ROLE: Read the audit log of the tenant and verify the whole hash chain (director only).
     # INPUTS:
     #   limit: int   -> query ?limit= 1..500 (default 50); Query(ge=, le=) returns 422 outside the range.
@@ -1053,6 +1059,7 @@ def create_app(settings: SciSettings | None = None, db: Database | None = None) 
     #   <- F0017 create_app() (http_request)
     #   <- F0101 create_app.audit() (http_request)
     #   <- F0901 Smoke.manager_decision() (http_request)
+    #   <- F1944 test_publish_needs_director_benchmark_and_confirm_then_rollback() (http_request)
     #   <- F0848 test_forged_tenant_is_rejected_and_audited() (http_request)
     #   <- F0862 test_sap_odata_reads_and_blocks_writes() (http_request)
     #   <- F0865 test_recommendation_lifecycle_and_roles() (http_request)

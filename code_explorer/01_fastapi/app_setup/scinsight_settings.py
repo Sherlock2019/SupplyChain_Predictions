@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # ===== CLASS: SciSettings =====
 # ID: F0013 · pydantic_model · used
-# ORIGINAL FILE: backend/scinsight/settings.py:13-46
+# ORIGINAL FILE: backend/scinsight/settings.py:13-56
 # ROLE: All runtime switches of the SCInsight API (database, SAP mode, safety flags, RAG, synthetic user keys).
 # FIELDS:
 #   sci_database_url        -> sqlite:///... (tests / local) or postgresql://... (deployments).
@@ -61,6 +61,16 @@ class SciSettings(BaseSettings):
     sci_load_fixtures: bool = True
     sci_business_date: date | None = None     # defaults to the SAP snapshot date (synthetic data is frozen in time)
     sci_snapshot_max_age_days: int = 2
+    # RAG tuning: the Flowise chatflow whose RAG DB follows the published configuration (server-side only, never sent to a browser)
+    sci_flowise_url: str = ""
+    sci_flowise_api_key: str = ""
+    sci_flowise_chatflow_id: str = ""
+    sci_flowise_chatflow_name: str = "SCInsight-Cosmetics-Chatflow-v1"
+    sci_jobs_inline: bool = False             # tests: run index builds / benchmarks synchronously
+    # optional answer evaluation in the RAG benchmark (same OpenAI-compatible Qwen endpoint as the agents)
+    qwen_base_url: str = ""
+    qwen_model: str = "qwen2.5-7b-scm"
+    qwen_api_key: str = ""
     # API keys of the synthetic users (hashed in the database; never sent to the LLM)
     sci_agent_key: str = ""
     sci_planner_key: str = ""
@@ -78,7 +88,7 @@ class SciSettings(BaseSettings):
 
     # ===== FUNCTION: SciSettings.user_keys() =====
     # ID: F0014 · method · used
-    # ORIGINAL FILE: backend/scinsight/settings.py:42-43
+    # ORIGINAL FILE: backend/scinsight/settings.py:52-53
     # ROLE: The configured (non-empty) user keys by slot, handed to fixtures.load() which stores their SHA-256 hashes.
     # INPUTS:
     #   self -> the settings.
@@ -94,7 +104,7 @@ class SciSettings(BaseSettings):
 
     # ===== FUNCTION: SciSettings.missing_keys() =====
     # ID: F0015 · method · used
-    # ORIGINAL FILE: backend/scinsight/settings.py:45-46
+    # ORIGINAL FILE: backend/scinsight/settings.py:55-56
     # ROLE: Names of the environment variables that are still empty (deployments must set all of them).
     # INPUTS:
     #   self -> the settings.

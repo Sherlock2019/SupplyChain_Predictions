@@ -30,13 +30,21 @@ Modules: `backend/app/rag.py`, `backend/scinsight/rag.py`
 | F0754 | `PgVectorRag.load_directory` | method | used | [backend/app/rag.py:187](../../../backend/app/rag.py#L187) | [annotated](../../04_ai_ml/rag/app_rag.py) | Index the approved corpus once; re-index everything if the embedding model chang |
 | F0755 | `PgVectorRag.search` | method | used | [backend/app/rag.py:204](../../../backend/app/rag.py#L204) | [annotated](../../04_ai_ml/rag/app_rag.py) |  |
 | F0756 | `create_rag` | function | used | [backend/app/rag.py:224](../../../backend/app/rag.py#L224) | [annotated](../../04_ai_ml/rag/app_rag.py) |  |
-| F0757 | `DocumentError` | class | used | [backend/scinsight/rag.py:27](../../../backend/scinsight/rag.py#L27) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0758 | `parse_document` | function | used | [backend/scinsight/rag.py:31](../../../backend/scinsight/rag.py#L31) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0759 | `chunk_document` | function | used | [backend/scinsight/rag.py:54](../../../backend/scinsight/rag.py#L54) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | Split on '## ' sections, then into <= CHUNK_CHARS windows with OVERLAP; each chu |
-| F0760 | `HashEmbedder` | class | used | [backend/scinsight/rag.py:80](../../../backend/scinsight/rag.py#L80) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0761 | `HashEmbedder.embed` | method | used | [backend/scinsight/rag.py:83](../../../backend/scinsight/rag.py#L83) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0762 | `make_embedder` | function | used | [backend/scinsight/rag.py:95](../../../backend/scinsight/rag.py#L95) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0763 | `KnowledgeBase` | class | used | [backend/scinsight/rag.py:103](../../../backend/scinsight/rag.py#L103) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0764 | `KnowledgeBase.__init__` | method | used (framework) | [backend/scinsight/rag.py:104](../../../backend/scinsight/rag.py#L104) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0765 | `KnowledgeBase.ingest_dir` | method | used | [backend/scinsight/rag.py:107](../../../backend/scinsight/rag.py#L107) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
-| F0766 | `KnowledgeBase.search` | method | used | [backend/scinsight/rag.py:139](../../../backend/scinsight/rag.py#L139) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0757 | `DocumentError` | class | used | [backend/scinsight/rag.py:37](../../../backend/scinsight/rag.py#L37) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0758 | `parse_document` | function | used | [backend/scinsight/rag.py:41](../../../backend/scinsight/rag.py#L41) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0759 | `chunk_document` | function | unused? | [backend/scinsight/rag.py:64](../../../backend/scinsight/rag.py#L64) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | Split on '## ' sections, then into <= size windows with overlap; each chunk carr |
+| F0760 | `HashEmbedder` | class | used | [backend/scinsight/rag.py:71](../../../backend/scinsight/rag.py#L71) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F1802 | `HashEmbedder.__init__` | method | used (framework) | [backend/scinsight/rag.py:72](../../../backend/scinsight/rag.py#L72) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0761 | `HashEmbedder.embed` | method | used | [backend/scinsight/rag.py:75](../../../backend/scinsight/rag.py#L75) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0762 | `make_embedder` | function | used | [backend/scinsight/rag.py:87](../../../backend/scinsight/rag.py#L87) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F1803 | `_vec` | function | used | [backend/scinsight/rag.py:95](../../../backend/scinsight/rag.py#L95) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0763 | `KnowledgeBase` | class | used | [backend/scinsight/rag.py:99](../../../backend/scinsight/rag.py#L99) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0764 | `KnowledgeBase.__init__` | method | used (framework) | [backend/scinsight/rag.py:100](../../../backend/scinsight/rag.py#L100) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F1804 | `KnowledgeBase.embedder_for` | method | used | [backend/scinsight/rag.py:104](../../../backend/scinsight/rag.py#L104) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | The embedder of an index: the service's own model, or another approved model (ne |
+| F1805 | `KnowledgeBase.baseline` | method | used | [backend/scinsight/rag.py:111](../../../backend/scinsight/rag.py#L111) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F1806 | `KnowledgeBase.active` | method | used | [backend/scinsight/rag.py:114](../../../backend/scinsight/rag.py#L114) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | (config version id, configuration, index version) used by live search for this t |
+| F1807 | `KnowledgeBase._chunk_statements` | method | used | [backend/scinsight/rag.py:122](../../../backend/scinsight/rag.py#L122) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |
+| F0765 | `KnowledgeBase.ingest_dir` | method | used | [backend/scinsight/rag.py:138](../../../backend/scinsight/rag.py#L138) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | Validate and (re)index changed documents into each tenant's ACTIVE index (baseli |
+| F1808 | `KnowledgeBase.build_index` | method | used | [backend/scinsight/rag.py:166](../../../backend/scinsight/rag.py#L166) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | Write a complete index version for one tenant (the active index is never touched |
+| F0766 | `KnowledgeBase.search` | method | used | [backend/scinsight/rag.py:183](../../../backend/scinsight/rag.py#L183) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) | Tenant-, role- and date-filtered retrieval with citations, using the active conf |
+| F1809 | `KnowledgeBase._log` | method | used | [backend/scinsight/rag.py:260](../../../backend/scinsight/rag.py#L260) | [annotated](../../04_ai_ml/rag/scinsight_rag.py) |  |

@@ -1,14 +1,25 @@
 # Coverage report (generated)
 
-- Definitions discovered: **1008** (777 functions / methods, 100 classes / models, 131 tests)
-- FastAPI endpoints: **115** (SCInsight 31, gateway 83, MCP 1)
+- Definitions discovered: **1157** (895 functions / methods, 113 classes / models, 149 tests)
+- FastAPI endpoints: **139** (SCInsight 31, gateway 84, MCP 1)
 - Flowise nodes with code: **46** (Custom Tools + Agentflow Custom Functions), copied to `07_flowise_functions/custom_js/`
-- Definitions with an annotated copy: **766** in **38** modules; AST-identical to the original: **38/38**
-- Call / dependency edges: **2652**
+- Definitions with an annotated copy: **775** in **38** modules; AST-identical to the original: **38/38**
+- Call / dependency edges: **3085**
 
 ## Not annotated line by line (indexed with full original source in the registry, viewer and Flowise map)
 
 - `backend/app/code_editor.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/api.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/chunking.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/config.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/documents.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/embeddings.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/evaluation.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/flowise_adapter.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/indexing.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/publishing.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/registry.py` — ops / deploy tooling (not part of the runtime)
+- `backend/scinsight/rag_tuning/retrieval.py` — ops / deploy tooling (not part of the runtime)
 - `flowise/bootstrap.py` — ops / deploy tooling (not part of the runtime)
 - `flowise/code_explorer/deploy_code_map.py` — ops / deploy tooling (not part of the runtime)
 - `flowise/scinsight/deploy.py` — ops / deploy tooling (not part of the runtime)
@@ -16,6 +27,7 @@
 - `scripts/gen-env.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/generate_tenants.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/langgraph_assistants.py` — ops / deploy tooling (not part of the runtime)
+- `scripts/rag_tuning.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/scinsight_compare.py` — ops / deploy tooling (not part of the runtime)
 - `scripts/smoke.py` — ops / deploy tooling (not part of the runtime)
 - `tests/conftest.py` — pytest tests
@@ -24,6 +36,7 @@
 - `tests/scinsight/test_business_rules.py` — pytest tests
 - `tests/scinsight/test_flowise_e2e.py` — pytest tests
 - `tests/scinsight/test_langgraph_mirror.py` — pytest tests
+- `tests/scinsight/test_rag_tuning.py` — pytest tests
 - `tests/scinsight/test_security.py` — pytest tests
 - `tests/test_api.py` — pytest tests
 - `tests/test_code_editor.py` — pytest tests
@@ -39,7 +52,7 @@
 
 ## Unused? (no caller found by static analysis — review before deleting; dynamic calls may exist)
 
-- none
+- F0759 `chunk_document` (backend/scinsight/rag.py:64)
 
 ## Problems
 

@@ -58,6 +58,7 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F0078 | POST | /v1/embeddings | `embeddings` | gateway :8000 | F0168 EmbeddingsRequest | F0019 create_app.principal(), F0079 create_app.embeddings.encode() |  |
 | F0080 | GET | /api/v1/rag/stats | `rag_stats` | gateway :8000 | F0021 create_app.reader() | F0747 MemoryRag.stats(), F0753 PgVectorRag.stats() |  |
 | F0081 | POST | /api/v1/rag/documents | `rag_add` | gateway :8000 | F0020 create_app.manager(), F0159 RagDocument | F0745 MemoryRag.add(), F0752 PgVectorRag.add(), F0358 Store.audit() |  |
+| F1801 | GET/POST/PUT | /api/v1/rag-tuning/{path:path} | `rag_tuning_proxy` | gateway :8000 | F0020 create_app.manager() | F0358 Store.audit() |  |
 | F0985 | GET | /api/v1/code/functions | `code_functions` | gateway :8000 | F0021 create_app.reader() | F1791 CodeEditor.list() |  |
 | F0986 | GET | /api/v1/code/function | `code_function` | gateway :8000 | F0021 create_app.reader() |  |  |
 | F0987 | PUT | /api/v1/code/function | `code_update` | gateway :8000 | F0020 create_app.manager(), F0988 CodeUpdateRequest | F0358 Store.audit() |  |
@@ -119,3 +120,26 @@ Both apps declare routes directly on `app` (no `APIRouter`, no prefixes), so the
 | F0144 | POST | /api/v1/learning/models/{model_id}/promote | `promote` | scinsight :8100 | F0113 create_app.principal() | F0777 Security.require(), F0535 promote(), F0779 Security.audit() |  |
 | F0145 | POST | /api/v1/learning/retraining-requests | `retraining` | scinsight :8100 | F0114 create_app.reader(), F0191 RetrainingRequest | F0537 retraining_request(), F0779 Security.audit() |  |
 | F0146 | GET | /api/v1/audit | `audit` | scinsight :8100 | F0113 create_app.principal() | F0777 Security.require(), F0781 Security.verify_chain(), F0421 Database.query() |  |
+| F1824 | GET | /api/v1/rag-tuning/config | `get_config` | scinsight :8100 | F1820 register.admin() | F1905 Registry.get_active_rag_config() |  |
+| F1825 | PUT | /api/v1/rag-tuning/draft | `save_draft` | scinsight :8100 | F1820 register.admin(), F1810 DraftRequest | F1908 Registry.save_draft_config(), F1821 register.audit() |  |
+| F1826 | GET | /api/v1/rag-tuning/history | `history` | scinsight :8100 | F1820 register.admin() | F1894 list_indexes() |  |
+| F1827 | GET | /api/v1/rag-tuning/diff/{config_id} | `config_diff` | scinsight :8100 | F1820 register.admin() | F1822 register.cfg_of(), F1857 diff(), F1905 Registry.get_active_rag_config() |  |
+| F1828 | GET | /api/v1/rag-tuning/documents | `list_documents` | scinsight :8100 | F1820 register.admin() | F1860 inventory() |  |
+| F1829 | POST | /api/v1/rag-tuning/metadata/validate | `validate_metadata` | scinsight :8100 | F1820 register.admin() | F1860 inventory() |  |
+| F1830 | GET | /api/v1/rag-tuning/documents/{doc_id}/source | `document_source` | scinsight :8100 | F1820 register.admin() | F1863 source_text() |  |
+| F1831 | POST | /api/v1/rag-tuning/chunks/preview | `chunk_preview` | scinsight :8100 | F1820 register.admin(), F1811 PreviewRequest | F1863 source_text(), F1853 preview_document_chunks() |  |
+| F1832 | GET | /api/v1/rag-tuning/embedding-models | `embedding_models` | scinsight :8100 | F1820 register.admin() | F1806 KnowledgeBase.active(), F1867 list_supported_embedding_models() |  |
+| F1833 | POST | /api/v1/rag-tuning/embedding-models/test | `test_model` | scinsight :8100 | F1820 register.admin(), F1813 ModelTestRequest | F1865 approved(), F1821 register.audit(), F1823 register.job(), F1869 test_model() |  |
+| F1834 | POST | /api/v1/rag-tuning/index/build-candidate | `build_candidate` | scinsight :8100 | F1820 register.admin(), F1814 ConfigRef | F1822 register.cfg_of(), F1821 register.audit(), F1823 register.job(), F1892 build_candidate_index() |  |
+| F1835 | GET | /api/v1/rag-tuning/jobs/{job_id} | `get_job` | scinsight :8100 | F1820 register.admin() |  |  |
+| F1836 | POST | /api/v1/rag-tuning/retrieve/preview | `retrieve_preview` | scinsight :8100 | F1820 register.admin(), F1812 RetrieveRequest | F1822 register.cfg_of(), F1806 KnowledgeBase.active(), F0766 KnowledgeBase.search() |  |
+| F1838 | POST | /api/v1/rag-tuning/evaluate | `evaluate` | scinsight :8100 | F1820 register.admin(), F1815 EvaluateRequest | F1822 register.cfg_of(), F1870 load_dataset(), F1821 register.audit(), F1823 register.job(), F1837 register._benchmark() |  |
+| F1839 | POST | /api/v1/rag-tuning/evaluate/grid | `evaluate_grid` | scinsight :8100 | F1820 register.admin(), F1816 GridRequest | F1905 Registry.get_active_rag_config(), F1865 approved(), F1858 index_signature(), F1870 load_dataset(), F1914 Registry.experiments(), F1908 Registry.save_draft |  |
+| F1840 | GET | /api/v1/rag-tuning/experiments | `list_experiments` | scinsight :8100 | F1820 register.admin() | F1914 Registry.experiments() |  |
+| F1841 | GET | /api/v1/rag-tuning/experiments/compare | `compare` | scinsight :8100 | F1820 register.admin() | F1877 compare_experiments(), F1915 Registry.experiment() |  |
+| F1842 | GET | /api/v1/rag-tuning/experiments/{exp_id} | `get_experiment` | scinsight :8100 | F1820 register.admin() | F1915 Registry.experiment() |  |
+| F1843 | POST | /api/v1/rag-tuning/validate | `validate` | scinsight :8100 | F1820 register.admin(), F1814 ConfigRef | F1822 register.cfg_of(), F1895 validate_config() |  |
+| F1844 | POST | /api/v1/rag-tuning/publish | `publish` | scinsight :8100 | F1820 register.admin(), F1814 ConfigRef | F0777 Security.require(), F1822 register.cfg_of(), F1898 publish_rag_config(), F1821 register.audit() |  |
+| F1845 | POST | /api/v1/rag-tuning/rollback | `rollback` | scinsight :8100 | F1820 register.admin(), F1814 ConfigRef | F0777 Security.require(), F1822 register.cfg_of(), F1899 rollback_rag_config(), F1821 register.audit() |  |
+| F1846 | GET | /api/v1/rag-tuning/flowise | `flowise_status` | scinsight :8100 | F1820 register.admin() |  |  |
+| F1847 | GET | /api/v1/rag-tuning/metrics | `metrics` | scinsight :8100 | F1820 register.admin() | F0421 Database.query() |  |

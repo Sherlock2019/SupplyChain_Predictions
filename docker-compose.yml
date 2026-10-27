@@ -71,6 +71,9 @@ services:
       MCP_URL: http://mcp:8000
       DEMO_AUTO_LOGIN: ${DEMO_AUTO_LOGIN:-false}
       GRAFANA_URL: ${GRAFANA_INTERNAL_URL:-}
+      # RAG Tuning page: managers' calls are forwarded to the SCInsight API with the director key (never sent to the browser)
+      SCI_API_URL: http://scinsight-api:8100
+      SCI_TUNING_KEY: ${SCI_DIRECTOR_KEY:-}
     ports: ["${BIND_ADDRESS:-0.0.0.0}:8000:8000"]
     extra_hosts: ["host.docker.internal:host-gateway"]
     restart: unless-stopped
@@ -99,6 +102,14 @@ services:
       SCI_SAP_EXECUTOR_KEY: ${SCI_SAP_EXECUTOR_KEY:?}
       SCI_MLOPS_KEY: ${SCI_MLOPS_KEY:?}
       SCI_OTHER_TENANT_KEY: ${SCI_OTHER_TENANT_KEY:?}
+      # RAG tuning: publishing syncs the chatflow's Company RAG DB through the Flowise API; optional benchmark answers use Qwen
+      SCI_FLOWISE_URL: http://flowise:3000
+      SCI_FLOWISE_API_KEY: ${FLOWISE_SCI_API_KEY:-}
+      SCI_FLOWISE_CHATFLOW_ID: ${FLOWISE_SCI_CHATFLOW_ID:-}
+      QWEN_BASE_URL: ${QWEN_BASE_URL:-http://host.docker.internal:11435/v1}
+      QWEN_MODEL: ${QWEN_MODEL:-qwen2.5-7b-scm}
+      QWEN_API_KEY: ${QWEN_API_KEY:-local-qwen}
+    extra_hosts: ["host.docker.internal:host-gateway"]
     ports: ["${BIND_ADDRESS:-0.0.0.0}:8100:8100"]
     healthcheck:
       test: [CMD, curl, -fsS, http://127.0.0.1:8100/health]
