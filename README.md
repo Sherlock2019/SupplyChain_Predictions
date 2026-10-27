@@ -90,12 +90,7 @@ Flowise for the chat front door and LangGraph for the tested agent logic. See [F
 | `tests/scinsight/` | Business rules, API scenarios, security, Flowise end-to-end (opt-in, real LLM) |
 | `docs/scinsight/` | [Overview](docs/scinsight/README.md) · [architecture](docs/scinsight/ARCHITECTURE.md) · [chatflow](docs/scinsight/FLOWISE_CHATFLOW.md) · [agentflows](docs/scinsight/FLOWISE_AGENTFLOWS.md) · [permissions](docs/scinsight/AGENT_TOOL_PERMISSIONS.md) · [API](docs/scinsight/FASTAPI_CONTRACTS.md) · [synthetic SAP](docs/scinsight/SAP_SYNTHETIC_DATA.md) · [approval](docs/scinsight/HUMAN_APPROVAL.md) · [learning](docs/scinsight/OUTCOME_LEARNING.md) · [import guide](docs/scinsight/FLOWISE_IMPORT_GUIDE.md) · [test results](docs/scinsight/TEST_RESULTS.md) |
 
-**How it is verified**
 
-* `pytest tests`: 122 passed, 11 skipped (9 of the skips are the opt-in Flowise end-to-end tests).
-* `SCI_E2E=1 pytest tests/scinsight/test_flowise_e2e.py`: 9/9 against the stack's Flowise (real Qwen runs: scenarios, approval pause and resume, security).
-* `bash scripts/scinsight-clean-flowise-test.sh`: a brand-new empty Flowise imports only the committed exports and passes the same 9 tests.
-* Completeness audit of all 9 flows (wiring, branches, panels, credentials, API key) plus every route executed: 0 problems.
 
 **Limits (POC):** synthetic SAP data only (no live SAP connection); users are API keys, not SSO; Qwen 2.5 7B can still word
 an answer wrongly when every number in it is correct, so a stronger model is a pilot prerequisite (details in
