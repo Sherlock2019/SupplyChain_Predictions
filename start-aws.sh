@@ -92,6 +92,10 @@ status() {
     tail -n 4 "$LOG" 2>/dev/null | sed 's/^/    /'
   elif grep -q 'demo is running' "$LOG" 2>/dev/null; then ok "start-up finished"
   elif [ -f "$LOG" ]; then warn "start-up did not finish — last lines of $LOG:"; tail -n 15 "$LOG" | sed 's/^/    /'
+    if ! grep -q '✘' "$LOG"; then  # no error printed: the launcher was killed (out of memory, or stopped)
+      warn "the launcher stopped without an error (killed?). Out of memory? check: sudo dmesg | grep -i -E 'killed process|out of memory' | tail -3"
+      warn "start again with: ./start.sh   (it picks options that fit this machine's RAM)"
+    fi
   fi
   echo
   for svc in "dashboard/API|http://localhost:8000/health" "SCInsight API|http://localhost:8000/scinsight/health" "LangGraph|http://localhost:8123/ok" "MCP|http://localhost:8002/health" \
@@ -127,7 +131,7 @@ if launcher_running; then warn "already starting (pid $(cat "$PIDFILE"))"; statu
 # Check the requirements and install what is missing (Docker + compose, python3, curl, git, Ollama), then start Docker on boot.
 # Small instance (under 8 GB, e.g. t3.medium) and no mode chosen: the light demo (no Grafana/Langfuse, no LLM).
 MEM_GB=$(awk '/MemTotal/ {printf "%.0f", $2/1048576}' /proc/meminfo)
-if [ "$MEM_GB" -lt 8 ] && [ "$#" = 0 ]; then
+if [ "$MEM_GB" -lt 8 ] && [[ " $* " != *" --lite "* && " $* " != *" --no-llm "* && " $* " != *" --small-llm "* ]]; then
   PASS+=(--lite --no-llm)
   warn "${MEM_GB} GB RAM: starting the light demo (--lite --no-llm). Options: --small-llm --lite to try Qwen 3B (slow), or 16 GB for everything"
 fi

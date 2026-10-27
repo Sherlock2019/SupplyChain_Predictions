@@ -23,7 +23,15 @@ and roles come from the API key on the server · the Flowise agent can never app
 approval is not proof: outcomes are verified against SAP goods receipts · models are promoted only by a director, and only
 when they beat the baseline.
 
-**Run it**
+**Run it** — one command on your PC (WSL, Linux, macOS) or on a cloud VM (AWS EC2, …):
+
+```bash
+./start.sh            # detects PC vs cloud VM and picks what fits the RAM (<8 GB: --lite --no-llm · 8–15 GB: --lite · 16 GB+: everything)
+./start.sh status     # ready? URLs   ·   ./start.sh logs   ·   ./start.sh stop
+./start.sh --lite --no-llm --rebuild   # override the automatic choice (--full, --small-llm on a cloud VM, --local / --aws)
+```
+
+Advanced (what `start.sh` calls):
 
 ```bash
 python3 scripts/gen-env.py --add-missing    # adds the SCI_* user keys to an existing .env (new install: python3 scripts/gen-env.py)
