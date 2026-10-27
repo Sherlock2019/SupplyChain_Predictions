@@ -5,6 +5,7 @@
 #   ./start.sh status          ready? container health and the URLs
 #   ./start.sh logs            follow the start-up (Ctrl-C stops following, not the app)
 #   ./start.sh stop            stop (data kept)
+#   ./start.sh doctor          why is it not up? health, containers, image, logs, out-of-memory kills (paste the output)
 #
 # Overrides:  --local | --aws               force where it runs (default: detected)
 #             --full | --lite | --no-llm | --small-llm (aws only)   force the size (default: from RAM)
@@ -19,13 +20,13 @@ cd "$(dirname "$0")"
 where="" ; size=() ; extra=() ; cmd=""
 for arg in "$@"; do
   case "$arg" in
-    status|logs|stop) cmd=$arg ;;
+    status|logs|stop|doctor) cmd=$arg ;;
     --local) where=local ;;
     --aws|--cloud) where=aws ;;
     --full) size=(--full) ;;
     --lite|--no-llm|--small-llm) size+=("$arg") ;;
     --rebuild|--open) extra+=("$arg") ;;
-    -h|--help) sed -n '2,16p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
     *) echo "unknown option $arg (see ./start.sh --help)"; exit 1 ;;
   esac
 done
@@ -41,6 +42,20 @@ if [ -z "$where" ]; then
 fi
 launcher=./start-localdemo.sh; [ "$where" = aws ] && launcher=./start-aws.sh
 
+if [ "$cmd" = doctor ]; then  # everything needed to see why the app is not up, in one paste (no secrets)
+  h() { printf '\n=== %s\n' "$*"; }
+  h "where: $where · $(git log --oneline -1 2>/dev/null)"; free -h | head -2
+  h "served dashboard: new version (ERP / SAP Setup)?"; curl -s -m 5 localhost:8000/ | grep -c page-erp || echo "0 (old version or not answering)"
+  for u in localhost:8000/health localhost:8000/scinsight/health localhost:8123/ok localhost:3000/api/v1/ping; do
+    printf '%-32s %s\n' "$u" "$(curl -s -m 5 -o /dev/null -w '%{http_code}' "http://$u" || true)"; done
+  h "containers"; docker compose ps -a --format 'table {{.Service}}\t{{.Status}}\t{{.Image}}' 2>&1 | head -20
+  h "app image"; docker image inspect -f 'built {{.Created}} · source {{ index .Config.Labels "scm.source-hash" }}' aurelia-scm-app:local 2>&1
+  h "launcher log (last 15)"; tail -n 15 .aws-launch.log .localdemo.log 2>/dev/null | grep -v -i -E 'key|password|secret'
+  h "build log (last 10)"; tail -n 10 .localdemo-build.log 2>/dev/null
+  h "api log (last 25)"; docker compose logs --tail 25 api 2>&1 | grep -v -i -E 'api[_-]?key=|password|secret' | cut -c1-220
+  h "out of memory kills"; (sudo -n dmesg 2>/dev/null || dmesg 2>/dev/null) | grep -i -E 'killed process|out of memory' | tail -3 || true
+  exit 0
+fi
 if [ -n "$cmd" ]; then
   [ "$cmd" = stop ] && [ "$where" = local ] && exec bash ./stop-localdemo.sh
   exec bash "$launcher" "$cmd"
