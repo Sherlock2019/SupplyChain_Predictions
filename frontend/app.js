@@ -176,7 +176,7 @@
 
   async function signIn(key, quiet) {
     state.key = key; session.set('apiKey', key);
-    try { await api('/api/v1/kpis'); } catch (e) { state.key = ''; session.set('apiKey', ''); setRole(''); if (!quiet) toast('Sign-in failed: ' + e.message); return; }
+    try { await api('/api/v1/kpis'); } catch (e) { state.key = ''; session.set('apiKey', ''); setRole(''); if (!quiet) toast('Sign-in failed: ' + e.message); route(); return; }
     try { await api('/api/v1/audit?limit=1'); setRole('manager'); } catch { setRole('planner'); }
     await loadSuppliers();
     envLine();
@@ -2069,7 +2069,10 @@
     } catch { $('#tenant-bar').hidden = true; }
     envLine();
     if (state.cfg.demo_auto_login) {
-      const keys = await api('/api/v1/demo/session');
+      let keys = null;
+      for (let i = 0; i < 5 && !keys; i++) {  // the API may still be starting right after a deploy
+        try { keys = await api('/api/v1/demo/session'); } catch (e) { if (i === 4) { toast(`Automatic sign-in failed: ${e.message}`); route(); return; } await new Promise((r) => setTimeout(r, 2000)); }
+      }
       $('#login').hidden = true; $('#demo-role').hidden = false;
       // The dropdown lists every business role; each maps to an API permission (director = manager, others = planner).
       state.demoKeys = keys;
@@ -2077,7 +2080,7 @@
       const start = [...$('#role-select').options].some((o) => o.value === persona) ? persona : 'director';
       state.persona = start; $('#role-select').value = start;
       $('#role-select').addEventListener('change', () => { const id = $('#role-select').value; choosePersona(id); if (!location.hash.startsWith('#dashboard')) location.hash = `dashboard/${id}/${state.focus || ''}`; });
-      await signIn(keys[ROLE_ACCESS[start] || 'planner'], true);
+      await signIn(keys[ROLE_ACCESS[start] || 'planner'], false);  // not quiet: a failing API is shown, not hidden behind the key box
     } else if (state.key) {
       $('#demo-role').hidden = true;
       await signIn(state.key, true);
