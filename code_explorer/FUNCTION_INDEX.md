@@ -997,19 +997,20 @@ Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 | F1781 | 06_testing/other | `build` | [flowise/code_explorer/deploy_code_map.py:27](../flowise/code_explorer/deploy_code_map.py#L27) | function | used |  | F1783 |  |  |
 | F1782 | 06_testing/other | `import_flows` | [flowise/code_explorer/deploy_code_map.py:44](../flowise/code_explorer/deploy_code_map.py#L44) | function | used |  | F1783 |  |  |
 | F1783 | 06_testing/other | `main` | [flowise/code_explorer/deploy_code_map.py:69](../flowise/code_explorer/deploy_code_map.py#L69) | function | used |  |  |  |  |
-| F1784 | 06_testing/other | `_defs` | [backend/app/code_editor.py:25](../backend/app/code_editor.py#L25) | function | used | qualname -> def/class node, including methods and nested functions. | F1791, F1792, F1793 |  |  |
-| F1785 | 06_testing/other | `_defs.walk` | [backend/app/code_editor.py:29](../backend/app/code_editor.py#L29) | nested | used |  | F1784 |  |  |
-| F1786 | 06_testing/other | `_span` | [backend/app/code_editor.py:40](../backend/app/code_editor.py#L40) | function | used |  | F1791, F1793, F1794 |  |  |
-| F1787 | 06_testing/other | `CodeEditor` | [backend/app/code_editor.py:44](../backend/app/code_editor.py#L44) | class | used |  | F0017, F1797, F1798, F1799 |  |  |
-| F1788 | 06_testing/other | `CodeEditor.__init__` | [backend/app/code_editor.py:45](../backend/app/code_editor.py#L45) | method | used (framework) |  |  |  |  |
-| F1789 | 06_testing/other | `CodeEditor._registry` | [backend/app/code_editor.py:52](../backend/app/code_editor.py#L52) | method | used |  | F1791, F1793 |  |  |
-| F1790 | 06_testing/other | `CodeEditor._files` | [backend/app/code_editor.py:60](../backend/app/code_editor.py#L60) | method | used |  | F1791 |  |  |
-| F1791 | 06_testing/other | `CodeEditor.list` | [backend/app/code_editor.py:63](../backend/app/code_editor.py#L63) | method | used |  | F0985 |  |  |
-| F1792 | 06_testing/other | `CodeEditor._locate` | [backend/app/code_editor.py:85](../backend/app/code_editor.py#L85) | method | used (framework) |  | F1793, F1794 |  |  |
-| F1793 | 06_testing/other | `CodeEditor.get` | [backend/app/code_editor.py:98](../backend/app/code_editor.py#L98) | method | used (framework) |  |  |  |  |
-| F1794 | 06_testing/other | `CodeEditor.update` | [backend/app/code_editor.py:126](../backend/app/code_editor.py#L126) | method | used (framework) |  |  |  |  |
+| F1784 | 06_testing/other | `_defs` | [backend/app/code_editor.py:39](../backend/app/code_editor.py#L39) | function | used | qualname -> def/class node, including methods and nested functions. | F1791, F1792, F1793 |  |  |
+| F1785 | 06_testing/other | `_defs.walk` | [backend/app/code_editor.py:43](../backend/app/code_editor.py#L43) | nested | used |  | F1784 |  |  |
+| F1786 | 06_testing/other | `_span` | [backend/app/code_editor.py:54](../backend/app/code_editor.py#L54) | function | used |  | F1791, F1793, F1794 |  |  |
+| F1787 | 06_testing/other | `CodeEditor` | [backend/app/code_editor.py:58](../backend/app/code_editor.py#L58) | class | used |  | F0017, F1797, F1798, F1799 |  |  |
+| F1788 | 06_testing/other | `CodeEditor.__init__` | [backend/app/code_editor.py:59](../backend/app/code_editor.py#L59) | method | used (framework) |  |  |  |  |
+| F1789 | 06_testing/other | `CodeEditor._registry` | [backend/app/code_editor.py:66](../backend/app/code_editor.py#L66) | method | used |  | F1791, F1793 |  |  |
+| F1790 | 06_testing/other | `CodeEditor._files` | [backend/app/code_editor.py:74](../backend/app/code_editor.py#L74) | method | used |  | F1791, F1793 |  |  |
+| F1791 | 06_testing/other | `CodeEditor.list` | [backend/app/code_editor.py:103](../backend/app/code_editor.py#L103) | method | used |  | F0985 |  |  |
+| F1792 | 06_testing/other | `CodeEditor._locate` | [backend/app/code_editor.py:130](../backend/app/code_editor.py#L130) | method | used (framework) |  | F1793, F1794 |  |  |
+| F1793 | 06_testing/other | `CodeEditor.get` | [backend/app/code_editor.py:143](../backend/app/code_editor.py#L143) | method | used (framework) |  |  |  |  |
+| F1794 | 06_testing/other | `CodeEditor.update` | [backend/app/code_editor.py:173](../backend/app/code_editor.py#L173) | method | used (framework) |  |  |  |  |
 | F1795 | 06_testing/unit_tests | `repo` | [tests/test_code_editor.py:24](../tests/test_code_editor.py#L24) | function | used |  | F1797, F1798, F1799 |  |  |
 | F1796 | 06_testing/unit_tests | `test_api_lists_and_shows_backend_functions_read_only_by_default` | [tests/test_code_editor.py:31](../tests/test_code_editor.py#L31) | test | test |  |  |  |  |
-| F1797 | 06_testing/unit_tests | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | [tests/test_code_editor.py:44](../tests/test_code_editor.py#L44) | test | test |  |  |  |  |
-| F1798 | 06_testing/unit_tests | `test_invalid_edits_are_refused_and_the_file_is_untouched` | [tests/test_code_editor.py:57](../tests/test_code_editor.py#L57) | test | test |  |  |  |  |
-| F1799 | 06_testing/unit_tests | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | [tests/test_code_editor.py:69](../tests/test_code_editor.py#L69) | test | test |  |  |  |  |
+| F1797 | 06_testing/unit_tests | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | [tests/test_code_editor.py:49](../tests/test_code_editor.py#L49) | test | test |  |  |  |  |
+| F1798 | 06_testing/unit_tests | `test_invalid_edits_are_refused_and_the_file_is_untouched` | [tests/test_code_editor.py:62](../tests/test_code_editor.py#L62) | test | test |  |  |  |  |
+| F1799 | 06_testing/unit_tests | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | [tests/test_code_editor.py:74](../tests/test_code_editor.py#L74) | test | test |  |  |  |  |
+| F1800 | 06_testing/other | `CodeEditor._apps_of` | [backend/app/code_editor.py:77](../backend/app/code_editor.py#L77) | method | used | file -> ids of the apps that load it (transitive backend imports from each app's entry mod | F1791, F1793 |  |  |

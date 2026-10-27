@@ -1,6 +1,6 @@
 # Backend functions (generated)
 
-Every function, method, class and route under `backend/`: **777** definitions in **39** modules, **115** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
+Every function, method, class and route under `backend/`: **778** definitions in **39** modules, **115** FastAPI routes. Links open the exact source line; *annotated* opens the commented copy.
 
 Regenerate: `python3 code_explorer/tools/build_code_explorer.py`.
 
@@ -45,17 +45,18 @@ Backend code section of the SPARC UI: browse every backend function and, on a de
 
 | ID | Function | Kind | FastAPI route | Status | Annotated | Summary |
 |---|---|---|---|---|---|---|
-| F1784 | [`_defs`](../backend/app/code_editor.py#L25) | function |  | used | — | qualname -> def/class node, including methods and nested functions. |
-| F1785 | [`_defs.walk`](../backend/app/code_editor.py#L29) | nested |  | used | — |  |
-| F1786 | [`_span`](../backend/app/code_editor.py#L40) | function |  | used | — |  |
-| F1787 | [`CodeEditor`](../backend/app/code_editor.py#L44) | class |  | used | — |  |
-| F1788 | [`CodeEditor.__init__`](../backend/app/code_editor.py#L45) | method |  | used (framework) | — |  |
-| F1789 | [`CodeEditor._registry`](../backend/app/code_editor.py#L52) | method |  | used | — |  |
-| F1790 | [`CodeEditor._files`](../backend/app/code_editor.py#L60) | method |  | used | — |  |
-| F1791 | [`CodeEditor.list`](../backend/app/code_editor.py#L63) | method |  | used | — |  |
-| F1792 | [`CodeEditor._locate`](../backend/app/code_editor.py#L85) | method |  | used (framework) | — |  |
-| F1793 | [`CodeEditor.get`](../backend/app/code_editor.py#L98) | method |  | used (framework) | — |  |
-| F1794 | [`CodeEditor.update`](../backend/app/code_editor.py#L126) | method |  | used (framework) | — |  |
+| F1784 | [`_defs`](../backend/app/code_editor.py#L39) | function |  | used | — | qualname -> def/class node, including methods and nested functions. |
+| F1785 | [`_defs.walk`](../backend/app/code_editor.py#L43) | nested |  | used | — |  |
+| F1786 | [`_span`](../backend/app/code_editor.py#L54) | function |  | used | — |  |
+| F1787 | [`CodeEditor`](../backend/app/code_editor.py#L58) | class |  | used | — |  |
+| F1788 | [`CodeEditor.__init__`](../backend/app/code_editor.py#L59) | method |  | used (framework) | — |  |
+| F1789 | [`CodeEditor._registry`](../backend/app/code_editor.py#L66) | method |  | used | — |  |
+| F1790 | [`CodeEditor._files`](../backend/app/code_editor.py#L74) | method |  | used | — |  |
+| F1800 | [`CodeEditor._apps_of`](../backend/app/code_editor.py#L77) | method |  | used | — | file -> ids of the apps that load it (transitive backend imports from each app's entry mod |
+| F1791 | [`CodeEditor.list`](../backend/app/code_editor.py#L103) | method |  | used | — |  |
+| F1792 | [`CodeEditor._locate`](../backend/app/code_editor.py#L130) | method |  | used (framework) | — |  |
+| F1793 | [`CodeEditor.get`](../backend/app/code_editor.py#L143) | method |  | used (framework) | — |  |
+| F1794 | [`CodeEditor.update`](../backend/app/code_editor.py#L173) | method |  | used (framework) | — |  |
 
 ## backend/app/config.py
 

@@ -15175,6 +15175,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -17817,6 +17818,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -23857,6 +23859,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -25727,6 +25730,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -28399,6 +28403,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -29020,6 +29025,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -31030,6 +31036,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -31279,6 +31286,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -31506,6 +31514,7 @@
    "tests": [
     "tests/conftest.py",
     "tests/test_api.py",
+    "tests/test_code_editor.py",
     "tests/test_poc_contract.py"
    ]
   },
@@ -31518,8 +31527,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    25,
-    37
+    39,
+    51
    ],
    "signature": "def _defs(tree: ast.AST) -> dict[str, ast.AST]",
    "async": false,
@@ -31547,8 +31556,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    29,
-    35
+    43,
+    49
    ],
    "signature": "def walk(node, prefix)",
    "async": false,
@@ -31572,8 +31581,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    40,
-    41
+    54,
+    55
    ],
    "signature": "def _span(node) -> tuple[int, int]",
    "async": false,
@@ -31599,8 +31608,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    44,
-    161
+    58,
+    208
    ],
    "signature": "class CodeEditor",
    "async": false,
@@ -31629,8 +31638,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    45,
-    49
+    59,
+    63
    ],
    "signature": "def __init__(self, root: Path, enabled: bool, app_env: str)",
    "async": false,
@@ -31654,8 +31663,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    52,
-    58
+    66,
+    72
    ],
    "signature": "def _registry(self) -> dict[str, dict]",
    "async": false,
@@ -31680,8 +31689,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    60,
-    61
+    74,
+    75
    ],
    "signature": "def _files(self) -> list[Path]",
    "async": false,
@@ -31692,7 +31701,8 @@
    "annotated_copy": null,
    "calls": [],
    "called_by": [
-    "F1791"
+    "F1791",
+    "F1793"
    ],
    "tests": []
   },
@@ -31705,8 +31715,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    63,
-    83
+    103,
+    128
    ],
    "signature": "def list(self, query: str='', limit: int=2000) -> dict",
    "async": false,
@@ -31718,6 +31728,7 @@
    "calls": [
     "F1789",
     "F1790",
+    "F1800",
     "F1784",
     "F0393",
     "F1786"
@@ -31739,8 +31750,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    85,
-    96
+    130,
+    141
    ],
    "signature": "def _locate(self, key: str) -> tuple[Path, str, list[str], ast.AST]",
    "async": false,
@@ -31769,8 +31780,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    98,
-    123
+    143,
+    170
    ],
    "signature": "def get(self, key: str) -> dict",
    "async": false,
@@ -31783,7 +31794,9 @@
     "F1792",
     "F1786",
     "F1789",
-    "F1784"
+    "F1784",
+    "F1800",
+    "F1790"
    ],
    "called_by": [],
    "tests": []
@@ -31797,8 +31810,8 @@
    "subfolder": "other",
    "file": "backend/app/code_editor.py",
    "lines": [
-    126,
-    161
+    173,
+    208
    ],
    "signature": "def update(self, key: str, source: str, expected_sha256: str | None=None) -> dict",
    "async": false,
@@ -31862,7 +31875,7 @@
    "file": "tests/test_code_editor.py",
    "lines": [
     31,
-    41
+    46
    ],
    "signature": "def test_api_lists_and_shows_backend_functions_read_only_by_default(client, assistant_headers, manager_headers)",
    "async": false,
@@ -31888,8 +31901,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    44,
-    54
+    49,
+    59
    ],
    "signature": "def test_edit_replaces_only_the_selected_method_and_keeps_a_backup(repo)",
    "async": false,
@@ -31914,8 +31927,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    57,
-    66
+    62,
+    71
    ],
    "signature": "def test_invalid_edits_are_refused_and_the_file_is_untouched(repo, source, error)",
    "async": false,
@@ -31942,8 +31955,8 @@
    "subfolder": "unit_tests",
    "file": "tests/test_code_editor.py",
    "lines": [
-    69,
-    74
+    74,
+    79
    ],
    "signature": "def test_editing_is_off_outside_development_and_stale_saves_are_refused(repo)",
    "async": false,
@@ -31957,6 +31970,32 @@
     "F1795"
    ],
    "called_by": [],
+   "tests": []
+  },
+  {
+   "id": "F1800",
+   "name": "CodeEditor._apps_of",
+   "kind": "method",
+   "status": "used",
+   "category": "06_testing",
+   "subfolder": "other",
+   "file": "backend/app/code_editor.py",
+   "lines": [
+    77,
+    101
+   ],
+   "signature": "def _apps_of(self, trees: dict[str, ast.AST]) -> dict[str, list[str]]",
+   "async": false,
+   "decorators": [],
+   "routes": [],
+   "raises": [],
+   "summary": "file -> ids of the apps that load it (transitive backend imports from each app's entry modules).",
+   "annotated_copy": null,
+   "calls": [],
+   "called_by": [
+    "F1791",
+    "F1793"
+   ],
    "tests": []
   }
  ],

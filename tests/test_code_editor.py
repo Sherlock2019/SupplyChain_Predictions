@@ -33,6 +33,11 @@ def test_api_lists_and_shows_backend_functions_read_only_by_default(client, assi
     assert listing["edit_allowed"] is False
     row = next(f for f in listing["functions"] if f["name"] == "calculate_material_shortage")
     assert row["file"] == "backend/scinsight/business.py"
+    assert row["apps"] == ["scinsight-api"]  # files are grouped by the docker-compose app that imports them
+    apps = {c["id"]: c for c in listing["components"]}
+    assert apps["scinsight-api"]["kind"] == apps["api"]["kind"] == "FastAPI"
+    assert "backend/app/engine.py" in apps["api"]["files"] and "backend/app/engine.py" in apps["mcp"]["files"]
+    assert "backend/app/main.py" not in apps["mcp"]["files"]
     detail = client.get("/api/v1/code/function", params={"key": row["key"]}, headers=assistant_headers).json()
     assert detail["source"].lstrip().startswith("def calculate_material_shortage(")
     body = {"key": row["key"], "source": detail["source"]}

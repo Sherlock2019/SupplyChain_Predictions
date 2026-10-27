@@ -22,6 +22,7 @@
  "backend/app/auth.py::Principal": "F0767",
  "backend/app/code_editor.py::CodeEditor": "F1787",
  "backend/app/code_editor.py::CodeEditor.__init__": "F1788",
+ "backend/app/code_editor.py::CodeEditor._apps_of": "F1800",
  "backend/app/code_editor.py::CodeEditor._files": "F1790",
  "backend/app/code_editor.py::CodeEditor._locate": "F1792",
  "backend/app/code_editor.py::CodeEditor._registry": "F1789",

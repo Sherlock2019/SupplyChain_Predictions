@@ -20,6 +20,20 @@ from pathlib import Path
 
 EDITABLE_PREFIX = "backend/"
 DEV_ENVS = ("development", "test")
+# The backend apps of docker-compose.yml and their entry modules; the files each app runs are found by following imports.
+APPS = [
+    {"id": "scinsight-api", "name": "SCInsight API", "kind": "FastAPI", "port": 8100,
+     "start": "uvicorn backend.scinsight.app:create_app --factory", "entry": "backend/scinsight/app.py::create_app",
+     "modules": ["backend.scinsight.app"]},
+    {"id": "api", "name": "SPARC / Aurelia gateway", "kind": "FastAPI", "port": 8000,
+     "start": "uvicorn backend.app.main:app", "entry": "backend/app/main.py::create_app", "modules": ["backend.app.main"]},
+    {"id": "langgraph", "name": "LangGraph Server", "kind": "LangGraph", "port": 8123, "start": "langgraph dev (graphs in langgraph.json)",
+     "entry": "backend/scinsight/lg/supervisor.py::build_supervisor",
+     "modules": ["backend.app.graphs", "backend.app.agentflow", "backend.app.deep_agent", "backend.scinsight.lg.chat",
+                 "backend.scinsight.lg.supervisor", "backend.scinsight.lg.specialists"]},
+    {"id": "mcp", "name": "MCP server", "kind": "FastMCP", "port": 8002, "start": "python -m backend.app.mcp_server",
+     "entry": "backend/app/mcp_server.py::create_mcp_app", "modules": ["backend.app.mcp_server"]},
+]
 
 
 def _defs(tree: ast.AST) -> dict[str, ast.AST]:
@@ -60,15 +74,44 @@ class CodeEditor:
     def _files(self) -> list[Path]:
         return sorted(p for p in (self.root / "backend").rglob("*.py") if ".data" not in p.parts and p.name != "__init__.py")
 
+    def _apps_of(self, trees: dict[str, ast.AST]) -> dict[str, list[str]]:
+        """file -> ids of the apps that load it (transitive backend imports from each app's entry modules)."""
+        mod_of = {rel: rel[:-3].replace("/", ".") for rel in trees}
+        known = set(mod_of.values())
+        deps: dict[str, set[str]] = {}
+        for rel, tree in trees.items():
+            out = set()
+            for n in ast.walk(tree):
+                if isinstance(n, ast.ImportFrom) and n.module and n.module.startswith("backend"):
+                    out |= {n.module} | {f"{n.module}.{a.name}" for a in n.names}
+                elif isinstance(n, ast.Import):
+                    out |= {a.name for a in n.names}
+            deps[mod_of[rel]] = out & known
+        apps: dict[str, list[str]] = {rel: [] for rel in trees}
+        by_mod = {m: rel for rel, m in mod_of.items()}
+        for app in APPS:
+            seen, stack = set(), [m for m in app["modules"] if m in known]
+            while stack:
+                m = stack.pop()
+                if m not in seen:
+                    seen.add(m)
+                    stack += deps.get(m, ())
+            for m in seen:
+                apps[by_mod[m]].append(app["id"])
+        return apps
+
     def list(self, query: str = "", limit: int = 2000) -> dict:
         registry, rows = self._registry(), []
         q = query.lower().strip()
+        trees = {}
         for path in self._files():
-            rel = path.relative_to(self.root).as_posix()
             try:
-                defs = _defs(ast.parse(path.read_text(encoding="utf-8")))
+                trees[path.relative_to(self.root).as_posix()] = ast.parse(path.read_text(encoding="utf-8"))
             except SyntaxError:
                 continue
+        apps_of = self._apps_of(trees)
+        for rel, tree in trees.items():
+            defs = _defs(tree)
             for qual, node in defs.items():
                 key = f"{rel}::{qual}"
                 reg = registry.get(key, {})
@@ -77,10 +120,12 @@ class CodeEditor:
                 first, end = _span(node)
                 rows.append({"key": key, "id": reg.get("id"), "file": rel, "name": qual, "lines": [first, end],
                              "kind": reg.get("kind") or ("class" if isinstance(node, ast.ClassDef) else "function"),
-                             "status": reg.get("status"), "category": reg.get("category") or rel.split("/")[1],
+                             "status": reg.get("status"), "category": reg.get("category") or rel.split("/")[1], "apps": apps_of[rel],
                              "summary": reg.get("summary") or (ast.get_docstring(node) or "").split("\n")[0]})
+        components = [{k: v for k, v in app.items() if k != "modules"} | {"files": sorted(f for f, a in apps_of.items() if app["id"] in a)}
+                      for app in APPS]
         return {"functions": rows[:limit], "total": len(rows), "edit_allowed": self.edit_allowed, "reason": self.reason,
-                "registry": bool(registry)}
+                "registry": bool(registry), "components": components}
 
     def _locate(self, key: str) -> tuple[Path, str, list[str], ast.AST]:
         rel, sep, qual = key.partition("::")
@@ -120,7 +165,9 @@ class CodeEditor:
                 "lines": [first, end], "source": "\n".join(lines[first - 1:end]), "annotated": annotated,
                 "summary": row.get("summary") or (ast.get_docstring(node) or "").split("\n")[0], "status": row.get("status"),
                 "routes": row.get("routes", []), "calls": link(row.get("calls", [])), "called_by": link(row.get("called_by", [])),
-                "sha256": hashlib.sha256(text.encode()).hexdigest(), "edit_allowed": self.edit_allowed, "reason": self.reason}
+                "sha256": hashlib.sha256(text.encode()).hexdigest(), "edit_allowed": self.edit_allowed, "reason": self.reason,
+                "apps": self._apps_of({p.relative_to(self.root).as_posix(): ast.parse(p.read_text(encoding="utf-8")) for p in self._files()})
+                .get(path.relative_to(self.root).as_posix(), [])}
 
     # ------------------------------------------------------------------ edit
     def update(self, key: str, source: str, expected_sha256: str | None = None) -> dict:

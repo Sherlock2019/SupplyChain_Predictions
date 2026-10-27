@@ -3247,7 +3247,7 @@ def create_mcp_app():
 ### F1794 · `CodeEditor.update` (Gateway)
 
 Backend code page: validated, backed-up edit of one function (development only)  
-Source: [backend/app/code_editor.py:126-161](../backend/app/code_editor.py#L126) · 36 lines
+Source: [backend/app/code_editor.py:173-208](../backend/app/code_editor.py#L173) · 36 lines
 
 <details><summary>Show the full code</summary>
 

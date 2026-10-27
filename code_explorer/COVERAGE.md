@@ -1,10 +1,10 @@
 # Coverage report (generated)
 
-- Definitions discovered: **1007** (776 functions / methods, 100 classes / models, 131 tests)
+- Definitions discovered: **1008** (777 functions / methods, 100 classes / models, 131 tests)
 - FastAPI endpoints: **115** (SCInsight 31, gateway 83, MCP 1)
 - Flowise nodes with code: **46** (Custom Tools + Agentflow Custom Functions), copied to `07_flowise_functions/custom_js/`
 - Definitions with an annotated copy: **766** in **38** modules; AST-identical to the original: **38/38**
-- Call / dependency edges: **2649**
+- Call / dependency edges: **2652**
 
 ## Not annotated line by line (indexed with full original source in the registry, viewer and Flowise map)
 

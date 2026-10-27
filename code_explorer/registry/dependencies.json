@@ -256,79 +256,97 @@
    "from": "F1784",
    "to": "F1785",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:36 nested function"
+   "evidence": "backend/app/code_editor.py:50 nested function"
   },
   {
    "from": "F1791",
    "to": "F1789",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:64 self method"
+   "evidence": "backend/app/code_editor.py:104 self method"
   },
   {
    "from": "F1791",
    "to": "F1790",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:66 self method"
+   "evidence": "backend/app/code_editor.py:107 self method"
+  },
+  {
+   "from": "F1791",
+   "to": "F1800",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:112 self method"
   },
   {
    "from": "F1791",
    "to": "F1784",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:69 same module"
+   "evidence": "backend/app/code_editor.py:114 same module"
   },
   {
    "from": "F1791",
    "to": "F0393",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:74 typed variable registry -> TenantRegistry"
+   "evidence": "backend/app/code_editor.py:117 typed variable registry -> TenantRegistry"
   },
   {
    "from": "F1791",
    "to": "F1786",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:77 same module"
+   "evidence": "backend/app/code_editor.py:120 same module"
   },
   {
    "from": "F1792",
    "to": "F1784",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:93 same module"
+   "evidence": "backend/app/code_editor.py:138 same module"
   },
   {
    "from": "F1793",
    "to": "F1792",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:99 self method"
+   "evidence": "backend/app/code_editor.py:144 self method"
   },
   {
    "from": "F1793",
    "to": "F1786",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:100 same module"
+   "evidence": "backend/app/code_editor.py:145 same module"
   },
   {
    "from": "F1793",
    "to": "F1789",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:101 self method"
+   "evidence": "backend/app/code_editor.py:146 self method"
   },
   {
    "from": "F1793",
    "to": "F1784",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:109 same module"
+   "evidence": "backend/app/code_editor.py:154 same module"
+  },
+  {
+   "from": "F1793",
+   "to": "F1800",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:169 self method"
+  },
+  {
+   "from": "F1793",
+   "to": "F1790",
+   "kind": "calls",
+   "evidence": "backend/app/code_editor.py:169 self method"
   },
   {
    "from": "F1794",
    "to": "F1792",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:129 self method"
+   "evidence": "backend/app/code_editor.py:176 self method"
   },
   {
    "from": "F1794",
    "to": "F1786",
    "kind": "calls",
-   "evidence": "backend/app/code_editor.py:132 same module"
+   "evidence": "backend/app/code_editor.py:179 same module"
   },
   {
    "from": "F0003",
@@ -14206,49 +14224,49 @@
    "from": "F1796",
    "to": "F0986",
    "kind": "http_request",
-   "evidence": "tests/test_code_editor.py:36 HTTP GET /api/v1/code/function"
+   "evidence": "tests/test_code_editor.py:41 HTTP GET /api/v1/code/function"
   },
   {
    "from": "F1796",
    "to": "F0987",
    "kind": "http_request",
-   "evidence": "tests/test_code_editor.py:36 HTTP PUT /api/v1/code/function"
+   "evidence": "tests/test_code_editor.py:41 HTTP PUT /api/v1/code/function"
   },
   {
    "from": "F1797",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:45 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:50 imported from backend.app.code_editor"
   },
   {
    "from": "F1797",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:45 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:50 same module (passed as a value)"
   },
   {
    "from": "F1798",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:63 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:68 imported from backend.app.code_editor"
   },
   {
    "from": "F1798",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:63 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:68 same module (passed as a value)"
   },
   {
    "from": "F1799",
    "to": "F1787",
    "kind": "calls",
-   "evidence": "tests/test_code_editor.py:71 imported from backend.app.code_editor"
+   "evidence": "tests/test_code_editor.py:76 imported from backend.app.code_editor"
   },
   {
    "from": "F1799",
    "to": "F1795",
    "kind": "references",
-   "evidence": "tests/test_code_editor.py:71 same module (passed as a value)"
+   "evidence": "tests/test_code_editor.py:76 same module (passed as a value)"
   },
   {
    "from": "F0922",

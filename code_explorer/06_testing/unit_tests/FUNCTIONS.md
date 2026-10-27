@@ -24,9 +24,9 @@ Modules: `tests/conftest.py`, `tests/scinsight/conftest.py`, `tests/scinsight/te
 | F0921 | `test_expiry_risk_is_ordered_most_urgent_first` | test | test | [tests/scinsight/test_business_rules.py:102](../../../tests/scinsight/test_business_rules.py#L102) | — |  |
 | F1795 | `repo` | function | used | [tests/test_code_editor.py:24](../../../tests/test_code_editor.py#L24) | — |  |
 | F1796 | `test_api_lists_and_shows_backend_functions_read_only_by_default` | test | test | [tests/test_code_editor.py:31](../../../tests/test_code_editor.py#L31) | — |  |
-| F1797 | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | test | test | [tests/test_code_editor.py:44](../../../tests/test_code_editor.py#L44) | — |  |
-| F1798 | `test_invalid_edits_are_refused_and_the_file_is_untouched` | test | test | [tests/test_code_editor.py:57](../../../tests/test_code_editor.py#L57) | — |  |
-| F1799 | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | test | test | [tests/test_code_editor.py:69](../../../tests/test_code_editor.py#L69) | — |  |
+| F1797 | `test_edit_replaces_only_the_selected_method_and_keeps_a_backup` | test | test | [tests/test_code_editor.py:49](../../../tests/test_code_editor.py#L49) | — |  |
+| F1798 | `test_invalid_edits_are_refused_and_the_file_is_untouched` | test | test | [tests/test_code_editor.py:62](../../../tests/test_code_editor.py#L62) | — |  |
+| F1799 | `test_editing_is_off_outside_development_and_stale_saves_are_refused` | test | test | [tests/test_code_editor.py:74](../../../tests/test_code_editor.py#L74) | — |  |
 | F0922 | `engine` | function | used | [tests/test_engine.py:12](../../../tests/test_engine.py#L12) | — |  |
 | F0923 | `test_readiness_counts_only_unrestricted_stock_and_confirmed_pos` | test | test | [tests/test_engine.py:17](../../../tests/test_engine.py#L17) | — |  |
 | F0924 | `test_readiness_proposes_expedite_of_later_confirmed_po` | test | test | [tests/test_engine.py:32](../../../tests/test_engine.py#L32) | — |  |

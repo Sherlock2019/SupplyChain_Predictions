@@ -195,10 +195,20 @@
     const list = await api(`/api/v1/code/functions?q=${encodeURIComponent($('#code-q').value.trim())}`).catch((e) => { toast(e.message); return null; });
     if (!list) return;
     state.codeEdit = list.edit_allowed && state.role === 'manager';
-    $('#code-count').textContent = `${list.total} functions and classes in backend/` + (list.registry ? '' : ' (code-explorer registry not found: ids and call graph hidden)');
+    state.codeApps = Object.fromEntries((list.components || []).map((c) => [c.id, c]));
+    // one pill per backend app (docker-compose service); a file appears under every app that loads it
+    const app = state.codeApp && state.codeApps[state.codeApp] ? state.codeApp : '';
+    $('#code-apps').innerHTML = [['', 'All backend', '']].concat((list.components || []).map((c) => [c.id, c.name, `${c.kind} · :${c.port}`]))
+      .map(([id, name, sub]) => `<button class="pill${id === app ? ' on' : ''}" data-app="${id}" title="${esc(id ? state.codeApps[id].start : '')}">${esc(name)}${sub ? ` <span class="code-id">${esc(sub)}</span>` : ''}</button>`).join('');
+    $$('#code-apps .pill').forEach((b) => b.addEventListener('click', () => { state.codeApp = b.dataset.app; loadCode(); }));
+    const rows = app ? list.functions.filter((f) => (f.apps || []).includes(app)) : list.functions;
+    const c = app && state.codeApps[app];
+    $('#code-count').innerHTML = c
+      ? `<b>${esc(c.name)}</b> (${esc(c.kind)}, port ${c.port}) runs ${c.files.length} files · ${rows.length} functions and classes. Started with <code>${esc(c.start)}</code>. Entry: <a href="#code/${encodeURIComponent(c.entry)}">${esc(c.entry.split('::')[1])}</a>`
+      : `${list.total} functions and classes in backend/` + (list.registry ? '' : ' (code-explorer registry not found: ids and call graph hidden)');
     let cur = '';
-    $('#code-items').innerHTML = list.functions.map((f) => {
-      const head = f.file !== cur ? `<div class="code-file">${esc(f.file)}</div>` : '';
+    $('#code-items').innerHTML = rows.map((f) => {
+      const head = f.file !== cur ? `<div class="code-file" title="Loaded by: ${esc((f.apps || []).join(', ') || 'no app (not imported)')}">${esc(f.file)}</div>` : '';
       cur = f.file;
       return `${head}<div class="code-item${f.key === state.codeKey ? ' on' : ''}" data-key="${esc(f.key)}" title="${esc(f.summary || '')}">${f.id ? `<span class="code-id">${esc(f.id)}</span>` : ''}${esc(f.name)}</div>`;
     }).join('') || '<div class="empty">No match.</div>';
@@ -218,6 +228,7 @@
     host.innerHTML = `<h2>${f.id ? esc(f.id) + ' · ' : ''}${esc(f.name)}</h2>
       <p class="sub">${esc(f.file)}:${f.lines[0]}-${f.lines[1]} ${f.status ? badge(f.status.split(' ')[0] === 'used' ? 'ready' : 'plan', f.status) : ''} ${(f.routes || []).map((r) => chip(`${r.method} ${r.path}`)).join(' ')}</p>
       ${f.summary ? `<p>${esc(f.summary)}</p>` : ''}
+      <p class="note">Runs in: ${(f.apps || []).length ? f.apps.map((a) => chip(state.codeApps && state.codeApps[a] ? `${state.codeApps[a].name} (${state.codeApps[a].kind} :${state.codeApps[a].port})` : a)).join(' ') : 'no backend app imports this file'}${(f.apps || []).length > 1 ? ' · a save changes it for every app listed' : ''}</p>
       <div class="grid g2"><div><h4>Called by</h4>${links(f.called_by)}</div><div><h4>Calls</h4>${links(f.calls)}</div></div>
       <div class="pills code-tabs"><button class="pill on" data-tab="source">Source${editable ? ' (editable)' : ''}</button>${f.annotated ? '<button class="pill" data-tab="annotated">Annotated (comments)</button>' : ''}</div>
       <div data-pane="source"><textarea id="code-src" class="code-box" spellcheck="false" ${editable ? '' : 'readonly'} aria-label="Function source">${esc(f.source)}</textarea>

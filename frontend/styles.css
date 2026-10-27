@@ -255,6 +255,8 @@ tr.clickable { cursor: pointer; } tr.clickable:hover td { background: var(--surf
 .code-apps { margin-bottom: 20px; }
 .code-apps td { vertical-align: top; }
 .code-apps code { overflow-wrap: anywhere; }
+.code-apps-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.code-apps-pills .pill { font-size: 12px; }
 .code-layout { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 20px; align-items: start; }
 .code-list { max-height: calc(100vh - 160px); overflow: auto; position: sticky; top: 12px; }
 .code-list input { width: 100%; }
